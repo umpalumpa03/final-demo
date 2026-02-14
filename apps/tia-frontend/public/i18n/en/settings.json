@@ -1,103 +1,307 @@
 {
-    "title": "Settings",
-    "sections": {
-        "profile": "Profile",
-        "security": "Security",
-        "notifications": "Notifications",
-        "language": "Language",
-        "accounts": "Accounts",
-        "appearance": "Appearance",
-        "user-management": "User Management",
-        "approve-accounts": "Approve Accounts",
-        "approve-cards": "Approve Cards",
-        "loan-management": "Loan Management",
-        "profile-photo": "Profile Photo"
-    },
-    "language": {
-        "title": "Language & Region",
-        "subtitle": "Choose your preferred language to personalize your experience",
-        "current": "Current Language",
-        "available": "Available Languages",
-        "english": "English",
-        "georgian": "Georgian",
-        "saveSuccess": "Language updated successfully!",
-        "saveError": "Failed to update language. Please try again."
-    },
-    "appearance": {
-        "title": "Appearance",
-        "subtitle": "Customize your visual experience",
-        "themes": {
-            "oceanBlue": {
-                "name": "Ocean Blue",
-                "description": "Light and refreshing blue theme"
-            },
-            "royalBlue": {
-                "name": "Royal Blue",
-                "description": "Classic and elegant blue theme"
-            },
-            "deepBlue": {
-                "name": "Deep Blue",
-                "description": "Rich and sophisticated blue theme"
-            }
-        },
-        "cardsTitle": "Select Theme",
-        "light": "Light",
-        "dark": "Dark",
-        "system": "System",
-        "saveSuccess": "Theme saved successfully!",
-        "saveError": "Failed to save theme. Please try again."
-    },
-    "profile-photo": {
-        "title": "Profile Photo",
-        "subtitle": "Upload a new profile photo or choose a default avatar",
-        "uploadCustomPhoto": "Upload a new profile photo",
-        "dragOrChooseFile": "Drag a photo here or choose a file.",
-        "chooseFile": "Choose File",
-        "defaultAvatar": "Or Choose a Default Avatar",
-        "loadingDefaultAvatars": "Loading avatars...",
-        "profilePictureChangedSuccessfully": "Your profile picture changed successfully",
-        "profilePictureRemovedSuccessfully": "Your profile picture removed successfully",
-        "change": "Save Changes",
-        "remove": "Remove Photo",
-        "invalidFileAlert": "Unfortunately, your photo could not be uploaded. The avatar image file to upload (PNG/JPG only, max 1MB)."
-    },
-    "security": {
-        "title": "Security Settings",
-        "changePassword": "Change Password",
-        "changePasswordSubtitle": "Update your password to keep your account secure",
-        "currentPassword": "Current Password",
-        "currentPasswordPlaceholder": "Enter current password",
-        "newPassword": "New Password",
-        "newPasswordPlaceholder": "Enter new password",
-        "confirmNewPassword": "Confirm New Password",
-        "confirmNewPasswordPlaceholder": "Confirm new password",
-        "updatePassword": "Update Password",
-        "twoFactorAuth": "Two-Factor Authentication"
-    },
-    "user-management": {
-        "title": "User Management",
-        "subtitle": "Manage users, roles, and access permissions",
-        "placeholder": "Search users by name, email, username...",
-        "addUser": "Add User",
-        "removeUser": "Remove User"
-    },
-    "approve-accounts": {
-        "title": "Approve Accounts",
-        "pendingApprovals": "Pending Approvals"
-    },
-    "approve-cards": {
-        "title": "Approve Cards",
-        "pendingCards": "Pending Cards"
-    },
-    "loan-management": {
-        "title": "Loan Management",
-        "viewLoans": "View Loans",
-        "approveLoan": "Approve Loan",
-        "rejectLoan": "Reject Loan"
-    },
-    "accounts": {
-        "title": "Accounts",
-        "savings": "Savings Account",
-        "checking": "Checking Account"
+  "title": "Settings",
+  "subtitle": "Manage your preferences and application settings",
+  "sections": {
+    "profile": "Profile",
+    "security": "Security",
+    "notifications": "Notifications",
+    "language": "Language",
+    "accounts": "Accounts",
+    "appearance": "Appearance",
+    "user-management": "User Management",
+    "approve-accounts": "Approve Accounts",
+    "approve-cards": "Approve Cards",
+    "loan-management": "Loan Management",
+    "profile-photo": "Profile"
+  },
+  "language": {
+    "title": "Language & Region",
+    "subtitle": "Choose your preferred language to personalize your experience",
+    "current": "Current Language",
+    "available": "Available Languages",
+    "english": "English",
+    "georgian": "Georgian",
+    "saveSuccess": "Language updated successfully!",
+    "saveError": "Failed to update language. Please try again.",
+    "saveChanges": "Save Changes",
+    "infoTitle": "Language Settings",
+    "infoDescription": "Changing your language will update all text throughout the application. You can switch between languages at any time from this page.",
+    "languages": {
+      "en": {
+        "location": "Global",
+        "speakers": "1.5B speakers"
+      },
+      "ka": {
+        "location": "Georgia & Caucasus",
+        "speakers": "4M speakers"
+      }
     }
+  },
+  "appearance": {
+    "title": "Appearance",
+    "subtitle": "Customize your visual experience",
+    "themes": {
+      "oceanBlue": {
+        "name": "Ocean Blue",
+        "description": "Light and refreshing blue theme"
+      },
+      "royalBlue": {
+        "name": "Royal Blue",
+        "description": "Classic and elegant blue theme"
+      },
+      "deepBlue": {
+        "name": "Deep Blue",
+        "description": "Rich and sophisticated blue theme"
+      }
+    },
+    "cardsTitle": "Select Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
+    "saveSuccess": "Theme saved successfully!",
+    "saveError": "Failed to save theme. Please try again.",
+    "saveChanges": "Save Changes"
+  },
+  "profile-photo": {
+    "title": "Profile Photo",
+    "subtitle": "Upload a new profile photo or choose a default avatar",
+    "uploadCustomPhoto": "Upload a new profile photo",
+    "dragOrChooseFile": "Drag a photo here or choose a file.",
+    "chooseFile": "Choose File",
+    "defaultAvatar": "Or Choose a Default Avatar",
+    "loadingDefaultAvatars": "Loading avatars...",
+    "profilePictureChangedSuccessfully": "Your profile picture changed successfully",
+    "profilePictureRemovedSuccessfully": "Your profile picture removed successfully",
+    "change": "Save Changes",
+    "remove": "Remove Photo",
+    "invalidFileAlert": "Unfortunately, your photo could not be uploaded. The avatar image file to upload (PNG/JPG only, max 1MB).",
+    "personalInfo": "Personal Information",
+    "phoneNumber": "Phone Number",
+    "personalNumber": "Personal Number",
+    "edit": "Edit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "savePersonalNumber": "Save Personal Number",
+    "personalNumberUpdated": "Personal number updated successfully",
+    "personalNumberExists": "Personal number already exists",
+    "invalidPersonalNumber": "Personal number must be exactly 11 digits",
+    "invalidPhoneNumber": "Phone number must be exactly 9 digits",
+    "noChangesToSave": "No changes to save",
+    "verifyPhoneUpdate": "Verify Phone Number Update",
+    "otpDescription": "Enter the OTP code sent to you via SMS",
+    "verify": "Verify",
+    "didntReceiveCode": "Didn't receive the code?",
+    "phoneNumberUpdated": "Phone number updated successfully",
+    "maxResendReached": "Maximum resend limit reached",
+    "startTour": "Start Tour"
+  },
+  "security": {
+    "title": "Security Settings",
+    "changePassword": "Change Password",
+    "changePasswordSubtitle": "Update your password to keep your account secure",
+    "currentPassword": "Current Password",
+    "currentPasswordPlaceholder": "Enter current password",
+    "newPassword": "New Password",
+    "newPasswordPlaceholder": "Enter new password",
+    "confirmNewPassword": "Confirm New Password",
+    "confirmNewPasswordPlaceholder": "Confirm new password",
+    "updatePassword": "Update Password",
+    "twoFactorAuth": "Two-Factor Authentication",
+    "passwordChangedSuccessfully": "Password changed successfully",
+    "tooltip": {
+      "passwordMismatch": "The confirmed password does not match",
+      "fillAllFields": "Fill in all fields "
+    }
+  },
+  "user-management": {
+    "title": "User Management",
+    "subtitle": "Manage users, roles, and access permissions",
+    "placeholder": "Search users by name, email, username...",
+    "addUser": "Add User",
+    "removeUser": "Remove User",
+    "buttons": {
+      "details": "Details",
+      "edit": "Edit",
+      "delete": "Delete",
+      "block": "Block",
+      "unblock": "Unblock",
+      "retry": "Retry"
+    },
+    "details": {
+      "title": "User Details",
+      "desc": "View detailed information about the user.",
+      "username": "Username",
+      "email": "Email",
+      "personal_id": "Personal ID",
+      "phone": "Phone Number",
+      "role": "Role",
+      "status": "Status",
+      "created": "Created At",
+      "phone_verified": "Phone Verified At",
+      "blocked": "Blocked",
+      "active": "Active",
+      "close": "Close"
+    },
+    "edit": {
+      "title": "User Details",
+      "desc": "Edit user information.",
+      "cancel": "Cancel",
+      "save": "Save Changes"
+    },
+    "delete": {
+      "title": "Delete User",
+      "desc": "Are you sure you want to delete this user? This action cannot be undone.",
+      "cancel": "Cancel",
+      "delete": "Delete"
+    },
+    "alerts": {
+      "error": {
+        "load_error": "Failed to load users",
+        "details_error": "Failed to load user details",
+        "delete_error": "Failed to delete user",
+        "update_error": "Failed to update user",
+        "block_error": "Failed to change user block status",
+        "network_error": "Check internet connection or try again later",
+        "title": "Error occured"
+      },
+      "success": {
+        "delete_success": "User deleted successfully",
+        "update_success": "User updated successfully",
+        "block_success": "User blocked successfully",
+        "unblock_success": "User unblocked successfully"
+      }
+    }
+  },
+  "approve-accounts": {
+    "title": "Approve Accounts",
+    "pendingApprovals": "Pending Approvals",
+    "card": {
+      "title": "Approve Accounts",
+      "subtitle": "Review and approve account requests"
+    },
+    "errorState": {
+      "header": "No Accounts Found",
+      "message": "We couldn't find any pending accounts."
+    },
+    "permissionsModal": {
+      "modalTitle": "Modify Account Permissions",
+      "modalSubtitle": "Configure permissions for this Account request",
+      "title": "Account permissions"
+    },
+    "confirmDialog": {
+      "title": "Reset Changes?",
+      "subtitle": "Switching accounts will clear the permissions you selected.",
+      "cancelBtn": "Go back",
+      "confirmBtn": "Discard and switch"
+    },
+    "alerts": {
+      "approved_success": "Account approved successfully",
+      "declined_success": "Account declined successfully",
+      "permissions_saved": "Permissions saved successfully"
+    }
+  },
+  "approve-cards": {
+    "title": "Approve Cards",
+    "subtitle": "Pending Cards",
+    "confirmOverlay": {
+      "title": "Reset Changes?",
+      "subtitle": "Please approve your card. otherwise, switching will clear the permissions you have already selected.",
+      "cancelAction": "Go back",
+      "confirmAction": "Discard and switch"
+    },
+    "buttons": {
+      "permissions": "Permissions",
+      "approve": "Approve",
+      "decline": "Decline"
+    },
+    "alertMessages": {
+      "successDesc": "Card status updated successfully!",
+      "errorDesc": "Failed to update card status."
+    }
+  },
+  "loan-management": {
+    "title": "Loan Management",
+    "subtitle": "Review and process pending loan applications",
+    "drawer": {
+      "title": "Loan Application Details",
+      "subtitle": "Review the loan application and user information",
+      "applicantSection": "Applicant Information",
+      "loanSection": "Loan Details",
+      "riskSection": "Risk Assessment",
+      "declineSection": "Reason for Declining",
+      "applicantUnavailable": "Applicant information unavailable",
+      "declinePlaceholder": "Please provide a reason for declining this loan application...",
+      "fields": {
+        "fullName": "Full Name",
+        "email": "Email",
+        "phoneNumber": "Phone Number",
+        "employmentStatus": "Employment Status",
+        "address": "Address",
+        "annualIncome": "Annual Income",
+        "creditScore": "Credit Score",
+        "loanAmount": "Loan Amount",
+        "loanPurpose": "Loan Purpose",
+        "loanTerm": "Loan Term",
+        "interestRate": "Interest Rate",
+        "monthlyPayment": "Monthly Payment",
+        "requestDate": "Request Date",
+        "months": "months",
+        "debtToIncome": "Debt-to-Income Ratio",
+        "loanToIncome": "Loan-to-Income Ratio",
+        "totalInterest": "Total Interest"
+      },
+      "buttons": {
+        "close": "Close",
+        "decline": "Decline Loan",
+        "approve": "Approve Loan",
+        "cancel": "Cancel",
+        "confirmDecline": "Confirm Decline"
+      },
+      "creditScoreBadge": {
+        "Poor": "Poor",
+        "Fair": "Fair",
+        "Good": "Good",
+        "Very Good": "Very Good",
+        "Excellent": "Excellent"
+      }
+    },
+    "table": {
+      "pendingBadge": "Pending",
+      "loading": "Loading pending approvals...",
+      "errorHeader": "Error Loading Approvals",
+      "errorDefault": "An error occurred",
+      "retry": "Retry",
+      "emptyHeader": "No Pending Approvals",
+      "emptyMessage": "All loan applications have been processed.",
+      "months": "months"
+    }
+  },
+  "accounts": {
+    "changeFriendlyName": "Change Account Name",
+    "changeFriendlyNameSubtitle": "Update the name for Main Account",
+    "accountName": "Account Name",
+    "accountNumber": "Account Number",
+    "saveChanges": "Save Changes",
+    "cancel": "Cancel",
+    "changeButton": "Change name",
+    "favoriteButton": "Favorite",
+    "favoritedButton": "Favorited",
+    "hideButton": "Hide",
+    "showButton": "Show",
+    "title": "My Accounts",
+    "subtitle": "Manage your accounts, set favorites, and control visibility",
+    "errorMessage": "Failed to fetch the data",
+    "errorBtn": "Retry",
+    "warningHeader": "No Data Found",
+    "warningMessage": "We couldn't find any data to display.",
+    "warningBtn": "Go Back",
+    "storeAlerts": {
+      "favSuccess": "Favorite status updated successfully",
+      "favFailed": "Failed to update favorite status",
+      "visibilitySuccess": "Account visibility updated successfully",
+      "visibilityFailed": "Failed to update visibility",
+      "nameSuccess": "Account name changed successfully",
+      "nameFailed": "Failed to change friendly name"
+    }
+  }
 }

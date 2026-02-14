@@ -11,8 +11,8 @@ import {
   AccountType,
 } from '../../../../../../../../shared/models/accounts/accounts.model';
 import { AccountCardViewComponent } from '../components/account-card-view/account-card-view';
-import { FormatUtils } from '../../../utils/format-date.utils';
-import { AccountUtils } from '../../../utils/account.utils';
+import { FormatUtils } from '../../../shared/utils/format-date.utils';
+import { AccountUtils } from '@tia/shared/utils/accounts-icons/account.utils';
 
 @Component({
   selector: 'app-account-card',

@@ -33,6 +33,7 @@
       <app-alert-types-with-icons
         alertType="information"
         [alertMessage]="'paybill.main.otp.alert_message' | translate"
+        customMaxwidth="100%"
       />
     </div>
 
@@ -56,6 +57,7 @@
         (onBackOut)="onCancel()"
         [customRemainingAttempts]="3"
         noMoreAttempsRedirectRoute="/bank/paybill/pay"
+        [isButtonLoading]="true"
       />
     </div>
   </div>

@@ -59,6 +59,12 @@ describe('TokenService', () => {
       expect(localStorage.setItem).toHaveBeenCalledWith(TokenKey.SIGNUP, 'test-signup-token');
       expect(localStorageMock[TokenKey.SIGNUP]).toBe('test-signup-token');
     });
+
+    it('should set reset password token', () => {
+      service.setResetPasswordToken('test-reset-password-token');
+      expect(localStorage.setItem).toHaveBeenCalledWith(TokenKey.RESET_PASSWORD, 'test-reset-password-token');
+      expect(localStorageMock[TokenKey.RESET_PASSWORD]).toBe('test-reset-password-token');
+    });
   });
 
   describe('getTokens', () => {
@@ -85,6 +91,20 @@ describe('TokenService', () => {
       expect(service.getSignUpToken).toBe('test-signup-token');
       expect(localStorage.getItem).toHaveBeenCalledWith(TokenKey.SIGNUP);
     });
+
+    it('should get reset password token', () => {
+      localStorageMock[TokenKey.RESET_PASSWORD] = 'test-reset-password-token';
+      expect(service.resetPasswordToken).toBe('test-reset-password-token');
+      expect(localStorage.getItem).toHaveBeenCalledWith(TokenKey.RESET_PASSWORD);
+    });
+
+    it('should return null when token does not exist', () => {
+      expect(service.accessToken).toBeNull();
+      expect(service.refreshToken).toBeNull();
+      expect(service.verifyToken).toBeNull();
+      expect(service.getSignUpToken).toBeNull();
+      expect(service.resetPasswordToken).toBeNull();
+    });
   });
 
   describe('clearTokens', () => {
@@ -106,6 +126,27 @@ describe('TokenService', () => {
       expect(localStorage.removeItem).toHaveBeenCalledWith(TokenKey.REFRESH);
       expect(localStorage.removeItem).toHaveBeenCalledWith(TokenKey.VERIFY);
       expect(localStorage.removeItem).toHaveBeenCalledWith(TokenKey.SIGNUP);
+      expect(localStorage.removeItem).toHaveBeenCalledWith(TokenKey.RESET_PASSWORD);
+    });
+
+    it('should clear access token only', () => {
+      service.clearAccessToken();
+      expect(localStorage.removeItem).toHaveBeenCalledWith(TokenKey.ACCESS);
+    });
+
+    it('should clear verify token only', () => {
+      service.clearVerifyToken();
+      expect(localStorage.removeItem).toHaveBeenCalledWith(TokenKey.VERIFY);
+    });
+
+    it('should clear signup token only', () => {
+      service.clearSignUpToken();
+      expect(localStorage.removeItem).toHaveBeenCalledWith(TokenKey.SIGNUP);
+    });
+
+    it('should clear reset password token only', () => {
+      service.clearResetPasswordToken();
+      expect(localStorage.removeItem).toHaveBeenCalledWith(TokenKey.RESET_PASSWORD);
     });
   });
 

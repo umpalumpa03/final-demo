@@ -1,0 +1,43 @@
+@use '../../../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../../../shared/styles/palette' as *;
+
+.back-nav {
+  @include flex-center($align: center,$justify:center);
+  position: relative;
+  width: 17.3rem;
+  height: 3rem;
+  border-radius: 0.8rem;
+  cursor: pointer;
+  color: var(--color-fg);
+
+  &__icon {
+    @include flex-center;
+    position: absolute;
+    width: 1.6rem;
+    height: 1.6rem;
+    left: 1.199rem;
+    top: 1rem;
+
+    &::before {
+      content: '';
+      @include svg-icon(1.6rem);
+      background-color: currentColor;
+      mask-image: url('/images/svg/button-icons/left-arrow.svg');
+      mask-repeat: no-repeat;
+      mask-position: center;
+      mask-size: contain;
+    }
+  }
+
+  &__label {
+    position: absolute;
+    width: 12.5rem;
+    height: 2rem;
+    left: 3.699rem;
+    top: 0.825rem;
+    text-align: center;
+    letter-spacing: -0.015rem;
+
+    @include font-inter(500, 1.4rem, 2rem);
+  }
+}

@@ -1,9 +1,10 @@
-<form [formGroup]="formGroup()" (ngSubmit)="onSubmit()" class="create-card-form">
+<form
+  [formGroup]="formGroup()"
+  (ngSubmit)="onSubmit()"
+  class="create-card-form"
+>
   <div class="create-card-form__field">
-    <lib-text-input
-      formControlName="cardName"
-      [type]="'text'"
-    ></lib-text-input>
+    <lib-text-input formControlName="cardName" [type]="'text'"  [config]="formConfigs().cardName"></lib-text-input>
   </div>
 
   <div class="create-card-form__field-group">
@@ -26,27 +27,28 @@
     <lib-select
       formControlName="accountId"
       [options]="accountOptions()"
+       [config]="formConfigs().accountId"
     ></lib-select>
   </div>
 
   @if (createError()) {
-    <div class="create-card-form__error-message">{{ createError() }}</div>
+  <div class="create-card-form__error-message">{{ createError() }}</div>
   }
 
   <div class="create-card-form__actions">
     @if (!isCreating()) {
-      <app-button [variant]="'outline'" (click)="onCancel()" type="button">
-        Cancel
-      </app-button>
-    }
-    @if (formGroup().valid && !isCreating()) {
-      <app-button
-        [variant]="'default'"
-        [icon]="'plus-icon.svg'"
-        type="submit"
-      >
-        @if (isCreating()) { Creating... } @else { Create Card }
-      </app-button>
+    <app-button [variant]="'outline'" (click)="onCancel()" type="button">
+      {{'my-products.card.create-card-modal.create-card-form.cancelBtn' |
+      translate }}
+    </app-button>
+    } @if (formGroup().valid && !isCreating()) {
+    <app-button [variant]="'default'" [icon]="'plus-icon.svg'" type="submit">
+      @if (isCreating()) {
+      {{'my-products.card.create-card-modal.create-card-form.creating' |
+      translate }}} @else {
+      {{'my-products.card.create-card-modal.create-card-form.createCard' |
+      translate }} }
+    </app-button>
     }
   </div>
 </form>

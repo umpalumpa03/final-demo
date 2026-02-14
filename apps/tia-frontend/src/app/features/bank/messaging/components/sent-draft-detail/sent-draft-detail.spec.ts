@@ -8,6 +8,7 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { Mail } from '../../store/messaging.state';
 import { Store } from '@ngrx/store';
 import { TranslateModule } from '@ngx-translate/core';
+import { AlertService } from '@tia/core/services/alert/alert.service';
 
 describe('SentDraftDetail', () => {
   let component: SentDraftDetail;
@@ -16,6 +17,7 @@ describe('SentDraftDetail', () => {
   let mockMessagingStore: any;
   let mockRouter: any;
   let mockStore: any;
+  let mockAlertService: any;
 
   const mockMail: Mail = {
     id: 1,
@@ -40,14 +42,22 @@ describe('SentDraftDetail', () => {
       sendDraft: vi.fn(),
       sendMailReply: vi.fn(),
       isLoading: signal(false),
+      error: signal(null),
+      isDeleting: signal(false),
+      deleteSuccess: signal(false),
     };
 
     mockRouter = {
-      navigate: vi.fn(),
+      navigate: vi.fn().mockReturnValue(Promise.resolve(true)),
     };
 
     mockStore = {
       selectSignal: vi.fn().mockReturnValue(signal('test@example.com')),
+    };
+
+    mockAlertService = {
+      success: vi.fn(),
+      error: vi.fn(),
     };
 
     const mockActivatedRoute = {
@@ -67,7 +77,8 @@ describe('SentDraftDetail', () => {
         { provide: MessagingStore, useValue: mockMessagingStore },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: Router, useValue: mockRouter },
-        { provide: Store, useValue: mockStore }
+        { provide: Store, useValue: mockStore },
+        { provide: AlertService, useValue: mockAlertService }
       ],
       schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
@@ -113,7 +124,8 @@ describe('SentDraftDetail', () => {
         { provide: MessagingStore, useValue: mockMessagingStore },
         { provide: ActivatedRoute, useValue: mockActivatedRouteWithSent },
         { provide: Router, useValue: mockRouter },
-        { provide: Store, useValue: mockStore }
+        { provide: Store, useValue: mockStore },
+        { provide: AlertService, useValue: mockAlertService }
       ],
       schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
@@ -135,7 +147,7 @@ describe('SentDraftDetail', () => {
     expect(component.isDeleteModalOpen()).toBe(true);
   });
 
-  it('should confirm delete and navigate back', () => {
+  it('should confirm delete and navigate back after delete completes', () => {
     fixture.detectChanges();
 
     const emitSpy = vi.spyOn(component.deleteMail, 'emit');
@@ -145,22 +157,21 @@ describe('SentDraftDetail', () => {
 
     expect(emitSpy).toHaveBeenCalledWith(1);
     expect(mockMessagingStore.deleteMail).toHaveBeenCalledWith(1);
+
+    mockMessagingStore.isDeleting.set(true);
+    fixture.detectChanges();
+
+    expect(component.isDeleteModalOpen()).toBe(true);
+    expect(mockRouter.navigate).not.toHaveBeenCalled();
+
+    mockMessagingStore.isDeleting.set(false);
+    mockMessagingStore.deleteSuccess.set(true);
+    fixture.detectChanges();
+
     expect(component.isDeleteModalOpen()).toBe(false);
     expect(mockRouter.navigate).toHaveBeenCalledWith(['..'], {
       relativeTo: TestBed.inject(ActivatedRoute),
     });
-  });
-
-  it('should not delete when email detail is null', () => {
-    mockMessagingStore.emailDetail.set(null);
-    fixture.detectChanges();
-
-    const emitSpy = vi.spyOn(component.deleteMail, 'emit');
-
-    component.onConfirmDelete();
-
-    expect(emitSpy).not.toHaveBeenCalled();
-    expect(mockMessagingStore.deleteMail).not.toHaveBeenCalled();
   });
 
   it('should cancel delete and close modal', () => {

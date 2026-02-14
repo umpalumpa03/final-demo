@@ -11,6 +11,7 @@ import {
   ProceedPaymentResponse,
 } from '../components/paybill-main/shared/models/paybill.model';
 import {
+  BillPaymentRequest,
   CreateTemplateGroupResponse,
   TemplateGroups,
   Templates,
@@ -35,7 +36,6 @@ export const PaybillActions = createActionGroup({
     'Check Bill Success': props<{ details: BillDetails }>(),
     'Check Bill Failure': props<{ error: string }>(),
     'Clear Selection': emptyProps(),
-    'Set Payment Step': props<{ step: string }>(),
     'Set Payment Payload': props<{ data: PaybillPayload }>(),
     'Proceed Payment': props<{ payload: ProceedPaymentPayload }>(),
     'Proceed Payment Success': props<{ response: ProceedPaymentResponse }>(),
@@ -51,6 +51,7 @@ export const PaybillActions = createActionGroup({
     'Load Payment Details': props<{ serviceId: string }>(),
     'Load Payment Details Success': props<{ details: PaybillPaymentDetails }>(),
     'Load Payment Details Failure': props<{ error: string }>(),
+    'Init Repeat Process': emptyProps(),
   },
 });
 
@@ -135,7 +136,42 @@ export const TemplatesPageActions = createActionGroup({
       identification: PaybillIdentification;
       nickname: string;
     }>(),
-    'Create Template Success': props<{ message: string }>(),
+    'Create Template Success': props<{
+      payload: any;
+      message: string;
+    }>(),
     'Create Template Failure': props<{ error: string }>(),
+    'Select Provider': props<{
+      providerId: string;
+      level: number;
+    }>(),
+    'Load Child Providers Success': props<{
+      providers: PaybillProvider[];
+      level: number;
+    }>(),
+    'Load Child Providers Failure': props<{
+      error: string;
+    }>(),
+    'Check Bill For Template': props<{
+      serviceId: string;
+      identification: Record<string, string>;
+      nickname: string;
+    }>(),
+    'Check Bill for Template Failure': props<{
+      error: string;
+    }>(),
+
+    'Clear Payment Details': emptyProps(),
+    'Add Checked Items': props<{
+      selectedItems: Templates[];
+    }>(),
+    'Set Distributed Amount': props<{ amount: number }>(),
+    'Set total Amount': props<{ amount: number }>(),
+    'Clear Payment Info': emptyProps(),
+    'Set Payments Form': props<{ payments: BillPaymentRequest[] }>(),
+    'Set Sender Id': props<{ selectedSenderAccountId: string }>(),
+    'Pay Many Bills': props<{ payments: BillPaymentRequest[] }>(),
+    'Pay Many Bills Success': props<{ response: ProceedPaymentResponse }>(),
+    'Pay Many Bills Failure': props<{ error: string }>(),
   },
 });

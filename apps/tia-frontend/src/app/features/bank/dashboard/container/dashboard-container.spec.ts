@@ -11,11 +11,19 @@ import {
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import { of } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import { signal, computed } from '@angular/core';
+import { DashboardService } from '../services/dashboard.service';
+import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
+import { UserInfoActions } from 'apps/tia-frontend/src/app/store/user-info/user-info.actions';
+import { BirthdayLogicService } from 'apps/tia-frontend/src/app/features/birthday/services/birthday-logic.service';
 
 describe('DashboardContainer', () => {
   let component: DashboardContainer;
   let mockStore: any;
   let mockRouter: any;
+  let mockDashService: any;
+  let mockBreakpointService: any;
+  let mockBirthdayLogic: any;
 
   const mockTranslate = {
     instant: (key: string) => key,
@@ -26,10 +34,55 @@ describe('DashboardContainer', () => {
   beforeEach(() => {
     mockStore = {
       dispatch: vi.fn(),
+      selectSignal: vi.fn((selector) => signal(false)),
     };
 
     mockRouter = {
       navigate: vi.fn(),
+    };
+
+    mockBreakpointService = {
+      isXsMobile: signal(false),
+      isTablet: signal(false),
+    };
+
+    const visibleItems = signal<any[]>([]);
+    const myItems = signal<any[]>([]);
+
+    mockDashService = {
+      myItems,
+      widgetCatalog: signal([]),
+      visibleItems,
+
+      gridColumns: computed(() => {
+        const itemCount = visibleItems().length;
+        const isVertical =
+          mockBreakpointService.isXsMobile() ||
+          mockBreakpointService.isTablet() ||
+          itemCount < 3;
+        return isVertical
+          ? { default: 1, md: 1, sm: 1 }
+          : { default: 2, md: 2, sm: 1 };
+      }),
+      dynamicColspans: computed(() => {
+        const items = visibleItems();
+        const isVertical =
+          mockBreakpointService.isXsMobile() ||
+          mockBreakpointService.isTablet() ||
+          items.length < 3;
+        return items.map((_, index) => (isVertical ? 1 : index === 0 ? 2 : 1));
+      }),
+      accountsHidden: signal(false),
+      processedItems: signal([]),
+      updateItemsOnDrag: vi.fn(),
+      foldWidget: vi.fn(),
+      toggleCatalogWidget: vi.fn(),
+      syncWidgetsFromDraft: vi.fn(),
+    };
+
+    mockBirthdayLogic = {
+      isModalVisible: signal(false),
+      dismiss: vi.fn(),
     };
 
     TestBed.configureTestingModule({
@@ -38,180 +91,149 @@ describe('DashboardContainer', () => {
         { provide: Store, useValue: mockStore },
         { provide: Router, useValue: mockRouter },
         { provide: TranslateService, useValue: mockTranslate },
+        { provide: DashboardService, useValue: mockDashService },
+        { provide: BreakpointService, useValue: mockBreakpointService },
+        { provide: BirthdayLogicService, useValue: mockBirthdayLogic },
       ],
     });
 
     component = TestBed.inject(DashboardContainer);
   });
 
-  it('should create the component', () => {
-    expect(component).toBeTruthy();
+  it('should use 1 column if item count is < 3 (regardless of screen size)', () => {
+    mockDashService.visibleItems.set([{ id: '1' }, { id: '2' }]);
+    mockBreakpointService.isXsMobile.set(false);
+
+    const columns = component['gridColumns']();
+    expect(columns.default).toBe(1);
   });
 
-  it('should initialize myItems signal with widgetItems', () => {
-    expect(component['myItems']()).toBeDefined();
-    expect(Array.isArray(component['myItems']())).toBe(true);
-  });
-
-  it('should dispatch actions on ngOnInit', () => {
-    component.ngOnInit();
-
-    expect(mockStore.dispatch).toHaveBeenCalledWith(
-      TransactionActions.updateFilters({
-        filters: { pageLimit: 10 },
-      }),
-    );
-
-    expect(mockStore.dispatch).toHaveBeenCalledWith(
-      loadExchangeRates({ baseCurrency: 'USD' }),
-    );
-
-    expect(mockStore.dispatch).toHaveBeenCalledWith(
-      AccountsActions.loadAccounts(),
-    );
-
-    expect(mockStore.dispatch).toHaveBeenCalledTimes(3);
-  });
-
-  it('should update items when onItemsChange is called', () => {
-    const newItems = [
-      {
-        id: '1',
-        title: 'Test Widget',
-        subtitle: 'Test Subtitle',
-        type: 'test' as any,
-      },
-    ];
-
-    component.onItemsChange(newItems);
-
-    expect(component['myItems']()).toEqual(newItems);
-  });
-
-  it('should toggle visibility of a widget', () => {
-    component['myItems'].set([
-      {
-        id: '1',
-        title: 'Widget 1',
-        subtitle: 'Subtitle 1',
-        type: 'transactions' as any,
-        isHidden: false,
-      },
-      {
-        id: '2',
-        title: 'Widget 2',
-        subtitle: 'Subtitle 2',
-        type: 'accounts' as any,
-        isHidden: false,
-      },
+  it('should use 1 column if screen is XS Mobile (regardless of item count)', () => {
+    mockDashService.visibleItems.set([
+      { id: '1' },
+      { id: '2' },
+      { id: '3' },
+      { id: '4' },
     ]);
+    mockBreakpointService.isXsMobile.set(true);
 
-    component.onToggleVisibility(false, '1');
-
-    const items = component['myItems']();
-    expect(items[0].isHidden).toBe(true);
-    expect(items[1].isHidden).toBe(false);
+    const columns = component['gridColumns']();
+    expect(columns.default).toBe(1);
   });
 
-  it('should keep other items unchanged when toggling visibility', () => {
-    component['myItems'].set([
-      {
-        id: '1',
-        title: 'Widget 1',
-        subtitle: 'Subtitle 1',
-        type: 'transactions' as any,
-      },
-      {
-        id: '2',
-        title: 'Widget 2',
-        subtitle: 'Subtitle 2',
-        type: 'accounts' as any,
-      },
-    ]);
+  describe('Initialization and Lifecycle', () => {
+    it('ngOnInit: should dispatch loadWidgets if they are not loaded', () => {
+      mockStore.selectSignal.mockImplementation((selector: any) => {
+        if (selector.name === 'selectWidgetsLoaded') return signal(false);
+        return signal(false);
+      });
 
-    component.onToggleVisibility(true, '1');
+      component.ngOnInit();
 
-    const items = component['myItems']();
-    expect(items[1].id).toBe('2');
+      expect(mockStore.dispatch).toHaveBeenCalledWith(
+        UserInfoActions.loadWidgets({}),
+      );
+      expect(mockStore.dispatch).toHaveBeenCalledWith(
+        TransactionActions.enter(),
+      );
+      expect(mockStore.dispatch).toHaveBeenCalledWith(
+        loadExchangeRates({ baseCurrency: 'USD' }),
+      );
+      expect(mockStore.dispatch).toHaveBeenCalledWith(
+        AccountsActions.loadAccounts({}),
+      );
+    });
   });
 
-  it('should dispatch exchange rate actions on widget refresh', () => {
-    const mockWidget = {
-      id: '1',
-      title: 'Test',
-      subtitle: 'Test Subtitle',
-      type: 'exchange' as any,
-    };
+  describe('Widget Customization and Catalog', () => {
+    it('onToggleCatalogWidget: should add and remove items from draft selection', () => {
+      component.onToggleCatalogWidget(true, 'widget-new');
+      expect((component as any).draftSelection()).toContain('widget-new');
 
-    component.onWidgetRefresh(mockWidget);
+      component.onToggleCatalogWidget(false, 'widget-new');
+      expect((component as any).draftSelection()).not.toContain('widget-new');
+    });
 
-    expect(mockStore.dispatch).toHaveBeenCalledWith(clearExchangeRates());
-    expect(mockStore.dispatch).toHaveBeenCalledWith(
-      loadExchangeRates({ baseCurrency: 'USD' }),
-    );
+    it('isWidgetActive: should use draft selection when customizing', () => {
+      (component as any).isCustomizing.set(true);
+      (component as any).draftSelection.set(['draft-id']);
+
+      expect((component as any).isWidgetActive('draft-id')).toBe(true);
+      expect((component as any).isWidgetActive('live-id')).toBe(false);
+    });
+
+    it('isWidgetActive: should use live myItems when NOT customizing', () => {
+      (component as any).isCustomizing.set(false);
+      mockDashService.myItems.set([{ id: 'live-id' }] as any);
+
+      expect((component as any).isWidgetActive('live-id')).toBe(true);
+      expect((component as any).isWidgetActive('draft-id')).toBe(false);
+    });
   });
 
-  it('should navigate to accounts page on widget add', () => {
-    const mockWidget = {
-      id: '1',
-      title: 'Test',
-      subtitle: 'Test Subtitle',
-      type: 'accounts' as any,
-    };
+  describe('Feature Actions', () => {
+    it('onWidgetRefresh: should dispatch exchange rate refresh actions', () => {
+      component.onWidgetRefresh();
 
-    component.onWidgetAdd(mockWidget);
+      expect(mockStore.dispatch).toHaveBeenCalledWith(clearExchangeRates());
+      expect(mockStore.dispatch).toHaveBeenCalledWith(
+        loadExchangeRates({ baseCurrency: 'USD' }),
+      );
+    });
 
-    expect(mockRouter.navigate).toHaveBeenCalledWith([
-      '/bank/products/accounts',
-    ]);
+    it('onWidgetAdd: should navigate to accounts product page', () => {
+      component.onWidgetAdd();
+      expect(mockRouter.navigate).toHaveBeenCalledWith([
+        '/bank/products/accounts',
+      ]);
+    });
+
+    it('onPaginationChange: should update transaction filters and reload', () => {
+      component.onPaginationChange(50);
+
+      expect(mockStore.dispatch).toHaveBeenCalledWith(
+        TransactionActions.updateFilters({ filters: { pageLimit: 50 } }),
+      );
+      expect(mockStore.dispatch).toHaveBeenCalledWith(
+        TransactionActions.loadTransactions({ forceRefresh: true }),
+      );
+    });
+
+    it('Birthday Logic: should link to birthday service state and dismissal', () => {
+      component.onBirthdayDismiss();
+      expect(mockBirthdayLogic.dismiss).toHaveBeenCalled();
+
+      mockBirthdayLogic.isModalVisible.set(true);
+      expect((component as any).isBirthdayVisible()).toBe(true);
+    });
   });
 
-  it('should dispatch pagination change action', () => {
-    const pageLimit = 20;
+  describe('Specific Logic Coverage', () => {
+    it('onFoldWidget: should update accountsHidden signal when item type is "accounts"', () => {
+      const accountsWidget = { id: 'acc-1', type: 'accounts' };
+      mockDashService.myItems.set([accountsWidget]);
 
-    component.onPaginationChange(pageLimit);
+      component.onFoldWidget(false, 'acc-1');
 
-    expect(mockStore.dispatch).toHaveBeenCalledWith(
-      TransactionActions.updateFilters({
-        filters: { pageLimit: 20 },
-      }),
-    );
-  });
+      expect(mockDashService.accountsHidden()).toBe(true);
 
-  it('should compute dynamic colspans correctly', () => {
-    component['myItems'].set([
-      {
-        id: '1',
-        title: 'Widget 1',
-        subtitle: 'Subtitle 1',
-        type: 'transactions' as any,
-      },
-      {
-        id: '2',
-        title: 'Widget 2',
-        subtitle: 'Subtitle 2',
-        type: 'accounts' as any,
-      },
-      {
-        id: '3',
-        title: 'Widget 3',
-        subtitle: 'Subtitle 3',
-        type: 'exchange' as any,
-      },
-    ]);
+      component.onFoldWidget(true, 'acc-1');
+      expect(mockDashService.accountsHidden()).toBe(false);
+    });
 
-    const colspans = component['dynamicColspans']();
+    it('pageTitle & pageSubtitle: should return translated strings via computed signals', () => {
+      expect((component as any).pageTitle()).toBe('dashboard.page.title');
+      expect((component as any).pageSubtitle()).toBe('dashboard.page.subtitle');
+    });
 
-    expect(colspans[0]).toBe(2);
-    expect(colspans[1]).toBe(1);
-    expect(colspans[2]).toBe(1);
-  });
+    it('openCustomization: should populate draftSelection and set isCustomizing to true', () => {
+      const items = [{ id: 'w1' }, { id: 'w2' }];
+      mockDashService.myItems.set(items);
 
-  it('should handle empty items array', () => {
-    component['myItems'].set([]);
+      component.openCustomization();
 
-    const colspans = component['dynamicColspans']();
-
-    expect(colspans).toEqual([]);
+      expect((component as any).draftSelection()).toEqual(['w1', 'w2']);
+      expect((component as any).isCustomizing()).toBe(true);
+    });
   });
 });

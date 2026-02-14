@@ -4,6 +4,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { MessagingStore } from '../../store/messaging.store';
 import { MailCard } from '../../shared/ui/mail-card/mail-card';
 import { EmptyCard } from '../../shared/ui/empty-card/empty-card';
+import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { Router } from '@angular/router';
 import { ScrollArea } from '@tia/shared/lib/layout/components/scroll-area/container/scroll-area';
@@ -13,7 +14,7 @@ import { selectCurrentUserEmail } from 'apps/tia-frontend/src/app/store/user-inf
 
 @Component({
   selector: 'app-important',
-  imports: [MailHeader, TranslatePipe, MailCard, EmptyCard, RouteLoader, ScrollArea],
+  imports: [MailHeader, TranslatePipe, MailCard, EmptyCard, ErrorStates, RouteLoader, ScrollArea],
   templateUrl: './important.html',
   styleUrl: './important.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -26,10 +27,12 @@ export class Important implements OnInit {
     return this.messagingStore.mails()
   });
   public readonly isLoading = this.messagingStore.isLoading;
+  public readonly error = this.messagingStore.error;
   public readonly total = computed(() => this.messagingStore.total()['importants'] ?? 0);
   public readonly selectedMailIds = signal<Set<number>>(new Set());
   private readonly nav = inject(NavigationService);
   public readonly currentUserEmail = computed(() => this.store.selectSignal(selectCurrentUserEmail)() ?? '');
+  public readonly isDeleting = computed(() => !!this.messagingStore.isDeleting?.());
 
   public isAllSelected(): boolean {
     return this.selectedMailIds().size === this.mails().length && this.mails().length > 0;
@@ -67,7 +70,7 @@ export class Important implements OnInit {
   }
 
   ngOnInit(): void {
-    if (!(this.nav.previous()?.includes('important') && this.messagingStore.mails().length > 0)) {
+    if (!(this.nav.previous()?.includes('important') && this.messagingStore.mails().length > 0) || this.messagingStore.error()) {
       this.messagingStore.loadMails('important');
       this.messagingStore.getTotalCount('importants');
     }
@@ -84,6 +87,10 @@ export class Important implements OnInit {
   public goToDetail(mailId: number): void {
     this.router.navigate(['/bank/messaging/important', mailId]);
     this.markAsRead(mailId);
+  }
+
+  public retry(): void {
+    this.messagingStore.loadMails('important');
   }
 
   public onScrollBottom(): void {

@@ -4,6 +4,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { MessagingStore } from '../../store/messaging.store';
 import { MailCard } from '../../shared/ui/mail-card/mail-card';
 import { EmptyCard } from '../../shared/ui/empty-card/empty-card';
+import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { Router } from '@angular/router';
 import { ScrollArea } from '@tia/shared/lib/layout/components/scroll-area/container/scroll-area';
@@ -13,7 +14,7 @@ import { selectCurrentUserEmail } from 'apps/tia-frontend/src/app/store/user-inf
 
 @Component({
   selector: 'app-inbox',
-  imports: [MailHeader, TranslatePipe, MailCard, EmptyCard, RouteLoader, ScrollArea],
+  imports: [MailHeader, TranslatePipe, MailCard, EmptyCard, ErrorStates, RouteLoader, ScrollArea],
   templateUrl: './inbox.html',
   styleUrl: './inbox.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -24,11 +25,13 @@ export class Inbox implements OnInit {
   private readonly nav = inject(NavigationService);
   private readonly store = inject(Store);
   public readonly loadsMoreMails = signal(false);
+  public readonly isDeleting = computed(() => !!this.messagingStore.isDeleting?.());
 
   public readonly mails = computed(() => {
     return this.messagingStore.mails()
   });
   public readonly isLoading = this.messagingStore.isLoading;
+  public readonly error = this.messagingStore.error;
   public readonly selectedMailIds = signal<Set<number>>(new Set());
   public readonly total = computed(() => this.messagingStore.total()['inbox'] ?? 0);
   public readonly currentUserEmail = computed(() => this.store.selectSignal(selectCurrentUserEmail)() ?? '');
@@ -69,9 +72,9 @@ export class Inbox implements OnInit {
   }
 
   ngOnInit(): void {
-    if (!(this.nav.previous()?.includes('inbox') && this.messagingStore.mails().length > 0)) {
+    this.messagingStore.getTotalCount('inbox');
+    if (!(this.nav.previous()?.includes('inbox') && this.messagingStore.mails().length > 0) || this.messagingStore.error()) {
       this.messagingStore.loadMails('inbox');
-      this.messagingStore.getTotalCount('inbox');
     }
   }
 
@@ -86,6 +89,10 @@ export class Inbox implements OnInit {
   public goToDetail(mailId: number): void {
     this.router.navigate(['/bank/messaging/inbox', mailId]);
     this.markAsRead(mailId);
+  }
+
+  public retry(): void {
+    this.messagingStore.loadMails('inbox');
   }
 
   public onScrollBottom(): void {

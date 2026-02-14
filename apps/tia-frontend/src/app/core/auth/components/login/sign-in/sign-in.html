@@ -1,0 +1,36 @@
+<form class="sign-in" [formGroup]="loginForm" (ngSubmit)="submit()">
+  <app-auth-header
+    title="auth.sign-in.title"
+    subTitle="auth.sign-in.subtitle"
+  ></app-auth-header>
+  <div class="sign-in__form">
+    @defer {
+    <lib-text-input
+      formControlName="username"
+      [config]="signInConfig().username"
+      type="text"
+    ></lib-text-input>
+    <lib-text-input
+      formControlName="password"
+      [config]="signInConfig().password"
+      type="password"
+    ></lib-text-input>
+    <lib-checkboxes
+      [config]="signInConfig().checkbox"
+      formControlName="checkbox"
+    ></lib-checkboxes>
+    }
+    <span class="sign-in__link" [routerLink]="[forgotPasswordRoute]"
+      >{{'auth.sign-in.forgotPassword' | translate}}</span
+    >
+    <app-button [fullWidth]="true" type="submit"
+      >{{'auth.sign-in.submit' | translate}}</app-button
+    >
+    <p class="sign-in__switch">
+      {{'auth.sign-in.noAccount' | translate}} &nbsp;
+      <span class="sign-in__link" [routerLink]="[signUpRoute]">
+        {{'auth.sign-in.signUp' | translate}}</span
+      >
+    </p>
+  </div>
+</form>

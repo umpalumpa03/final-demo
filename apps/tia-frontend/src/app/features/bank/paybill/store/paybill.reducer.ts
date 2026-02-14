@@ -1,13 +1,14 @@
 import { createReducer, on } from '@ngrx/store';
 import { PaybillActions, TemplatesPageActions } from './paybill.actions';
 import { initialPaybillState } from './paybill.state';
+import { PaybillProvider } from '../components/paybill-main/shared/models/paybill.model';
 
 export const paybillReducer = createReducer(
   initialPaybillState,
 
   on(PaybillActions.loadCategories, (state) => ({
     ...state,
-    loading: true,
+    loading: state.categories.length === 0,
     error: null,
   })),
 
@@ -35,15 +36,22 @@ export const paybillReducer = createReducer(
     selectedProviderId: null,
     selectedProvider: null,
     providers: [],
+    filteredProviders: [],
     loading: true,
     error: null,
   })),
+  on(PaybillActions.loadProvidersSuccess, (state, { providers }) => {
+    const filtered = state.selectedProviderId
+      ? providers.filter((p) => p.parentId === state.selectedProviderId)
+      : providers.filter((p) => !p.parentId);
 
-  on(PaybillActions.loadProvidersSuccess, (state, { providers }) => ({
-    ...state,
-    providers,
-    loading: false,
-  })),
+    return {
+      ...state,
+      providers,
+      filteredProviders: [filtered],
+      loading: false,
+    };
+  }),
 
   on(PaybillActions.loadProvidersFailure, (state, { error }) => ({
     ...state,
@@ -58,9 +66,18 @@ export const paybillReducer = createReducer(
     selectedProvider: null,
     verifiedDetails: null,
     providers: [],
-    currentStep: 'DETAILS',
     paymentPayload: null,
     challengeId: null,
+    filteredProviders: [],
+    paymentDetails: null,
+    currentLevel: 0,
+    error: null,
+    selectedSenderAccountId: null,
+  })),
+
+  on(TemplatesPageActions.clearPaymentDetails, (state) => ({
+    ...state,
+    paymentDetails: null,
   })),
 
   on(PaybillActions.checkBill, (state) => ({
@@ -68,13 +85,6 @@ export const paybillReducer = createReducer(
     loading: true,
     error: null,
   })),
-
-  on(PaybillActions.checkBill, (state) => ({
-    ...state,
-    loading: true,
-    error: null,
-  })),
-
   on(PaybillActions.checkBillSuccess, (state, { details }) => ({
     ...state,
     verifiedDetails: details,
@@ -88,14 +98,11 @@ export const paybillReducer = createReducer(
     error,
   })),
 
-  on(PaybillActions.setPaymentStep, (state, { step }) => ({
-    ...state,
-    currentStep: step,
-  })),
-
   on(PaybillActions.setPaymentPayload, (state, { data }) => ({
     ...state,
     paymentPayload: data,
+    selectedSenderAccountId:
+      data.senderAccountId || state.selectedSenderAccountId,
   })),
 
   on(PaybillActions.proceedPayment, (state) => ({
@@ -123,7 +130,7 @@ export const paybillReducer = createReducer(
 
   on(TemplatesPageActions.loadTemplateGroups, (state) => ({
     ...state,
-    loading: true,
+    loading: state.templateGroups.length === 0,
     error: null,
   })),
 
@@ -144,7 +151,7 @@ export const paybillReducer = createReducer(
 
   on(PaybillActions.confirmPayment, (state) => ({
     ...state,
-    loading: true,
+    loading: false,
     error: null,
   })),
 
@@ -174,7 +181,6 @@ export const paybillReducer = createReducer(
     PaybillActions.clearAllNotifications,
     PaybillActions.selectCategory,
     PaybillActions.selectProvider,
-    PaybillActions.clearSelection,
     (state) => ({
       ...state,
       notifications: [],
@@ -184,7 +190,7 @@ export const paybillReducer = createReducer(
 
   on(TemplatesPageActions.loadTemplates, (state) => ({
     ...state,
-    loading: true,
+    loading: state.templates.length === 0,
     error: null,
   })),
 
@@ -233,6 +239,9 @@ export const paybillReducer = createReducer(
       loading: false,
       error: null,
       templates: state.templates.filter((t) => t.id !== templateId),
+      selectedItems: state.selectedItems.filter(
+        (item) => item.id !== templateId,
+      ),
     }),
   ),
   on(TemplatesPageActions.deleteTemplateFailure, (state, { error }) => ({
@@ -244,7 +253,6 @@ export const paybillReducer = createReducer(
   on(PaybillActions.resetPaymentForm, (state) => ({
     ...state,
     verifiedDetails: null,
-    currentStep: 'DETAILS',
     error: null,
     challengeId: null,
     paymentDetails: null,
@@ -384,20 +392,89 @@ export const paybillReducer = createReducer(
     error,
   })),
 
+  on(TemplatesPageActions.selectProvider, (state, { providerId, level }) => ({
+    ...state,
+    selectedProviderId: providerId,
+    currentLevel: level,
+    loading: true,
+  })),
+
+  on(
+    TemplatesPageActions.loadChildProvidersSuccess,
+    (state, { providers, level }) => {
+      const currentLevels = state.filteredProviders || [];
+
+      let newFilteredProviders: PaybillProvider[][];
+
+      if (providers.length === 0) {
+        newFilteredProviders = currentLevels.slice(0, level);
+      } else {
+        const levelsBefore = currentLevels.slice(0, level);
+        newFilteredProviders = [...levelsBefore, providers];
+      }
+
+      return {
+        ...state,
+        filteredProviders: newFilteredProviders,
+        loading: false,
+        selectedProvider: null,
+      };
+    },
+  ),
+
+  on(TemplatesPageActions.loadChildProvidersFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    error,
+  })),
+
   on(TemplatesPageActions.createTemplate, (state) => ({
     ...state,
     loading: true,
     error: null,
   })),
 
-  on(TemplatesPageActions.createTemplateSuccess, (state) => ({
+  on(TemplatesPageActions.createTemplateSuccess, (state, { payload }) => ({
     ...state,
     loading: false,
+    templates: [...state.templates, payload],
   })),
 
-  on(TemplatesPageActions.createTemplateFailure, (state, { error }) => ({
+  on(TemplatesPageActions.addCheckedItems, (state, { selectedItems }) => ({
+    ...state,
+    selectedItems,
+  })),
+
+  on(TemplatesPageActions.setDistributedAmount, (state, { amount }) => ({
+    ...state,
+    distributedAmount: amount,
+  })),
+  on(TemplatesPageActions.setTotalAmount, (state, { amount }) => ({
+    ...state,
+    totalAmount: amount,
+  })),
+
+  on(TemplatesPageActions.clearPaymentInfo, (state) => ({
+    ...state,
+    totalAmount: 0,
+    distributedAmount: 0,
+    selectedItems: [],
+  })),
+
+  on(TemplatesPageActions.setPaymentsForm, (state, { payments }) => ({
+    ...state,
+    paymentsForm: payments,
+  })),
+  on(
+    TemplatesPageActions.setSenderId,
+    (state, { selectedSenderAccountId }) => ({
+      ...state,
+      selectedSenderAccountId,
+    }),
+  ),
+  on(TemplatesPageActions.payManyBillsSuccess, (state, { response }) => ({
     ...state,
     loading: false,
-    error,
+    challengeId: response.verify?.challengeId ?? null,
   })),
 );

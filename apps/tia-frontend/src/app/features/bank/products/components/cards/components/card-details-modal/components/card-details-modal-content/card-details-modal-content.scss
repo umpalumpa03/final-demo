@@ -3,27 +3,23 @@
 
 .card-details-modal {
   @include display-flex(column);
-  gap: 3.2rem;
-  &__title{
+  gap: 2.2rem;
+  max-height: 90vh;
+  overflow: auto;
+
+  &__title {
     @include font-inter(600, 1.8rem, 1.8rem);
-    color: var(--color-fg)
+    color: var(--color-fg);
   }
-    &__subtitle{
+  &__subtitle {
     @include font-inter(400, 1.4rem, 2rem);
     color: $blue-600;
+    margin-top: 1rem;
   }
-
-  &__section {
-    @include display-flex(column);
-    gap: 1.2rem;
-    background-color: $white;
-    padding: 1.6rem;
-  }
-
-  &__section-title {
+  &__info-heading {
     @include font-inter(500, 1.4rem, 1.4rem);
     color: var(--color-fg);
-    margin: 0;
+    margin-top: 3.2rem;
   }
 
   &__info-flex {
@@ -33,8 +29,8 @@
 
   &__info-item {
     @include flex-center(row, space-between);
-    @media(max-width:450px){
-      @include flex-center(column,start,start)
+    @media (max-width: 450px) {
+      @include flex-center(column, flex-start, flex-start);
     }
   }
 
@@ -46,14 +42,9 @@
   &__value {
     @include font-inter(600, 1.6rem, 2.4rem);
     color: var(--color-fg);
-  }
-
-  &__sensitive {
-    @include display-flex(column);
-    gap: 1.6rem;
-    padding: 1.6rem;
-    background-color: $blue-50;
-    border-radius: 0.8rem;
+    &__credit {
+      color: $green-600;
+    }
   }
 
   &__sensitive-header {
@@ -91,7 +82,57 @@
     color: $gray-700;
   }
   &__footer {
-    @include flex-center(row, end);
+    @include flex-center(row, flex-end);
     padding-top: 0.8rem;
   }
+  &__name-wrapper {
+    @include flex-center(row, flex-start);
+    gap: 0.8rem;
+    cursor: pointer;
+    &:hover .card-details-modal__edit-icon {
+      opacity: 1;
+    }
+  }
+
+  &__edit-icon {
+    opacity: 0.6;
+    transition: opacity 0.2s;
+    img {
+      width: 1.6rem;
+      height: 1.6rem;
+    }
+  }
+  &__sensitive-details {
+  @include display-flex(column);
+  gap: 1.6rem;
+}
+
+&__sensitive-item {
+  @include flex-center(row, space-between);
+}
+
+&__sensitive-value {
+  @include flex-center(row, flex-start);
+  gap: 0.8rem;
+  @include font-inter(600, 1.6rem, 2.4rem);
+  color: var(--color-fg);
+
+  img {
+    width: 1.6rem;
+    height: 1.6rem;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+&__sensitive-title {
+  @include font-inter(600, 1.6rem, 2.4rem);
+  color: $blue-1000;
+  margin-bottom: 1.6rem;
+}
 }

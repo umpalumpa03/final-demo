@@ -23,7 +23,6 @@ import { navConfig } from '../config/paybill.config';
 import { Tabs } from '@tia/shared/lib/navigation/tabs/tabs';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import * as PAYBILL_SELECTORS from '../store/paybill.selectors';
-import { DismissibleAlerts } from '@tia/shared/lib/alerts/components/dismissible-alerts/dismissible-alerts';
 import { BreadcrumbService } from '../services/breadcrumb/breadcrumb';
 @Component({
   selector: 'app-paybill-container',
@@ -33,7 +32,6 @@ import { BreadcrumbService } from '../services/breadcrumb/breadcrumb';
     RouterModule,
     Tabs,
     TranslatePipe,
-    DismissibleAlerts,
   ],
   templateUrl: './paybill-container.html',
   styleUrl: './paybill-container.scss',
@@ -65,10 +63,6 @@ export class PaybillContainer implements OnInit {
     this.store.dispatch(PaybillActions.dismissNotification({ id }));
   }
 
-  public ngOnInit(): void {
-    this.store.dispatch(PaybillActions.loadCategories());
-  }
-
   public handleCategorySelect(category: PaybillCategory): void {
     this.store.dispatch(
       PaybillActions.selectCategory({ categoryId: category.id }),
@@ -96,5 +90,9 @@ export class PaybillContainer implements OnInit {
         this.handleCategorySelect(category);
       }
     }
+  }
+
+  ngOnInit(): void {
+    this.store.dispatch(PaybillActions.loadCategories());
   }
 }

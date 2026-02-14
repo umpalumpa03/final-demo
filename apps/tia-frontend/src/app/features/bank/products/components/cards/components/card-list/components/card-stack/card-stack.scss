@@ -2,16 +2,25 @@
 
 .card-stack {
   position: relative;
-  width: 44rem;
-  min-height: 40rem;
+  width: 36rem;
+  min-height: 35rem;
 
+  @media (max-width: 1280px) {
+    max-width: 30rem;
+    min-height: 32rem;
+  }
   @media (max-width: 768px) {
     max-width: 35rem;
   }
-  @media (max-width: 450px) {
+  @media (max-width: 480px) {
     max-width: 25rem;
     min-height: 26rem;
   }
+   @media (max-width: 350px) {
+    max-width: 20rem;
+    min-height: 22rem;
+  }
+
 
   &__card {
     position: absolute;
@@ -21,6 +30,7 @@
     width: 100%;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 1.6rem;
 
     &--active {
       z-index: 10;
@@ -31,37 +41,36 @@
         box-shadow: 0 1.6rem 3.2rem rgba(0, 0, 0, 0.2);
       }
     }
-
     &--stacked {
-      &:nth-child(2) {
-        z-index: 9;
-        transform: translateY(2.4rem) translateX(0) rotate(3deg);
+  &[data-stack-position="1"] {
+    z-index: 9;
+    transform: translateY(2.4rem) translateX(0) rotate(3deg);
 
-        &:hover {
-          transform: translateY(1.6rem) translateX(0) rotate(3deg);
-          box-shadow: 0 1.2rem 2.4rem rgba(0, 0, 0, 0.15);
-        }
-      }
-
-      &:nth-child(3) {
-        z-index: 8;
-        transform: translateY(4.8rem) translateX(0) rotate(6deg);
-
-        &:hover {
-          transform: translateY(4rem) translateX(0) rotate(6deg);
-          box-shadow: 0 0.8rem 1.6rem rgba(0, 0, 0, 0.12);
-        }
-      }
-
-      &:nth-child(4) {
-        z-index: 7;
-        transform: translateY(7.2rem) translateX(0) rotate(9deg);
-
-        &:hover {
-          transform: translateY(6.4rem) translateX(0) rotate(9deg);
-        }
-      }
+    &:hover {
+      transform: translateY(1.6rem) translateX(0) rotate(3deg);
+      box-shadow: 0 1.2rem 2.4rem rgba(0, 0, 0, 0.15);
     }
+  }
+
+  &[data-stack-position="2"] {
+    z-index: 8;
+    transform: translateY(4.8rem) translateX(0) rotate(6deg);
+
+    &:hover {
+      transform: translateY(4rem) translateX(0) rotate(6deg);
+      box-shadow: 0 0.8rem 1.6rem rgba(0, 0, 0, 0.12);
+    }
+  }
+
+  &[data-stack-position="3"] {
+    z-index: 7;
+    transform: translateY(7.2rem) translateX(0) rotate(9deg);
+
+    &:hover {
+      transform: translateY(6.4rem) translateX(0) rotate(9deg);
+    }
+  }
+}
   }
 
   &__card-image {

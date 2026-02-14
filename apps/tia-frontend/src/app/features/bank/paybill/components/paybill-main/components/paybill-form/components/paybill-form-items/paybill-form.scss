@@ -83,12 +83,12 @@
     gap: 1.6rem;
     margin-top: 0.8rem;
 
-    .btn-submit {
-      flex: 4;
+    @media (max-width: 450px) {
+      @include flex-center(column, space-between, center);
     }
 
     .btn-template {
-      flex: 2;
+      flex: 1;
     }
   }
 }

@@ -1,12 +1,20 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+} from '@angular/core';
 import { PaybillOtpVerification } from '../components/paybill-otp-verification/paybill-otp-verification';
 import { PaybillMainFacade } from '../../../services/paybill-main-facade';
 import { Store } from '@ngrx/store';
 import { PaybillActions } from '../../../../../store/paybill.actions';
+import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
+import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-paybill-otp-verification-container',
-  imports: [PaybillOtpVerification],
+  imports: [PaybillOtpVerification, ErrorStates, BasicCard,TranslatePipe],
   templateUrl: './paybill-otp-verification-container.html',
   styleUrl: './paybill-otp-verification-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -19,15 +27,21 @@ export class PaybillOtpVerificationContainer {
     this.facade.backToDetails();
   }
 
+  protected readonly hasValidState = computed(() => {
+    const hasPayload = !!this.facade.paymentPayload();
+    const hasDetails = !!this.facade.verifiedDetails();
 
-    public verifyOtp(otpCode: string): void {
-      const challengeId = this.facade.challengeId();
-      if (challengeId) {
-        this.store.dispatch(
-          PaybillActions.confirmPayment({
-            payload: { challengeId, code: otpCode },
-          }),
-        );
-      }
+    return hasPayload && hasDetails;
+  });
+
+  public verifyOtp(otpCode: string): void {
+    const challengeId = this.facade.challengeId();
+    if (challengeId) {
+      this.store.dispatch(
+        PaybillActions.confirmPayment({
+          payload: { challengeId, code: otpCode },
+        }),
+      );
     }
+  }
 }

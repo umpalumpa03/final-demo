@@ -54,7 +54,6 @@ export class PaybillFormContainer {
         }),
       );
 
-      this.store.dispatch(PaybillActions.setPaymentStep({ step: 'CONFIRM' }));
       this.router.navigate(['/bank/paybill/pay/confirm-payment']);
     }
   }
@@ -62,16 +61,16 @@ export class PaybillFormContainer {
   // sync form data with service
   private readonly formSync = effect(() => {
     const fields = this.paybillFacade.paymentFields();
-    const details = this.paybillFacade.verifiedDetails();
-    const isVerified = !!details?.valid;
+    const payload = this.paybillFacade.paymentPayload();
 
-    this.dynamicForm.syncFormControls(this.paybillForm, fields);
-    this.dynamicForm.updateAmountValidators(this.paybillForm, isVerified);
-
-    if (isVerified && details?.amountDue !== undefined) {
-      this.paybillForm.patchValue(
-        { amount: details.amountDue },
-        { emitEvent: false },
+    if (fields.length > 0) {
+      this.dynamicForm.syncFormWithPaymentFields(
+        this.paybillForm,
+        {
+          ...payload?.identification,
+          amount: payload?.amount ?? 0,
+        },
+        true,
       );
     }
   });
@@ -94,7 +93,14 @@ export class PaybillFormContainer {
   }
 
   public readonly paybillForm = this.fb.group({
-    amount: [0, [Validators.required, Validators.max(9999)]],
+    amount: [
+      0,
+      [
+        Validators.required,
+        Validators.max(9999),
+        Validators.pattern(/^\d+(\.\d{1,2})?$/),
+      ],
+    ],
   });
 
   public onVerifyAccount(event: PaybillFormVerifyEvent): void {

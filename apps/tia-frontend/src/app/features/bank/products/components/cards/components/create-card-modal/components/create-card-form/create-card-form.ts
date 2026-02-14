@@ -10,6 +10,7 @@ import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { SelectOption } from '@tia/shared/lib/forms/models/input.model';
+import { TranslatePipe } from '@ngx-translate/core';
 
 
 
@@ -17,7 +18,7 @@ import { SelectOption } from '@tia/shared/lib/forms/models/input.model';
   selector: 'app-create-card-form',
   templateUrl: './create-card-form.html',
   styleUrls: ['./create-card-form.scss'],
-  imports: [ReactiveFormsModule, TextInput, Dropdowns, ButtonComponent],
+  imports: [ReactiveFormsModule, TextInput, Dropdowns, ButtonComponent,TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CreateCardForm {
@@ -30,7 +31,10 @@ export class CreateCardForm {
 
   readonly formSubmit = output<void>();
   readonly formCancel = output<void>();
-
+readonly formConfigs = input.required<{
+  cardName: { placeholder: string };
+  accountId: { placeholder: string };
+}>();
   protected onSubmit(): void {
     if (this.formGroup().valid) {
       this.formSubmit.emit();

@@ -49,6 +49,7 @@ describe('Favorites', () => {
     mockMessagingStore = {
       mails: signal<Mail[]>([]),
       isLoading: signal(false),
+      error: signal(null),
       total: signal({ favorite: 2 }),
       pagination: signal({ hasNextPage: false }),
 

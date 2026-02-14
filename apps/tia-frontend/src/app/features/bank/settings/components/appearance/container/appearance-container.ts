@@ -1,32 +1,30 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
   DestroyRef,
   inject,
-  OnDestroy,
   OnInit,
   signal,
 } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Store } from '@ngrx/store';
-import { catchError, map, Observable, of, Subject, tap } from 'rxjs';
+import { catchError, Observable, of, Subject, tap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { SettingsBody } from '../../../shared/ui/settings-body/settings-body';
-import { themesConfig } from '../config/appearance.config';
 import { selectActiveTheme } from 'apps/tia-frontend/src/app/store/theme/theme.selectors';
 import { ThemeActions } from 'apps/tia-frontend/src/app/store/theme/theme.actions';
-import { AppearanceService } from '../services/appearance.service';
-import { TAvailableThemes } from '../models/appearance.model';
+import { AppearanceService } from '../services/appearance-api.service';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
-import { selectUserInfo } from 'apps/tia-frontend/src/app/store/user-info/user-info.selectors';
+import { selectUserTheme } from 'apps/tia-frontend/src/app/store/user-info/user-info.selectors';
 import { CanComponentDeactivate } from '../guard/unsaved-changes.guard';
 import { UserInfoActions } from 'apps/tia-frontend/src/app/store/user-info/user-info.actions';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
-import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
-import { AlertType } from '@tia/shared/lib/alerts/shared/models/alert.models';
 import { TranslateService } from '@ngx-translate/core';
+import { BreakpointService } from '@tia/core/services/breakpoints/breakpoint.service';
+import { AlertService } from '@tia/core/services/alert/alert.service';
+import { AppearanceStore } from '../store/appearance.store';
 
 @Component({
   selector: 'app-appearance-container',
@@ -36,30 +34,29 @@ import { TranslateService } from '@ngx-translate/core';
     ButtonComponent,
     Skeleton,
     UiModal,
-    AlertTypesWithIcons,
   ],
   providers: [AppearanceService],
   templateUrl: './appearance-container.html',
   styleUrl: './appearance-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppearanceContainer
-  implements OnInit, OnDestroy, CanComponentDeactivate
-{
-  private store = inject(Store);
-  private appearanceService = inject(AppearanceService);
-  private destroyRef = inject(DestroyRef);
-  private translate = inject(TranslateService);
+export class AppearanceContainer implements OnInit, CanComponentDeactivate {
+  private readonly store = inject(Store);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly translate = inject(TranslateService);
+  private readonly breakpointService = inject(BreakpointService);
+  private readonly alertService = inject(AlertService);
+  private readonly appearanceStore = inject(AppearanceStore);
+
+  public readonly isFetching = this.appearanceStore.isRefreshing;
+  public readonly isLoading = this.appearanceStore.isLoading;
+  public readonly hasLoaded = this.appearanceStore.hasLoaded;
+  public readonly availableThemes = this.appearanceStore.themes;
+
+  public readonly isMobile = this.breakpointService.isMobile;
 
   public isModalOpen = signal(false);
   private leaveDecision$ = new Subject<boolean>();
-
-  public readonly alertKind = signal<AlertType | null>(null);
-  public readonly alertMessage = signal<string>('');
-  public readonly alertType = computed<AlertType | null>(() =>
-    this.alertKind(),
-  );
-  private alertTimeoutId: ReturnType<typeof setTimeout> | null = null;
 
   public toggleModal(): void {
     this.isModalOpen.update((open) => !open);
@@ -71,7 +68,7 @@ export class AppearanceContainer
   }
 
   public onLeave(): void {
-    const savedTheme = this.userInfo()?.theme;
+    const savedTheme = this.userTheme();
     if (savedTheme) {
       this.setActiveColor(savedTheme);
     }
@@ -80,56 +77,16 @@ export class AppearanceContainer
   }
 
   private activeTheme = this.store.selectSignal(selectActiveTheme);
-  public availableThemes = signal<TAvailableThemes | null>(null);
 
-  public isLoading = this.appearanceService.isLoading;
 
   private isSubmitted = signal(false);
 
-  private userInfo = this.store.selectSignal(selectUserInfo);
+  private userTheme = this.store.selectSignal(selectUserTheme);
 
   public ngOnInit(): void {
-    this.store.dispatch(UserInfoActions.loadUser());
     this.isSubmitted.set(false);
-    const subscription = this.appearanceService
-      .getAvailableThemes()
-      .pipe(
-        map((themes) => {
-          return [...themes].map((theme, index) => ({
-            ...theme,
-            subtitle: themesConfig[index].subtitle,
-          }));
-        }),
-        tap((themes) => {
-          this.availableThemes.set(themes);
-        }),
-      )
-      .subscribe();
 
-    this.destroyRef.onDestroy(() => subscription.unsubscribe());
-  }
-
-  public ngOnDestroy(): void {
-    if (this.alertTimeoutId) {
-      clearTimeout(this.alertTimeoutId);
-      this.alertTimeoutId = null;
-    }
-  }
-
-  private showAlert(kind: AlertType, message: string, autoHideMs = 3500): void {
-    if (this.alertTimeoutId) {
-      clearTimeout(this.alertTimeoutId);
-      this.alertTimeoutId = null;
-    }
-
-    this.alertKind.set(kind);
-    this.alertMessage.set(message);
-
-    this.alertTimeoutId = setTimeout(() => {
-      this.alertKind.set(null);
-      this.alertMessage.set('');
-      this.alertTimeoutId = null;
-    }, autoHideMs);
+    this.appearanceStore.fetchThemes({})
   }
 
   public isCurrentTheme(theme: string) {
@@ -158,26 +115,24 @@ export class AppearanceContainer
   }
 
   public onSubmit(): void {
-    const subscription = this.appearanceService
-      .updateUserTheme(this.activeTheme())
-      .pipe(
-        tap(() => {
-          this.isSubmitted.set(true);
-          this.showAlert(
-            'success',
-            this.translate.instant('settings.appearance.saveSuccess'),
-          );
-        }),
-        catchError((error) => {
-          this.showAlert(
-            'error',
-            this.translate.instant('settings.appearance.saveError'),
-          );
-          return of(null);
-        }),
-      )
-      .subscribe();
-    this.destroyRef.onDestroy(() => subscription.unsubscribe());
+    this.appearanceStore.updateTheme(this.activeTheme()).pipe(
+      takeUntilDestroyed(this.destroyRef),
+      tap(() => {
+        this.isSubmitted.set(true);
+        this.alertService.success(
+          this.translate.instant('settings.appearance.saveSuccess'),
+        );
+        this.store.dispatch(
+          UserInfoActions.loadUserTheme({ theme: this.activeTheme() }),
+        );
+      }),
+      catchError(() => {
+        this.alertService.error(
+          this.translate.instant('settings.appearance.saveError'),
+        );
+        return of(null);
+      }),
+    ).subscribe();
   }
 
   public canDeactivate(): boolean | Observable<boolean> {
@@ -186,7 +141,7 @@ export class AppearanceContainer
     }
 
     const currentTheme = this.activeTheme();
-    const savedTheme = this.userInfo()?.theme;
+    const savedTheme = this.userTheme();
 
     if (savedTheme && currentTheme !== savedTheme) {
       this.isModalOpen.set(true);

@@ -26,14 +26,14 @@ export const HeaderCtaConfig: HeaderCtaButton[] = [
 
 export const ModalConfig: Record<ModalType, ModalInfo> = {
   [ModalType.Group]: {
-    title: 'Create New Group',
-    subtitle: 'Create a group to organize your bill payment templates',
-    submitLabel: 'Create Group',
+    title: 'paybill.templates.modals.createGroup.title',
+    subtitle: 'paybill.templates.modals.createGroup.description',
+    submitLabel: 'paybill.templates.modals.createGroup.actionButton',
     submitButtonType: 'default',
     fields: [
       {
         type: 'text',
-        label: 'Group Name',
+        label: 'paybill.templates.modals.createGroup.nameLabel',
         placeholder: 'e.g., Home Bills, Office Expenses',
         controlName: 'name',
         required: true,
@@ -44,20 +44,20 @@ export const ModalConfig: Record<ModalType, ModalInfo> = {
   },
 
   [ModalType.RenameGroup]: {
-    title: 'Rename Group',
-    subtitle: 'Enter a new name for this group',
-    submitLabel: 'Rename Group',
+    title: 'paybill.templates.modals.renameGroup.title',
+    subtitle: 'paybill.templates.modals.renameGroup.description',
+    submitLabel: 'paybill.templates.modals.renameGroup.actionButton',
     submitButtonType: 'default',
     fields: [
       {
         type: 'text',
-        label: 'Current Group Name',
+        label: 'paybill.templates.modals.renameGroup.currentNameLabel',
         controlName: 'currentName',
       },
       {
         type: 'text',
-        label: 'New Group Name',
-        placeholder: 'Enter new name',
+        label: 'paybill.templates.modals.renameGroup.newNameLabel',
+        placeholder: 'paybill.templates.modals.renameGroup.placeholder',
         controlName: 'name',
         required: true,
       },
@@ -68,20 +68,19 @@ export const ModalConfig: Record<ModalType, ModalInfo> = {
   },
 
   [ModalType.DeleteGroup]: {
-    title: 'Delete Group',
-    subtitle: 'Are you sure you want to delete this group?',
-    submitLabel: 'Delete Group',
+    title: 'paybill.templates.modals.deleteGroup.title',
+    subtitle: 'paybill.templates.modals.deleteGroup.description',
+    submitLabel: 'paybill.templates.modals.deleteGroup.actionButton',
     submitButtonType: 'destructive',
-    formSubmitType: 'create-group',
+    formSubmitType: 'delete-group',
     submitAction: CrudActionType.DeleteGroup,
-    description:
-      'Templates in this group will be moved to "Ungrouped". This action cannot be undone.',
+    description: 'paybill.templates.modals.deleteGroup.instruction',
   },
 
   [ModalType.Template]: {
-    title: 'Create New Template',
-    subtitle: 'Create a new payment template for quick access',
-    submitLabel: 'Create Template',
+    title: 'paybill.templates.modals.createTemplate.title',
+    subtitle: 'paybill.templates.modals.createTemplate.description',
+    submitLabel: 'paybill.templates.modals.createTemplate.actionButton',
     submitButtonType: 'default',
     fields: [
       {
@@ -98,39 +97,25 @@ export const ModalConfig: Record<ModalType, ModalInfo> = {
         controlName: 'category',
         required: true,
       },
-      {
-        type: 'dropdown',
-        label: 'Service Provider *',
-        placeholder: 'e.g., Power Company',
-        controlName: 'serviceProvider',
-        required: true,
-      },
-      {
-        type: 'text',
-        label: 'Account Number *',
-        placeholder: 'Enter account number',
-        controlName: 'accountNumber',
-        required: true,
-      },
     ],
-    formSubmitType: 'create-group',
+    formSubmitType: 'create-template',
   },
 
   [ModalType.RenameTemplate]: {
-    title: 'Rename Template',
-    subtitle: 'Enter a new name for this template',
-    submitLabel: 'Rename Template',
+    title: 'paybill.templates.modals.renameTemplate.title',
+    subtitle: 'paybill.templates.modals.renameTemplate.description',
+    submitLabel: 'paybill.templates.modals.renameTemplate.actionButton',
     submitButtonType: 'default',
     fields: [
       {
         type: 'text',
-        label: 'Current Template Name',
+        label: 'paybill.templates.modals.renameTemplate.currentNameLabel',
         controlName: 'currentName',
       },
       {
         type: 'text',
-        label: 'Enter new name',
-        placeholder: 'Enter new name',
+        label: 'paybill.templates.modals.renameTemplate.newNameLabel',
+        placeholder: 'paybill.templates.modals.renameTemplate.placeholder',
         controlName: 'name',
         required: true,
       },
@@ -141,20 +126,20 @@ export const ModalConfig: Record<ModalType, ModalInfo> = {
   },
 
   [ModalType.DeleteTemplate]: {
-    title: 'Delete Template',
-    subtitle: 'Are you sure you want to delete this template?',
-    submitLabel: 'Delete Template',
+    title: 'paybill.templates.modals.deleteTemplate.title',
+    subtitle: 'paybill.templates.modals.deleteTemplate.description',
+    submitLabel: 'paybill.templates.modals.deleteTemplate.actionButton',
     submitButtonType: 'destructive',
     submitAction: CrudActionType.DeleteTemplate,
-    formSubmitType: 'create-group',
+    formSubmitType: 'delete-template',
   },
 
   [ModalType.ConfirmPayment]: {
-    title: 'Confirm Batch Payment',
-    subtitle: 'Review selected bills before payment',
-    submitLabel: 'Confirm & Pay All',
+    title: 'paybill.templates.modals.confitmPayment.title',
+    subtitle: 'paybill.templates.modals.confitmPayment.description',
+    submitLabel: 'paybill.templates.modals.confitmPayment.actionButton',
     submitButtonType: 'default',
-    submitAction: CrudActionType.DeleteGroup,
-    formSubmitType: 'create-group',
+    submitAction: CrudActionType.ConfirmPayment,
+    formSubmitType: 'confirm-payment',
   },
 } as const;

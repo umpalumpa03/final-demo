@@ -1,0 +1,72 @@
+@use '../../../../../../../shared/styles/palette' as *;
+@use '../../../../../../../shared/styles/mixins' as *;
+@use '../../styles/button-mixins' as *;
+
+.customize-button {
+  width: 100%;
+  min-height: 5.6rem;
+  padding: 1.2rem 1.6rem;
+  background: $white;
+  border: 1px solid $gray-200;
+  border-radius: 1rem;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  @include flex-center($justify: space-between, $align: center);
+
+  &__left {
+    @include flex-center($align: center,$justify:flex-start);
+    min-width: 0;
+    flex: 1;
+  }
+
+  &__text {
+    @include font-inter(500, 1.4rem);
+    color: $gray-700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    text-align: left;
+  }
+
+  .icon {
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+    display: inline-block;
+
+    &__customize {
+      @include icon__mask(
+        '/images/svg/dashboard/customize.svg',
+        2rem,
+        var(--color-primary)
+      );
+    }
+
+    &__arrow__right {
+      @include icon__mask('/images/svg/paybill/right.svg', 1.8rem, $gray-400);
+    }
+  }
+
+  &:hover {
+    border-color: var(--color-primary);
+    background: $gray-25;
+    box-shadow: 0 4px 12px rgba($black, 0.05);
+
+    .icon__arrow__right {
+      background-color: var(--color-primary);
+      transform: translateX(3px);
+    }
+  }
+  @media (max-width: 480px) {
+    padding: 0.8rem 1.2rem;
+    min-height: 4.8rem;
+
+    &__left {
+      gap: 0.8rem;
+    }
+
+    &__text {
+      font-size: 1.3rem;
+    }
+  }
+}

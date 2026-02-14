@@ -1,0 +1,12 @@
+@if(isHeader()) {
+<h3 class="accounts__header">
+  {{'paybill.templates.modals.confitmPayment.paymentAccount.label' | translate}}
+</h3>
+}
+
+<lib-select
+  [options]="currentAccounts()!"
+  [(value)]="selectedAccountId"
+  [config]="{placeholder: 'Please choose a GEL account',   height: '4rem',}"
+  [maxVisibleItems]="maxVisible()"
+/>

@@ -14,6 +14,10 @@
             color: var(--color-fg);
         }
 
+        &__count-container {
+            min-height: 1.6rem;
+        }
+
         &__count {
             @include font-inter(400, 1.2rem, 1.6rem);
             color: $gray-700;
@@ -31,6 +35,20 @@
 
         app-button {
             animation: fadeIn 0.3s ease-out;
+        }
+    }
+}
+
+@media (max-width: 550px) {
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+
+        &__action {
+            width: 100%;
+            justify-content: flex-end;
+            min-height: 3.6rem;
         }
     }
 }

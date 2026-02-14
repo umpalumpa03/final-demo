@@ -68,9 +68,15 @@
   "storeSuccess": {
     "emailSent": "Email sent successfully",
     "draftSent": "Draft sent successfully",
-    "replySent": "Reply sent successfully"
+    "replySent": "Reply sent successfully",
+    "mailDeleted": "Mail deleted successfully"
   },
   "emptyStates": {
     "noMessages": "No Messages"
+  },
+  "errorStates": {
+    "header": "Failed to Load",
+    "message": "Something went wrong while loading your messages. Please try again.",
+    "retry": "Retry"
   }
 }

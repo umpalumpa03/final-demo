@@ -1,3 +1,4 @@
+@if (hasValidState()) {
 <app-paybill-otp-verification
   [provider]="facade.activeProvider()"
   [summary]="facade.paymentPayload()!"
@@ -5,4 +6,23 @@
   (cancelPayment)="onBackToDetails()"
   [iconBgColor]="facade.activeCategoryUI()?.iconBgColor || '#F0F9FF'"
   [iconBgPath]="facade.activeCategoryUI()?.iconBgPath"
+  [isLoading]="facade.isLoading()"
 />
+} @else {
+<app-basic-card
+  maxWidth="100%"
+  padding="0rem 0 2.4rem 2.4rem"
+  minHeight="65rem"
+  justifyContent="center"
+>
+  <app-error-states
+    variant="failed"
+    [header]="'paybill.main.error.verification_missing_title' | translate"
+    [message]="'paybill.main.error.missing_data_message' | translate"
+    [buttonMessage]="'paybill.main.error.back_to_categories' | translate"
+    [border]="false"
+    (buttonClick)="onBackToDetails()"
+    maxWidth="100%"
+  />
+</app-basic-card>
+}

@@ -7,6 +7,7 @@ export interface PaybillProvider {
   name?: string;
   parentId?: string;
   isFinal?: string | boolean;
+  children?: PaybillProvider[];
 }
 
 export interface PaybillCategory {
@@ -37,6 +38,7 @@ export interface BillDetails {
 export interface PaybillPayload {
   identification: PaybillIdentification;
   amount: number;
+  senderAccountId?: string;
 }
 
 export interface VerifyChallenge {

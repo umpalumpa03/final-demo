@@ -37,6 +37,7 @@ describe('Sent', () => {
     mockMessagingStore = {
       mails: signal<Mail[]>(mockMails),
       isLoading: signal(false),
+      error: signal(null),
       total: signal({ sent: 1 }),
       pagination: signal({ hasNextPage: false }),
       loadMails: vi.fn(),

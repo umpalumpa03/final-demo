@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { DesignSelector } from './design-selector';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('DesignSelector', () => {
   let component: DesignSelector;
@@ -8,7 +9,8 @@ describe('DesignSelector', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [DesignSelector],
+      imports: [DesignSelector,TranslateModule.forRoot()],
+    
     });
 
     fixture = TestBed.createComponent(DesignSelector);

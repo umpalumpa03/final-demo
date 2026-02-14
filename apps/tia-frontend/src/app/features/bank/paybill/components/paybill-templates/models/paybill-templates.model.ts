@@ -1,3 +1,4 @@
+import { InputFieldValue } from '@tia/shared/lib/forms/models/input.model';
 import { ButtonVariant } from '@tia/shared/lib/primitives/button/button.model';
 
 export interface TemplateGroups {
@@ -15,6 +16,15 @@ export interface Templates {
   };
   amountDue: number;
   groupId: null | string;
+}
+
+export interface BillPaymentRequest {
+  serviceId: string;
+  identification: {
+    accountNumber: string;
+  };
+  amount: number;
+  senderAccountId: string;
 }
 
 export enum ModalType {
@@ -42,7 +52,7 @@ export interface ModalInfo {
   submitButtonType: ButtonVariant;
   fields?: ModalField[];
   formGroupName?: string | null;
-  formSubmitType: formSubmitType;
+  formSubmitType: ModalSubmitType;
   submitAction?: CrudActionType;
   initialValues?: Record<string, string>;
   description?: string;
@@ -52,6 +62,7 @@ export enum HeaderCtaAction {
   SelectAll = 'selectAll',
   CreateTemplate = 'createTemplate',
   CreateGroup = 'createGroup',
+  Pay = 'pay',
 }
 
 export interface HeaderCtaButton {
@@ -60,12 +71,21 @@ export interface HeaderCtaButton {
   textKey: string;
 }
 
-export type formSubmitType =
+export type FormSubmitType =
   | 'create-group'
   | 'rename-template'
-  | 'rename-group';
+  | 'rename-group'
+  | 'create-template';
+
+export type ActionSubmitType =
+  | 'confirm-payment'
+  | 'delete-group'
+  | 'delete-template';
+
+export type ModalSubmitType = FormSubmitType | ActionSubmitType;
+
 export interface FormSubmitPayload {
-  type: formSubmitType;
+  type: FormSubmitType;
   values: Record<string, string>;
 }
 
@@ -92,6 +112,7 @@ export enum CrudActionType {
   RenameTemplate = 'renameTemplate',
   DeleteGroup = 'deleteGroup',
   RenameGroup = 'renameGroup',
+  ConfirmPayment = 'confirmPayment',
 }
 
 export type TreeAction =
@@ -99,3 +120,13 @@ export type TreeAction =
   | { type: 'item-edit'; id: string }
   | { type: 'group-delete'; id: string }
   | { type: 'group-edit'; id: string };
+
+export interface ProviderTypeForStore {
+  providerId: InputFieldValue;
+  index: number;
+}
+
+export interface MappedProviderForDropdown {
+  label: string;
+  value: string;
+}

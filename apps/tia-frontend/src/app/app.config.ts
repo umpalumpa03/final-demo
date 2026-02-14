@@ -25,6 +25,7 @@ import { UserInfoEffects } from './store/user-info/user-info.effect';
 import { userInfoReducer } from './store/user-info/user-info.reducer';
 import { personalInfoReducer } from './store/personal-info/personal-info.reducer';
 import { PersonalInfoEffects } from './store/personal-info/personal-info.effects';
+import { clearStateMetaReducer } from './store/meta-reducers';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -38,7 +39,20 @@ export const appConfig: ApplicationConfig = {
     provideState('user-info', userInfoReducer),
     provideState('personalInfo', personalInfoReducer),
     provideHttpClient(withInterceptors([authInterceptor])),
-    provideEffects([ThemeEffects, ProfilePhotoEffects, SecurityEffects, UserInfoEffects, PersonalInfoEffects]),
+    provideEffects([
+      ThemeEffects,
+      ProfilePhotoEffects,
+      SecurityEffects,
+      UserInfoEffects,
+      PersonalInfoEffects,
+    ]),
+
+    provideStore(
+      {},
+      {
+        metaReducers: [clearStateMetaReducer],
+      },
+    ),
     provideStoreDevtools({
       maxAge: 25,
       logOnly: environment.production,

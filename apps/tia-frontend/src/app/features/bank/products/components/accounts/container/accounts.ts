@@ -13,14 +13,16 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { shareReplay } from 'rxjs/operators';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { AccountsListComponent } from '../components/accounts-list/accounts-list';
-import { CreateAccountComponent } from '../components/create-account/components/create-account';
+import { CreateAccountComponent } from '../components/create-account/create-account';
 import {
   CreateAccountRequest,
   AccountType,
+  Account,
 } from '../../../../../../shared/models/accounts/accounts.model';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import {
   selectAccountsGrouped,
+  selectAccounts,
   selectError,
   selectIsLoading,
   selectIsFetching,
@@ -30,9 +32,15 @@ import {
   selectIsCreating,
   selectCreateError,
 } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
-import { getAccountSections } from '../config/accounts.config';
-import { DismissibleAlerts } from '../../../../../../shared/lib/alerts/components/dismissible-alerts/dismissible-alerts';
+import {
+  getAccountSections,
+  PERMISSION_ROUTE_MAP,
+} from '../shared/config/accounts.config';
 import { AccountsApiService } from '@tia/shared/services/accounts/accounts.api.service';
+import { AlertService } from '@tia/core/services/alert/alert.service';
+import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/shared/library-title/library-title';
+import { ButtonComponent } from '../../../../../../shared/lib/primitives/button/button';
+import { TransferService } from '../shared/services/transfer.service';
 
 @Component({
   selector: 'app-accounts-page',
@@ -41,7 +49,8 @@ import { AccountsApiService } from '@tia/shared/services/accounts/accounts.api.s
     TranslateModule,
     AccountsListComponent,
     CreateAccountComponent,
-    DismissibleAlerts,
+    LibraryTitle,
+    ButtonComponent,
   ],
   templateUrl: './accounts.html',
   styleUrl: './accounts.scss',
@@ -54,33 +63,28 @@ export class Accounts implements OnInit {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly translate = inject(TranslateService);
+  private readonly alertService = inject(AlertService);
+  private readonly transferService = inject(TransferService);
 
-  protected readonly accountsGrouped$ = this.store.select(
+  protected readonly accountsGrouped = this.store.selectSignal(
     selectAccountsGrouped,
   );
-  protected readonly isLoading$ = this.store.select(selectIsLoading);
-  protected readonly isFetching$ = this.store.select(selectIsFetching);
-  protected readonly isCreateModalOpen$ = this.store.select(
+  protected readonly isLoading = this.store.selectSignal(selectIsLoading);
+  protected readonly isFetching = this.store.selectSignal(selectIsFetching);
+  protected readonly isCreateModalOpen = this.store.selectSignal(
     selectIsCreateModalOpen,
   );
-  protected readonly error$ = this.store.select(selectError);
-  protected readonly isRenamingAccount$ = this.store.select(
+  protected readonly error = this.store.selectSignal(selectError);
+  protected readonly isRenamingAccount = this.store.selectSignal(
     selectIsUpdatingFriendlyName,
   );
-  protected readonly renameError$ = this.store.select(
+  protected readonly renameError = this.store.selectSignal(
     selectUpdateFriendlyNameError,
   );
-  protected readonly isCreatingAccount$ = this.store.select(selectIsCreating);
-  protected readonly createError$ = this.store.select(selectCreateError);
-
-  protected readonly accountsGroupedSignal = this.store.selectSignal(
-    selectAccountsGrouped,
-  );
-  protected readonly isLoadingSignal = this.store.selectSignal(selectIsLoading);
-  protected readonly isCreatingAccountSignal =
+  protected readonly accounts = this.store.selectSignal(selectAccounts);
+  protected readonly isCreatingAccount =
     this.store.selectSignal(selectIsCreating);
-  protected readonly createErrorSignal =
-    this.store.selectSignal(selectCreateError);
+  protected readonly createError = this.store.selectSignal(selectCreateError);
 
   protected readonly accountSectionsData = signal(
     getAccountSections(this.translate),
@@ -91,16 +95,12 @@ export class Accounts implements OnInit {
     .pipe(shareReplay(1));
 
   protected accountForm = signal<FormGroup>(this.createAccountForm());
-  protected showSuccessAlert = signal<boolean>(false);
-  protected showCreateAlert = signal<boolean>(false);
-  protected showCreateErrorAlert = signal<boolean>(false);
-  protected errorTypeSignal = signal<'connection' | 'loading' | null>(null);
 
   private wasCreating = false;
 
   constructor() {
     effect(() => {
-      const isCreating = this.isCreatingAccountSignal();
+      const isCreating = this.isCreatingAccount();
       if (isCreating !== undefined) {
         this.handleIsCreatingAccount(isCreating);
       }
@@ -109,14 +109,16 @@ export class Accounts implements OnInit {
 
   private createAccountForm(): FormGroup {
     return this.fb.group({
-      friendlyName: ['', Validators.minLength(3)],
+      friendlyName: ['', [Validators.minLength(3), Validators.maxLength(50)]],
       type: ['', Validators.required],
       currency: ['', Validators.required],
     });
   }
 
   public ngOnInit(): void {
-    this.store.dispatch(AccountsActions.loadAccounts({}));
+    this.store.dispatch(
+      AccountsActions.loadActiveAccounts({ forceRefresh: true }),
+    );
 
     if (this.router.url.includes('/create')) {
       this.store.dispatch(AccountsActions.openCreateModal());
@@ -125,13 +127,28 @@ export class Accounts implements OnInit {
 
   private handleIsCreatingAccount(isCreating: boolean): void {
     if (!isCreating && this.wasCreating) {
-      const error = this.createErrorSignal();
+      const error = this.createError();
       if (error) {
-        this.showCreateErrorAlert.set(true);
-        this.showCreateAlert.set(false);
+        this.alertService.error(
+          error ||
+            this.translate.instant(
+              'my-products.accounts.failedToCreateAccount',
+            ),
+          {
+            variant: 'dismissible',
+            title: this.translate.instant('my-products.accounts.error'),
+          },
+        );
       } else {
-        this.showCreateAlert.set(true);
-        this.showCreateErrorAlert.set(false);
+        this.alertService.info(
+          this.translate.instant(
+            'my-products.accounts.accountCreationRequestSent',
+          ),
+          {
+            variant: 'dismissible',
+            title: this.translate.instant('my-products.accounts.information'),
+          },
+        );
       }
     }
     this.wasCreating = isCreating;
@@ -148,21 +165,30 @@ export class Accounts implements OnInit {
 
   public handleCreateAccount(request: CreateAccountRequest): void {
     if (this.accountForm().valid) {
-      this.showCreateAlert.set(false);
-      this.showCreateErrorAlert.set(false);
+      this.alertService.clearAlert();
       this.store.dispatch(AccountsActions.createAccount({ request }));
       this.accountForm.set(this.createAccountForm());
       this.router.navigate(['/bank/products/accounts']);
     }
   }
 
-  public handleTransfer(accountId: string): void {
-    this.store.dispatch(AccountsActions.selectAccount({ accountId }));
-    this.router.navigate(['/bank/transfers/internal']);
+  public handleTransfer(data: {
+    account: Account;
+    permissionValue: number;
+  }): void {
+    this.store.dispatch(
+      AccountsActions.selectAccount({ account: data.account }),
+    );
+    this.transferService.navigateToTransferPage(
+      data.account.id,
+      data.permissionValue,
+    );
   }
 
   public handleRetry(): void {
-    this.store.dispatch(AccountsActions.loadAccounts({ forceRefresh: true }));
+    this.store.dispatch(
+      AccountsActions.loadActiveAccounts({ forceRefresh: true }),
+    );
   }
 
   public handleRenameAccount(data: {
@@ -178,18 +204,14 @@ export class Accounts implements OnInit {
   }
 
   public handleRenameSuccess(): void {
-    this.showSuccessAlert.set(true);
-  }
-
-  public handleAlertDismissed(): void {
-    this.showSuccessAlert.set(false);
-  }
-
-  public handleCreateAlertDismissed(): void {
-    this.showCreateAlert.set(false);
-  }
-
-  public handleCreateErrorAlertDismissed(): void {
-    this.showCreateErrorAlert.set(false);
+    this.alertService.success(
+      this.translate.instant(
+        'my-products.accounts.accountNameUpdatedSuccessfully',
+      ),
+      {
+        variant: 'dismissible',
+        title: this.translate.instant('my-products.accounts.success'),
+      },
+    );
   }
 }

@@ -4,25 +4,36 @@ import { of, throwError } from 'rxjs';
 import { vi } from 'vitest';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TranslateModule } from '@ngx-translate/core';
-
 import { ResetPassword } from './reset-password';
 import { AuthService } from '../../../services/auth.service';
 import { TokenService } from '../../../services/token.service';
+import { AlertService } from '@tia/core/services/alert/alert.service';
 
 describe('ResetPassword', () => {
   let component: ResetPassword;
   let fixture: ComponentFixture<ResetPassword>;
   let authServiceMock: { createNewPassword: ReturnType<typeof vi.fn> };
-  let tokenServiceMock: { accessToken: string | null };
+  let alertServiceMock: {
+    success: ReturnType<typeof vi.fn>;
+    error: ReturnType<typeof vi.fn>;
+    warning: ReturnType<typeof vi.fn>;
+    clearAlert: ReturnType<typeof vi.fn>;
+  };
+  let tokenServiceMock: { resetPasswordToken: string | null };
   let router: Router;
 
   beforeEach(async () => {
     authServiceMock = {
       createNewPassword: vi.fn().mockReturnValue(of({})),
     };
-
+    alertServiceMock = {
+      success: vi.fn(),
+      error: vi.fn(),
+      warning: vi.fn(),
+      clearAlert: vi.fn(),
+    };
     tokenServiceMock = {
-      accessToken: 'forgot-token',
+      resetPasswordToken: 'forgot-token',
     };
 
     await TestBed.configureTestingModule({
@@ -31,6 +42,7 @@ describe('ResetPassword', () => {
         provideRouter([]),
         { provide: AuthService, useValue: authServiceMock },
         { provide: TokenService, useValue: tokenServiceMock },
+        { provide: AlertService, useValue: alertServiceMock },
       ],
     }).compileComponents();
 
@@ -40,35 +52,45 @@ describe('ResetPassword', () => {
     vi.spyOn(router, 'navigate').mockResolvedValue(true);
   });
 
-  it('Feature: redirects to OTP page when accessToken is missing', () => {
-    tokenServiceMock.accessToken = null;
-
+  it('ngOnInit should redirect to OTP page when resetPasswordToken is missing', () => {
+    tokenServiceMock.resetPasswordToken = null;
     component.ngOnInit();
-
     expect(router.navigate).toHaveBeenCalledWith(['/auth', 'verify-otp-reset']);
   });
 
-  it('Feature: submit calls API and navigates to success route on success', () => {
-    const formValue = { password: 'Aa1!aaaa', confirmPassword: 'Aa1!aaaa' } as any;
+  it('submit should call API, navigate on success, and handle 400 and generic errors', () => {
+    vi.useFakeTimers();
 
+    const formValue = { password: 'Aa1!aaaa', confirmPassword: 'Aa1!aaaa' } as any;
     component.submit(formValue);
+    vi.advanceTimersByTime(2000);
 
     expect(authServiceMock.createNewPassword).toHaveBeenCalledWith('Aa1!aaaa');
     expect(router.navigate).toHaveBeenCalledWith(['/auth', 'success']);
-    expect(component.submitError()).toBeNull();
+    expect(alertServiceMock.success).toHaveBeenCalledWith(
+      'Password updated successfully',
+      { variant: 'dismissible', title: 'Success!' },
+    );
     expect(component.isSubmitting()).toBe(false);
-  });
 
-  it('Feature: submit sets reset-specific error message when API responds 400', () => {
     authServiceMock.createNewPassword.mockReturnValue(
       throwError(() => new HttpErrorResponse({ status: 400 })),
     );
-
-    const formValue = { password: 'Aa1!aaaa', confirmPassword: 'Aa1!aaaa' } as any;
-
     component.submit(formValue);
+    expect(alertServiceMock.error).toHaveBeenCalledWith(
+      'Unable to reset password. Please try again.',
+      { variant: 'dismissible', title: 'Oops!' },
+    );
 
-    expect(component.submitError()).toBe('Unable to reset password. Please try again.');
-    expect(component.isSubmitting()).toBe(false);
+    authServiceMock.createNewPassword.mockReturnValue(
+      throwError(() => new HttpErrorResponse({ status: 500 })),
+    );
+    component.submit(formValue);
+    expect(alertServiceMock.warning).toHaveBeenCalledWith(
+      'Something went wrong. Please try again.',
+      { variant: 'dismissible', title: 'Warning' },
+    );
+
+    vi.useRealTimers();
   });
 });

@@ -1,0 +1,8 @@
+@let info = navInfo(); @if (info) {
+<div class="back-nav" (click)="onBack()">
+  <span class="back-nav__icon"></span>
+  <span class="back-nav__label">
+    {{ 'paybill.main.navigate' | translate }}
+  </span>
+</div>
+}

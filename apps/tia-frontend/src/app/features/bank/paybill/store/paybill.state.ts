@@ -6,6 +6,7 @@ import {
   PaybillProvider,
 } from '../components/paybill-main/shared/models/paybill.model';
 import {
+  BillPaymentRequest,
   TemplateGroups,
   Templates,
 } from '../components/paybill-templates/models/paybill-templates.model';
@@ -25,19 +26,25 @@ export interface PaybillErrorPayload {
 export interface PaybillState {
   categories: PaybillCategory[];
   providers: PaybillProvider[];
+  filteredProviders?: PaybillProvider[][];
   selectedCategoryId: string | null;
   selectedProviderId: string | null;
   loading: boolean;
   error: string | null;
   selectedProvider: PaybillProvider | null;
   verifiedDetails: BillDetails | null;
-  currentStep: string;
   paymentPayload: PaybillPayload | null;
   challengeId: string | null;
   templateGroups: TemplateGroups[];
   templates: Templates[];
   notifications: PaybillNotification[];
   paymentDetails: PaybillPaymentDetails | null;
+  currentLevel: number;
+  selectedItems: Templates[];
+  distributedAmount: number;
+  totalAmount: number;
+  selectedSenderAccountId?: string | null;
+  paymentsForm: BillPaymentRequest[];
 }
 
 export const initialPaybillState: PaybillState = {
@@ -49,11 +56,17 @@ export const initialPaybillState: PaybillState = {
   providers: [],
   error: null,
   verifiedDetails: null,
-  currentStep: 'DETAILS',
   paymentPayload: null,
   challengeId: null,
   templateGroups: [],
   templates: [],
   notifications: [],
   paymentDetails: null,
+  filteredProviders: [],
+  currentLevel: 0,
+  selectedItems: [],
+  distributedAmount: 0,
+  totalAmount: 0,
+  selectedSenderAccountId: null,
+  paymentsForm: [],
 };

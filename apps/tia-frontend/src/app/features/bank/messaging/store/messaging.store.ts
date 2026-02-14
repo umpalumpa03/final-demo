@@ -6,6 +6,7 @@ import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { catchError, debounceTime, distinctUntilChanged, forkJoin, of, pipe, switchMap, tap } from 'rxjs';
 import { InboxService } from '@tia/shared/services/messages/inbox.service';
 import { TranslateService } from '@ngx-translate/core';
+import { AlertService } from '@tia/core/services/alert/alert.service';
 
 export const MessagingStore = signalStore(
     withState(initialState),
@@ -13,6 +14,7 @@ export const MessagingStore = signalStore(
     withMethods((store) => {
         const messagingService = inject(MessagingService);
         const translate = inject(TranslateService);
+        const alertService = inject(AlertService);
         return {
             getTotalCount: rxMethod<string>(
                 pipe(
@@ -21,8 +23,9 @@ export const MessagingStore = signalStore(
                             patchState(store, { total: { ...store.total(), [type]: response.count } });
                         })
                     )),
-                    catchError((error) => {
-                        patchState(store, { error: translate.instant('storeErrors.loadTotalCount') });
+                    catchError(() => {
+                        alertService.error(translate.instant('storeErrors.loadTotalCount'),
+                            { variant: 'dismissible', title: 'Oops!' });
                         return of(0);
                     })
                 )
@@ -36,8 +39,8 @@ export const MessagingStore = signalStore(
                         }
                         )),
                     ),
-                    catchError((error) => {
-                        patchState(store, { error: translate.instant('storeErrors.loadDraftsTotalCount') });
+                    catchError(() => {
+                        alertService.error(translate.instant('storeErrors.loadDraftsTotalCount'), { variant: 'dismissible', title: 'Oops!' });
                         return of(0);
                     })
                 )
@@ -51,8 +54,8 @@ export const MessagingStore = signalStore(
                         }
                         )),
                     ),
-                    catchError((error) => {
-                        patchState(store, { error: translate.instant('messaging.storeErrors.loadImportantUnreadCount') });
+                    catchError(() => {
+                        alertService.error(translate.instant('messaging.storeErrors.loadImportantUnreadCount'), { variant: 'dismissible', title: 'Oops!' });
                         return of();
                     }
                     ))
@@ -77,11 +80,9 @@ export const MessagingStore = signalStore(
                                     isFavoriteLoading: false
                                 });
                             }),
-                            catchError((error) => {
-                                patchState(store, {
-                                    error: translate.instant('messaging.storeErrors.toggleFavorite'),
-                                    isFavoriteLoading: false
-                                });
+                            catchError(() => {
+                                patchState(store, { isFavoriteLoading: false });
+                                alertService.error(translate.instant('messaging.storeErrors.toggleFavorite'), { variant: 'dismissible', title: 'Oops!' });
                                 return of(null);
                             })
                         )
@@ -95,6 +96,7 @@ export const MessagingStore = signalStore(
         const messagingService = inject(MessagingService);
         const inboxService = inject(InboxService);
         const translate = inject(TranslateService);
+        const alertService = inject(AlertService);
 
         const updateTotalCountByType = () => {
             const type = store.currentType();
@@ -142,11 +144,9 @@ export const MessagingStore = signalStore(
                                 inboxService.fetchInboxCount();
                                 store.getUnreadImportantCount();
                             }),
-                            catchError((error) => {
-                                patchState(store, {
-                                    isLoading: false,
-                                    error: translate.instant('messaging.storeErrors.loadMails'),
-                                });
+                            catchError(() => {
+                                patchState(store, { isLoading: false, error: translate.instant('messaging.storeErrors.loadMails') });
+                                alertService.error(translate.instant('messaging.storeErrors.loadMails'), { variant: 'dismissible', title: 'Oops!' });
                                 return of(null);
                             }),
                         ),
@@ -167,10 +167,8 @@ export const MessagingStore = signalStore(
                             inboxService.fetchInboxCount();
                             store.getUnreadImportantCount();
                         }),
-                        catchError((error) => {
-                            patchState(store, {
-                                error: translate.instant('messaging.storeErrors.markMailAsRead')
-                            });
+                        catchError(() => {
+                            alertService.error(translate.instant('messaging.storeErrors.markMailAsRead'), { variant: 'dismissible', title: 'Oops!' });
                             return of(null);
                         })
                     ))
@@ -179,19 +177,22 @@ export const MessagingStore = signalStore(
 
             deleteMail: rxMethod<number>(
                 pipe(
+                    tap(() => patchState(store, { isDeleting: true })),
                     switchMap((mailId) => messagingService.deleteMail(mailId).pipe(
                         tap(() => {
                             patchState(store, {
-                                mails: store.mails().filter(mail => mail.id !== mailId)
+                                mails: store.mails().filter(mail => mail.id !== mailId),
+                                isDeleting: false,
+                                deleteSuccess: true
                             });
+                            alertService.success(translate.instant('messaging.storeSuccess.mailDeleted'), { variant: 'dismissible', title: 'Success!' });
                             inboxService.fetchInboxCount();
                             store.getUnreadImportantCount();
                             updateTotalCountByType();
                         }),
-                        catchError((error) => {
-                            patchState(store, {
-                                error: translate.instant('messaging.storeErrors.deleteMail')
-                            });
+                        catchError(() => {
+                            patchState(store, { isDeleting: false, deleteSuccess: false });
+                            alertService.error(translate.instant('messaging.storeErrors.deleteMail'), { variant: 'dismissible', title: 'Oops!' });
                             return of(null);
                         })
                     ))
@@ -200,21 +201,24 @@ export const MessagingStore = signalStore(
 
             deleteAllMails: rxMethod<number[]>(
                 pipe(
+                     tap(() => patchState(store, { isDeleting: true })),
                     switchMap((ids) => {
                         const deleteObservables = ids.map(id => messagingService.deleteMail(id));
                         return forkJoin(deleteObservables).pipe(
                             tap(() => {
                                 patchState(store, {
-                                    mails: store.mails().filter(mail => !ids.includes(mail.id))
+                                    mails: store.mails().filter(mail => !ids.includes(mail.id)),
+                                    isDeleting: false,
+                                    deleteSuccess: true
                                 });
+                                alertService.success(translate.instant('messaging.storeSuccess.mailDeleted'), { variant: 'dismissible', title: 'Success!' });
                                 inboxService.fetchInboxCount();
                                 store.getUnreadImportantCount();
                                 updateTotalCountByType();
                             }),
-                            catchError((error) => {
-                                patchState(store, {
-                                    error: translate.instant('messaging.storeErrors.deleteAllMails')
-                                });
+                            catchError(() => {
+                                patchState(store, { isDeleting: false, deleteSuccess: false });
+                                alertService.error(translate.instant('messaging.storeErrors.deleteAllMails'), { variant: 'dismissible', title: 'Oops!' });
                                 return of(null);
                             })
                         );
@@ -238,10 +242,8 @@ export const MessagingStore = signalStore(
                                 inboxService.fetchInboxCount();
                                 store.getUnreadImportantCount();
                             }),
-                            catchError((error) => {
-                                patchState(store, {
-                                    error: translate.instant('messaging.storeErrors.markAllAsRead')
-                                });
+                            catchError(() => {
+                                alertService.error(translate.instant('messaging.storeErrors.markAllAsRead'), { variant: 'dismissible', title: 'Oops!' });
                                 return of(null);
                             })
                         );
@@ -270,12 +272,12 @@ export const MessagingStore = signalStore(
                                     isSearching: false,
                                 });
                             }),
-                            catchError((error) => {
+                            catchError(() => {
                                 patchState(store, {
                                     searchResults: [],
                                     isSearching: false,
-                                    error: translate.instant('messaging.storeErrors.searchFailed'),
                                 });
+                                alertService.error(translate.instant('messaging.storeErrors.searchFailed'), { variant: 'dismissible', title: 'Oops!' });
                                 return of([]);
                             }),
                         );
@@ -290,8 +292,9 @@ export const MessagingStore = signalStore(
                         tap((replies) => {
                             patchState(store, { mailReplies: replies }, { isLoading: false });
                         }),
-                        catchError((error) => {
-                            patchState(store, { isLoading: false, error: translate.instant('messaging.storeErrors.loadMailReplies') });
+                        catchError(() => {
+                            patchState(store, { isLoading: false });
+                            alertService.error(translate.instant('messaging.storeErrors.loadMailReplies'), { variant: 'dismissible', title: 'Oops!' });
                             return of([]);
                         }),
                     ))
@@ -303,7 +306,12 @@ export const MessagingStore = signalStore(
         const messagingService = inject(MessagingService);
         const inboxService = inject(InboxService);
         const translate = inject(TranslateService);
+        const alertService = inject(AlertService);
         return {
+            resetStore(): void {
+                patchState(store, initialState);
+            },
+
             sendEmail: rxMethod<SendEmailRequest>(
                 pipe(
                     tap(() => patchState(store, { isLoading: true })),
@@ -311,25 +319,30 @@ export const MessagingStore = signalStore(
                         tap(() => {
                             patchState(store,
                                 { mails: [], pagination: { hasNextPage: false, nextCursor: null } },
-                                { isLoading: false, successMessage: translate.instant('messaging.storeSuccess.emailSent') });
+                                { isLoading: false });
+                            alertService.success(translate.instant('messaging.storeSuccess.emailSent'),
+                                { variant: 'dismissible',title: 'Success!'});
 
                             store.loadMails(store.currentType());
                             inboxService.fetchInboxCount();
                             store.getUnreadImportantCount();
                             store.getDraftTotalCount(0);
                             switch (store.currentType()) {
+                                case 'drafts':
+                                    break;
                                 case 'important':
                                     store.getTotalCount('importants');
+                                    break;
+                                case 'favorites':
+                                    store.getTotalCount('favorite');
                                     break;
                                 default:
                                     store.getTotalCount(store.currentType());
                             }
                         }),
-                        catchError((error) => {
-                            patchState(store, {
-                                isLoading: false,
-                                error: translate.instant('messaging.storeErrors.sendEmail'),
-                            });
+                        catchError(() => {
+                            patchState(store, { isLoading: false });
+                            alertService.error(translate.instant('messaging.storeErrors.sendEmail'), { variant: 'dismissible', title: 'Oops!' });
                             return of(null);
                         }),
                     )
@@ -337,22 +350,16 @@ export const MessagingStore = signalStore(
                 )
             ),
 
-            clearSuccessMessage() {
-                patchState(store, { successMessage: '' });
-            },
-            clearError() {
-                patchState(store, { error: undefined });
-            },
-
             getEmailById: rxMethod<number>(
                 pipe(
-                    tap(() => patchState(store, { isLoading: true, mailReplies: [] })),
+                    tap(() => patchState(store, { isLoading: true, error: null, mailReplies: [] })),
                     switchMap((mailId) => messagingService.getEmailById(mailId).pipe(
                         tap((emailDetail) => {
-                            patchState(store, { emailDetail }, { isLoading: false });
+                            patchState(store, { emailDetail, error: null }, { isLoading: false });
                         }),
-                        catchError((error) => {
+                        catchError(() => {
                             patchState(store, { isLoading: false, error: translate.instant('messaging.storeErrors.loadEmailDetail') });
+                            alertService.error(translate.instant('messaging.storeErrors.loadEmailDetail'), { variant: 'dismissible', title: 'Oops!' });
                             return of(null);
                         }),
                     )),
@@ -365,17 +372,16 @@ export const MessagingStore = signalStore(
                     switchMap(({ mailId, data }) => messagingService.sendDraft(mailId, data).pipe(
                         tap(() => {
                             patchState(store, { mails: [], pagination: { hasNextPage: false, nextCursor: null } },
-                                { isLoading: false, successMessage: translate.instant('messaging.storeSuccess.draftSent') });
+                                { isLoading: false });
+                            alertService.success(translate.instant('messaging.storeSuccess.draftSent'), { variant: 'dismissible', title: 'Success!' });
                             store.loadMails('drafts');
                             inboxService.fetchInboxCount();
                             store.getUnreadImportantCount();
                             store.getDraftTotalCount(0);
                         }),
-                        catchError((error) => {
-                            patchState(store, {
-                                isLoading: false,
-                                error: translate.instant('messaging.storeErrors.sendDraft'),
-                            });
+                        catchError(() => {
+                            patchState(store, { isLoading: false });
+                            alertService.error(translate.instant('messaging.storeErrors.sendDraft'), { variant: 'dismissible', title: 'Oops!' });
                             return of(null);
                         }),
                     )),
@@ -388,13 +394,12 @@ export const MessagingStore = signalStore(
                     switchMap(({ mailId, body }) => messagingService.sendMailReply(mailId, body).pipe(
                         tap(() => {
                             store.getMailReplies(mailId);
-                            patchState(store, {
-                                isLoading: false,
-                                successMessage: translate.instant('messaging.storeSuccess.replySent')
-                            });
+                            patchState(store, { isLoading: false });
+                            alertService.success(translate.instant('messaging.storeSuccess.replySent'), { variant: 'dismissible', title: 'Success!' });
                         }),
-                        catchError((error) => {
-                            patchState(store, { isLoading: false, error: translate.instant('messaging.storeErrors.sendMailReply') });
+                        catchError(() => {
+                            patchState(store, { isLoading: false });
+                            alertService.error(translate.instant('messaging.storeErrors.sendMailReply'), { variant: 'dismissible', title: 'Oops!' });
                             return of(null);
                         }),
                     ))

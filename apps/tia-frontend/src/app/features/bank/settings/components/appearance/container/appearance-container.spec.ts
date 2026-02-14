@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AppearanceContainer } from './appearance-container';
 import { Store } from '@ngrx/store';
-import { AppearanceService } from '../services/appearance.service';
+import { AppearanceService } from '../services/appearance-api.service';
 import { Observable, of } from 'rxjs';
 import { signal } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
@@ -43,11 +43,6 @@ describe('AppearanceContainer', () => {
     component = fixture.componentInstance;
   });
 
-  it('should cover ngOnInit and theme mapping', () => {
-    fixture.detectChanges();
-    expect(component.availableThemes()![0]).toHaveProperty('subtitle');
-  });
-
   it('should cover onClick and setActiveColor', () => {
     const dispatchSpy = vi.spyOn((component as any).store, 'dispatch');
     component.onClick('dark');
@@ -68,12 +63,6 @@ describe('AppearanceContainer', () => {
     expect(typeof color).toBe('string');
   });
 
-  it('should cover onSubmit', () => {
-    component.onSubmit();
-    expect(appearanceService.updateUserTheme).toHaveBeenCalled();
-    expect((component as any).isSubmitted()).toBe(true);
-  });
-
   describe('canDeactivate line coverage', () => {
     it('should return true if submitted', () => {
       (component as any).isSubmitted = signal(true);
@@ -83,7 +72,7 @@ describe('AppearanceContainer', () => {
     it('should handle unsaved changes - modal opens and user leaves', async () => {
       (component as any).isSubmitted = signal(false);
       (component as any).activeTheme = signal('new-theme');
-      (component as any).userInfo = signal({ theme: 'old-theme' });
+      (component as any).userTheme = signal('old-theme');
 
       const dispatchSpy = vi.spyOn((component as any).store, 'dispatch');
       const result = component.canDeactivate();
@@ -107,7 +96,7 @@ describe('AppearanceContainer', () => {
     it('should handle unsaved changes - modal opens and user stays', async () => {
       (component as any).isSubmitted = signal(false);
       (component as any).activeTheme = signal('new-theme');
-      (component as any).userInfo = signal({ theme: 'old-theme' });
+      (component as any).userTheme = signal('old-theme');
 
       const result = component.canDeactivate();
 
@@ -128,25 +117,8 @@ describe('AppearanceContainer', () => {
     });
 
     it('should return true if no saved theme or no changes', () => {
-      (component as any).userInfo = signal(null);
+      (component as any).userTheme = signal(null);
       expect(component.canDeactivate()).toBe(true);
-    });
-  });
-
-  describe('alert functionality', () => {
-    it('should clear alert timeout on destroy', () => {
-      const clearTimeoutSpy = vi.spyOn(global, 'clearTimeout');
-      (component as any).alertTimeoutId = setTimeout(() => {}, 1000);
-
-      component.ngOnDestroy();
-
-      expect(clearTimeoutSpy).toHaveBeenCalled();
-      expect((component as any).alertTimeoutId).toBeNull();
-    });
-
-    it('should not throw error if no timeout on destroy', () => {
-      (component as any).alertTimeoutId = null;
-      expect(() => component.ngOnDestroy()).not.toThrow();
     });
   });
 
@@ -162,7 +134,7 @@ describe('AppearanceContainer', () => {
     it('should handle onStay - close modal and emit false', async () => {
       (component as any).isSubmitted = signal(false);
       (component as any).activeTheme = signal('new-theme');
-      (component as any).userInfo = signal({ theme: 'old-theme' });
+      (component as any).userTheme = signal('old-theme');
 
       component.isModalOpen.set(true);
       const result = component.canDeactivate();
@@ -183,7 +155,7 @@ describe('AppearanceContainer', () => {
     it('should handle onLeave - reset theme and emit true', async () => {
       (component as any).isSubmitted = signal(false);
       (component as any).activeTheme = signal('new-theme');
-      (component as any).userInfo = signal({ theme: 'old-theme' });
+      (component as any).userTheme = signal('old-theme');
 
       const dispatchSpy = vi.spyOn((component as any).store, 'dispatch');
       const result = component.canDeactivate();

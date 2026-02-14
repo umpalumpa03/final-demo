@@ -1,0 +1,14 @@
+<button
+  class="customize-button"
+  [style.max-width]="customMaxSize()"
+  (click)="clicked.emit()"
+>
+  <div class="customize-button__left">
+    <div class="icon icon__customize"></div>
+    <span class="customize-button__text">{{ label() | translate }}</span>
+  </div>
+  @if(!hideIcon()){
+  <div class="icon icon__arrow__right"></div>
+
+  }
+</button>

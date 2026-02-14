@@ -35,12 +35,13 @@ import { environment } from '../../../../environments/environment';
 import { Router } from '@angular/router';
 import { TokenService } from './token.service';
 import { IRegistrationForm } from '../../../features/storybook/components/forms/models/contact-forms.model';
-import { inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, Injector, signal } from '@angular/core';
 import { Routes } from '../models/tokens.model';
 import { Store } from '@ngrx/store';
 import { UserInfoActions } from '../../../store/user-info/user-info.actions';
 import { MonitorInactivity } from './monitor-inacticity.service';
 import { Subscription } from 'rxjs';
+import { ClearSignalStoreService } from '@tia/core/services/clearSignalStores/clear-signal-store.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -49,14 +50,17 @@ export class AuthService {
   private tokenService = inject(TokenService);
   private store = inject(Store);
   private monitorInactivity = inject(MonitorInactivity);
-  private challengeId!: string;
+  private injector = inject(Injector);
+
+  public isAuthenticated = signal<boolean>(false);
   public isLoginLoading = signal<boolean>(false);
   public errorMessage = signal<boolean | null>(false);
-  private baseUrl = `${environment.apiUrl}/auth`;
-  public otpError = signal<OtpResponse | null>(null);
   public resendRetryCounter = signal<number>(0);
+  public otpError = signal<OtpResponse | null>(null);
+
+  private challengeId!: string;
+  private baseUrl = `${environment.apiUrl}/auth`;
   private inactivitySubscription?: Subscription;
-  public isAuthenticated = signal<boolean>(false);
 
   constructor() {
     if (this.tokenService.accessToken) {
@@ -145,7 +149,7 @@ export class AuthService {
         if (res.success === true) {
           this.stopInactivityMonitoring();
           this.tokenService.clearAuthToken();
-          this.tokenService.clearUserInfo();
+          this.injector.get(ClearSignalStoreService).resetAllStore()
           this.router.navigate([Routes.SIGN_IN]);
         }
       }),
@@ -292,7 +296,7 @@ export class AuthService {
       .pipe(
         tap((res) => {
           if (res.access_token) {
-            this.tokenService.setAccessToken(res.access_token);
+            this.tokenService.setResetPasswordToken(res.access_token);
           }
         }),
         finalize(() => this.isLoginLoading.set(false)),
@@ -302,10 +306,10 @@ export class AuthService {
   public createNewPassword(
     password: string,
   ): Observable<CreateNewPasswordResponse> {
-    const token = this.tokenService.accessToken;
+    const token = this.tokenService.resetPasswordToken;
     if (!token) {
       return throwError(
-        () => new Error('Missing forgot password access token'),
+        () => new Error('Missing reset password token'),
       );
     }
 
@@ -323,7 +327,7 @@ export class AuthService {
       .pipe(
         finalize(() => {
           this.isLoginLoading.set(false);
-          this.tokenService.clearAccessToken();
+          this.tokenService.clearResetPasswordToken();
         }),
       );
   }

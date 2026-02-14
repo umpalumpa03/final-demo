@@ -5,10 +5,10 @@ import { TextInput } from '../../../../../../../shared/lib/forms/input-field/tex
 import { Dropdowns } from '../../../../../../../shared/lib/forms/dropdowns/dropdowns';
 import { BasicAlerts } from '../../../../../../../shared/lib/alerts/components/basic-alerts/basic-alerts';
 import { FilterOption, FilterType, SelectOption } from '../../../../models/filter.model';
-
+import { TranslatePipe } from '@ngx-translate/core';
 @Component({
   selector: 'app-finances-filters',
-  imports: [ReactiveFormsModule, ButtonComponent, TextInput, Dropdowns, BasicAlerts],
+  imports: [ReactiveFormsModule, ButtonComponent, TextInput, Dropdowns, BasicAlerts, TranslatePipe],
   templateUrl: './finances-filters.html',
   styleUrl: './finances-filters.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -24,4 +24,6 @@ export class FinancesFilters {
   public getControl(name: string): FormControl {
     return this.filterForm().get(name) as FormControl;
   }
+  public readonly isRefreshing = input<boolean>(false);
+  public readonly update = output<void>();
 }

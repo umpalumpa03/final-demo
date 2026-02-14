@@ -1,15 +1,49 @@
 {
-    "title": "My Finances",
-    "description": "Track your income, expenses, and savings",
-    "overview": {
-        "income": "Total Income",
-        "expenses": "Total Expenses",
-        "savings": "Total Savings"
+  "finances": {
+    "header": {
+      "title": "My Finances",
+      "subtitle": "Track your income, expenses, and savings"
     },
-    "reports": {
-        "monthly": "Monthly Report",
-        "annual": "Annual Report",
-        "custom": "Custom Report"
-    }
+    "filters": {
+      "month": "By Month",
+      "custom": "Custom Date",
+      "select_month": "Select Month:",
+      "placeholder": "Choose...",
+      "update_btn": "Update Data",
+      "twelve_months": "Data for Last 12 Months",
+      "from": "From:",
+      "to": "To:"
+    },
+    "summary": {
+      "total_income": "Total Income",
+      "total_expenses": "Total Expenses",
+      "total_savings": "Total Savings",
+      "savings_rate": "Savings Rate"
+    },
+    "charts": {
+      "income_vs_expenses": "Income vs Expenses",
+      "income_vs_expenses_desc": "Monthly comparison over time",
+      "spending_by_category": "Spending by Category",
+      "spending_by_category_desc": "Breakdown of expenses this month",
+      "savings_trend": "Savings Trend",
+      "savings_trend_desc": "Monthly savings over time",
+      "daily_spending": "Daily Spending",
+      "daily_spending_desc": "Spending pattern throughout the month",
+      "category_breakdown": "Category Breakdown",
+      "category_breakdown_desc": "Detailed view of spending by category"
+    },
+    "transactions": {
+      "title": "Recent Transactions",
+      "subtitle": "Latest financial activity"
+    },
 
+    "status": {
+      "syncing": "Syncing your finances...",
+      "retry": "Try Again",
+      "no_records": "We couldn't find any records for the selected range."
+    },
+    "errors": {
+      "date_range":"Invalid range"
+    }
+  }
 }

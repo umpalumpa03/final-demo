@@ -7,7 +7,7 @@ import {
 import { ProviderList } from '../components/provider-list-items/provider-list';
 import { PaybillMainFacade } from '../../../services/paybill-main-facade';
 import { PaybillProvider } from '../../../shared/models/paybill.model';
-import { Router, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import {
   getCurrentHeader,
   getDisplayItems,
@@ -26,6 +26,7 @@ export class ProviderListContainer {
   protected readonly facade = inject(PaybillMainFacade);
   private readonly router = inject(Router);
   private readonly store = inject(Store);
+  private readonly route = inject(ActivatedRoute);
 
   // methods for handling navigation
 
@@ -111,9 +112,6 @@ export class ProviderListContainer {
   }
 
   public selectProvider(providerId: string): void {
-    this.store.dispatch(PaybillActions.selectProvider({ providerId }));
-    this.store.dispatch(
-      PaybillActions.loadPaymentDetails({ serviceId: providerId }),
-    );
+    this.router.navigate([providerId], { relativeTo: this.route });
   }
 }

@@ -8,6 +8,7 @@ export interface CardImageView {
   isActive: boolean;
   zIndex: number;
   index: number;
+  stackPosition: number;
 }
 
 export interface CardGroupView {
@@ -16,4 +17,5 @@ export interface CardGroupView {
   cardCountLabel: string;
   activeIndex: number;
   cards: CardImageView[];
+  cardCountKey: string;  
 }

@@ -12,16 +12,22 @@ import {
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import * as selectors from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { AccountsApiService } from '@tia/shared/services/accounts/accounts.api.service';
+import { AlertService } from '@tia/core/services/alert/alert.service';
+import { TransferService } from '../shared/services/transfer.service';
 
 describe('Accounts', () => {
   let component: Accounts;
   let fixture: ComponentFixture<Accounts>;
   let store: MockStore;
   let router: Router;
+  let alertService: AlertService;
 
   beforeEach(async () => {
     const mockApiService = {
       getCurrencies: vi.fn().mockReturnValue(of(['GEL', 'USD'])),
+    };
+    const mockTransferService = {
+      navigateToTransferPage: vi.fn(),
     };
 
     await TestBed.configureTestingModule({
@@ -37,6 +43,18 @@ describe('Accounts', () => {
           ],
         }),
         { provide: AccountsApiService, useValue: mockApiService },
+        { provide: TransferService, useValue: mockTransferService },
+        {
+          provide: AlertService,
+          useValue: {
+            success: vi.fn(),
+            error: vi.fn(),
+            warning: vi.fn(),
+            info: vi.fn(),
+            showAlert: vi.fn(),
+            clearAlert: vi.fn(),
+          },
+        },
         {
           provide: ActivatedRoute,
           useValue: { params: of({}), queryParams: of({}) },
@@ -48,6 +66,7 @@ describe('Accounts', () => {
     component = fixture.componentInstance;
     store = TestBed.inject(MockStore);
     router = TestBed.inject(Router);
+    alertService = TestBed.inject(AlertService);
   });
 
   afterEach(() => {
@@ -61,7 +80,9 @@ describe('Accounts', () => {
       '/bank/products/accounts/create',
     );
     component.ngOnInit();
-    expect(dispatchSpy).toHaveBeenCalledWith(AccountsActions.loadAccounts({}));
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      AccountsActions.loadActiveAccounts({ forceRefresh: true }),
+    );
     expect(dispatchSpy).toHaveBeenCalledWith(AccountsActions.openCreateModal());
   });
 
@@ -70,14 +91,13 @@ describe('Accounts', () => {
     store.overrideSelector(selectors.selectCreateError, null);
     store.refreshState();
     component['handleIsCreatingAccount'](false);
-    expect(component['showCreateAlert']()).toBe(true);
-    expect(component['showCreateErrorAlert']()).toBe(false);
+    expect(alertService.info).toHaveBeenCalled();
 
     component['wasCreating'] = true;
     store.overrideSelector(selectors.selectCreateError, 'Error message');
     store.refreshState();
     component['handleIsCreatingAccount'](false);
-    expect(component['showCreateErrorAlert']()).toBe(true);
+    expect(alertService.error).toHaveBeenCalled();
   });
 
   it('should handle create account and form validation', () => {
@@ -113,25 +133,73 @@ describe('Accounts', () => {
     );
   });
 
-  it('should dismiss alerts and handle transfer/retry', () => {
-    component.handleAlertDismissed();
-    expect(component['showSuccessAlert']()).toBe(false);
-    component.handleCreateAlertDismissed();
-    expect(component['showCreateAlert']()).toBe(false);
-    component.handleCreateErrorAlertDismissed();
-    expect(component['showCreateErrorAlert']()).toBe(false);
+  it('should show success alert on rename and handle transfer/retry', () => {
+    component.handleRenameSuccess();
+    expect(alertService.success).toHaveBeenCalled();
+
+    const mockAccount = {
+      id: 'acc-123',
+      userId: 'user-1',
+      permission: 1,
+      type: AccountType.current,
+      iban: 'GE89NB0000000123456789',
+      friendlyName: 'Test Account',
+      name: 'Test Account',
+      status: 'active',
+      balance: 1000,
+      currency: 'USD',
+      createdAt: '2026-01-01',
+      openedAt: '2026-01-01',
+      closedAt: '',
+      isFavorite: false,
+      isHidden: false,
+    };
+    store.overrideSelector(selectors.selectAccounts, [mockAccount]);
+    store.refreshState();
 
     const dispatchSpy = vi.spyOn(store, 'dispatch');
-    const navigateSpy = vi.spyOn(router, 'navigate');
-    component.handleTransfer('acc-123');
+    const transferService = TestBed.inject(TransferService);
+    const transferSpy = vi.spyOn(transferService, 'navigateToTransferPage');
+    component.handleTransfer({ account: mockAccount, permissionValue: 1 });
     expect(dispatchSpy).toHaveBeenCalledWith(
-      AccountsActions.selectAccount({ accountId: 'acc-123' }),
+      AccountsActions.selectAccount({ account: mockAccount }),
     );
-    expect(navigateSpy).toHaveBeenCalledWith(['/bank/transfers/internal']);
+    expect(transferSpy).toHaveBeenCalledWith('acc-123', 1);
 
     component.handleRetry();
     expect(dispatchSpy).toHaveBeenCalledWith(
-      AccountsActions.loadAccounts({ forceRefresh: true }),
+      AccountsActions.loadActiveAccounts({ forceRefresh: true }),
     );
+  });
+
+  it('should use TransferService for transfer routing', () => {
+    const mockAccount = {
+      id: 'acc-456',
+      userId: 'user-1',
+      permission: 32,
+      type: AccountType.current,
+      iban: 'GE89NB0000000456789',
+      friendlyName: 'Loans Account',
+      name: 'Loans Account',
+      status: 'active',
+      balance: 5000,
+      currency: 'USD',
+      createdAt: '2026-01-01',
+      openedAt: '2026-01-01',
+      closedAt: '',
+      isFavorite: false,
+      isHidden: false,
+    };
+    store.overrideSelector(selectors.selectAccounts, [mockAccount]);
+    store.refreshState();
+
+    const transferService = TestBed.inject(TransferService);
+    const transferSpy = vi.spyOn(transferService, 'navigateToTransferPage');
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+    component.handleTransfer({ account: mockAccount, permissionValue: 32 });
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      AccountsActions.selectAccount({ account: mockAccount }),
+    );
+    expect(transferSpy).toHaveBeenCalledWith('acc-456', 32);
   });
 });

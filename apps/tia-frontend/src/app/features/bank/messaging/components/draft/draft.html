@@ -6,10 +6,21 @@
   [showBulkActions]="hasBulkSelection()"
   (bulkDelete)="deleteSelectedMails()"
   [isDraft]="true"
+  [isDeleting]="isDeleting()"
 ></app-mail-header>
 @if(isLoading() && (!mails().length || !loadsMoreMails())){
 <div class="loading-state">
   <app-route-loader variant="pulsing"/>
+</div>
+} @else if(error()) {
+<div class="loading-state">
+  <app-error-states
+    variant="failed"
+    [header]="'messaging.errorStates.header' | translate"
+    [message]="'messaging.errorStates.message' | translate"
+    [buttonMessage]="'messaging.errorStates.retry' | translate"
+    (buttonClick)="retry()"
+  />
 </div>
 } @else if(!mails().length) {
 <app-empty-card></app-empty-card>
@@ -29,6 +40,7 @@
     (deleteMail)="deleteMail(mail.id)"
     (cardClick)="goToDetail($event)"
     [currentUserEmail]="currentUserEmail()"
+    [isDeleting]="isDeleting()"
   >
   </app-mail-card>
   } @if (isLoading()) {

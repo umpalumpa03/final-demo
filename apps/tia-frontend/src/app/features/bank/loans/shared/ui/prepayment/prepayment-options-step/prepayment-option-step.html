@@ -15,13 +15,13 @@
             <lib-select [config]="cfg.select()" [options]="(typeOptions()) ?? []" formControlName="type">
             </lib-select>
 
-            <lib-text-input type="number" [config]="cfg.amountInput()" formControlName="amount">
+            <lib-text-input type="number" [config]="cfg.amountInput()" formControlName="amount"
+                (keydown.enter)='onEnter()'>
             </lib-text-input>
         </div>
 
         <div class="prepayment-step__radios">
-            <lib-radios [config]="cfg.calcRadios()" [options]="calculationOptions()"
-                formControlName="calculationOption">
+            <lib-radios [config]="cfg.calcRadios()" [options]="cfg.radioOptions()" formControlName="calculationOption">
             </lib-radios>
         </div>
     </form>

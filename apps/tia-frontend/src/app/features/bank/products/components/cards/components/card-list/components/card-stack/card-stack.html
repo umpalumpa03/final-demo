@@ -1,17 +1,22 @@
 <div class="card-stack">
-  @for (card of cards(); track card.cardId) {
-    <div
-      class="card-stack__card"
-      [class.card-stack__card--stacked]="card.isStacked"
-      [class.card-stack__card--active]="card.isActive"
-      [style.z-index]="card.zIndex"
-      (click)="handleCardClick(card.cardId, card.index)"
-    >
-      <img
-        [src]="card.imageBase64"
-        [alt]="card.cardAlt"
-        class="card-stack__card-image"
-      />
-    </div>
+  @if (isLoading()) {
+    <app-skeleton variant="rectangle" width="100%" height="28rem" />
+  } @else {
+    @for (card of cards(); track card.cardId) {
+      <div
+        class="card-stack__card"
+        [class.card-stack__card--stacked]="card.isStacked"
+        [class.card-stack__card--active]="card.isActive"
+        [style.z-index]="card.zIndex"
+        [attr.data-stack-position]="card.stackPosition"
+        (click)="handleCardClick(card.cardId, card.index)"
+      >
+        <img
+          [src]="card.imageBase64"
+          [alt]="card.cardAlt"
+          class="card-stack__card-image"
+        />
+      </div>
+    }
   }
 </div>

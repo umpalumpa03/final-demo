@@ -30,6 +30,7 @@ export class MailCard {
   private readonly breakpointService = inject(BreakpointService);
   public readonly isExtraSmall = this.breakpointService.isExtraSmall;
   public readonly currentUserEmail = input<string>();
+  public readonly isDeleting = input<boolean>(false);
 
   public readonly isCurrentUser = computed(() => {
     const currentEmail = this.currentUserEmail();
@@ -58,7 +59,6 @@ export class MailCard {
   public onConfirmDelete(): void {
     const mail = this.mail();
     if (mail) this.deleteMail.emit(mail.id);
-    this.isDeleteModalOpen.set(false);
   }
 
   public onCancelDelete(): void {

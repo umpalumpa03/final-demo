@@ -10,10 +10,11 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { catchError, EMPTY, finalize, merge, tap } from 'rxjs';
+import { catchError, delay, EMPTY, finalize, merge, tap } from 'rxjs';
 import { TranslatePipe } from '@ngx-translate/core';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
+import { AlertService } from '@tia/core/services/alert/alert.service';
 import { AuthService } from '../../../services/auth.service';
 import { Routes } from '../../../models/tokens.model';
 import { AuthHeader } from '../../../shared/auth-header/auth-header';
@@ -35,6 +36,7 @@ import { AuthHeader } from '../../../shared/auth-header/auth-header';
 export class ForgotPasswordEmail {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
+  private readonly alertService = inject(AlertService);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
 
@@ -44,7 +46,6 @@ export class ForgotPasswordEmail {
   public readonly isSubmitting = computed(() =>
     this.authService.isLoginLoading(),
   );
-  public readonly submitError = signal<string | null>(null);
 
   public readonly form = this.fb.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
@@ -75,7 +76,7 @@ export class ForgotPasswordEmail {
   });
 
   public submit(): void {
-    this.submitError.set(null);
+    this.alertService.clearAlert();
     this.form.markAllAsTouched();
 
     if (this.form.invalid) return;
@@ -87,20 +88,30 @@ export class ForgotPasswordEmail {
       .pipe(
         tap((response) => {
           this.authService.setChellangeId(response.challengeId);
-          this.router.navigate([Routes.OTP_FORGOT_PASSWORD]);
+          this.alertService.success('Reset code sent to your email', {
+            variant: 'dismissible',
+            title: 'Success!',
+          });
         }),
+        delay(1500),
+        tap(() => this.router.navigate([Routes.OTP_FORGOT_PASSWORD])),
         catchError((error) => {
           const httpError = error as HttpErrorResponse;
           if (httpError?.status === 404) {
-            this.submitError.set(httpError.error?.message || 'User not found');
+            this.alertService.error(
+              httpError.error?.message || 'User not found',
+              { variant: 'dismissible', title: 'Oops!' },
+            );
           } else if (httpError?.status === 400) {
             const message = httpError.error?.message;
-            this.submitError.set(
+            this.alertService.error(
               Array.isArray(message) ? message[0] : message || 'Invalid email',
+              { variant: 'dismissible', title: 'Oops!' },
             );
           } else {
-            this.submitError.set(
+            this.alertService.warning(
               'Unable to send reset code. Please try again.',
+              { variant: 'dismissible', title: 'Warning' },
             );
           }
           return EMPTY;

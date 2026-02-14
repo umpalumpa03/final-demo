@@ -49,6 +49,7 @@ describe('Inbox', () => {
     mockMessagingStore = {
       mails: signal<Mail[]>([]),
       isLoading: signal(false),
+      error: signal(null),
       total: signal({ inbox: 2 }),
       pagination: signal({ hasNextPage: false }),
 
@@ -110,7 +111,7 @@ describe('Inbox', () => {
     fixture.detectChanges();
 
     expect(mockMessagingStore.loadMails).not.toHaveBeenCalled();
-    expect(mockMessagingStore.getTotalCount).not.toHaveBeenCalled();
+    expect(mockMessagingStore.getTotalCount).toHaveBeenCalledWith('inbox');
   });
 
   it('should handle individual mail selection', () => {

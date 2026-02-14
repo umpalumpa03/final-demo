@@ -33,9 +33,17 @@
                 }
 
                 <span class="badge" [class]="cfg.badgeClass">
-                    @if (loanData.status === 1) { <img [src]="icons.pending"> }
-                    @if (loanData.status === 2) { <img [src]="icons.approve"> }
-                    @if (loanData.status === 3) { <img [src]="icons.declined"> }
+                    @switch(loanData.status) {
+                    @case(1) {
+                    <img [src]="icons.pending">
+                    }
+                    @case (2) {
+                    <img [src]="icons.approve">
+                    }
+                    @case(3) {
+                    <img [src]="icons.declined">
+                    }
+                    }
                     {{ loanData.statusName }}
                 </span>
             </div>

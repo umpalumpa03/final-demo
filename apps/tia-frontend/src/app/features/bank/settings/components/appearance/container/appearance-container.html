@@ -2,8 +2,8 @@
     [subTitle]="'settings.appearance.subtitle' | translate">
     <div class="container">
         <h4 class="container__title">{{'settings.appearance.cardsTitle' | translate}}</h4>
-        <div class="container__cards">
-            @if(isLoading()) {
+        <div class="container__cards" [class.container__cards--mobile]="isMobile()">
+            @if(isLoading() && !hasLoaded()) {
             <app-skeleton height="10rem"></app-skeleton>
             <app-skeleton height="10rem"></app-skeleton>
             <app-skeleton height="10rem"></app-skeleton>
@@ -19,17 +19,11 @@
             }
         </div>
         <div class="container__submit">
-            <app-button (click)="onSubmit()">{{'common.buttons.save' | translate}}</app-button>
+            <app-button [isLoading]="isFetching()" (click)="onSubmit()">{{'settings.appearance.saveChanges' | translate}}</app-button>
         </div>
     </div>
-    @if(alertType()) {
-    <div class="container__alert">
-        <app-alert-types-with-icons [alertType]="alertType()!" [alertMessage]="alertMessage()">
-        </app-alert-types-with-icons>
-    </div>
-    }
 </app-settings-body>
-<app-ui-modal [isOpen]="isModalOpen()" (closed)="toggleModal()">
+<app-ui-modal [isOpen]="isModalOpen()" (closed)="onLeave()">
     <div class="confirm-dialog">
         <header class="confirm-dialog__header">
             <h3 class="confirm-dialog__title">{{'common.validation.confirmAction' | translate}}</h3>

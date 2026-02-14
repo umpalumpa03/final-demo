@@ -1,0 +1,11 @@
+<div class="modal__identifier">{{ itemIdentifier() }}</div>
+@if (description()) {
+<p class="modal__warning">{{ description() | translate }}</p>
+}
+<app-modal-actions
+  [submitVariant]="submitVariant()"
+  [submitLabel]="submitLabel()"
+  [isLoading]="isLoading()"
+  (cancel)="cancel.emit()"
+  (submit)="submit.emit()"
+/>

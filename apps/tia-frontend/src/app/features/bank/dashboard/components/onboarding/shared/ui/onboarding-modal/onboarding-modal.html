@@ -1,0 +1,59 @@
+<ng-template #modalContent>
+  <div class="modal__title">
+    <div class="img">
+      <img
+        src="./images/svg/onboarding/about.svg"
+        alt="Onboarding About Image"
+      />
+    </div>
+    <div class="text">
+      <h1>{{title() | translate}}</h1>
+      <p>{{desc() | translate}}</p>
+    </div>
+  </div>
+
+  <div class="onboarding-content">
+    <ng-content></ng-content>
+  </div>
+
+  <footer>
+    <div class="footer-content">
+      <app-pill-paging
+        [total]="6"
+        [currentIndex]="page() - 1"
+        (goTo)="goTo($event)"
+      ></app-pill-paging>
+      <div class="buttons">
+        @if (page() >= 2) {
+        <app-button variant="outline" (click)="prev.emit()" [icon]="'prev.svg'"
+          >{{ 'dashboard.onboarding.modal.previous' | translate }}</app-button
+        >
+        } @if (page() == 6) {
+        <app-button variant="default" (click)="next.emit()"
+          >{{ 'dashboard.onboarding.modal.finish' | translate }}
+          <img src="images/svg/onboarding/finish.svg" alt="Finish" />
+        </app-button>
+        } @else {
+        <app-button variant="default" (click)="next.emit()"
+          >{{ 'dashboard.onboarding.modal.next' | translate }}
+          <img src="images/svg/onboarding/next.svg" alt="Next" />
+        </app-button>
+        }
+      </div>
+    </div>
+
+    <p class="skip-text" (click)="skip.emit()">
+      {{ 'dashboard.onboarding.modal.skipTour' | translate }} ({{page()}}/6)
+    </p>
+  </footer>
+</ng-template>
+
+<app-ui-modal
+  [isOpen]="true"
+  (closed)="skip.emit()"
+  [target]="target() ?? null"
+  [placement]="placement()"
+  [offset]="offset()"
+>
+  <ng-container *ngTemplateOutlet="modalContent"></ng-container>
+</app-ui-modal>

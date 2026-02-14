@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { of } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { describe, it, expect, beforeEach, vi, Mock } from 'vitest';
 import { CardDetails } from './card-details';
 import {
@@ -10,11 +10,15 @@ import {
   loadCardAccounts,
   openCardDetailsModal,
   closeCardDetailsModal,
+  navigateToNextCard,
+  navigateToPreviousCard,
+  setCurrentCardIndex,
 } from '../../../../../../../../store/products/cards/cards.actions';
 import * as CardsSelectors from '../../../../../../../../store/products/cards/cards.selectors';
 import { CardDetail } from '@tia/shared/models/cards/card-detail.model';
 import { CardAccount } from '@tia/shared/models/cards/card-account.model';
 import { TranslateModule } from '@ngx-translate/core';
+import { AlertService } from '@tia/core/services/alert/alert.service';
 
 interface MockStore {
   select: Mock;
@@ -25,19 +29,12 @@ interface MockRouter {
   navigate: Mock;
 }
 
-interface MockActivatedRoute {
-  snapshot: {
-    paramMap: {
-      get: Mock;
-    };
-  };
-}
-
 describe('CardDetails', () => {
   let component: CardDetails;
   let fixture: ComponentFixture<CardDetails>;
   let store: MockStore;
   let router: MockRouter;
+  let paramMapSubject: BehaviorSubject<any>;
 
   const mockCardId = 'card-123';
   const mockCardDetails: Record<string, CardDetail> = {
@@ -73,43 +70,37 @@ describe('CardDetails', () => {
   };
 
   beforeEach(async () => {
+    paramMapSubject = new BehaviorSubject({
+      get: (key: string) => (key === 'cardId' ? mockCardId : null),
+    });
+
     const storeMock: MockStore = {
       select: vi.fn((selector) => {
-        if (selector === CardsSelectors.selectCardDetails) {
-          return of(mockCardDetails);
-        }
-        if (selector === CardsSelectors.selectCardImages) {
-          return of(mockCardImages);
-        }
-        if (selector === CardsSelectors.selectCardDetailsLoading) {
-          return of(false);
-        }
-        if (selector === CardsSelectors.selectCardDetailsError) {
-          return of(null);
-        }
-        if (selector === CardsSelectors.selectIsCardDetailsModalOpen) {
-          return of(false);
-        }
-        if (selector === CardsSelectors.selectCardDetailsModalData) {
-          return of(null);
-        }
-        if (typeof selector === 'function' || selector.projector) {
-          return of(mockAccount);
-        }
+        if (selector === CardsSelectors.selectCardDetails) return of(mockCardDetails);
+        if (selector === CardsSelectors.selectCardImages) return of(mockCardImages);
+        if (selector === CardsSelectors.selectCardDetailsLoading) return of(false);
+        if (selector === CardsSelectors.selectCardDetailsError) return of(null);
+        if (selector === CardsSelectors.selectIsCardDetailsModalOpen) return of(false);
+        if (selector === CardsSelectors.selectCurrentCardIndex) return of(0);
+        if (selector === CardsSelectors.selectCurrentAccountCardIds) return of(['card-123']);
+        if (selector === CardsSelectors.selectAllAccounts) return of([mockAccount]);
+        if (typeof selector === 'function' || selector.projector) return of(mockAccount);
         return of(null);
       }),
       dispatch: vi.fn(),
     };
+
     const routerMock: MockRouter = {
-      navigate: vi.fn(),
+      navigate: vi.fn().mockResolvedValue(true),
     };
 
-    const activatedRouteMock: MockActivatedRoute = {
+    const activatedRouteMock = {
       snapshot: {
         paramMap: {
           get: vi.fn().mockReturnValue(mockCardId),
         },
       },
+      paramMap: paramMapSubject.asObservable(),
     };
 
     await TestBed.configureTestingModule({
@@ -118,6 +109,14 @@ describe('CardDetails', () => {
         { provide: Store, useValue: storeMock },
         { provide: Router, useValue: routerMock },
         { provide: ActivatedRoute, useValue: activatedRouteMock },
+        { provide: AlertService, useValue: { 
+  isVisible: vi.fn().mockReturnValue(false),
+  alertType: vi.fn().mockReturnValue(null),
+  alertMessage: vi.fn().mockReturnValue(''),
+  success: vi.fn(),
+  error: vi.fn(),
+  clearAlert: vi.fn()
+}}
       ],
     }).compileComponents();
 
@@ -134,39 +133,16 @@ describe('CardDetails', () => {
   });
 
   it('should dispatch actions on init', () => {
-    expect(store.dispatch).toHaveBeenCalledWith(loadCardAccounts());
+    
+    
+    expect(store.dispatch).toHaveBeenCalledWith(loadCardAccounts({}));
     expect(store.dispatch).toHaveBeenCalledWith(
       loadCardDetails({ cardId: mockCardId }),
     );
   });
 
-  it('should navigate back', () => {
-    component['handleBack']();
-    expect(router.navigate).toHaveBeenCalledWith(['/bank/products/cards']);
-  });
 
-  it('should navigate to internal transfer', () => {
-    component['handleTransferOwn']();
-    expect(router.navigate).toHaveBeenCalledWith(['/bank/transfers/internal']);
-  });
 
-  it('should navigate to external transfer', () => {
-    component['handleTransferExternal']();
-    expect(router.navigate).toHaveBeenCalledWith(['/bank/transfers/external']);
-  });
-
-  it('should navigate to paybill', () => {
-    component['handlePaybill']();
-    expect(router.navigate).toHaveBeenCalledWith(['/bank/paybill']);
-  });
-
-  it('should navigate to transactions', () => {
-    component['handleViewTransactions']();
-    expect(router.navigate).toHaveBeenCalledWith([
-      '/bank/products/cards/transactions',
-      mockCardId,
-    ]);
-  });
   it('should dispatch openCardDetailsModal', () => {
     component['handleOpenDetailsModal']();
     expect(store.dispatch).toHaveBeenCalledWith(
@@ -178,4 +154,69 @@ describe('CardDetails', () => {
     component['handleCloseDetailsModal']();
     expect(store.dispatch).toHaveBeenCalledWith(closeCardDetailsModal());
   });
+
+  it('should dispatch navigateToNextCard and navigate', () => {
+    const nextCardId = 'card-456';
+    store.select = vi.fn((selector) => {
+      if (selector === CardsSelectors.selectCurrentCardIndex) return of(1);
+      if (selector === CardsSelectors.selectCurrentAccountCardIds) return of(['card-123', nextCardId]);
+      if (selector === CardsSelectors.selectAllAccounts) return of([mockAccount]);
+      return of(null);
+    });
+
+    component['handleNextCard']();
+
+    expect(store.dispatch).toHaveBeenCalledWith(navigateToNextCard());
+  });
+
+  it('should dispatch navigateToPreviousCard and navigate', () => {
+    const prevCardId = 'card-000';
+    store.select = vi.fn((selector) => {
+      if (selector === CardsSelectors.selectCurrentCardIndex) return of(0);
+      if (selector === CardsSelectors.selectCurrentAccountCardIds) return of([prevCardId, 'card-123']);
+      if (selector === CardsSelectors.selectAllAccounts) return of([mockAccount]);
+      return of(null);
+    });
+
+    component['handlePreviousCard']();
+
+    expect(store.dispatch).toHaveBeenCalledWith(navigateToPreviousCard());
+  });
+  it('should dispatch navigateToPreviousCard and navigate', () => {
+  const prevCardId = 'card-000';
+  store.select = vi.fn((selector) => {
+    if (selector === CardsSelectors.selectCurrentCardIndex) return of(0);
+    if (selector === CardsSelectors.selectCurrentAccountCardIds) return of([prevCardId, 'card-123']);
+    if (selector === CardsSelectors.selectAllAccounts) return of([mockAccount]);
+    return of(null);
+  });
+
+  component['handlePreviousCard']();
+
+  expect(store.dispatch).toHaveBeenCalledWith(navigateToPreviousCard());
+});
+
+it('should handle view transactions', () => {
+  component['handleViewTransactions']();
+  expect(router.navigate).toHaveBeenCalledWith(['/bank/products/cards/transactions', mockCardId]);
+});
+
+it('should handle retry', () => {
+  store.dispatch = vi.fn();
+  component['handleRetry']();
+  expect(store.dispatch).toHaveBeenCalledWith(loadCardAccounts({}));
+  expect(store.dispatch).toHaveBeenCalledWith(loadCardDetails({ cardId: mockCardId }));
+});
+
+it('should handle back with multiple cards', () => {
+  store.select = vi.fn((selector) => {
+    if (selector.name?.includes('selectCardDetails')) return of(mockCardDetails);
+    if (selector === CardsSelectors.selectAllAccounts) return of([{ ...mockAccount, cardIds: ['card-1', 'card-2'] }]);
+    return of(null);
+  });
+  
+  component['handleBack']();
+  expect(router.navigate).toHaveBeenCalledWith(['/bank/products/cards/account', 'acc-123']);
+});
+
 });

@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  HostListener,
   inject,
   input,
   output,
@@ -10,16 +11,14 @@ import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
 import { CommonModule } from '@angular/common';
 import { Radios } from '@tia/shared/lib/forms/radios/radios';
-import { RadioOption } from '@tia/shared/lib/forms/models/radios.model';
-import { PREPAYMENT_CALC_OPTIONS } from '../../../config/loan-prepayment.config';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { ILoan } from '../../../models/loan.model';
 import { PrepaymentCalculationPayload } from '../../../models/prepayment.model';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { startWith, map } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TranslatePipe } from '@ngx-translate/core';
 import { LoansStore } from '../../../../store/loans.store';
 import { LoanPrepaymentState } from '../../../state/loan-prepayment.state';
+import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-prepayment-option-step',
@@ -40,7 +39,6 @@ import { LoanPrepaymentState } from '../../../state/loan-prepayment.state';
 export class PrepaymentOptionStep {
   private readonly store = inject(LoansStore);
   private readonly fb = inject(FormBuilder);
-  private readonly translate = inject(TranslateService);
   public readonly loanPrepayment = inject(LoanPrepaymentState);
 
   public readonly loan = input.required<ILoan>();
@@ -51,38 +49,6 @@ export class PrepaymentOptionStep {
 
   protected readonly typeOptions = this.store.prepaymentTypeOptions;
 
-  protected readonly calculationOptions = toSignal(
-    this.translate.onLangChange.pipe(
-      startWith({ lang: this.translate.getCurrentLang(), translations: null }),
-      map(() => this.getTranslatedOptions()),
-    ),
-    { initialValue: this.getTranslatedOptions() },
-  );
-
-  private getTranslatedOptions(): RadioOption[] {
-    const t = (key: string) => this.translate.instant(key);
-    const prefix = 'loans.prepayment_wizard.radio_options';
-
-    return PREPAYMENT_CALC_OPTIONS.map((opt) => {
-      let labelKey = '';
-      let descKey = '';
-
-      if (opt.value === 'reduceMonthlyPayment') {
-        labelKey = `${prefix}.reduce_monthly_label`;
-        descKey = `${prefix}.reduce_monthly_desc`;
-      } else if (opt.value === 'reduceEndDateOfLoan') {
-        labelKey = `${prefix}.reduce_term_label`;
-        descKey = `${prefix}.reduce_term_desc`;
-      }
-
-      return {
-        ...opt,
-        label: t(labelKey || opt.label),
-        description: descKey ? t(descKey) : opt.description,
-      };
-    });
-  }
-
   public readonly form = this.fb.group({
     type: ['', Validators.required],
     amount: [null as number | null, [Validators.required, Validators.min(50)]],
@@ -91,24 +57,20 @@ export class PrepaymentOptionStep {
 
   constructor() {
     this.form.controls.type.valueChanges
-      .pipe(takeUntilDestroyed())
-      .subscribe((type) => {
-        const amountCtrl = this.form.controls.amount;
-        const calcCtrl = this.form.controls.calculationOption;
+      .pipe(
+        tap((type) => {
+          const isFull = type === 'full';
+          const { amount, calculationOption } = this.form.controls;
 
-        if (type === 'full') {
-          amountCtrl.disable();
-          calcCtrl.disable();
-        } else {
-          amountCtrl.enable();
-          calcCtrl.enable();
-        }
-      });
+          isFull ? amount.disable() : amount.enable();
+          isFull ? calculationOption.disable() : calculationOption.enable();
+        }),
+        takeUntilDestroyed(),
+      )
+      .subscribe();
   }
 
   public ngOnInit(): void {
-    this.store.loadPrepaymentOptions();
-
     const currentLoan = this.loan();
     if (currentLoan && currentLoan.loanAmount) {
       this.form.controls.amount.addValidators([
@@ -119,11 +81,6 @@ export class PrepaymentOptionStep {
   }
 
   public onCalculate(): void {
-    if (this.form.invalid && this.form.get('type')?.value !== 'full') {
-      this.form.markAllAsTouched();
-      return;
-    }
-
     const rawValue = this.form.getRawValue();
 
     const payload: PrepaymentCalculationPayload = {
@@ -137,5 +94,10 @@ export class PrepaymentOptionStep {
     };
 
     this.calculate.emit(payload);
+  }
+
+  @HostListener('enter')
+  onEnter() {
+    if (this.form.valid) this.onCalculate();
   }
 }

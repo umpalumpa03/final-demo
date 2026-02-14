@@ -1,0 +1,1450 @@
+{
+  "palette": {
+    "title": "Color Palettes",
+    "subtitle": "Three beautiful blue color schemes for your components",
+    "colorNames": {
+      "primary": "Primary",
+      "secondary": "Secondary",
+      "accent": "Accent",
+      "muted": "Muted",
+      "background": "Background",
+      "foreground": "Foreground"
+    },
+    "themes": {
+      "oceanBlue": {
+        "title": "Ocean Blue",
+        "subtitle": "Light and refreshing theme perfect for modern applications",
+        "label": "Ocean Blue Theme"
+      },
+      "royalBlue": {
+        "title": "Royal Blue",
+        "subtitle": "Rich and elegant theme with vibrant blue tones",
+        "label": "Royal Blue Theme"
+      },
+      "deepBlue": {
+        "title": "Deep Blue",
+        "subtitle": "Professional and modern theme with sophisticated blues",
+        "label": "Deep Blue Theme"
+      }
+    },
+    "application": {
+      "title": "Color Application Examples",
+      "oceanBlue": {
+        "primary": {
+          "title": "Ocean Primary",
+          "description": "Clean and refreshing design with excellent readability"
+        },
+        "accent": {
+          "title": "Ocean Accent",
+          "description": "Soft accents for secondary elements"
+        },
+        "muted": {
+          "title": "Ocean Muted",
+          "description": "Perfect for backgrounds and subtle elements"
+        }
+      },
+      "royalBlue": {
+        "primary": {
+          "title": "Royal Primary",
+          "description": "Bold and elegant with strong visual presence"
+        },
+        "accent": {
+          "title": "Royal Accent",
+          "description": "Vibrant accents for emphasis"
+        },
+        "muted": {
+          "title": "Royal Muted",
+          "description": "Gentle backgrounds for content areas"
+        }
+      },
+      "deepBlue": {
+        "primary": {
+          "title": "Deep Primary",
+          "description": "Professional and sophisticated appearance"
+        },
+        "accent": {
+          "title": "Deep Accent",
+          "description": "Neutral accents for modern interfaces"
+        },
+        "muted": {
+          "title": "Deep Muted",
+          "description": "Subtle backgrounds for corporate design"
+        }
+      }
+    },
+    "notes": {
+      "title": "Accessibility & Usage Notes",
+      "items": {
+        "highContrast": {
+          "title": "High Contrast",
+          "description": "All three themes maintain WCAG AA compliant contrast ratios for optimal readability"
+        },
+        "consistentHierarchy": {
+          "title": "Consistent Hierarchy",
+          "description": "Primary, secondary, and accent colors are carefully balanced for visual hierarchy"
+        },
+        "flexibleApplication": {
+          "title": "Flexible Application",
+          "description": "Each palette works beautifully for dashboards, landing pages, and web applications"
+        },
+        "easySwitching": {
+          "title": "Easy Switching",
+          "description": "Use the palette selector in the header to instantly switch between themes"
+        }
+      }
+    }
+  },
+  "buttons": {
+    "title": "Buttons",
+    "subtitle": "Full overview of all components along with their various states",
+    "sections": {
+      "variants": "Variants",
+      "sizes": "Sizes",
+      "states": "States",
+      "icons": "With Icons",
+      "interactive": "Interactive Examples",
+      "groups": "Button Groups",
+      "fullWidth": "Full Width"
+    },
+    "variants": {
+      "default": "Default",
+      "secondary": "Secondary",
+      "destructive": "Destructive",
+      "outline": "Outline",
+      "ghost": "Ghost",
+      "link": "Link"
+    },
+    "sizes": {
+      "sm": "Small",
+      "default": "Default",
+      "lg": "Large"
+    },
+    "states": {
+      "defaultLabel": "Default:",
+      "clickMe": "Click Me",
+      "disabledLabel": "Disabled",
+      "disabledButton": "Disabled Button",
+      "disabledSecondary": "Disabled Secondary",
+      "loadingLabel": "Loading",
+      "loading": "Loading...",
+      "clickToLoad": "Click to Load"
+    },
+    "icons": {
+      "send": "Send Email",
+      "download": "Download",
+      "delete": "Delete",
+      "confirm": "Confirm",
+      "addNew": "Add New",
+      "settings": "Settings",
+      "iconOnly": "Icon Only"
+    },
+    "interactive": {
+      "like": "Like (42)",
+      "download": "Download File"
+    },
+    "groups": {
+      "left": "Left",
+      "center": "Center",
+      "right": "Right"
+    },
+    "fullWidth": {
+      "label": "Full Width Button",
+      "outline": "Full Width Outline"
+    }
+  },
+  "inputs": {
+    "title": "Input Components",
+    "subtitle": "Form input components with various types and states",
+    "textInput": {
+      "title": "Text Inputs",
+      "default": {
+        "label": "Default Input",
+        "placeholder": "Enter text..."
+      },
+      "disabled": {
+        "label": "Disabled Input",
+        "placeholder": "Cannot edit this"
+      },
+      "readonly": {
+        "label": "Read-only Input",
+        "placeholder": "Read-only value"
+      },
+      "error": {
+        "label": "Input with Error",
+        "placeholder": "Enter valid data",
+        "errorMessage": "This field is required"
+      },
+      "success": {
+        "label": "Input with Success",
+        "placeholder": "Valid input",
+        "successMessage": "Looks good!"
+      }
+    },
+    "specialInput": {
+      "title": "Special Input Types",
+      "email": "Email Input",
+      "search": "Search Input",
+      "password": "Password Input",
+      "number": "Number Input",
+      "date": "Date Input",
+      "time": "Time Input",
+      "color": "Color Input",
+      "file": "File Input",
+      "url": "URL Input",
+      "phone": "Phone Input",
+      "placeholder": "Type here..."
+    },
+    "textarea": {
+      "title": "Textarea",
+      "default": {
+        "label": "Default Textarea",
+        "placeholder": "Type your message here..."
+      },
+      "disabled": {
+        "label": "Disabled Textarea",
+        "placeholder": "Cannot edit this"
+      },
+      "maxLength": {
+        "label": "Textarea with Max Length",
+        "placeholder": "Maximum 100 characters"
+      }
+    },
+    "checkboxes": {
+      "title": "Checkboxes",
+      "terms": "Accept terms and conditions (State: Unchecked)",
+      "default": "Default Checked",
+      "disabled": "Disabled Checkbox",
+      "disabledChecked": "Disabled & Checked"
+    },
+    "radio": {
+      "title": "Radio Buttons",
+      "opt1": "Option 1 (Selected)",
+      "opt2": "Option 2",
+      "opt3": "Option 3",
+      "optDisabled": "Disabled Option"
+    },
+    "switches": {
+      "title": "Switches",
+      "toggle": "Toggle Feature (State: OFF)",
+      "default": "Default Enabled",
+      "disabled": "Disabled Switch",
+      "disabledChecked": "Disabled & Checked"
+    },
+    "dropdown": {
+      "title": "Select Dropdown",
+      "default": {
+        "label": "Select an Option",
+        "placeholder": "Choose an option..."
+      },
+      "disabled": {
+        "label": "Disabled Select",
+        "placeholder": "Disabled select"
+      },
+      "options": {
+        "opt1": "Option 1",
+        "opt2": "Option 2",
+        "opt3": "Option 3"
+      }
+    },
+    "sliders": {
+      "title": "Sliders",
+      "volume": "Volume",
+      "disabled": "Disabled Slider",
+      "step": "Step Slider (25% increments)"
+    },
+    "otp": {
+      "title": "OTP Input",
+      "label": "Security PIN"
+    }
+  },
+  "cards": {
+    "pageTitle": "Cards",
+    "pageSubtitle": "Card components with various layouts and content types",
+    "basicCard": "Basic Cards",
+    "StatisticsCards": "Statistics Cards",
+    "categoryCards": "Category Cards",
+    "cancelBtn": "Cancel",
+    "submitBtn": "Submit",
+    "basic1": {
+      "title": "Card Title",
+      "subtitle": "Card description goes here",
+      "content": "This is the main content area of the card. You can put any content here."
+    },
+    "basic2": {
+      "title": "With Footer",
+      "subtitle": "Card with action buttons",
+      "content": "This card includes a footer with action buttons."
+    },
+    "basic3": {
+      "title": "Hover Effect",
+      "subtitle": "Hover over this card",
+      "content": "This card has hover effects applied."
+    },
+    "stats": {
+      "revenue": {
+        "label": "Total Revenue",
+        "value": "$45,231.89",
+        "change": "+20.1% from last month"
+      },
+      "subscriptions": {
+        "label": "Subscriptions",
+        "value": "+2,350",
+        "change": "+180.1% from last month"
+      },
+      "sales": {
+        "label": "Sales",
+        "value": "+12,234",
+        "change": "+19% from last month"
+      },
+      "active": {
+        "label": "Active Now",
+        "value": "+573",
+        "change": "-4% from last hour"
+      }
+    },
+    "category": {
+      "utilities": {
+        "title": "Utilities",
+        "subtitle": "Electricity, Water, Gas"
+      },
+      "internet": {
+        "title": "Internet & TV",
+        "subtitle": "Internet, Cable TV"
+      }
+    }
+  },
+  "forms": {
+    "formsTitle": "Forms",
+    "formsSubtitle": "Complete form examples with various input types and layouts",
+    "contact": {
+      "title": "Contact Form",
+      "form": {
+        "name": "Name",
+        "email": "Email",
+        "message": "Message",
+        "messageInfo": "Type your message here...",
+        "checkbox": "Subscribe to newsletter",
+        "btnName": "Submit"
+      }
+    },
+    "row": {
+      "subtitle": "Two Column Layout",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "Email",
+      "phone": "Phone",
+      "btn": "Submit"
+    },
+    "horizontal": {
+      "subtitle": "Horizontal Layout",
+      "firstName": "First Name",
+      "email": "Email",
+      "message": "Message",
+      "btn": "Submit"
+    },
+    "step": {
+      "from": "From",
+      "to": "To",
+      "amount": "Amount"
+    },
+    "multi": {
+      "name": "Name",
+      "bio": "Message",
+      "back": "Back",
+      "step": "Next Step",
+      "finish": "Finish",
+      "messageInfo": "Type your message here..."
+    },
+    "inline": {
+      "sub": "Subscribe"
+    },
+    "planOptions": {
+      "subtitle": "Plan Selection",
+      "free": "Free",
+      "freeDesc": "Basic features",
+      "pro": "Pro",
+      "proDesc": "Advanced features - $9.99/month",
+      "enterprise": "Enterprise",
+      "enterpriseDesc": "All features - $29.99/month",
+      "subtitle2": "Notification Preferences",
+      "option1": "Email Notifications",
+      "option2": "Push Notifications",
+      "option3": "SMS Notifications",
+      "btn1": "Cancel",
+      "btn2": "Save Changes"
+    },
+    "validation": {
+      "successLabel": "Valid Input",
+      "successMessage": "Email format is correct",
+      "errorLabel": "Invalid Input",
+      "errorMessage": "Please enter a valid email address",
+      "warningLabel": "Warning Input",
+      "warningMessage": "Temporary email addresses may not receive notifications"
+    },
+    "titles": {
+      "contact": "Contact Form",
+      "registration": "Registration Form",
+      "settings": "Settings Form",
+      "inline": "Inline Form",
+      "validation": "Form with Validation",
+      "multiStep": "Multi-step Form Progress",
+      "layout": "Form Layout"
+    }
+  },
+  "alerts": {
+    "TITLES": {
+      "PAGE_MAIN": "Alerts & Notifications",
+      "PAGE_SUB": "Alert components for displaying important messages to users",
+      "BASIC": "Basic Alerts",
+      "ICONS": "Alert Types with Icons",
+      "DISMISSIBLE": "Dismissible Alerts",
+      "ACTIONS": "Alerts with Actions",
+      "SIMPLE": "Simple Alerts (No Title)",
+      "STATES": "Alert States"
+    },
+    "DATA": {
+      "DEFAULT_TITLE": "Default Alert",
+      "DEFAULT_MSG": "This is a default alert with important information.",
+      "ERROR_TITLE": "Error Alert",
+      "ERROR_MSG": "This is an error alert indicating something went wrong.",
+      "SUCCESS_SAVE": "Your changes have been saved successfully!",
+      "CONFIRM_ACTION": "Confirm Action",
+      "CONFIRM_MSG": "This action cannot be undone. Are you sure you want to continue?",
+
+      "NEW_FEATURE_TITLE": "New Feature Available",
+      "NEW_FEATURE_MSG": "Check out our latest updates and improvements.",
+      "PROFILE_UPDATE_TITLE": "Profile Updated",
+      "PAYMENT_TITLE": "Payment Due Soon",
+      "PAYMENT_MSG": "Your subscription will renew in 3 days.",
+
+      "UPDATE_TITLE": "Update Available",
+      "UPDATE_MSG": "A new version of the application is available.",
+      "BTN_UPDATE": "Update Now",
+      "BTN_LATER": "Remind Me Later",
+      "BTN_CONFIRM": "Confirm",
+      "BTN_CANCEL": "Cancel",
+
+      "SIMPLE_INFO_MSG": "This is a simple informational message without a title.",
+      "SAVE_WORK_MSG": "Please save your work before closing.",
+
+      "NORMAL_STATE_TITLE": "Normal State",
+      "NORMAL_STATE_MSG": "This is the normal state of an alert.",
+      "INACTIVE_STATE_TITLE": "Dimmed/Inactive State",
+      "INACTIVE_STATE_MSG": "This alert appears dimmed or inactive.",
+      "ACTIVE_STATE_TITLE": "Emphasized State",
+      "ACTIVE_STATE_MSG": "This alert is emphasized with stronger borders and shadow."
+    }
+  },
+  "badges": {
+    "title": "Badges",
+    "subtitle": "Badge components for labels, status indicators, and counts",
+    "sections": {
+      "variants": "Variants",
+      "statusBadges": "Status Badges",
+      "sizes": "Sizes",
+      "countBadges": "Count Badges",
+      "interactiveBadges": "Interactive Badges (Dismissible)",
+      "pillBadges": "Rounded/Pill Badges",
+      "dotIndicators": "With Dot Indicators",
+      "badgeGroups": "Badge Groups",
+      "badgeStates": "Badge States",
+      "customColors": "Custom Colors",
+      "skills": "Skills:",
+      "categories": "Categories:"
+    },
+    "variants": {
+      "default": "Default",
+      "secondary": "Secondary",
+      "destructive": "Destructive",
+      "outline": "Outline"
+    },
+    "sizes": {
+      "small": "Small",
+      "medium": "Medium",
+      "large": "Large"
+    },
+    "countBadges": {
+      "messages": "Messages",
+      "notifications": "Notifications",
+      "updates": "Updates",
+      "cartItems": "Cart Items",
+      "unread": "Unread",
+      "new": "New"
+    },
+    "dismissible": {
+      "tag1": "Tag 1",
+      "tag2": "Tag 2",
+      "tag3": "Tag 3",
+      "tag4": "Tag 4"
+    },
+    "pillBadges": {
+      "pillShape": "Pill Shape",
+      "category": "Category",
+      "tag": "Tag",
+      "angular": "Angular",
+      "typescript": "TypeScript",
+      "css": "CSS",
+      "javascript": "JavaScript"
+    },
+    "badgeStates": {
+      "normal": "Normal Badge",
+      "hoverMe": "Hover Me",
+      "disabled": "Disabled",
+      "selected": "Selected",
+      "default": "Default:",
+      "hovered": "Hovered:",
+      "disabledLabel": "Disabled:",
+      "selectedLabel": "Selected:"
+    },
+    "customColors": {
+      "pink": "Pink",
+      "indigo": "Indigo",
+      "teal": "Teal",
+      "rose": "Rose",
+      "cyan": "Cyan",
+      "amber": "Amber",
+      "lime": "Lime",
+      "slate": "Slate"
+    },
+    "status": {
+      "active": "Active",
+      "pending": "Pending",
+      "inactive": "Inactive",
+      "inProgress": "In Progress",
+      "featured": "Featured",
+      "premium": "Premium",
+      "favorite": "Favorite",
+      "done": "Done",
+      "todo": "Todo"
+    },
+    "dot": {
+      "online": "Online",
+      "away": "Away",
+      "offline": "Offline",
+      "live": "Live"
+    },
+    "skills": {
+      "javascript": "JavaScript",
+      "react": "React",
+      "angular": "Angular",
+      "nodejs": "Node.js",
+      "typescript": "TypeScript",
+      "css": "CSS",
+      "html": "HTML"
+    },
+    "categories": {
+      "technology": "Technology",
+      "design": "Design",
+      "marketing": "Marketing"
+    }
+  },
+  "tables": {
+    "title": "Tables",
+    "subtitle": "Table components for displaying data",
+    "sections": {
+      "basic": {
+        "title": "Basic Table",
+        "headers": {
+          "Invoice": "Invoice",
+          "status": "Status",
+          "Method": "Method",
+          "Amount": "Amount"
+        },
+        "rows": [
+          {
+            "Invoice": "INV001",
+            "status": "Paid",
+            "Method": "Credit Card",
+            "Amount": "$250.00"
+          },
+          {
+            "Invoice": "INV002",
+            "status": "Pending",
+            "Method": "PayPal",
+            "Amount": "$150.00"
+          },
+          {
+            "Invoice": "INV003",
+            "status": "Unpaid",
+            "Method": "Bank Transfer",
+            "Amount": "$350.00"
+          }
+        ]
+      },
+      "selection": {
+        "title": "Table with Row Selection",
+        "headers": {
+          "name": "Name",
+          "email": "Email",
+          "role": "Role",
+          "status": "Status"
+        },
+        "rows": [
+          {
+            "name": "John Doe",
+            "email": "john@example.com",
+            "role": "Administrator",
+            "status": "Active"
+          },
+          {
+            "name": "Jane Smith",
+            "email": "jane@example.com",
+            "role": "User",
+            "status": "Active"
+          },
+          {
+            "name": "Bob Johnson",
+            "email": "bob@example.com",
+            "role": "Editor",
+            "status": "Pending"
+          },
+          {
+            "name": "Alice Brown",
+            "email": "alice@example.com",
+            "role": "User",
+            "status": "Inactive"
+          },
+          {
+            "name": "Charlie Wilson",
+            "email": "charlie@example.com",
+            "role": "Administrator",
+            "status": "Active"
+          }
+        ]
+      },
+      "actions": {
+        "title": "Table with Actions",
+        "headers": {
+          "name": "Name",
+          "email": "Email",
+          "role": "Role",
+          "status": "Status",
+          "actions": "Actions"
+        },
+        "rows": [
+          {
+            "name": "John Doe",
+            "email": "john@example.com",
+            "role": "Admin",
+            "status": "Active"
+          },
+          {
+            "name": "Jane Smith",
+            "email": "jane@example.com",
+            "role": "User",
+            "status": "Active"
+          },
+          {
+            "name": "Bob Johnson",
+            "email": "bob@example.com",
+            "role": "Editor",
+            "status": "Pending"
+          },
+          {
+            "name": "Alice Brown",
+            "email": "alice@example.com",
+            "role": "User",
+            "status": "Inactive"
+          },
+          {
+            "name": "Charlie Wilson",
+            "email": "charlie@example.com",
+            "role": "Admin",
+            "status": "Active"
+          }
+        ]
+      },
+      "sortable": {
+        "title": "Sortable Table",
+        "headers": {
+          "name": "Name",
+          "email": "Email",
+          "role": "Role",
+          "status": "Status"
+        },
+        "rows": [
+          {
+            "name": "John Doe",
+            "email": "john@example.com",
+            "role": "Admin",
+            "status": "Active"
+          },
+          {
+            "name": "Jane Smith",
+            "email": "jane@example.com",
+            "role": "User",
+            "status": "Active"
+          },
+          {
+            "name": "Bob Johnson",
+            "email": "bob@example.com",
+            "role": "Editor",
+            "status": "Pending"
+          },
+          {
+            "name": "Alice Brown",
+            "email": "alice@example.com",
+            "role": "User",
+            "status": "Inactive"
+          },
+          {
+            "name": "Charlie Wilson",
+            "email": "charlie@example.com",
+            "role": "Admin",
+            "status": "Active"
+          }
+        ]
+      },
+      "striped": {
+        "title": "Striped Table",
+        "headers": {
+          "product": "Product",
+          "category": "Category",
+          "price": "Price",
+          "stock": "Stock"
+        },
+        "rows": [
+          {
+            "product": "Wireless Mouse",
+            "category": "Electronics",
+            "price": "$29.99",
+            "stock": "In Stock"
+          },
+          {
+            "product": "Mechanical Keyboard",
+            "category": "Electronics",
+            "price": "$89.99",
+            "stock": "In Stock"
+          },
+          {
+            "product": "USB-C Cable",
+            "category": "Accessories",
+            "price": "$12.99",
+            "stock": "Low Stock"
+          },
+          {
+            "product": "Monitor Stand",
+            "category": "Accessories",
+            "price": "$49.99",
+            "stock": "Out of Stock"
+          },
+          {
+            "product": "Desk Lamp",
+            "category": "Furniture",
+            "price": "$39.99",
+            "stock": "In Stock"
+          }
+        ]
+      },
+      "compact": {
+        "title": "Compact Table",
+        "headers": {
+          "id": "ID",
+          "task": "Task",
+          "assignee": "Assignee",
+          "status": "Status"
+        },
+        "rows": [
+          {
+            "id": "#1",
+            "task": "Update documentation",
+            "assignee": "John Doe",
+            "status": "done"
+          },
+          {
+            "id": "#2",
+            "task": "Fix login bug",
+            "assignee": "Jane Smith",
+            "status": "in-progress"
+          },
+          {
+            "id": "#3",
+            "task": "Design new feature",
+            "assignee": "Bob Johnson",
+            "status": "todo"
+          }
+        ]
+      },
+      "states": {
+        "title": "Row States",
+        "headers": {
+          "name": "Name",
+          "description": "Description",
+          "state": "State"
+        },
+        "rows": [
+          {
+            "name": "Default Row",
+            "description": "A normal table row",
+            "state": "Default"
+          },
+          {
+            "name": "Selected Row",
+            "description": "Row with selection highlight",
+            "state": "Selected"
+          },
+          {
+            "name": "Hover Row",
+            "description": "Hovering the mouse over this row",
+            "state": "Hover"
+          },
+          {
+            "name": "Disabled Row",
+            "description": "Row in a disabled state",
+            "state": "Disabled"
+          }
+        ]
+      },
+      "transactions": {
+        "title": "Transactions Table",
+        "headers": {
+          "type": "Type",
+          "details": "Details",
+          "amount": "Amount",
+          "actions": "Actions"
+        },
+        "rows": [
+          {
+            "type": "Credit",
+            "details": "Salary Payment",
+            "date": "14/01/2026",
+            "amount": "+$5,000.00"
+          },
+          {
+            "type": "Debit",
+            "details": "Grocery Shopping",
+            "date": "13/01/2026",
+            "amount": "-€5,000.00"
+          },
+          {
+            "type": "Credit",
+            "details": "Electricity Bill",
+            "date": "12/01/2026",
+            "amount": "+$5,000.00"
+          },
+          {
+            "type": "Credit",
+            "details": "Freelance Project",
+            "date": "11/01/2026",
+            "amount": "+$5,000.00"
+          }
+        ],
+        "actions": {
+          "repeat": "repeat",
+          "extract": "extract",
+          "categorize": "categorize",
+          "tooltip": "The transaction cannot be repeated"
+        }
+      }
+    },
+    "error": {
+      "title": "Failed to Load Table Data",
+      "description": "An error occurred while fetching the transaction history. Please try again.",
+      "retry": "Reload Table"
+    }
+  },
+  "navigation": {
+    "title": "Navigation Components",
+    "subtitle": "Navigation components including tabs, breadcrumbs, and pagination",
+    "sections": {
+      "tabs": {
+        "title": "Tabs",
+        "overview": "Overview",
+        "analytics": "Analytics",
+        "reports": "Reports",
+        "settings": "Settings",
+        "cardTitle": "Overview Content",
+        "cardContent": "This is the overview tab content. It displays general information."
+      },
+      "verticalTabs": {
+        "title": "Vertical Tabs",
+        "account": "Account",
+        "notifications": "Notifications",
+        "preferences": "Preferences",
+        "cardTitle": "Account Settings",
+        "cardContent": "Manage your account settings and preferences."
+      },
+      "breadcrumbs": {
+        "title": "Breadcrumbs",
+        "default": "Default Breadcrumbs",
+        "withIcons": "With Icons",
+        "longPath": "Long Path:",
+        "home": "Home",
+        "products": "Products",
+        "current": "Current Page",
+        "category": "Categories",
+        "electronics": "Electronics",
+        "productDetails": "Product Details",
+        "dashboard": "Dashboard",
+        "settings": "Settings",
+        "security": "Security",
+        "twoFactorAuth": "Two-Factor Authentication"
+      },
+      "pagination": {
+        "title": "Pagination",
+        "default": "Default Pagination",
+        "withEllipsis": "With Ellipsis",
+        "previous": "Previous",
+        "next": "Next"
+      },
+      "horizontalNavigation": {
+        "title": "Horizontal Navigation",
+        "dashboard": "Dashboard",
+        "projects": "Projects",
+        "team": "Team",
+        "calendar": "Calendar",
+        "disabled": "Disabled"
+      },
+      "verticalNavigation": {
+        "title": "Vertical Navigation",
+        "home": "Home",
+        "search": "Search",
+        "profile": "Profile",
+        "notifications": "Notifications",
+        "settings": "Settings",
+        "disabled": "Disabled Item"
+      },
+      "pillsNavigation": {
+        "title": "Pills Navigation",
+        "all": "All",
+        "active": "Active",
+        "completed": "Completed",
+        "archived": "Archived"
+      }
+    }
+  },
+  "feedback": {},
+  "data-display": {
+    "title": "Data Display",
+    "subtitle": "Avatars, aspect ratios, tooltips, and hover cards",
+    "sections": {
+      "avatars": {
+        "title": "Avatars",
+        "sizes": "Sizes:",
+        "withInitials": "With Initials:",
+        "withColors": "With Colors:",
+        "avatarGroup": "Avatar Group:",
+        "withStatus": "With Status:",
+        "users": {
+          "loggedIn": { "firstName": "Nikoloz", "lastName": "Maghaldadze" },
+          "additional1": { "firstName": "Alex", "lastName": "Brown" },
+          "additional2": { "firstName": "Mia", "lastName": "Johnson" },
+          "additional3": { "firstName": "Sophia", "lastName": "King" }
+        },
+        "colorInitials": {
+          "0": "JD",
+          "1": "AB",
+          "2": "MJ",
+          "3": "SK",
+          "4": "EW"
+        },
+        "groupInitials": {
+          "0": "JC",
+          "1": "AE",
+          "2": "MS",
+          "3": "SH",
+          "4": "LW",
+          "5": "BM",
+          "6": "RG",
+          "7": "TW",
+          "8": "NP"
+        },
+        "statusInitials": {
+          "0": "JD",
+          "1": "AB",
+          "2": "MJ",
+          "3": "SK"
+        }
+      },
+      "aspectRatio": {
+        "title": "Aspect Ratio",
+        "noRatios": "No aspect ratios available.",
+        "aspectRatioSuffix": "Aspect Ratio",
+        "descriptions": {
+          "video": "Video",
+          "standard": "Standard",
+          "square": "Square",
+          "ultrawide": "Ultrawide"
+        }
+      },
+      "tooltips": {
+        "title": "Tooltips",
+        "items": {
+          "topDefault": "Top (default)",
+          "bottom": "Bottom",
+          "left": "Left",
+          "right": "Right",
+          "hoverMe": "Hover me",
+          "tooltipOnTop": "Tooltip on top",
+          "tooltipOnBottom": "Tooltip on bottom",
+          "tooltipOnLeft": "Tooltip on left",
+          "tooltipOnRight": "Tooltip on right",
+          "janeDoe": "Jane Doe",
+          "primaryAction": "Primary action"
+        }
+      },
+      "hoverCards": {
+        "title": "Hover Cards",
+        "items": {
+          "johndoeHandle": "@johndoe",
+          "johndoeName": "John Doe",
+          "johndoeRole": "Product Designer",
+          "johndoeDetail": "Building thoughtful UI patterns for the data display suite.",
+          "janedoeHandle": "@janedoe",
+          "janedoeName": "Jane Adams",
+          "janedoeRole": "Frontend Engineer",
+          "janedoeDetail": "Focused on accessible, reusable hover interactions.",
+          "alexHandle": "Hover for details",
+          "alexName": "Alex Diaz",
+          "alexRole": "Design Lead",
+          "alexDetail": "Exploring rich previews for documentation content."
+        }
+      },
+      "cards": {
+        "title": "Cards",
+        "items": {
+          "totalUsersLabel": "Total Users",
+          "totalUsersValue": "1,234",
+          "totalUsersChange": "+12% from last month",
+          "activeSessionsLabel": "Active Sessions",
+          "activeSessionsValue": "456",
+          "activeSessionsChange": "+8% from last hour",
+          "revenueLabel": "Revenue",
+          "revenueValue": "$12.5K",
+          "revenueChange": "-3% from last week",
+          "conversionLabel": "Conversion",
+          "conversionValue": "3.2%",
+          "conversionChange": "No change"
+        }
+      },
+      "listDisplay": {
+        "title": "List Display",
+        "items": {
+          "johnName": "John Doe",
+          "johnRole": "Admin",
+          "johnBadge": "Admin",
+          "janeName": "Jane Smith",
+          "janeRole": "Editor",
+          "janeBadge": "Editor",
+          "bobName": "Bob Johnson",
+          "bobRole": "User",
+          "bobBadge": "User",
+          "aliceName": "Alice Brown",
+          "aliceRole": "User",
+          "aliceBadge": "User"
+        }
+      },
+      "keyValueDisplay": {
+        "title": "Key-Value Display",
+        "userInfo": "User Information",
+        "items": {
+          "fullNameLabel": "Full Name:",
+          "fullNameValue": "John Doe",
+          "emailLabel": "Email:",
+          "emailValue": "john@example.com",
+          "roleLabel": "Role:",
+          "roleValue": "Administrator",
+          "statusLabel": "Status:",
+          "statusValue": "Active",
+          "memberLabel": "Member Since:",
+          "memberValue": "Jan 2024"
+        }
+      },
+      "timelineDisplay": {
+        "title": "Timeline Display",
+        "items": {
+          "deployTitle": "Deployed to production",
+          "deployTimestamp": "2 hours ago",
+          "reviewTitle": "Code review completed",
+          "reviewTimestamp": "5 hours ago",
+          "prTitle": "Pull request opened",
+          "prTimestamp": "1 day ago",
+          "featureTitle": "Feature development started",
+          "featureTimestamp": "2 days ago"
+        }
+      }
+    }
+  },
+  "layout": {
+    "title": "Layout Components",
+    "subtitle": "Structural components for organizing content",
+    "sections": {
+      "separators": {
+        "title": "Separators",
+        "example-1": {
+          "title": "Horizontal Separator",
+          "content-1": "Content above",
+          "content-2": "Content below"
+        },
+        "example-2": {
+          "title": "Vertical Separator",
+          "content-1": "Left",
+          "content-2": "Center",
+          "content-3": "Right"
+        },
+        "example-3": {
+          "title": "With Text"
+        }
+      },
+      "accordion": "Accordion",
+      "multiAccordion": "Multiple Accordion (Multiple Open)",
+      "collapsible": "Collapsible",
+      "scrollArea": {
+        "title": "Scroll Area",
+        "example-1": "Vertical Scroll",
+        "example-2": "Horizontal Scroll"
+      },
+      "resizablePanels": {
+        "title": "Resizable Panels",
+        "example-1": {
+          "title": "Horizontal Resize",
+          "content-1": "Left Panel",
+          "content-2": "Right Panel"
+        },
+        "example-2": {
+          "title": "Three Panel Layout",
+          "content-1": "Sidebar",
+          "content-2": "Main Content",
+          "content-3": "Details"
+        },
+        "example-3": {
+          "title": "Vertical Resize",
+          "content-1": "Top Panel",
+          "content-2": "Bottom Panel"
+        }
+      },
+      "grid": "Grid Layouts",
+      "flex": "Flex Layouts"
+    },
+    "accordionContent": [
+      {
+        "title": "What is this component library?",
+        "content": "This is a comprehensive UI component library built with Angular, providing reusable and accessible components for building modern web applications. It includes buttons, forms, navigation, and many other essential UI elements."
+      },
+      {
+        "title": "How do I use these components?",
+        "content": "Each component can be imported directly into your Angular application. Simply import the component, add it to your template, and configure it using the provided inputs and outputs. Documentation and examples are available for each component."
+      },
+      {
+        "title": "Are these components accessible?",
+        "content": "Yes, all components are built with accessibility in mind, following WCAG guidelines. They include proper ARIA attributes, keyboard navigation support, and screen reader compatibility to ensure an inclusive user experience."
+      },
+      {
+        "title": "Can I customize the styling?",
+        "content": "Absolutely! Components support theme customization through CSS variables and custom styling. You can override default styles using SCSS mixins and apply your brand colors to match your design system."
+      },
+      {
+        "title": "Can I customize the styling?",
+        "content": "Absolutely! Components support theme customization through CSS variables and custom styling. You can override default styles using SCSS mixins and apply your brand colors to match your design system."
+      }
+    ],
+    "multiAccordionContent": [
+      {
+        "title": "Features",
+        "content": "Our component library includes over 50 pre-built components, dark mode support, responsive design, TypeScript support, comprehensive documentation, and regular updates with new features and improvements."
+      },
+      {
+        "title": "Installation",
+        "content": "Install the library using npm or yarn package manager. Import the required modules in your Angular application, configure the theme settings, and start using components in your templates immediately."
+      },
+      {
+        "title": "Documentation",
+        "content": "Complete documentation is available online, including API references, usage examples, best practices, and migration guides. Each component has detailed documentation with live demos and code snippets."
+      }
+    ],
+    "collapsibleContent": [
+      {
+        "title": "Click To Expand",
+        "content": "This collapsible section contains additional information that can be shown or hidden by clicking the header. It's useful for organizing content and improving page readability."
+      },
+      {
+        "title": "Default Open",
+        "content": "This section is expanded by default, making important content immediately visible to users. You can configure which sections should be open on initial load."
+      }
+    ],
+    "scrollAreaContent": [
+      {
+        "content": "Item 1 - This is a scrollable content area with many items"
+      },
+      {
+        "content": "Item 2 - This is a scrollable content area with many items"
+      },
+      {
+        "content": "Item 3 - This is a scrollable content area with many items"
+      },
+      {
+        "content": "Item 4 - This is a scrollable content area with many items"
+      },
+      {
+        "content": "Item 5 - This is a scrollable content area with many items"
+      },
+      {
+        "content": "Item 6 - This is a scrollable content area with many items"
+      }
+    ],
+    "scrollAreaContent2": {
+      "title": "Card"
+    },
+    "grid": [
+      {
+        "title": "Two Column Grid",
+        "items": [{ "label": "Column 1" }, { "label": "Column 2" }]
+      },
+      {
+        "title": "Three Column Grid",
+        "items": [
+          { "label": "Column 1" },
+          { "label": "Column 2" },
+          { "label": "Column 3" }
+        ]
+      },
+      {
+        "title": "Four Column Grid",
+        "items": [
+          { "label": "Column 1" },
+          { "label": "Column 2" },
+          { "label": "Column 3" },
+          { "label": "Column 4" }
+        ]
+      },
+      {
+        "title": "Asymmetric (2:1)",
+        "items": [{ "label": "Wide Column (2/3)" }, { "label": "Narrow (1/3)" }]
+      }
+    ],
+    "flex": [
+      {
+        "title": "Space Between:",
+        "items": [
+          { "label": "Left" },
+          { "label": "Center" },
+          { "label": "Right" }
+        ]
+      },
+      {
+        "title": "Centered:",
+        "items": [{ "label": "Centered Content" }]
+      },
+      {
+        "title": "Flex Wrap:",
+        "items": {
+          "label": "Item"
+        }
+      }
+    ]
+  },
+  "overlays": {
+    "title": "Overlay Components",
+    "subtitle": "Modal dialogs, sheets, popovers, and dropdown menu",
+    "sections": {
+      "dialogs": "Dialogs",
+      "alertDialogs": "Alert Dialogs",
+      "sheets": "Sheets (Side Panels)",
+      "drawers": "Drawers",
+      "commandPalette": "Command Palette"
+    },
+    "editProfile": {
+      "openButton": "Open Dialog",
+      "title": "Edit Profile",
+      "subtitle": "Make changes to your profile here. Click save when you're done.",
+      "nameLabel": "Name",
+      "namePlaceholder": "John Doe",
+      "emailLabel": "Email",
+      "emailPlaceholder": "john@example.com",
+      "cancel": "Cancel",
+      "saveChanges": "Save Changes"
+    },
+    "formDialog": {
+      "openButton": "Dialog with Form",
+      "title": "Create New Project",
+      "subtitle": "Enter the details for your new project.",
+      "projectNameLabel": "Name",
+      "projectNamePlaceholder": "John Doe",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Brief description...",
+      "cancel": "Cancel",
+      "createProject": "Create Project"
+    },
+    "largeDialog": {
+      "openButton": "Large Dialog",
+      "title": "Terms and Conditions",
+      "subtitle": "Please read and accept our terms and conditions.",
+      "sections": {
+        "section1": {
+          "title": "Section 1",
+          "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+        },
+        "section2": {
+          "title": "Section 2",
+          "content": "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+        },
+        "section3": {
+          "title": "Section 3",
+          "content": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
+        },
+        "section4": {
+          "title": "Section 4",
+          "content": "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+        }
+      },
+      "decline": "Decline",
+      "accept": "Accept"
+    },
+    "deleteAccount": {
+      "openButton": "Delete Account",
+      "title": "Are you absolutely sure?",
+      "subtitle": "This action cannot be undone. This will permanently delete your account and remove your data from our servers.",
+      "cancel": "Cancel",
+      "deleteButton": "Delete Account"
+    },
+    "confirmAccount": {
+      "openButton": "Confirm Action",
+      "title": "Confirm your action",
+      "subtitle": "Are you sure you want to proceed with this action?",
+      "cancel": "Cancel",
+      "continue": "Continue"
+    },
+    "rightSheet": {
+      "openButton": "Open Right Sheet",
+      "title": "Edit Settings",
+      "subtitle": "Make changes to your settings here.",
+      "usernameLabel": "Username",
+      "usernamePlaceholder": "@johndoe",
+      "bioLabel": "Bio",
+      "bioPlaceholder": "Tell us about yourself",
+      "cancel": "Cancel",
+      "saveChanges": "Save Changes"
+    },
+    "leftSheet": {
+      "openButton": "Left Sheet",
+      "title": "Navigation",
+      "subtitle": "Quick access to main sections",
+      "items": {
+        "profile": "Profile",
+        "settings": "Settings",
+        "messages": "Messages",
+        "logout": "Logout"
+      }
+    },
+    "topSheet": {
+      "openButton": "Top Sheet",
+      "title": "Notification Banner",
+      "subtitle": "Important announcements and updates",
+      "message": "We've updated our privacy policy. Please review the changes."
+    },
+    "bottomSheet": {
+      "openButton": "Bottom Sheet",
+      "title": "Quick Actions",
+      "subtitle": "Frequently used actions",
+      "actions": {
+        "new": "New",
+        "edit": "Edit",
+        "copy": "Copy",
+        "delete": "Delete"
+      }
+    },
+    "drawer": {
+      "openButton": "Open Drawer",
+      "title": "Drawer Title",
+      "subtitle": "This is a drawer component optimized for mobile.",
+      "nameLabel": "Name",
+      "namePlaceholder": "Enter your name",
+      "emailLabel": "Email",
+      "emailPlaceholder": "Enter your email",
+      "submit": "Submit",
+      "cancel": "Cancel"
+    },
+    "contextMenu": {
+      "title": "Context Menu",
+      "subtitle": "Right-click on the area below to open the context menu:",
+      "hint": "Right-click here",
+      "items": {
+        "copy": "Copy",
+        "edit": "Edit",
+        "new": "New",
+        "showGrid": "Show Grid",
+        "showRulers": "Show Rulers",
+        "delete": "Delete"
+      }
+    },
+    "commandPaletteActions": {
+      "viewProfile": "View Profile",
+      "settings": "Settings",
+      "messages": "Messages",
+      "createNew": "Create New",
+      "copyLink": "Copy Link"
+    }
+  },
+  "drag-and-drop": {
+    "title": "Drag & Drop Components",
+    "subtitle": "Interactive drag-and-drop interfaces for reordering and organizing content",
+    "sections": {
+      "draggableCards": {
+        "title": "Draggable Cards",
+        "description": "Drag cards to reorder them in a grid layout",
+        "item": "Item",
+        "dragToReorder": "drag to reorder",
+        "play": "Play"
+      },
+      "sortableList": {
+        "title": "Sortable List",
+        "description": "Drag cards to reorder them in a grid layout"
+      },
+      "kanbanBoard": {
+        "title": "Kanban Board",
+        "description": "Manage your tasks across different stages",
+        "columns": {
+          "todo": "To Do",
+          "inProgress": "In Progress",
+          "done": "Done"
+        },
+        "task": "Task"
+      },
+      "addContent": {
+        "title": "Add Content of Your Choice",
+        "description": "Drag Cards to reorder them in a grid layout",
+        "contentLabel": "Content of your choice",
+        "month": "Jan 2026"
+      },
+      "treeView": {
+        "title": "Tree View",
+        "description": "Drag items to reorder or move between groups",
+        "group": "Group",
+        "items": "Items",
+        "groupDescriptions": {
+          "first": "First group",
+          "second": "Second group",
+          "third": "Third group"
+        },
+        "ungrouped": "Ungrouped",
+        "child": "Child",
+        "dragToReorder": "Drag to reorder"
+      }
+    },
+    "howToUse": {
+      "title": "How to Use Drag & Drop",
+      "steps": {
+        "step1": "Click and hold on an item with the grip icon",
+        "step2": "Drag the item to a new position",
+        "step3": "Release to drop the item in its new location",
+        "step4": "For Kanban boards, drag tasks between columns to change status"
+      }
+    }
+  },
+  "navigationMenu": {
+    "colorPalettes": "Color Palettes",
+    "buttons": "Buttons",
+    "inputs": "Inputs",
+    "forms": "Forms",
+    "cards": "Cards",
+    "alerts": "Alerts",
+    "badges": "Badges",
+    "tables": "Tables",
+    "navigation": "Navigation",
+    "feedback": "Feedback",
+    "layout": "Layout",
+    "dataDisplay": "Data Display",
+    "overlays": "Overlays",
+    "dragAndDrop": "Drag And Drop"
+  }
+}

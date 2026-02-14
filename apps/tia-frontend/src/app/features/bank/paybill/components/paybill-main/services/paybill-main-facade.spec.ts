@@ -7,6 +7,7 @@ import { Subject } from 'rxjs';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { PaybillActions } from '../../../store/paybill.actions';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
+import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions/transactions.actions';
 
 describe('PaybillMainFacade', () => {
   let service: PaybillMainFacade;
@@ -15,7 +16,6 @@ describe('PaybillMainFacade', () => {
   let routerEvents$: Subject<any>;
 
   const storeSignals = {
-    currentStep: signal('DETAILS'),
     paymentPayload: signal<any>(null),
     activeCategory: signal<any>(null),
     storeActiveProvider: signal<any>(null),
@@ -53,7 +53,6 @@ describe('PaybillMainFacade', () => {
 
     service = TestBed.inject(PaybillMainFacade);
 
-    (service as any).currentStep = storeSignals.currentStep;
     (service as any).paymentPayload = storeSignals.paymentPayload;
     (service as any).activeCategory = storeSignals.activeCategory;
     (service as any).storeActiveProvider = storeSignals.storeActiveProvider;
@@ -71,9 +70,6 @@ describe('PaybillMainFacade', () => {
 
   it('init: should dispatch loadAccounts and reset searchQuery', () => {
     service.init();
-    expect(mockStore.dispatch).toHaveBeenCalledWith(
-      AccountsActions.loadAccounts({}),
-    );
     expect(service.searchQuery()).toBe('');
   });
 
@@ -132,6 +128,20 @@ describe('PaybillMainFacade', () => {
       expect(service.showSearch()).toBe(true);
     });
 
+    it('init: should dispatch selectCategory and selectProvider when URL contains category and provider', () => {
+      mockRouter.url = '/bank/paybill/pay/utilities/gas-provider';
+
+      service.init();
+
+      expect(mockStore.dispatch).toHaveBeenCalledWith(
+        PaybillActions.selectCategory({ categoryId: 'utilities' }),
+      );
+
+      expect(mockStore.dispatch).toHaveBeenCalledWith(
+        PaybillActions.selectProvider({ providerId: 'gas-provider' }),
+      );
+    });
+
     it('isRootProviderView: should be true when no sub-provider is selected', () => {
       mockRouter.url = '/bank/paybill/pay';
       routerEvents$.next(new NavigationEnd(1, mockRouter.url, '/url'));
@@ -153,15 +163,36 @@ describe('PaybillMainFacade', () => {
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/bank/paybill/pay']);
     });
 
-    it('backToDetails: should clear notifications, reset step, and navigate', () => {
+    it('resetPaymentForm: should dispatch resetPaymentForm action', () => {
+      service.resetPaymentForm();
+      expect(mockStore.dispatch).toHaveBeenCalledWith(
+        PaybillActions.resetPaymentForm(),
+      );
+    });
+
+    it('resetToDashboard: should navigate to the dashboard', () => {
+      service.resetToDashboard();
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/bank/dashboard']);
+    });
+
+    it('backToDetails: should clear notifications and navigate to pay root', () => {
       service.backToDetails();
+
       expect(mockStore.dispatch).toHaveBeenCalledWith(
         PaybillActions.clearAllNotifications(),
       );
-      expect(mockStore.dispatch).toHaveBeenCalledWith(
-        PaybillActions.setPaymentStep({ step: 'DETAILS' }),
-      );
       expect(mockRouter.navigate).toHaveBeenCalledWith(['bank/paybill/pay']);
+    });
+    it('clearRepeatTransaction: should clear repeat data and selection in store', () => {
+      service.clearRepeatTransaction();
+
+      expect(mockStore.dispatch).toHaveBeenCalledWith(
+        TransactionActions.clearTransactionToRepeat(),
+      );
+
+      expect(mockStore.dispatch).toHaveBeenCalledWith(
+        PaybillActions.clearSelection(),
+      );
     });
   });
 });

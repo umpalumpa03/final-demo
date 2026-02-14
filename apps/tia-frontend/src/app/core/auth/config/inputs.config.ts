@@ -7,7 +7,10 @@ export const SIGN_IN_FORM = {
   },
   password: {
     label: 'auth.sign-in.passwordLabel',
-    placeholder: 'auth.sign-in.usernamePlaceholder',
+    placeholder: 'auth.sign-in.passwordPlaceholder',
+  },
+  checkbox: {
+    label: 'auth.sign-in.checkbox',
   },
 } as const;
 

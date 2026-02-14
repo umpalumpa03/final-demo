@@ -1,8 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { LoanCard } from './loan-card';
 import { ILoan } from '../../models/loan.model';
-import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { LOAN_ICONS } from '../../config/loan-icons.config';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('LoanCard', () => {
   let component: LoanCard;
@@ -23,7 +24,7 @@ describe('LoanCard', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LoanCard],
+      imports: [LoanCard, TranslateModule.forRoot()],
     }).compileComponents();
     fixture = TestBed.createComponent(LoanCard);
     component = fixture.componentInstance;

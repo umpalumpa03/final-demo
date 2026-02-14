@@ -1,20 +1,51 @@
+<div
+  [style.max-width]="'60rem'"
+  [style.margin-bottom]="'2.2rem'"
+  [style.margin-top]="'4.2rem'"
+>
+  <lib-text-input
+    [formControl]="searchControl"
+    [config]="{ 
+    ...searchInputConfig, 
+    placeholder: (searchInputConfig.placeholder | translate) 
+  }"
+  />
+</div>
+
 <app-paybill-templates
-  [templateGroups]="templateGroups()"
-  [templates]="templates()"
+  [templateGroups]="displayGroups()"
+  [templates]="displayTemplates()"
   [activeModal]="modalType()"
   [isModalOpen]="isModalOpen()"
   [currentModalConfig]="currentModalConfig()"
-  [templateCategories]="categoryOptions()"
-  [templateProviders]="templateProviders()"
   [selectedDeleteItem]="selectedItemName()"
   [isLoading]="isLoading()"
+  [templateCategories]="categoryOptions()"
   (headerButtonAction)="handleHeaderAction($event)"
   (modalOpenAction)="handleModalToggle()"
   (formSubmit)="handleFormSubmit($event)"
-  (categorySelected)="onCategorySelected($event)"
   (deleteTemplateModal)="deleteTemplate()"
   (treeAction)="onTreeAction($event)"
   (deleteGroupModal)="deleteGroup()"
   (treeItemMoved)="templateMoved($event)"
   [selectAll]="selectAll()"
+  (categorySelected)="onCategorySelect($event)"
+  [selectLoading]="selectLoading()"
+  [createTemplateForm]="createTemplateForm"
+  [editTemplateForm]="editTemplateForm"
+  [editGroupForm]="editGroupForm"
+  [createGroupForm]="createGroupForm"
+  [templateCategories]="categoryOptions()"
+  [parentProviders]="parentProviderOptions()"
+  [selectLoading]="isLoading()"
+  [isCategorySelected]="isCategorySelected()"
+  [childProviderOptions]="childProviderOptions()"
+  (childProviderSelected)="onParentProviderSelect($event)"
+  [paymentFields]="paymentField()"
+  [selectedItems]="selectedItems()"
+  (markedCheckbox)="onItemChecked($event)"
+  (selectedItem)="onSelectedItem($event)"
+  (payAction)="onPayAction()"
+  [isOtpModalOpen]="isOtpModalOpen()"
+  [isPaymentModalHidden]="isPaymentModalHidden()"
 ></app-paybill-templates>

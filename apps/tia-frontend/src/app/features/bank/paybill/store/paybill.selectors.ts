@@ -39,6 +39,38 @@ export const selectActiveCategory = createSelector(
   },
 );
 
+export const selectProvidersDropdown = createSelector(
+  selectActiveCategory,
+  (activeCategory) => {
+    if (!activeCategory) return [];
+
+    return activeCategory.providers
+      .filter((provider) => provider.parentId === null)
+      .map((provider) => ({
+        label: provider.name ?? '',
+        value: provider.id,
+      }));
+  },
+);
+
+export const selectFilteredProviders = createSelector(
+  selectPaybillState,
+  (state) => {
+    if (!state.filteredProviders || state.filteredProviders.length === 0) {
+      return [];
+    }
+
+    const mapped = state.filteredProviders.map((levelProviders) =>
+      levelProviders.map((item) => ({
+        label: item.name ?? '',
+        value: item.id,
+        isFinal: item.isFinal,
+      })),
+    );
+    return mapped;
+  },
+);
+
 export const selectActiveProvider = createSelector(
   selectPaybillState,
   selectProviders,
@@ -71,11 +103,6 @@ export const selectLoading = createSelector(
 export const selectVerifiedDetails = createSelector(
   selectPaybillState,
   (state) => state.verifiedDetails,
-);
-
-export const selectCurrentStep = createSelector(
-  selectPaybillState,
-  (state) => state.currentStep,
 );
 
 export const selectPaymentPayload = createSelector(
@@ -135,8 +162,53 @@ export const selectTemplatesGroupWithConfigs = createSelector(
     })),
 );
 
+// check loaded state
 export const selectPaymentFields = createSelector(
   selectPaybillState,
-  (state) => state.paymentDetails?.fields ?? []
+  (state) => state.paymentDetails?.fields ?? [],
 );
 
+export const selectServiceId = createSelector(
+  selectPaybillState,
+  (state) => state.paymentDetails?.serviceId,
+);
+
+export const selectCategoriesLoaded = createSelector(
+  selectCategories,
+  (categories) => categories.length > 0,
+);
+
+export const selectTemplatesLoaded = createSelector(
+  selectTemplates,
+  (templates) => templates.length > 0,
+);
+
+export const selectTemplateGroupsLoaded = createSelector(
+  selectTemplatesGroup,
+  (groups) => groups.length > 0,
+);
+
+export const selectSelectedTemplates = createSelector(
+  selectPaybillState,
+  (state) => state.selectedItems,
+);
+
+export const selectDistributedAmount = createSelector(
+  selectPaybillState,
+  (state) => state.distributedAmount,
+);
+
+export const selectTotalAmount = createSelector(
+  selectPaybillState,
+  (state) => state.totalAmount,
+);
+
+export const selectSelectedSenderAccountId = createSelector(
+  selectPaybillState,
+  (state) => state.selectedSenderAccountId,
+);
+
+export const selectFormPayload = createSelector(
+  selectPaybillState,
+  (state) => state.paymentsForm,
+);

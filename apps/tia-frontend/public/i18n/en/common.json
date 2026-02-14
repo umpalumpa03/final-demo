@@ -13,7 +13,8 @@
     "stay": "Stay",
     "leave": "Leave",
     "ungrouped": "Ungrouped",
-    "resend": "Resend"
+    "resend": "Resend",
+    "swap": "Swap Accounts"
   },
   "labels": {
     "loading": "Loading...",
@@ -23,15 +24,25 @@
   },
   "alertMessages": {
     "success": "success",
-    "successMessage": "Your changes have been saved successfully!"
+    "error": "error",
+    "warning": "warning",
+    "information": "information"
   },
   "validation": {
     "required": "This field is required",
     "email": "Please enter a valid email",
-    "minLength": "Minimum {{min}} characters required",
-    "maxLength": "Maximum {{max}} characters allowed",
+    "minLength": "Minimum {{minLength}} characters required",
+    "maxLength": "Maximum {{maxLength}} characters allowed",
     "unsavedChanges": "You have unsaved changes. Do you really want to leave?",
-    "confirmAction": "Confirm your action"
+    "confirmAction": "Confirm your action",
+    "notFound": "Email not found",
+    "pattern": "Invalid format",
+    "min": "Minimum value is {{min}}",
+    "max": "Maximum value is {{max}}",
+    "passwordStrength": "Password is too weak",
+    "passwordRules": "Password does not meet requirements",
+    "passwordMismatch": "Passwords do not match",
+    "default": "Invalid value"
   },
   "navigation": {
     "dashboard": "Dashboard",
@@ -43,5 +54,13 @@
     "paybills": "Paybill",
     "settings": "Settings",
     "messaging": "Messaging"
+  },
+  "no-connection": {
+    "title": "No Internet Connection",
+    "description": "Your device is currently offline. Please check your internet connection and try again."
+  },
+  "reconnected": {
+    "title": "Connection Restored",
+    "description": "Your internet connection has been restored successfully."
   }
 }

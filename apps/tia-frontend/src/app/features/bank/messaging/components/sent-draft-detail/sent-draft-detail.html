@@ -1,3 +1,18 @@
+@if(isLoading() && !emailDetail?.()) {
+<div class="loading-state">
+  <app-route-loader variant="pulsing" />
+</div>
+} @else if(error()) {
+<div class="loading-state">
+  <app-error-states
+    variant="failed"
+    [header]="'messaging.errorStates.header' | translate"
+    [message]="'messaging.errorStates.message' | translate"
+    [buttonMessage]="'messaging.errorStates.retry' | translate"
+    (buttonClick)="retry()"
+  />
+</div>
+} @else {
 <app-email-detail [data]="emailDetail?.()">
   @if (!fromSent) {
   <div class="button-container">
@@ -8,7 +23,9 @@
       variant="outline"
       [icon]="'red-trash.svg'"
       (click)="onDelete($event)"
-      ><span class="delete-btn">{{ 'messaging.mail-detail.delete' | translate }}</span></app-button
+      ><span class="delete-btn"
+        >{{ 'messaging.mail-detail.delete' | translate }}</span
+      ></app-button
     >
   </div>
   } @else if (fromSent) {
@@ -33,6 +50,7 @@ reply.id) {
   ></app-reply-form>
 </div>
 }
+}
 <app-ui-modal [isOpen]="isDeleteModalOpen()" (closed)="onCancelDelete()">
   <div class="delete-account">
     <header class="delete-account__header">
@@ -45,7 +63,11 @@ reply.id) {
       <app-button variant="outline" (click)="onCancelDelete()"
         >{{ 'messaging.deleteModal.cancel' | translate }}</app-button
       >
-      <app-button variant="destructive" (click)="onConfirmDelete()"
+      <app-button
+        variant="destructive"
+        (click)="onConfirmDelete()"
+        [isLoading]="isDeleting()"
+        icon="trash-icon.svg"
         >{{ 'messaging.deleteModal.delete' | translate }}</app-button
       >
     </footer>

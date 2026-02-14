@@ -1,0 +1,17 @@
+<div
+  class="widget-card"
+  [class.widget-card--green]="item().color === 'green'"
+  [class.widget-card--yellow]="item().color === 'yellow'"
+>
+  @if (item().color === 'green') {
+  <span class="widget-card__dot widget-card__dot-green"></span>
+  } @if (item().color === 'yellow') {
+  <span class="widget-card__dot widget-card__dot-yellow"></span>
+  }
+  <div class="widget-card__content">
+    <h3 class="widget-card__title">{{ item().title | translate }}</h3>
+    @if (item().description) {
+    <p class="widget-card__desc">{{ item().description | translate }}</p>
+    }
+  </div>
+</div>

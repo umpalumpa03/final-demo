@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { PaybillIdentification } from '../../components/paybill-main/shared/models/paybill.model';
 import {
@@ -6,11 +6,18 @@ import {
   PaybillDynamicFormValues,
 } from './models/dynamic-form.model';
 import { InputConfig } from '@tia/shared/lib/forms/models/input.model';
+import {
+  selectPaymentFields,
+  selectVerifiedDetails,
+} from '../../store/paybill.selectors';
+import { Store } from '@ngrx/store';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PaybillDynamicForm {
+  private readonly store = inject(Store);
+
   public syncFormControls(
     form: FormGroup,
     fields: PaybillDynamicField[],
@@ -59,11 +66,81 @@ export class PaybillDynamicForm {
     const amountControl = form.controls['amount'];
     if (!amountControl) return;
 
+    const amountPattern = /^\d+(\.\d{1,2})?$/;
+
     const validators = isVerified
-      ? [Validators.required, Validators.min(0.01), Validators.max(9999)]
-      : [Validators.required, Validators.max(9999)];
+      ? [
+          Validators.required,
+          Validators.min(10),
+          Validators.max(9999),
+          Validators.pattern(amountPattern),
+        ]
+      : [
+          Validators.required,
+          Validators.max(9999),
+          Validators.pattern(amountPattern),
+        ];
 
     amountControl.setValidators(validators);
     amountControl.updateValueAndValidity({ emitEvent: false });
+  }
+
+  public syncFormWithPaymentFields(
+    form: FormGroup,
+    initialFields: Record<string, string | number>,
+    amountValidator?: boolean,
+  ): void {
+    const fields = this.store.selectSignal(selectPaymentFields)();
+    const details = this.store.selectSignal(selectVerifiedDetails)();
+    const isVerified = !!details?.valid;
+
+    this.syncFormControls(form, fields);
+
+    if (amountValidator) {
+      this.updateAmountValidators(form, isVerified);
+    }
+
+    const patchData = Object.entries(initialFields).reduce<
+      Record<string, string | number>
+    >((acc, [key, value]) => {
+      const incomingValue = value;
+      const currentControlValue = form.get(key)?.value;
+
+      const hasIncomingData =
+        incomingValue !== '' &&
+        incomingValue !== null &&
+        incomingValue !== undefined;
+      const isCurrentEmpty =
+        currentControlValue === '' ||
+        currentControlValue === null ||
+        currentControlValue === undefined;
+
+      if (hasIncomingData || isCurrentEmpty) {
+        acc[key] = incomingValue;
+      }
+      return acc;
+    }, {});
+
+    form.patchValue(patchData, { emitEvent: false });
+
+    if (isVerified && (details?.amountDue ?? 0) > 0) {
+      form.patchValue({ amount: details?.amountDue }, { emitEvent: false });
+    }
+  }
+
+  public resetFormToInitialState(
+    form: FormGroup,
+    initialFields: Record<string, string | number>,
+  ): void {
+    const staticKeys = Object.keys(initialFields);
+    const currentKeys = Object.keys(form.controls);
+
+    currentKeys.forEach((key) => {
+      if (!staticKeys.includes(key)) {
+        form.removeControl(key);
+      }
+    });
+
+    form.reset(initialFields);
   }
 }

@@ -1,7 +1,7 @@
 <div class="transaction-list">
   @if (transactions().length === 0) {
   <div class="transaction-list__empty">
-    <p class="transaction-list__empty-text">No transactions found</p>
+    <p class="transaction-list__empty-text">{{'my-products.card.card-transactions.transaction-list.noTransactions' | translate }}</p>
   </div>
   } @else {
   <div class="transaction-list__items">
@@ -11,8 +11,9 @@
       [date]="formatDate(transaction.createdAt)"
       [category]="getCategoryName(transaction.category)"
       [referenceNumber]="transaction.id.substring(0, 6).toUpperCase()"
-      [amount]="formatAmount(transaction.amount, transaction.currency)"
+[amount]="formatAmount(transaction.amount, transaction.currency, transaction.transactionType)"
       [status]="'completed'"
+       [transactionType]="transaction.transactionType"
     />
     }
   </div>

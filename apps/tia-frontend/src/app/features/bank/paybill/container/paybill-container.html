@@ -1,17 +1,4 @@
 <section class="global-bank-wrapper">
-  <div class="paybill-container__notification-stack">
-    @for (toast of notifications(); track toast.id) {
-    <div class="paybill-container__notification-item">
-      <app-dismissible-alerts
-        [alertType]="toast.notificationType"
-        [alertMessage]="toast.message"
-        [alertTitle]="toast.notificationType === 'warning' ? 'Action Failed' : 'Success'"
-        (close)="handleDismiss(toast.id!)"
-      />
-    </div>
-    }
-  </div>
-
   <header class="paybill-container__header">
     <app-breadcrumbs
       [breadcrumbs]="breadcrumbs()"

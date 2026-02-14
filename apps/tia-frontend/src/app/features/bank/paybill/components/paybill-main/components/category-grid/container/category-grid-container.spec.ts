@@ -5,11 +5,15 @@ import { signal } from '@angular/core';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { PaybillActions } from '../../../../../store/paybill.actions';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { ActivatedRoute, Router } from '@angular/router';
+import { BreakpointService } from '@tia/core/services/breakpoints/breakpoint.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('CategoryGridContainer', () => {
   let component: CategoryGridContainer;
   let fixture: ComponentFixture<CategoryGridContainer>;
   let store: MockStore;
+  let router: Router;
 
   const mockPaybillMainFacade = {
     searchQuery: signal(''),
@@ -20,16 +24,25 @@ describe('CategoryGridContainer', () => {
     isLoading: signal(false),
   };
 
+  const mockBreakpointService = {
+    isXsMobile: signal(false),
+    isTablet: signal(false),
+  };
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CategoryGridContainer],
+      imports: [CategoryGridContainer, TranslateModule.forRoot()],
       providers: [
         { provide: PaybillMainFacade, useValue: mockPaybillMainFacade },
+        { provide: BreakpointService, useValue: mockBreakpointService },
+        { provide: Router, useValue: { navigate: vi.fn() } },
+        { provide: ActivatedRoute, useValue: { snapshot: {} } },
         provideMockStore(),
       ],
     }).compileComponents();
 
     store = TestBed.inject(MockStore);
+    router = TestBed.inject(Router);
     fixture = TestBed.createComponent(CategoryGridContainer);
     component = fixture.componentInstance;
 
@@ -38,6 +51,28 @@ describe('CategoryGridContainer', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('gridColumns responsive logic', () => {
+    it('should return 1 column for mobile', () => {
+      mockBreakpointService.isXsMobile.set(true);
+      fixture.detectChanges();
+      expect(component.gridColumns()).toBe('1');
+    });
+
+    it('should return 2 columns for tablet', () => {
+      mockBreakpointService.isXsMobile.set(false);
+      mockBreakpointService.isTablet.set(true);
+      fixture.detectChanges();
+      expect(component.gridColumns()).toBe('2');
+    });
+
+    it('should return 4 columns for desktop', () => {
+      mockBreakpointService.isXsMobile.set(false);
+      mockBreakpointService.isTablet.set(false);
+      fixture.detectChanges();
+      expect(component.gridColumns()).toBe('4');
+    });
   });
 
   describe('formattedCategories logic', () => {
@@ -51,7 +86,6 @@ describe('CategoryGridContainer', () => {
 
     it('should filter categories based on search query', () => {
       mockPaybillMainFacade.searchQuery.set('net');
-      fixture.detectChanges();
 
       const formatted = component.formattedCategories();
       expect(formatted.length).toBe(1);
@@ -59,7 +93,7 @@ describe('CategoryGridContainer', () => {
     });
   });
 
-  it('should dispatch selectCategory action when a category is selected', () => {
+  it('should dispatch selectCategory and navigate when a category is selected', () => {
     const dispatchSpy = vi.spyOn(store, 'dispatch');
     const categoryId = 'UTILITIES';
 
@@ -68,13 +102,9 @@ describe('CategoryGridContainer', () => {
     expect(dispatchSpy).toHaveBeenCalledWith(
       PaybillActions.selectCategory({ categoryId }),
     );
-  });
-
-  it('should display the grid when not loading', () => {
-    mockPaybillMainFacade.isLoading.set(false);
-    fixture.detectChanges();
-
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('app-category-grid')).toBeTruthy();
+    expect(router.navigate).toHaveBeenCalledWith(
+      [categoryId],
+      expect.any(Object),
+    );
   });
 });
