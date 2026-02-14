@@ -48,8 +48,7 @@ export class DashboardService {
         if (this.dirtyIds.size === 0) {
           this.myItems.set(storeWidgets);
         }
-      },
-      { allowSignalWrites: true },
+      }
     );
 
     effect(() => {
