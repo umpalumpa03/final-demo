@@ -1,3 +1,18 @@
+@if(isLoading() && !emailDetail?.()) {
+<div class="loading-state">
+  <app-route-loader variant="pulsing" />
+</div>
+} @else if(error()) {
+<div class="loading-state">
+  <app-error-states
+    variant="failed"
+    [header]="'messaging.errorStates.header' | translate"
+    [message]="'messaging.errorStates.message' | translate"
+    [buttonMessage]="'messaging.errorStates.retry' | translate"
+    (buttonClick)="retry()"
+  />
+</div>
+} @else {
 <app-email-detail [data]="emailDetail?.()">
   @if (!fromSent) {
   <div class="button-container">
@@ -34,6 +49,7 @@ reply.id) {
     (cancel)="onCancelReply()"
   ></app-reply-form>
 </div>
+}
 }
 <app-ui-modal [isOpen]="isDeleteModalOpen()" (closed)="onCancelDelete()">
   <div class="delete-account">

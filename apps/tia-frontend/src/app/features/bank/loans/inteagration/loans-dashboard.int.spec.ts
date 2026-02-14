@@ -18,11 +18,13 @@ describe('Loans Integration - Dashboard Interactions', () => {
       loans: [
         {
           ...mockLoansList[0],
+          id: 'loan-1',
           purpose: 'Personal Vacation',
           friendlyName: 'Trip to Italy',
         },
         {
           ...mockLoansList[1],
+          id: 'loan-2',
           purpose: 'Business Startup',
           friendlyName: 'Coffee Shop',
         },
@@ -32,7 +34,9 @@ describe('Loans Integration - Dashboard Interactions', () => {
   });
 
   afterEach(() => {
-    cleanupLoansTest(ctx.httpMock);
+    if (ctx && ctx.httpMock) {
+      cleanupLoansTest(ctx.httpMock);
+    }
   });
 
   it('should rename a loan and update the list optimistically', async () => {

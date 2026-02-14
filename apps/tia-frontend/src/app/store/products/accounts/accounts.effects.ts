@@ -50,6 +50,39 @@ export class AccountsEffects {
     ),
   );
 
+  loadActiveAccounts$ = createEffect(() =>
+    this.actions$.pipe(
+      // liisten specifically for the 'loadAccounts' action
+      ofType(AccountsActions.loadActiveAccounts),
+      // peek at the current accounts in the Store for comparison
+      withLatestFrom(this.store.select(selectAccounts)),
+      // only proceed to the API call if:
+      //  a manual refresh is requested or
+      //    store is empty / null
+      filter(
+        ([action, accounts]) =>
+          action.forceRefresh || !accounts || accounts.length === 0,
+      ),
+
+      // than fetch
+      switchMap(() =>
+        this.accountsService.getActiveAccounts().pipe(
+          // success-> the store with fresh data
+          map((accounts) =>
+            AccountsActions.loadActiveAccountsSuccess({ accounts }),
+          ),
+          catchError((error) =>
+            of(
+              AccountsActions.loadActiveAccountsFailure({
+                error: error.message || 'Failed to load accounts',
+              }),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+
   createAccount$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AccountsActions.createAccount),

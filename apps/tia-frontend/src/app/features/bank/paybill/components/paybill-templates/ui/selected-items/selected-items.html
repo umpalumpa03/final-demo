@@ -1,0 +1,21 @@
+<div class="selected__container">
+  <div class="selected__container__description">
+    <img src="images/svg/paybill/selected.svg" alt="selected icon" />
+    @if (forModal()) {
+    <span
+      >{{ selectedItems().length }} {{
+      'paybill.templates.paymentHeader.description' | translate}}</span
+    >
+    }@else {
+    <span
+      >{{ selectedItems().length }} {{
+      'paybill.templates.paymentHeader.description' | translate}}</span
+    >
+    }
+  </div>
+  @if (!forModal()) {
+  <app-button variant="default" (click)="onPaySelectedClick()">
+    {{ 'paybill.templates.paymentHeader.payAction' | translate}}
+  </app-button>
+  }
+</div>

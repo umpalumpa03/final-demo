@@ -16,6 +16,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map } from 'rxjs';
 import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions/transactions.actions';
 import { PaybillProvider } from '../shared/models/paybill.model';
+import { selectTransactionToRepeat } from 'apps/tia-frontend/src/app/store/transactions/transactions.selector';
 
 @Injectable({
   providedIn: 'root',
@@ -26,6 +27,7 @@ export class PaybillMainFacade {
   public readonly searchQuery = signal('');
 
   public init(): void {
+    this.store.dispatch(PaybillActions.loadCategories());
     this.store.dispatch(PaybillActions.initRepeatProcess());
     this.searchQuery.set('');
 
@@ -42,7 +44,9 @@ export class PaybillMainFacade {
         this.store.dispatch(PaybillActions.selectProvider({ providerId }));
       }
     } else {
-      this.store.dispatch(PaybillActions.clearSelection());
+      if (!this.transactionToRepeat()) {
+        this.store.dispatch(PaybillActions.clearSelection());
+      }
     }
   }
 
@@ -99,6 +103,10 @@ export class PaybillMainFacade {
 
   public readonly selectedSenderAccountId = this.store.selectSignal(
     PAYBILL_SELECTORS.selectSelectedSenderAccountId,
+  );
+
+  public readonly transactionToRepeat = this.store.selectSignal(
+    selectTransactionToRepeat,
   );
 
   // Computed data for smart components

@@ -94,7 +94,11 @@
     "confirmNewPasswordPlaceholder": "დაადასტურეთ ახალი პაროლი",
     "updatePassword": "პაროლის განახლება",
     "twoFactorAuth": "ორი ფაქტორიანი ავთენტიფიკაცია",
-    "passwordChangedSuccessfully": "პაროლი წარმატებით შეიცვალა"
+    "passwordChangedSuccessfully": "პაროლი წარმატებით შეიცვალა",
+    "tooltip": {
+      "passwordMismatch": "დამადასტურებელი პაროლი არასწორია ",
+      "fillAllFields": " შეავსეთ ყველა ველი"
+    }
   },
   "user-management": {
     "title": "მომხმარებელთა მართვა",

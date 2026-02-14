@@ -70,12 +70,20 @@
           </div>
         </div>
 
-        <div class="internal-amount__input-group">
+        <div
+          class="internal-amount__input-group"
+          [class.internal-amount__input-group--with-error]="hasInsufficientBalance() && (amountInput.value || destinationAmountInput.value)"
+        >
           <lib-text-input
             [formControl]="amountInput"
             [config]="sourceAmountConfig()"
             type="number"
           />
+          @if (hasInsufficientBalance() && (amountInput.value || destinationAmountInput.value)) {
+            <p class="internal-amount__error">
+              {{ 'transfers.internal.amount.insufficientBalance' | translate }}
+            </p>
+          }
         </div>
 
         <div class="internal-amount__input-group">
@@ -87,16 +95,21 @@
         </div>
       }
       @else {
-        <div class="internal-amount__input-group">
-          <lib-text-input
-            [formControl]="amountInput"
-            [config]="amountConfig()"
-            type="number"
-          />
+        <div class="internal-amount__amount-with-error">
+          <div class="internal-amount__input-group">
+            <lib-text-input
+              [formControl]="amountInput"
+              [config]="amountConfig()"
+              type="number"
+            />
+          </div>
+          @if (hasInsufficientBalance() && amountInput.value) {
+            <p class="internal-amount__error">
+              {{ 'transfers.internal.amount.insufficientBalance' | translate }}
+            </p>
+          }
         </div>
       }
-
-
 
       <div class="internal-amount__info-row">
         <p class="internal-amount__available">
@@ -113,12 +126,6 @@
           }
         </div>
       </div>
-
-      @if (hasInsufficientBalance() && amountInput.value) {
-        <p class="internal-amount__error">
-          {{ 'transfers.internal.amount.insufficientBalance' | translate }}
-        </p>
-      }
     </div>
 
     <div class="internal-amount__input-group">

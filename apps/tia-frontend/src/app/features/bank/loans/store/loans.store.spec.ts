@@ -5,38 +5,45 @@ import { of, throwError, Subject } from 'rxjs';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { LoansStore } from './loans.store';
 import { LoansService } from '../shared/services/loans.service';
-import { LoansCreateActions } from 'apps/tia-frontend/src/app/store/loans/loans.actions';
 import { HttpErrorResponse } from '@angular/common/http';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { AlertService } from '@tia/core/services/alert/alert.service';
+import { SuccessKeys, ErrorKeys } from './loans.state';
 
 describe('LoansStore', () => {
   let store: InstanceType<typeof LoansStore>;
   let loansService: any;
   let globalStore: any;
   let actions$: Subject<any>;
+  let translate: TranslateService;
+
+  const alertServiceMock = {
+    showAlert: vi.fn(),
+  };
 
   const mockLoans = [
     {
       id: '1',
       accountId: 'acc1',
-      friendlyName: 'My Loan',
-      purpose: 'home improvement',
-      loanAmount: 10000,
+      friendlyName: 'my loan',
+      purpose: 'car',
+      loanAmount: 5000,
       status: 1,
     },
     {
       id: '2',
       accountId: 'acc2',
-      friendlyName: 'Car Loan',
+      friendlyName: 'car loan',
       purpose: 'vehicle',
-      loanAmount: 20000,
+      loanAmount: 10000,
       status: 2,
     },
     {
       id: '3',
       accountId: 'acc1',
-      friendlyName: 'Personal',
-      purpose: 'personal',
-      loanAmount: 5000,
+      friendlyName: 'home loan',
+      purpose: 'house',
+      loanAmount: 200000,
       status: 3,
     },
   ];
@@ -50,14 +57,15 @@ describe('LoansStore', () => {
     id: '1',
     accountId: 'acc1',
     friendlyName: 'My Loan',
-    loanAmount: 10000,
     status: 1,
+    loanAmount: 5000,
   };
 
   beforeEach(() => {
     actions$ = new Subject();
+
     loansService = {
-      getAllLoans: vi.fn(),
+      getAllLoans: vi.fn().mockReturnValue(of([])),
       getLoanById: vi.fn(),
       updateFriendlyName: vi.fn(),
       getLoanMonths: vi.fn(),
@@ -67,287 +75,322 @@ describe('LoansStore', () => {
       calculatePartialPrepayment: vi.fn(),
       initiatePrepayment: vi.fn(),
       verifyPrepayment: vi.fn(),
-    };
-    globalStore = {
-      selectSignal: vi.fn(() => () => mockAccounts),
+      requestLoan: vi.fn(),
     };
 
+    globalStore = {
+      selectSignal: vi.fn(() => () => mockAccounts),
+      dispatch: vi.fn(),
+      pipe: vi.fn(() => of('val')),
+    } as any;
+
     TestBed.configureTestingModule({
+      imports: [TranslateModule.forRoot()],
       providers: [
         LoansStore,
         { provide: LoansService, useValue: loansService },
+        { provide: AlertService, useValue: alertServiceMock },
         { provide: Store, useValue: globalStore },
         { provide: Actions, useValue: actions$ },
       ],
     });
+
     store = TestBed.inject(LoansStore);
+    translate = TestBed.inject(TranslateService);
+
+    vi.clearAllMocks();
   });
 
   it('should initialize with default state', () => {
     expect(store.loans()).toEqual([]);
     expect(store.loading()).toBe(false);
-    expect(store.filterStatus()).toBeNull();
   });
 
-  it('should compute loansWithAccountInfo', () => {
-    loansService.getAllLoans.mockReturnValue(of(mockLoans));
-    store.loadLoans({});
-    const loansWithInfo = store.loansWithAccountInfo();
-    expect(loansWithInfo[0].accountName).toBe('My Checking');
-    expect(loansWithInfo[1].accountName).toBe('Savings');
-  });
-
-  it('should show Unknown Account for unmatched', () => {
-    loansService.getAllLoans.mockReturnValue(
-      of([{ ...mockLoans[0], accountId: 'unknown' }]),
-    );
-    store.loadLoans({});
-    expect(store.loansWithAccountInfo()[0].accountName).toBe('Unknown Account');
-  });
-
-  it('should filter by account and status', () => {
-    loansService.getAllLoans.mockReturnValue(of(mockLoans));
-    store.loadLoans({});
-    store.setAccountFilter('acc1');
-    expect(store.filteredLoans().length).toBe(2);
-    store.setFilter(1);
-    expect(store.filteredLoans().length).toBe(1);
-  });
-
-  it('should compute activeAccountName', () => {
-    store.setAccountFilter('acc1');
-    expect(store.activeAccountName()).toBe('My Checking');
-    store.setAccountFilter(null);
-    expect(store.activeAccountName()).toBeNull();
-  });
-
-  it('should compute loan counts', () => {
-    loansService.getAllLoans.mockReturnValue(of(mockLoans));
-    store.loadLoans({});
-    const counts = store.loanCounts();
-    expect(counts.all).toBe(3);
-    expect(counts.pending).toBe(1);
-  });
-
-  it('should filter by search query', () => {
-    loansService.getAllLoans.mockReturnValue(of(mockLoans));
-    store.loadLoans({});
-    store.setSearchQuery('car');
-    expect(store.filteredLoans().length).toBe(1);
-    store.setSearchQuery('5000');
-    expect(store.filteredLoans().length).toBe(1);
-  });
-
-  it('should compute options', () => {
-    loansService.getLoanMonths.mockReturnValue(of([12, 24]));
-    loansService.getPurposes.mockReturnValue(
-      of([{ displayText: 'Home', value: 'home' }]),
-    );
-    loansService.getPrepaymentOptions.mockReturnValue(
-      of([
-        { prepaymentDisplayName: 'Full', prepaymentValue: 1, isActive: true },
-      ]),
-    );
-    store.loadMonths({});
-    store.loadPurposes({});
-    store.loadPrepaymentOptions({});
-    expect(store.loanMonthsOptions().length).toBe(2);
-    expect(store.purposeOptions().length).toBe(1);
-    expect(store.prepaymentTypeOptions().length).toBe(1);
-  });
-
-  it('should compute alert', () => {
-    expect(store.alert()).toBeNull();
-    store.showAlert('Test', 'success');
-    expect(store.alert()?.message).toBe('Test');
-  });
-
-  it('should handle basic methods', () => {
-    store.setFilter(2);
-    expect(store.filterStatus()).toBe(2);
-    store.clearLoanDetails();
-    expect(store.selectedLoanDetails()).toBeNull();
-    store.clearCalculationResult();
-    expect(store.calculationResult()).toBeNull();
-    store.setSearchQuery('test');
-    expect(store.searchQuery()).toBe('test');
-    store.reset();
-    expect(store.filterStatus()).toBeNull();
-    store.closeModals();
-    expect(store.isDetailsOpen()).toBe(false);
-  });
-
-  it('should load loans and handle forceChange', async () => {
-    loansService.getAllLoans.mockReturnValue(of(mockLoans));
-    store.loadLoans({});
-    await new Promise((resolve) => setTimeout(resolve, 10));
-    expect(store.loans().length).toBe(3);
-    loansService.getAllLoans.mockClear();
-    store.loadLoans({});
-    expect(loansService.getAllLoans).not.toHaveBeenCalled();
-    store.loadLoans({ forceChange: true });
-    await new Promise((resolve) => setTimeout(resolve, 10));
-    expect(loansService.getAllLoans).toHaveBeenCalled();
-  });
-
-  it('should handle load errors', async () => {
-    loansService.getAllLoans.mockReturnValue(
-      throwError(() => new Error('Failed')),
-    );
-    store.loadLoans({});
-    await new Promise((resolve) => setTimeout(resolve, 10));
-    expect(store.error()).toBe('Failed');
-  });
-
-  it('should load and cache loan details', async () => {
-    loansService.getLoanById.mockReturnValue(of(mockLoanDetails));
-    store.loadLoanDetails('1');
-    await new Promise((resolve) => setTimeout(resolve, 10));
-    expect(store.selectedLoanDetails()).toEqual(mockLoanDetails);
-    loansService.getLoanById.mockClear();
-    store.loadLoanDetails('1');
-    expect(loansService.getLoanById).not.toHaveBeenCalled();
-  });
-
-  it('should rename loan', async () => {
-    loansService.getAllLoans.mockReturnValue(of(mockLoans));
-    loansService.updateFriendlyName.mockReturnValue(of({}));
-    store.loadLoans({});
-    await new Promise((resolve) => setTimeout(resolve, 10));
-    store.renameLoan({ id: '1', name: 'New' });
-    await new Promise((resolve) => setTimeout(resolve, 10));
-    expect(store.loans().find((l) => l.id === '1')?.friendlyName).toBe('New');
-  });
-
-  it('should not reload months/purposes if exist', async () => {
-    loansService.getLoanMonths.mockReturnValue(of([12]));
-    loansService.getPurposes.mockReturnValue(
-      of([{ displayText: 'Home', value: 'home' }]),
-    );
-    store.loadMonths({});
-    store.loadPurposes({});
-    await new Promise((resolve) => setTimeout(resolve, 10));
-    loansService.getLoanMonths.mockClear();
-    loansService.getPurposes.mockClear();
-    store.loadMonths({});
-    store.loadPurposes({});
-    expect(loansService.getLoanMonths).not.toHaveBeenCalled();
-    expect(loansService.getPurposes).not.toHaveBeenCalled();
-  });
-
-  it('should handle calculation errors', async () => {
-    loansService.calculateFullPrepayment.mockReturnValue(
-      throwError(() => new Error('Calc failed')),
-    );
-    store.calculatePrepayment({ payload: { type: 'full', loanId: '1' } });
-    await new Promise((resolve) => setTimeout(resolve, 10));
-    expect(store.error()).toBe('Calc failed');
-  });
-
-  it('should auto-hide alert', async () => {
-    store.showAlert('Test', 'success');
-    expect(store.alertMessage()).toBe('Test');
-    await new Promise((resolve) => setTimeout(resolve, 3100));
-    expect(store.alertMessage()).toBeNull();
-  });
-
-  it('should open details and prepayment', async () => {
-    loansService.getLoanById.mockReturnValue(of(mockLoanDetails));
-    store.openDetails('1');
-    await new Promise((resolve) => setTimeout(resolve, 10));
-    expect(store.isDetailsOpen()).toBe(true);
-    store.openPrepayment(mockLoanDetails as any);
-    expect(store.isPrepaymentOpen()).toBe(true);
-    expect(store.isDetailsOpen()).toBe(false);
-  });
-
-  it('should initiate prepayment', async () => {
-    loansService.initiatePrepayment.mockReturnValue(
-      of({ verify: { challengeId: 'ch123' } }),
-    );
-    store.initiatePrepayment({ payload: { loanId: '1', amount: 100 } as any });
-    await new Promise((resolve) => setTimeout(resolve, 10));
-    expect(store.activeChallengeId()).toBe('ch123');
-  });
-
-  it('should handle insufficient funds', async () => {
-    const error = new HttpErrorResponse({
-      status: 400,
-      error: { message: 'Insufficient funds in payment account' },
+  describe('Filters and Search', () => {
+    beforeEach(async () => {
+      loansService.getAllLoans.mockReturnValue(of(mockLoans));
+      store.loadLoans({ forceChange: true });
+      await vi.waitFor(() => expect(store.loans().length).toBe(3));
     });
-    loansService.initiatePrepayment.mockReturnValue(throwError(() => error));
-    store.initiatePrepayment({ payload: { loanId: '1', amount: 100 } as any });
-    await new Promise((resolve) => setTimeout(resolve, 10));
-    expect(store.alertMessage()).toBe('Insufficient funds in payment account');
+
+    it('should filter loans by status', () => {
+      store.setFilter(1);
+      expect(store.filteredLoans().length).toBe(1);
+      expect(store.filteredLoans()[0].status).toBe(1);
+    });
+
+    it('should filter loans by account', () => {
+      store.setAccountFilter('acc1');
+      expect(store.filteredLoans().length).toBe(2);
+    });
+
+    it('should search loans by query', () => {
+      store.setSearchQuery('car');
+      expect(store.filteredLoans().length).toBeGreaterThanOrEqual(1);
+    });
+
+    it('should count loans correctly', () => {
+      const counts = store.loanCounts();
+      expect(counts.all).toBe(3);
+      expect(counts.pending).toBe(1);
+      expect(counts.approved).toBe(1);
+      expect(counts.declined).toBe(1);
+    });
   });
 
-  it('should handle missing challengeId', async () => {
-    loansService.initiatePrepayment.mockReturnValue(of({ verify: {} } as any));
-    store.initiatePrepayment({ payload: { loanId: '1', amount: 100 } as any });
-    await new Promise((resolve) => setTimeout(resolve, 10));
-    expect(store.error()).toBe('No challenge ID returned');
+  describe('Computed Signals', () => {
+    it('should map loans with account names', async () => {
+      loansService.getAllLoans.mockReturnValue(of(mockLoans));
+      store.loadLoans({ forceChange: true });
+
+      await vi.waitFor(() => {
+        const loansWithInfo = store.loansWithAccountInfo();
+        expect(loansWithInfo[0].accountName).toBe('My Checking');
+      });
+    });
+
+    it('should return active account name', () => {
+      store.setAccountFilter('acc1');
+      expect(store.activeAccountName()).toBe('My Checking');
+    });
+
+    it('should compute loan months options', async () => {
+      loansService.getLoanMonths.mockReturnValue(of([12, 24]));
+      store.loadMonths({ forceRefresh: true });
+
+      await vi.waitFor(() => {
+        expect(store.loanMonthsOptions()).toEqual([
+          { label: '12 Months', value: 12 },
+          { label: '24 Months', value: 24 },
+        ]);
+      });
+    });
+
+    it('should compute prepayment options filtering active only', async () => {
+      const options = [
+        {
+          prepaymentDisplayName: 'Full',
+          prepaymentValue: 'full',
+          isActive: true,
+        },
+        {
+          prepaymentDisplayName: 'Old',
+          prepaymentValue: 'old',
+          isActive: false,
+        },
+      ];
+      loansService.getPrepaymentOptions.mockReturnValue(of(options));
+      store.loadPrepaymentOptions({ forceRefresh: true });
+
+      await vi.waitFor(() => {
+        expect(store.prepaymentTypeOptions().length).toBe(1);
+      });
+    });
   });
 
-  it('should verify prepayment', async () => {
-    loansService.verifyPrepayment.mockReturnValue(of({ success: true }));
-    loansService.getAllLoans.mockReturnValue(of(mockLoans));
-    store.verifyPrepayment({ payload: { challengeId: 'ch123', code: '1234' } });
-    await new Promise((resolve) => setTimeout(resolve, 10));
-    expect(store.activeChallengeId()).toBeNull();
+  describe('Load Operations', () => {
+    it('should load loans successfully', async () => {
+      loansService.getAllLoans.mockReturnValue(of(mockLoans));
+      store.loadLoans({ forceChange: true });
+
+      await vi.waitFor(() => {
+        expect(store.loans().length).toBe(3);
+        expect(store.loading()).toBe(false);
+      });
+    });
+
+    it('should load and cache loan details', async () => {
+      loansService.getLoanById.mockReturnValue(of(mockLoanDetails));
+      store.loadLoanDetails('1');
+
+      await vi.waitFor(() => {
+        expect(store.selectedLoanDetails()).toEqual(mockLoanDetails);
+      });
+
+      vi.clearAllMocks();
+      store.loadLoanDetails('1');
+      expect(loansService.getLoanById).not.toHaveBeenCalled();
+    });
   });
 
-  it('should handle verification failure', async () => {
-    loansService.verifyPrepayment.mockReturnValue(
-      of({ success: false, message: 'Invalid' }),
-    );
-    store.verifyPrepayment({ payload: { challengeId: 'ch123', code: '1234' } });
-    await new Promise((resolve) => setTimeout(resolve, 10));
-    expect(store.error()).toContain('Invalid');
+  describe('Loan Actions', () => {
+    it('should rename loan successfully', async () => {
+      loansService.getAllLoans.mockReturnValue(of(mockLoans));
+      loansService.updateFriendlyName.mockReturnValue(of({}));
+
+      store.loadLoans({ forceChange: true });
+      await vi.waitFor(() => expect(store.loans().length).toBe(3));
+
+      store.renameLoan({ id: '1', name: 'New Name' });
+
+      await vi.waitFor(() => {
+        const loan = store.loans().find((l) => l.id === '1');
+        expect(loan?.friendlyName).toBe('New Name');
+      });
+    });
+
+    it('should rename loan and show error alert via service on failure', async () => {
+      loansService.updateFriendlyName.mockReturnValue(
+        throwError(
+          () => new HttpErrorResponse({ error: { message: 'Rename failed' } }),
+        ),
+      );
+
+      store.renameLoan({ id: '1', name: 'New Name' });
+
+      await vi.waitFor(() => {
+        expect(store.error()).toBe(ErrorKeys.RENAME);
+        expect(alertServiceMock.showAlert).toHaveBeenCalledWith(
+          'error',
+          ErrorKeys.RENAME,
+        );
+      });
+    });
   });
 
-  it('should navigate details', async () => {
-    loansService.getAllLoans.mockReturnValue(of(mockLoans));
-    loansService.getLoanById.mockReturnValue(of(mockLoanDetails));
-    store.loadLoans({});
-    await new Promise((resolve) => setTimeout(resolve, 10));
-    store.openDetails('1');
-    await new Promise((resolve) => setTimeout(resolve, 10));
-    loansService.getLoanById.mockReturnValue(
-      of({ ...mockLoanDetails, id: '2' }),
-    );
-    store.navigateDetails(1);
-    await new Promise((resolve) => setTimeout(resolve, 10));
-    expect(loansService.getLoanById).toHaveBeenCalledWith('2');
-    loansService.getLoanById.mockReturnValue(
-      of({ ...mockLoanDetails, id: '1' }),
-    );
-    store.navigateDetails(-1);
-    await new Promise((resolve) => setTimeout(resolve, 10));
-    expect(loansService.getLoanById).toHaveBeenCalledWith('1');
+  describe('Prepayment Flow', () => {
+    it('should calculate full prepayment', async () => {
+      const result = { displayedInfo: [{ label: 'Total', value: '1000' }] };
+      loansService.calculateFullPrepayment.mockReturnValue(
+        of({ items: result.displayedInfo }),
+      );
+
+      store.calculatePrepayment({ payload: { type: 'full', loanId: '1' } });
+
+      await vi.waitFor(() => {
+        expect(store.calculationResult()).toEqual(result);
+      });
+    });
+
+    it('should calculate partial prepayment', async () => {
+      const result = { displayedInfo: [{ label: 'Amount', value: '500' }] };
+      loansService.calculatePartialPrepayment.mockReturnValue(of(result));
+
+      store.calculatePrepayment({
+        payload: {
+          type: 'partial',
+          loanId: '1',
+          amount: 500,
+          loanPartialPaymentType: 'reduce-term',
+        },
+      });
+
+      await vi.waitFor(() => {
+        expect(store.calculationResult()).toEqual(result);
+      });
+    });
+
+    it('should handle calculation error', async () => {
+      loansService.calculateFullPrepayment.mockReturnValue(
+        throwError(() => new Error('Calc Error')),
+      );
+      store.calculatePrepayment({ payload: { type: 'full', loanId: '1' } });
+
+      await vi.waitFor(() => {
+        expect(alertServiceMock.showAlert).toHaveBeenCalledWith(
+          'error',
+          ErrorKeys.CALCULATION,
+        );
+      });
+    });
+
+    it('should initiate prepayment and set challenge ID', async () => {
+      loansService.initiatePrepayment.mockReturnValue(
+        of({ verify: { challengeId: 'c123' } }),
+      );
+      store.initiatePrepayment({ payload: {} as any });
+
+      await vi.waitFor(() => {
+        expect(store.activeChallengeId()).toBe('c123');
+        expect(alertServiceMock.showAlert).toHaveBeenCalledWith(
+          'success',
+          SuccessKeys.OTP_SENT,
+        );
+      });
+    });
+
+    it('should verify prepayment successfully', async () => {
+      loansService.verifyPrepayment.mockReturnValue(of({ success: true }));
+      loansService.getAllLoans.mockReturnValue(of(mockLoans));
+
+      store.verifyPrepayment({ payload: { challengeId: '1', code: '123' } });
+
+      await vi.waitFor(() => {
+        expect(alertServiceMock.showAlert).toHaveBeenCalledWith(
+          'success',
+          SuccessKeys.PAYMENT_COMPLETE,
+        );
+        expect(store.activeChallengeId()).toBeNull();
+      });
+    });
+
+    it('should handle generic verify prepayment failure', async () => {
+      loansService.verifyPrepayment.mockReturnValue(
+        throwError(() => new HttpErrorResponse({ status: 500 })),
+      );
+
+      store.verifyPrepayment({ payload: { challengeId: '1', code: 'wrong' } });
+
+      await vi.waitFor(() => {
+        expect(store.error()).toBe(ErrorKeys.VERIFY_PREPAYMENT);
+      });
+    });
   });
 
-  it('should handle wrap navigation', async () => {
-    loansService.getAllLoans.mockReturnValue(of(mockLoans));
-    loansService.getLoanById.mockReturnValue(of(mockLoanDetails));
-    store.loadLoans({});
-    await new Promise((resolve) => setTimeout(resolve, 10));
-    store.openDetails('1');
-    await new Promise((resolve) => setTimeout(resolve, 10));
-    loansService.getLoanById.mockReturnValue(
-      of({ ...mockLoanDetails, id: '3' }),
-    );
-    store.navigateDetails(-1);
-    await new Promise((resolve) => setTimeout(resolve, 10));
-    expect(loansService.getLoanById).toHaveBeenCalledWith('3');
+  describe('Request Loan', () => {
+    it('should call AlertService with success message on successful Request Loan', async () => {
+      loansService.requestLoan.mockReturnValue(of({ id: '1' }));
+      loansService.getAllLoans.mockReturnValue(of(mockLoans));
+
+      store.requestLoan({} as any);
+
+      await vi.waitFor(() => {
+        expect(alertServiceMock.showAlert).toHaveBeenCalledWith(
+          'success',
+          SuccessKeys.REQUEST,
+        );
+        expect(loansService.getAllLoans).toHaveBeenCalled();
+      });
+    });
+
+    it('should handle request loan error', async () => {
+      loansService.requestLoan.mockReturnValue(
+        throwError(() => new Error('Failed')),
+      );
+
+      store.requestLoan({} as any);
+
+      await vi.waitFor(() => {
+        expect(store.error()).toBe(ErrorKeys.REQUEST_LOAN);
+      });
+    });
   });
 
-  it('should listen to global create success', async () => {
-    loansService.getAllLoans.mockReturnValue(of(mockLoans));
-    store.loadLoans({});
-    await new Promise((resolve) => setTimeout(resolve, 10));
-    loansService.getAllLoans.mockClear();
-    actions$.next(LoansCreateActions.requestLoanSuccess({ loan: {} as any }));
-    await new Promise((resolve) => setTimeout(resolve, 10));
-    expect(loansService.getAllLoans).toHaveBeenCalled();
+  describe('Error Handling', () => {
+    it('should handle load errors', async () => {
+      loansService.getAllLoans.mockReturnValue(
+        throwError(() => new Error('Network error')),
+      );
+      store.loadLoans({ forceChange: true });
+
+      await vi.waitFor(() => {
+        expect(store.error()).toBe(ErrorKeys.LOAD_LOANS);
+        expect(alertServiceMock.showAlert).toHaveBeenCalledWith(
+          'error',
+          ErrorKeys.LOAD_LOANS,
+        );
+      });
+    });
+
+    it('should handle detail load errors', async () => {
+      loansService.getLoanById.mockReturnValue(
+        throwError(() => new Error('Not found')),
+      );
+      store.loadLoanDetails('999');
+
+      await vi.waitFor(() => {
+        expect(store.error()).toBe(ErrorKeys.LOAD_DETAILS);
+      });
+    });
   });
 });

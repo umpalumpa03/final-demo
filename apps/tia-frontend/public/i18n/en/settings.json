@@ -107,7 +107,11 @@
     "confirmNewPasswordPlaceholder": "Confirm new password",
     "updatePassword": "Update Password",
     "twoFactorAuth": "Two-Factor Authentication",
-    "passwordChangedSuccessfully": "Password changed successfully"
+    "passwordChangedSuccessfully": "Password changed successfully",
+    "tooltip": {
+      "passwordMismatch": "The confirmed password does not match",
+      "fillAllFields": "Fill in all fields "
+    }
   },
   "user-management": {
     "title": "User Management",

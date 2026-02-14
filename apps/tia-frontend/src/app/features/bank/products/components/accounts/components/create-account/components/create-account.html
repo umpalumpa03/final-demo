@@ -40,7 +40,8 @@
         variant="default"
         type="submit"
         icon="plus-icon.svg"
-        [isDisabled]="accountForm().invalid"
+        [isDisabled]="accountForm().invalid || isCreating()"
+        [isLoading]="isCreating()"
       >
         {{ 'my-products.accounts.modal.create' | translate }}
       </app-button>
