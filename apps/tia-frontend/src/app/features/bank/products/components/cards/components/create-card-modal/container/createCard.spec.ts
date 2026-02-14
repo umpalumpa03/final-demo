@@ -6,6 +6,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { CreateCard } from './createCard';
 import { createCard, closeCreateCardModal } from 'apps/tia-frontend/src/app/store/products/cards/cards.actions';
 import { TranslateModule } from '@ngx-translate/core';
+import { selectIsCreating } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.reducer';
 
 describe('CreateCard', () => {
   let component: CreateCard;
@@ -62,24 +63,36 @@ describe('CreateCard', () => {
     expect(component['cardForm'].value.design).toBe('design-2');
   });
 
-  it('should dispatch createCard on valid form', () => {
-    setup();
-    component['cardForm'].patchValue({
-      cardName: 'My Card', cardCategory: 'DEBIT', cardType: 'VISA', accountId: 'acc-1', design: 'design-1',
-    });
-    component['onFormSubmit']();
-    expect(store.dispatch).toHaveBeenCalledWith(createCard({
-      request: { cardName: 'My Card', cardCategory: 'DEBIT', cardType: 'VISA', accountId: 'acc-1', design: 'design-1' },
-    }));
+it('should dispatch createCard on valid form', () => {
+  setup();
+  
+  store.select = vi.fn((selector) => {
+    if (selector === selectIsCreating) return of(false);
+    return of(mockCreationData);
   });
-
-  it('should not dispatch createCard on invalid form', () => {
-    setup();
-    component['cardForm'].patchValue({ cardName: '', accountId: '', design: '' });
-    store.dispatch.mockClear();
-    component['onFormSubmit']();
-    expect(store.dispatch).not.toHaveBeenCalled();
+  
+  component['cardForm'].patchValue({
+    cardName: 'My Card', 
+    cardCategory: 'DEBIT', 
+    cardType: 'VISA', 
+    accountId: 'acc-1', 
+    design: 'design-1',
   });
+  
+  component['onFormSubmit']();
+  
+  expect(store.dispatch).toHaveBeenCalledWith(createCard({
+    request: { cardName: 'My Card', cardCategory: 'DEBIT', cardType: 'VISA', accountId: 'acc-1', design: 'design-1' },
+  }));
+});
+it('should not dispatch createCard on invalid form', () => {
+  setup();
+  component['cardForm'].patchValue({ cardName: '', accountId: '', design: '' });
+  component['cardForm'].markAsTouched();
+  store.dispatch = vi.fn();
+  component['onFormSubmit']();
+  expect(store.dispatch).not.toHaveBeenCalledWith(expect.objectContaining({ type: '[Cards] Create Card' }));
+});
 
   it('should reset form and dispatch close on cancel', () => {
     setup();

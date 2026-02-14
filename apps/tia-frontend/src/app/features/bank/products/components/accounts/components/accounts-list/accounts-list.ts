@@ -7,16 +7,15 @@ import {
   OnInit,
   output,
   signal,
-  inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
-import { Router } from '@angular/router';
 import { AccountCardComponent } from '../account-card/container/account-card';
 import { RouteLoader } from '../../../../../../../shared/lib/feedback/route-loader/route-loader';
 import {
   AccountSection,
   GroupedAccounts,
+  Account,
 } from '../../../../../../../shared/models/accounts/accounts.model';
 import { ErrorStates } from '../../../../../../../shared/lib/feedback/error-states/error-states';
 import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/shared/library-title/library-title';
@@ -56,35 +55,39 @@ export class AccountsListComponent implements OnInit {
   public renameError = input<string | null>(null);
 
   public openModal = output<void>();
-  public transfer = output<{ accountId: string; permissionValue: number }>();
+  public transfer = output<{ account: Account; permissionValue: number }>();
   public retry = output<void>();
   public renameAccount = output<{ accountId: string; friendlyName: string }>();
   public renameSuccess = output<void>();
 
-  private readonly ITEMS_PER_PAGE = 3;
-  private readonly GAP_SIZE = 2;
+  private readonly GAP_SIZE_LARGE = 4;
+  private readonly GAP_SIZE_SMALL = 2.2;
+  private readonly GAP_SIZE_MEDIUM = 2;
+
   public currentPageBySection = signal<Record<string, number>>({});
 
   public skeletonItems = computed(() =>
     Array.from({ length: this.itemsPerPage() }, (_, i) => i + 1),
   );
   private itemsPerPage = signal<number>(3);
+  private screenWidth = signal<number>(0);
   public showTransferModal = signal<boolean>(false);
   public selectedAccountForTransfer = signal<string | null>(null);
   public selectedAccountPermission = signal<number>(0);
   public selectedAccountCurrency = signal<string>('');
-  public selectedPermissionValue = signal<number>(0);
-
-  private router = inject(Router);
 
   ngOnInit(): void {
-    this.updateItemsPerPage(window.innerWidth);
+    const width = window.innerWidth;
+    this.screenWidth.set(width);
+    this.updateItemsPerPage(width);
   }
 
   @HostListener('window:resize', ['$event'])
   onResize(event: Event): void {
     const target = event.target as Window;
-    this.updateItemsPerPage(target.innerWidth);
+    const width = target.innerWidth;
+    this.screenWidth.set(width);
+    this.updateItemsPerPage(width);
     this.currentPageBySection.set({});
   }
 
@@ -118,16 +121,26 @@ export class AccountsListComponent implements OnInit {
   public getTransformOffset(sectionKey: string): string {
     const currentPage = this.getCurrentPage(sectionKey);
     const itemsPerPage = this.itemsPerPage();
-    const gapsPerPage = itemsPerPage - 1;
-    const totalGapOffset = currentPage * gapsPerPage * this.GAP_SIZE;
     const percentOffset = currentPage * 100;
+
+    if (itemsPerPage === 1) {
+      const gapSize =
+        this.screenWidth() <= 425 ? this.GAP_SIZE_SMALL : this.GAP_SIZE_LARGE;
+      const totalGapOffset = currentPage * gapSize;
+      return `translateX(calc(-${percentOffset}% - ${totalGapOffset}rem))`;
+    }
+
+    const gapSize =
+      this.screenWidth() <= 1250 ? this.GAP_SIZE_LARGE : this.GAP_SIZE_MEDIUM;
+    const gapsPerPage = itemsPerPage - 1;
+    const totalGapOffset = currentPage * gapsPerPage * gapSize;
     return `translateX(calc(-${percentOffset}% - ${totalGapOffset}rem))`;
   }
 
   public updateItemsPerPage(width: number): void {
-    if (width <= 768) {
+    if (width <= 800) {
       this.itemsPerPage.set(1);
-    } else if (width <= 1224) {
+    } else if (width <= 1250) {
       this.itemsPerPage.set(2);
     } else {
       this.itemsPerPage.set(3);
@@ -198,8 +211,18 @@ export class AccountsListComponent implements OnInit {
   public handlePermissionSelected(permissionValue: number): void {
     const accountId = this.selectedAccountForTransfer();
     if (accountId) {
-      this.showTransferModal.set(false);
-      this.transfer.emit({ accountId, permissionValue });
+      const accounts = this.accountsGrouped();
+      if (!accounts) return;
+      const allAccounts: Account[] = [
+        ...(accounts.current || []),
+        ...(accounts.saving || []),
+        ...(accounts.card || []),
+      ];
+      const account = allAccounts.find((acc: Account) => acc.id === accountId);
+      if (account) {
+        this.showTransferModal.set(false);
+        this.transfer.emit({ account, permissionValue });
+      }
     }
   }
 

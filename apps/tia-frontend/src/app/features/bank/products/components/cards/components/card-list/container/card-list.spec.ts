@@ -14,10 +14,10 @@ import {
   selectCardGroups,
   selectLoading,
   selectError,
-  selectShowSuccessAlert,
   selectIsCreateModalOpen,
   selectCardImagesLoading,
 } from '../../../../../../../../store/products/cards/cards.selectors';
+import { AlertService } from '@tia/core/services/alert/alert.service';
 
 describe('CardList', () => {
   let component: CardList;
@@ -56,6 +56,14 @@ describe('CardList', () => {
       providers: [
         provideMockStore(),
         { provide: Router, useValue: { navigate: vi.fn() } },
+        { provide: AlertService, useValue: { 
+  isVisible: vi.fn().mockReturnValue(false),
+  alertType: vi.fn().mockReturnValue(null),
+  alertMessage: vi.fn().mockReturnValue(''),
+  success: vi.fn(),
+  error: vi.fn(),
+  clearAlert: vi.fn()
+}}
       ],
     }).compileComponents();
 
@@ -65,7 +73,6 @@ describe('CardList', () => {
     store.overrideSelector(selectCardGroups, []);
     store.overrideSelector(selectLoading, false);
     store.overrideSelector(selectError, null);
-    store.overrideSelector(selectShowSuccessAlert, false);
     store.overrideSelector(selectIsCreateModalOpen, false);
     store.overrideSelector(selectCardImagesLoading, false);
 
@@ -78,11 +85,11 @@ describe('CardList', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should dispatch loadCardAccounts on init', () => {
-    const dispatchSpy = vi.spyOn(store, 'dispatch');
-    component.ngOnInit();
-    expect(dispatchSpy).toHaveBeenCalledWith(loadCardAccounts({}));
-  });
+it('should dispatch loadCardAccounts on init', () => {
+  const dispatchSpy = vi.spyOn(store, 'dispatch');
+  component.ngOnInit();
+  expect(dispatchSpy).toHaveBeenCalledWith(loadCardAccounts({ forceRefresh: true }));
+});
 
   it('should transform card groups with single card', () => {
     const result = component.transformCardGroups([mockCardGroups[0]], {});

@@ -3,13 +3,14 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   inject,
   input,
   output,
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { BehaviorSubject, combineLatest, map, tap } from 'rxjs';
+import { BehaviorSubject, combineLatest, filter, map, pairwise, take, tap } from 'rxjs';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 import { CreateCardRequest } from 'apps/tia-frontend/src/app/features/bank/products/components/cards/models/create-card-request.model';
 import { CardForm } from 'apps/tia-frontend/src/app/features/bank/products/components/cards/models/card-form.model';
@@ -28,7 +29,7 @@ import { CardPreview } from '../components/card-preview/card-preview';
 import { DesignSelector } from '../components/design-selector/design-selector';
 import { CreateCardForm } from '../components/create-card-form/create-card-form';
 import { CommonModule } from '@angular/common';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-create-card',
@@ -40,7 +41,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 export class CreateCard {
   private readonly store = inject(Store);
   private readonly fb = inject(FormBuilder);
-
+private readonly translate = inject(TranslateService);
   readonly isOpen = input.required<boolean>();
   readonly closed = output<void>();
 
@@ -106,13 +107,24 @@ export class CreateCard {
     this.cardForm.patchValue({ design });
   }
 
-  protected onFormSubmit(): void {
-    if (this.cardForm.valid) {
-      const request: CreateCardRequest = this.cardForm.getRawValue();
-      this.store.dispatch(createCard({ request }));
-    }
-  }
 
+  protected onFormSubmit(): void {
+  if (this.cardForm.valid) {
+    const request: CreateCardRequest = this.cardForm.getRawValue();
+    this.store.dispatch(createCard({ request }));
+    
+    this.store.select(selectIsCreating).pipe(
+      pairwise(),
+      filter(([prev, curr]) => prev === true && curr === false),
+      take(1),
+      tap(() => {
+        this.resetForm();
+        this.store.dispatch(closeCreateCardModal());
+        this.closed.emit();
+      })
+    ).subscribe();
+  }
+}
   protected onFormCancel(): void {
     this.resetForm();
     this.store.dispatch(closeCreateCardModal());
@@ -137,4 +149,12 @@ export class CreateCard {
     this.cardForm.markAsPristine();
     this.selectedDesignId$.next('');
   }
+ protected readonly formConfigs = computed(() => ({
+  cardName: {
+    placeholder: this.translate.instant('my-products.card.create-card-modal.create-card-form.enterText')
+  },
+  accountId: {
+    placeholder: this.translate.instant('my-products.card.create-card-modal.create-card-form.chooseOption')
+  }
+}));
 }

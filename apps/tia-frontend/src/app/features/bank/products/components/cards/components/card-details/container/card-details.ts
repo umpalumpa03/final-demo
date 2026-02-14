@@ -8,7 +8,7 @@ import {
 import { Store } from '@ngrx/store';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { combineLatest, map, switchMap, of, tap, take } from 'rxjs';
+import { combineLatest, map, switchMap, of, tap, take, filter, startWith } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   loadCardDetails,
@@ -18,6 +18,7 @@ import {
   navigateToNextCard,
   navigateToPreviousCard,
   setCurrentCardIndex,
+  loadAccountCardsPage,
 } from '../../../../../../../../store/products/cards/cards.actions';
 import {
   selectCardDetails,
@@ -29,6 +30,8 @@ import {
   selectCurrentCardIndex,
   selectCurrentAccountCardIds,
   selectAllAccounts,
+  selectIsCardDetailLoaded,
+  selectIsCardImageLoaded,
 } from '../../../../../../../../store/products/cards/cards.selectors';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
@@ -42,6 +45,9 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { CardDetailsModal } from '../../card-details-modal/container/card-details-modal/card-details-modal';
 import { PillsComponent } from 'apps/tia-frontend/src/app/features/storybook/components/navigation/components/pills-component/pills-component';
 import { PillPaging } from '@tia/shared/ui/pill-paging/pill-paging';
+import { AlertService } from '@tia/core/services/alert/alert.service';
+import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
+import { selectLoading } from 'apps/tia-frontend/src/app/store/exchange-rates/exchange-rates.selectors';
 
 @Component({
   selector: 'app-card-details',
@@ -49,7 +55,6 @@ import { PillPaging } from '@tia/shared/ui/pill-paging/pill-paging';
   styleUrls: ['./card-details.scss'],
   imports: [
     CommonModule,
-    RouteLoader,
     ButtonComponent,
     BasicCard,
     ErrorStates,
@@ -58,7 +63,7 @@ import { PillPaging } from '@tia/shared/ui/pill-paging/pill-paging';
     QuickActionsSection,
     TranslatePipe,
     CardDetailsModal,
-    PillPaging,
+    PillPaging,AlertTypesWithIcons
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -67,12 +72,12 @@ export class CardDetails implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
-
+protected readonly alertService = inject(AlertService);
   private readonly cardId$ = this.route.paramMap.pipe(
     map((params) => params.get('cardId') || ''),
   );
 
-  protected readonly loading$ = this.store.select(selectCardDetailsLoading);
+
   protected readonly error$ = this.store.select(selectCardDetailsError);
   protected readonly isDetailsModalOpen$ = this.store.select(
     selectIsCardDetailsModalOpen,
@@ -123,14 +128,16 @@ export class CardDetails implements OnInit {
     }),
   );
 
-  ngOnInit(): void {
-    this.cardId$
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        tap((cardId) => this.loadCardData(cardId)),
-      )
-      .subscribe();
-  }
+
+ngOnInit(): void {
+  this.cardId$
+    .pipe(
+      takeUntilDestroyed(this.destroyRef),
+      tap((cardId) => this.loadCardData(cardId)),
+    )
+    .subscribe();
+}
+
 
   protected handleBack(): void {
     combineLatest([this.cardData$, this.store.select(selectAllAccounts)])
@@ -161,17 +168,6 @@ export class CardDetails implements OnInit {
       .subscribe();
   }
 
-  protected handleTransferOwn(): void {
-    this.router.navigate(['/bank/transfers/internal']);
-  }
-
-  protected handleTransferExternal(): void {
-    this.router.navigate(['/bank/transfers/external']);
-  }
-
-  protected handlePaybill(): void {
-    this.router.navigate(['/bank/paybill']);
-  }
 
   protected handleViewTransactions(): void {
     this.cardId$
@@ -207,11 +203,36 @@ export class CardDetails implements OnInit {
   }
 
 
+private loadCardData(cardId: string): void {
+  this.store.dispatch(loadCardAccounts({}));
+  this.store.dispatch(loadCardDetails({ cardId }));
+  
+  this.store.select(selectCardDetails).pipe(
+    map(details => details[cardId]),
+    filter(detail => !!detail?.accountId),
+    take(1),
+    tap(detail => {
+      this.store.dispatch(loadAccountCardsPage({ accountId: detail.accountId }));
+      
+      this.setCurrentIndexAfterLoad(cardId, detail.accountId);
+    })
+  ).subscribe();
+}
 
-  private loadCardData(cardId: string): void {
-    this.store.dispatch(loadCardAccounts({}));
-    this.store.dispatch(loadCardDetails({ cardId }));
-  }
+private setCurrentIndexAfterLoad(cardId: string, accountId: string): void {
+  this.store.select(selectAllAccounts).pipe(
+    map(accounts => accounts.find(a => a.id === accountId)),
+    filter(account => !!account && account.cardIds.length > 0),
+    take(1),
+    tap(account => {
+      const index = account!.cardIds.indexOf(cardId);
+      this.store.dispatch(setCurrentCardIndex({ cardIndex: index, accountId }));
+    })
+  ).subscribe();
+}
+
+
+
   protected readonly hasMultipleCards$ = combineLatest([
     this.cardData$,
     this.store.select(selectAllAccounts),
@@ -285,4 +306,15 @@ export class CardDetails implements OnInit {
       )
       .subscribe();
   }
+
+protected readonly viewState$ = combineLatest([
+  this.error$,
+  this.cardData$
+]).pipe(
+  map(([error, data]) => ({
+    error,
+    data
+  }))
+);
+  
 }

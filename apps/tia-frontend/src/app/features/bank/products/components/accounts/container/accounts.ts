@@ -13,10 +13,11 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { shareReplay } from 'rxjs/operators';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { AccountsListComponent } from '../components/accounts-list/accounts-list';
-import { CreateAccountComponent } from '../components/create-account/components/create-account';
+import { CreateAccountComponent } from '../components/create-account/create-account';
 import {
   CreateAccountRequest,
   AccountType,
+  Account,
 } from '../../../../../../shared/models/accounts/accounts.model';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import {
@@ -31,11 +32,15 @@ import {
   selectIsCreating,
   selectCreateError,
 } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
-import { getAccountSections } from '../config/accounts.config';
+import {
+  getAccountSections,
+  PERMISSION_ROUTE_MAP,
+} from '../shared/config/accounts.config';
 import { AccountsApiService } from '@tia/shared/services/accounts/accounts.api.service';
 import { AlertService } from '@tia/core/services/alert/alert.service';
 import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/shared/library-title/library-title';
 import { ButtonComponent } from '../../../../../../shared/lib/primitives/button/button';
+import { TransferService } from '../shared/services/transfer.service';
 
 @Component({
   selector: 'app-accounts-page',
@@ -59,32 +64,27 @@ export class Accounts implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly translate = inject(TranslateService);
   private readonly alertService = inject(AlertService);
+  private readonly transferService = inject(TransferService);
 
-  protected readonly accountsGrouped$ = this.store.select(
+  protected readonly accountsGrouped = this.store.selectSignal(
     selectAccountsGrouped,
   );
-  protected readonly isLoading$ = this.store.select(selectIsLoading);
-  protected readonly isFetching$ = this.store.select(selectIsFetching);
-  protected readonly isCreateModalOpen$ = this.store.select(
+  protected readonly isLoading = this.store.selectSignal(selectIsLoading);
+  protected readonly isFetching = this.store.selectSignal(selectIsFetching);
+  protected readonly isCreateModalOpen = this.store.selectSignal(
     selectIsCreateModalOpen,
   );
-  protected readonly error$ = this.store.select(selectError);
-  protected readonly isRenamingAccount$ = this.store.select(
+  protected readonly error = this.store.selectSignal(selectError);
+  protected readonly isRenamingAccount = this.store.selectSignal(
     selectIsUpdatingFriendlyName,
   );
-  protected readonly renameError$ = this.store.select(
+  protected readonly renameError = this.store.selectSignal(
     selectUpdateFriendlyNameError,
   );
-
-  protected readonly accountsGroupedSignal = this.store.selectSignal(
-    selectAccountsGrouped,
-  );
-  protected readonly accountsSignal = this.store.selectSignal(selectAccounts);
-  protected readonly isLoadingSignal = this.store.selectSignal(selectIsLoading);
-  protected readonly isCreatingAccountSignal =
+  protected readonly accounts = this.store.selectSignal(selectAccounts);
+  protected readonly isCreatingAccount =
     this.store.selectSignal(selectIsCreating);
-  protected readonly createErrorSignal =
-    this.store.selectSignal(selectCreateError);
+  protected readonly createError = this.store.selectSignal(selectCreateError);
 
   protected readonly accountSectionsData = signal(
     getAccountSections(this.translate),
@@ -95,13 +95,12 @@ export class Accounts implements OnInit {
     .pipe(shareReplay(1));
 
   protected accountForm = signal<FormGroup>(this.createAccountForm());
-  protected errorTypeSignal = signal<'connection' | 'loading' | null>(null);
 
   private wasCreating = false;
 
   constructor() {
     effect(() => {
-      const isCreating = this.isCreatingAccountSignal();
+      const isCreating = this.isCreatingAccount();
       if (isCreating !== undefined) {
         this.handleIsCreatingAccount(isCreating);
       }
@@ -110,7 +109,7 @@ export class Accounts implements OnInit {
 
   private createAccountForm(): FormGroup {
     return this.fb.group({
-      friendlyName: ['', Validators.minLength(3)],
+      friendlyName: ['', [Validators.minLength(3), Validators.maxLength(50)]],
       type: ['', Validators.required],
       currency: ['', Validators.required],
     });
@@ -128,7 +127,7 @@ export class Accounts implements OnInit {
 
   private handleIsCreatingAccount(isCreating: boolean): void {
     if (!isCreating && this.wasCreating) {
-      const error = this.createErrorSignal();
+      const error = this.createError();
       if (error) {
         this.alertService.error(
           error ||
@@ -174,28 +173,16 @@ export class Accounts implements OnInit {
   }
 
   public handleTransfer(data: {
-    accountId: string;
+    account: Account;
     permissionValue: number;
   }): void {
-    const accounts = this.accountsSignal();
-    const account = accounts?.find((acc) => acc.id === data.accountId) || null;
-    this.store.dispatch(AccountsActions.selectAccount({ account }));
-
-    const permissionMap: { [key: number]: string } = {
-      1: '/bank/transfers/internal',
-      2: '/bank/transfers/external',
-      4: '/bank/transfers/external',
-      8: '/bank/paybill',
-      16: '/bank/paybill',
-      32: '/bank/loans',
-    };
-
-    const route = permissionMap[data.permissionValue];
-    if (route) {
-      this.router.navigate([route], {
-        queryParams: { accountId: data.accountId },
-      });
-    }
+    this.store.dispatch(
+      AccountsActions.selectAccount({ account: data.account }),
+    );
+    this.transferService.navigateToTransferPage(
+      data.account.id,
+      data.permissionValue,
+    );
   }
 
   public handleRetry(): void {
