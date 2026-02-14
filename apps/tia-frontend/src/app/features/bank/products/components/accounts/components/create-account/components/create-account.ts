@@ -42,6 +42,7 @@ export class CreateAccountComponent implements OnInit {
   public accountForm = input.required<FormGroup>();
   public accountTypes = input.required<AccountType[]>();
   public currencies = input.required<string[]>();
+  public isCreating = input<boolean>(false);
 
   public closeModal = output<void>();
   public submitForm = output<void>();
