@@ -1,10 +1,10 @@
 import { AccountUtils } from '@tia/shared/utils/accounts-icons/account.utils';
+import { TranslateService } from '@ngx-translate/core';
 import {
   AccountSection,
+  AccountType,
   CreateAccountConfig,
-} from '../../../../../../shared/models/accounts/accounts.model';
-import { AccountType } from '../../../../../../shared/models/accounts/accounts.model';
-import { TranslateService } from '@ngx-translate/core';
+} from '@tia/shared/models/accounts/accounts.model';
 
 const accountUtils = new AccountUtils();
 

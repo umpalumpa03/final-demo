@@ -21,7 +21,7 @@ import {
   AccountType,
   CreateAccountConfig,
 } from '@tia/shared/models/accounts/accounts.model';
-import { getCreateAccountConfig } from '../../config/accounts.config';
+import { getCreateAccountConfig } from '../../shared/config/accounts.config';
 import { SelectOption } from '@tia/shared/lib/forms/models/input.model';
 
 @Component({

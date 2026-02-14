@@ -18,8 +18,8 @@ import { BasicCard } from '../../../../../../../../../shared/lib/cards/basic-car
 import { TextInput } from '../../../../../../../../../shared/lib/forms/input-field/text-input';
 import { Badges } from '../../../../../../../../../shared/lib/primitives/badges/badges';
 import { Tooltip } from '../../../../../../../../../shared/lib/data-display/tooltip/tooltip';
-import { TRANSFER_PERMISSIONS } from '../../../../config/transfer-permissions.config';
-import { filterPermissionsByCurrency } from '../../../../utils/transfer-permissions.utils';
+import { filterPermissionsByCurrency } from '../../../../shared/utils/transfer-permissions.utils';
+import { TRANSFER_PERMISSIONS } from '../../../../shared/config/transfer-permissions.config';
 @Component({
   selector: 'app-account-card-view',
   imports: [

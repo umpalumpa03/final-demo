@@ -31,7 +31,7 @@ import {
   selectIsCreating,
   selectCreateError,
 } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
-import { getAccountSections } from '../config/accounts.config';
+import { getAccountSections } from '../shared/config/accounts.config';
 import { AccountsApiService } from '@tia/shared/services/accounts/accounts.api.service';
 import { AlertService } from '@tia/core/services/alert/alert.service';
 import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/shared/library-title/library-title';
