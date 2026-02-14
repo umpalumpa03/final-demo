@@ -11,7 +11,6 @@ import { Store } from '@ngrx/store';
 import { catchError, Observable, of, Subject, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { SettingsBody } from '../../../shared/ui/settings-body/settings-body';
 import { selectActiveTheme } from 'apps/tia-frontend/src/app/store/theme/theme.selectors';
 import { ThemeActions } from 'apps/tia-frontend/src/app/store/theme/theme.actions';
 import { AppearanceService } from '../services/appearance-api.service';
@@ -30,7 +29,7 @@ import { BasicCard } from "@tia/shared/lib/cards/basic-card/basic-card";
 
 @Component({
   selector: 'app-appearance-container',
-  imports: [SettingsBody, TranslatePipe, ButtonComponent, Skeleton, UiModal, BasicCard],
+  imports: [TranslatePipe, ButtonComponent, Skeleton, UiModal, BasicCard],
   providers: [AppearanceService],
   templateUrl: './appearance-container.html',
   styleUrl: './appearance-container.scss',
