@@ -12,6 +12,7 @@ export class Pagination {
   public readonly currentPage = input.required<number>();
   public readonly totalPages = input.required<number>();
   public readonly config = input<PaginationConfig>(PAGINATION_DEFAULT_CONFIG);
+  public readonly overflowHidden = input<boolean>(false);
 
   public readonly pageChange = output<number>();
 

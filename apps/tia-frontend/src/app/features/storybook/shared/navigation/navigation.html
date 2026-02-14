@@ -2,7 +2,7 @@
   <nav>
     @for (item of navigationItems; track item.id) {
     <a [routerLink]="item.routerLink" [routerLinkActive]="item.activeLink"
-      >{{ item.link }}</a
+      >{{ item.link | translate }}</a
     >
     }
   </nav>

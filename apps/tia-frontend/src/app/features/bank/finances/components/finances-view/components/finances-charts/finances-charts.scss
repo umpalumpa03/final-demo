@@ -7,9 +7,12 @@
   grid-template-columns: repeat(2, 1fr);
   gap: 2.4rem;
   margin-top: 4rem;
+  width: 100%;
+  box-sizing: border-box;
 
   @media (max-width: 102.4rem) {
     grid-template-columns: 1fr;
+    gap: 1.6rem;
   }
 
   &__card {
@@ -20,15 +23,31 @@
     min-height: 52rem;
     @include display-flex(column);
     box-shadow: 0 0.4rem 1.6rem rgba($black, 0.03);
+    
     width: 100%;
+    max-width: 100%;
+    min-width: 0; 
+    box-sizing: border-box;
+    overflow: hidden; 
+
+    @media (max-width: 48rem) {
+      padding: 2rem 1.6rem;
+      min-height: auto;
+      border-radius: 1.6rem;
+    }
 
     .chart-header {
       margin-bottom: 2.4rem;
+      width: 100%;
 
       .chart-title {
         @include font-inter(700, 2.2rem);
         color: $blue-900;
         margin-bottom: 0.8rem;
+
+        @media (max-width: 48rem) {
+          font-size: 1.8rem;
+        }
       }
 
       .chart-subtitle {
@@ -40,9 +59,15 @@
     .chart-container {
       flex: 1;
       width: 100%;
+      max-width: 100%;
       min-height: 25rem;
       @include flex-center(); 
       margin-bottom: 2.4rem;
+      position: relative;
+      
+      canvas {
+        max-width: 100%;
+      }
     }
 
     .chart-footer {
@@ -50,23 +75,48 @@
       border-radius: 1.6rem;
       padding: 2rem;
       margin-top: auto;
+      width: 100%;
+      box-sizing: border-box;
+
+      @media (max-width: 35rem) {
+        padding: 1.2rem;
+      }
 
       .footer-summary {
         width: 100%;
 
         &.summary-grid {
           @include flex-center(row, space-between, center);
+          
+          @media (max-width: 35rem) {
+            @include flex-center(column,flex-start,flex-start);
+            gap: 1.2rem;
+          }
         }
 
         &.summary-flex {
           @include flex-center(row, flex-start, center);
           gap: 4rem;
+          flex-wrap: wrap;
+
+          @media (max-width: 48rem) {
+            gap: 2rem;
+          }
         }
 
         &.summary-grid-three {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
           gap: 1.6rem;
+
+          @media (max-width: 64rem) {
+            grid-template-columns: repeat(2, 1fr);
+          }
+
+          @media (max-width: 35rem) {
+            grid-template-columns: 1fr;
+            gap: 1.2rem;
+          }
         }
       }
 
@@ -83,8 +133,8 @@
         margin-bottom: 0.4rem;
       }
 
-      .income { color: $green-600; font-weight: 600; font-size: 1.4rem;  }
-      .expense { color: $red-500; font-weight: 600; font-size: 1.4rem; margin-top:0.8rem;}
+      .income { color: $green-600; font-weight: 600; font-size: 1.4rem; }
+      .expense { color: $red-500; font-weight: 600; font-size: 1.4rem; margin-top: 0.8rem; }
       
       .net-value {
         @include font-inter(700, 1.8rem);
@@ -102,6 +152,13 @@
       .category-item {
         @include flex-center(row, space-between, center);
         margin-bottom: 0.8rem;
+        width: 100%;
+        
+        @media (max-width: 35rem) {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 0.4rem;
+        }
         
         &:last-child { margin-bottom: 0; }
 
@@ -113,12 +170,24 @@
             width: 0.8rem;
             height: 0.8rem;
             border-radius: 50%;
+            flex-shrink: 0; 
           }
 
-          .cat-name { @include font-inter(500, 1.4rem); color: $blue-900; }
+          .cat-name { 
+            @include font-inter(500, 1.4rem); 
+            color: $blue-900;
+            word-break: break-all; 
+          }
         }
 
-        .cat-value { @include font-inter(600, 1.4rem); color: $blue-900; }
+        .cat-value { 
+          @include font-inter(600, 1.4rem); 
+          color: $blue-900;
+
+          @media (max-width: 35rem) {
+            padding-left: 1.6rem; 
+          }
+        }
       }
     }
   }

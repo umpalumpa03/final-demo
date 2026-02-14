@@ -65,6 +65,7 @@ describe('PaybillEffect (Refactored)', () => {
       renameGroup: vi.fn(),
       removeTemplateFromGroup: vi.fn(),
       addTemplateToGroup: vi.fn(),
+      payManyBills: vi.fn(),
     };
 
     const routerMock = { navigate: vi.fn() };
@@ -91,7 +92,7 @@ describe('PaybillEffect (Refactored)', () => {
 
     store.overrideSelector(selectCategoriesLoaded, false);
     store.overrideSelector(selectTemplatesLoaded, false);
-    store.overrideSelector(selectTemplatesGroup, false);
+    store.overrideSelector(selectTemplatesGroup, []);
     store.overrideSelector(selectSelectedProviderId, null);
     store.overrideSelector(selectPaymentPayload, null);
     store.overrideSelector(selectNotifications, []);
@@ -124,7 +125,7 @@ describe('PaybillEffect (Refactored)', () => {
         of(templateGroups),
       );
       actions$ = of(TemplatesPageActions.loadTemplateGroups());
-      store.overrideSelector(selectTemplatesGroup, false);
+      store.overrideSelector(selectTemplatesGroup, []);
 
       effects.loadTemplateGroups$.subscribe((action) => {
         expect(action).toEqual(
@@ -335,8 +336,8 @@ describe('PaybillEffect (Refactored)', () => {
     });
 
     it('moveTemplate$: should remove then add to group (Move Success)', () => {
-      paybillTemplatesService.removeTemplateFromGroup.mockReturnValue(of({}));
-      paybillTemplatesService.addTemplateToGroup.mockReturnValue(of({}));
+      paybillTemplatesService.removeTemplateFromGroup.mockReturnValue(of());
+      paybillTemplatesService.addTemplateToGroup.mockReturnValue(of());
 
       actions$ = of(
         TemplatesPageActions.moveTemplate({ groupId: 'G1', templateId: 'T1' }),
@@ -354,7 +355,7 @@ describe('PaybillEffect (Refactored)', () => {
     });
 
     it('moveTemplate$: should only remove if groupId is null', () => {
-      paybillTemplatesService.removeTemplateFromGroup.mockReturnValue(of({}));
+      paybillTemplatesService.removeTemplateFromGroup.mockReturnValue(of());
 
       actions$ = of(
         TemplatesPageActions.moveTemplate({ groupId: null, templateId: 'T1' }),
@@ -668,6 +669,175 @@ describe('PaybillEffect (Refactored)', () => {
         'utilities',
         'unknown-service',
       ]);
+    });
+  });
+
+  describe('Hydrate and Child Provider Branches', () => {
+    it('loadChildProviders$: should only dispatch loadChildProvidersSuccess if children exist', () => {
+      const allProviders = [
+        { id: 'PARENT', parentId: null },
+        { id: 'CHILD', parentId: 'PARENT' },
+      ] as any;
+
+      store.overrideSelector(selectProviders, allProviders);
+
+      actions$ = of(
+        TemplatesPageActions.selectProvider({ providerId: 'PARENT', level: 0 }),
+      );
+
+      const results: any[] = [];
+      effects.loadChildProviders$.subscribe((action) => results.push(action));
+
+      expect(results).toHaveLength(1);
+      expect(results[0].type).toBe(
+        TemplatesPageActions.loadChildProvidersSuccess.type,
+      );
+    });
+
+    it('getErrorMessage: should handle error.error.message structure', () => {
+      // Testing the middle branch of your error helper
+      const complexError = { error: { message: 'Deep Error' } };
+      paybillService.getCategories.mockReturnValue(
+        throwError(() => complexError),
+      );
+
+      actions$ = of(PaybillActions.loadCategories());
+
+      effects.loadCategories$.subscribe((action: any) => {
+        expect(action.error).toBe('Deep Error');
+      });
+    });
+  });
+
+  it('should dispatch payManyBillsSuccess on successful API call', () => {
+    const response = { verify: { challengeId: 'bulk-123' } } as any;
+    const payments = [{ templateId: 't1', amount: 100 }] as any;
+
+    paybillTemplatesService.payManyBills.mockReturnValue(of(response));
+    actions$ = of(TemplatesPageActions.payManyBills({ payments }));
+
+    effects.payManyBill$.subscribe((action) => {
+      expect(action).toEqual(
+        TemplatesPageActions.payManyBillsSuccess({ response }),
+      );
+      expect(paybillTemplatesService.payManyBills).toHaveBeenCalledWith(
+        payments,
+      );
+    });
+  });
+
+  it('should dispatch checkBillForTemplateFailure on API error', () => {
+    const errorResponse = { error: 'Bulk payment failed' };
+    paybillTemplatesService.payManyBills.mockReturnValue(
+      throwError(() => errorResponse),
+    );
+
+    actions$ = of(TemplatesPageActions.payManyBills({ payments: [] }));
+
+    effects.payManyBill$.subscribe((action) => {
+      expect(action).toEqual(
+        TemplatesPageActions.checkBillForTemplateFailure({
+          error: 'Bulk payment failed',
+        }),
+      );
+    });
+  });
+
+  it('moveTemplate$: should only remove if groupId is null', () => {
+    paybillTemplatesService.removeTemplateFromGroup.mockReturnValue(of());
+
+    actions$ = of(
+      TemplatesPageActions.moveTemplate({ groupId: null, templateId: 'T1' }),
+    );
+
+    effects.moveTemplate$.subscribe((action) => {
+      expect(action).toEqual(
+        TemplatesPageActions.moveTemplateSuccess({
+          message: 'Item removed successfully',
+          groupId: null,
+          templateId: 'T1',
+        }),
+      );
+      expect(paybillTemplatesService.addTemplateToGroup).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('moveTemplate$', () => {
+    const mockTemplate = {
+      id: 'T1',
+      nickname: 'Test',
+      serviceId: 'S1',
+      identification: {},
+    } as any;
+
+    it('should only remove from group when groupId is null (Branch A)', () => {
+      paybillTemplatesService.removeTemplateFromGroup.mockReturnValue(
+        of(mockTemplate),
+      );
+
+      actions$ = of(
+        TemplatesPageActions.moveTemplate({ groupId: null, templateId: 'T1' }),
+      );
+
+      const results: any[] = [];
+      effects.moveTemplate$.subscribe((action) => results.push(action));
+
+      expect(results[0]).toEqual(
+        TemplatesPageActions.moveTemplateSuccess({
+          message: 'Item removed successfully',
+          groupId: null,
+          templateId: 'T1',
+        }),
+      );
+      expect(paybillTemplatesService.addTemplateToGroup).not.toHaveBeenCalled();
+    });
+
+    it('should remove and then add when groupId is provided (Branch B)', () => {
+      paybillTemplatesService.removeTemplateFromGroup.mockReturnValue(
+        of(mockTemplate),
+      );
+      paybillTemplatesService.addTemplateToGroup.mockReturnValue(
+        of(mockTemplate),
+      );
+
+      actions$ = of(
+        TemplatesPageActions.moveTemplate({ groupId: 'G1', templateId: 'T1' }),
+      );
+
+      const results: any[] = [];
+      effects.moveTemplate$.subscribe((action) => results.push(action));
+
+      expect(results[0]).toEqual(
+        TemplatesPageActions.moveTemplateSuccess({
+          message: 'Item moved successfully',
+          groupId: 'G1',
+          templateId: 'T1',
+        }),
+      );
+      expect(paybillTemplatesService.addTemplateToGroup).toHaveBeenCalledWith(
+        'G1',
+        'T1',
+      );
+    });
+
+    it('should handle errors in the chain (Branch C)', () => {
+      const errorResponse = { message: 'Move failed' };
+      paybillTemplatesService.removeTemplateFromGroup.mockReturnValue(
+        throwError(() => errorResponse),
+      );
+
+      actions$ = of(
+        TemplatesPageActions.moveTemplate({ groupId: 'G1', templateId: 'T1' }),
+      );
+
+      const results: any[] = [];
+      effects.moveTemplate$.subscribe((action) => results.push(action));
+
+      expect(results[0]).toEqual(
+        PaybillActions.loadPaymentDetailsFailure({
+          error: 'Move failed',
+        }),
+      );
     });
   });
 });

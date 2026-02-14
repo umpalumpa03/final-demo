@@ -5,10 +5,14 @@
   position: relative;
   display: inline-flex;
   align-items: center;
+  width: 100%;
+  min-width: 100%;
 
   &__trigger {
     display: inline-flex;
     align-items: center;
+    width: 100%;
+    min-width: 100%;
   }
 
   &__content {
@@ -28,6 +32,15 @@
       word-break: break-word;
       max-width: min(25rem, calc(100vw - 2rem));
       width: max-content;
+    }
+
+    @media (max-width: 500px) {
+      @include font-arimo(500, 1rem, 1rem);
+    }
+
+    @media (max-width: 500px) {
+      max-width: 20rem;
+      @include font-arimo(500, 0.8rem, 1rem);
     }
   }
 

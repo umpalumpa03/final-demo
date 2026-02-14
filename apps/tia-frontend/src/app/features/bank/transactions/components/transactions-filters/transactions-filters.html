@@ -1,71 +1,85 @@
-<app-basic-card
-  [minWidth]="'100%'"
-  [width]="'100%'"
-  [padding]="'2.4rem'"
-  [title]="'transactions.filters.title' | translate"
-  [subtitle]="'transactions.filters.subtitle' | translate"
-  [height]="'calc(100vh -6rem)'"
->
-  <div class="transactions-filters">
-    <div class="transactions-filters__heading">
-      @if(hasActiveFilter()){
-      <app-button
-        [type]="'reset'"
-        [variant]="'outline'"
-        [icon]="'x-icon.svg'"
-        (click)="resetFilters()"
-      >
-        {{ 'transactions.filters.reset_all' | translate }}
-      </app-button>
-      }
+<div class="transactions-filters">
+  <div class="transactions-filters__heading">
+    <div>
+      <h3 class="transactions-filters__title">
+        {{'transactions.filters.title' | translate}}
+      </h3>
+      <p class="transactions-filters__subtitle">
+        {{'transactions.filters.subtitle' | translate}}
+      </p>
     </div>
+    @if(hasActiveFilter()){
+    <app-button
+      [type]="'reset'"
+      [variant]="'outline'"
+      [icon]="'x-icon.svg'"
+      (click)="resetFilters()"
+    >
+      {{ 'transactions.filters.reset_all' | translate }}
+    </app-button>
+    }
+  </div>
 
-    <form [formGroup]="filterForm" class="transactions-filters__form">
-      @for (field of filtersConfig(); track field.controlName) {
+  <div class="transactions-filters__mobile-toggle">
+    <app-button
+      [variant]="'outline'"
+      [icon]="actions.isFiltersOpen() ? 'dropup-icon.svg' : 'dropdown-icon.svg'"
+      (click)="actions.toggleFilters()"
+      [fullWidth]="true"
+    >
+      {{ 'transactions.filters.show_filters' | translate }}
+    </app-button>
+  </div>
 
-      <div class="transactions-filters__form__input-wrapper">
-        @if (field.type === 'select') {
+  <form
+    [formGroup]="filterForm"
+    class="transactions-filters__form"
+    [class.is-open]="actions.isFiltersOpen()"
+  >
+    @for (field of filtersConfig(); track field.controlName) {
 
-        <lib-select
-          [formControlName]="field.controlName"
-          [options]="field.options || []"
-          [config]="{
+    <div class="transactions-filters__form__input-wrapper">
+      @if (field.type === 'select') {
+
+      <lib-select
+        [formControlName]="field.controlName"
+        [options]="field.options || []"
+        [config]="{
              label: (field.uiConfig.label | translate),
              placeholder: (field.uiConfig.placeholder | translate),
           }"
-          [height]="'3.6rem'"
-        >
-        </lib-select>
+        [height]="'3.6rem'"
+      >
+      </lib-select>
 
-        } @else {
+      } @else {
 
-        <lib-text-input
-          [formControlName]="field.controlName"
-          [type]="field.inputType || 'text'"
-          [config]="{
+      <lib-text-input
+        [formControlName]="field.controlName"
+        [type]="field.inputType || 'text'"
+        [config]="{
              label: (field.uiConfig.label | translate),
-             placeholder: (field.uiConfig.placeholder | translate)
+             max: field.uiConfig.max
              
           }"
-        >
-        </lib-text-input>
-        }
-      </div>
-      }
-    </form>
-
-    @if (activeFilters().length > 0) {
-    <div class="transactions-filters__active-filters">
-      @for (filter of activeFilters(); track filter.key) {
-      <app-button
-        [variant]="'outline'"
-        [icon]="'x-icon.svg'"
-        (click)="removeFilter(filter.key)"
       >
-        {{ filter.label | translate }} : {{ filter.value }}
-      </app-button>
+      </lib-text-input>
       }
     </div>
     }
+  </form>
+
+  @if (activeFilters().length > 0) {
+  <div class="transactions-filters__active-filters">
+    @for (filter of activeFilters(); track filter.key) {
+    <app-button
+      [variant]="'outline'"
+      [icon]="'x-icon.svg'"
+      (click)="removeFilter(filter.key)"
+    >
+      {{ filter.label | translate }} : {{ filter.value }}
+    </app-button>
+    }
   </div>
-</app-basic-card>
+  }
+</div>

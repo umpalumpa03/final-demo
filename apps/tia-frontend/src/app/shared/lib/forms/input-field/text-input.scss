@@ -1,4 +1,3 @@
-@use "../../../../../reset" as *;
 @use "../../../styles/palette" as *;
 @use "../../../styles/mixins" as *;
 
@@ -46,6 +45,12 @@ $field-height: 3.6rem;
       }
     }
 
+    &--has-suffix {
+      .text-input__field {
+        padding-right: 3.4rem;
+      }
+    }
+
     &--disabled,
     &--readonly {
       cursor: not-allowed;
@@ -77,8 +82,7 @@ $field-height: 3.6rem;
     background-repeat: no-repeat;
     background-size: contain;
 
-    filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(7498%) hue-rotate(326deg) brightness(101%)
-      contrast(101%);
+    filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(7498%) hue-rotate(326deg) brightness(101%) contrast(101%);
   }
 
   &__icon {
@@ -141,7 +145,7 @@ $field-height: 3.6rem;
     color: $gray-800;
     background-color: $white;
     outline: none;
-    border: 0.1rem solid $blue-ocean;
+    border: 0.1rem solid var(--color-primary);
     border-radius: 0.8rem;
     padding: 0 1.2rem;
     box-sizing: border-box;
@@ -150,7 +154,7 @@ $field-height: 3.6rem;
     appearance: none;
 
     &::placeholder {
-      color: $gray-700;
+      color: $gray-500;
     }
 
     &::-webkit-search-cancel-button {
@@ -202,15 +206,24 @@ $field-height: 3.6rem;
     }
 
     &[type="number"] {
+
       &::-webkit-outer-spin-button,
       &::-webkit-inner-spin-button {
         -webkit-appearance: none;
         margin: 0;
       }
+
       appearance: textfield;
     }
 
-    &[type="date"],
+    &[type="date"] {
+      cursor: pointer;
+
+      &::-webkit-calendar-picker-indicator {
+        cursor: pointer;
+      }
+    }
+
     &[type="time"] {
       &::-webkit-calendar-picker-indicator {
         cursor: pointer;

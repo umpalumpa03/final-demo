@@ -17,11 +17,12 @@
 >
   <app-error-states
     variant="failed"
-    header="Verification Data Missing"
-    message="We couldn't find your payment details. Please restart the payment process."
-    buttonMessage="Back to Categories"
+    [header]="'paybill.main.error.verification_missing_title' | translate"
+    [message]="'paybill.main.error.missing_data_message' | translate"
+    [buttonMessage]="'paybill.main.error.back_to_categories' | translate"
     [border]="false"
     (buttonClick)="onBackToDetails()"
+    maxWidth="100%"
   />
 </app-basic-card>
 }

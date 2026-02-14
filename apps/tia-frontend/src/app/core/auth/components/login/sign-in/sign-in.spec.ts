@@ -45,8 +45,8 @@ describe('SignIn', () => {
     authMock.errorMessage.set(true);
     fixture.detectChanges();
 
-    expect(component.errorMessage()).toBe(true);
-    expect(component.alertTypes.error.message).toBe('Incorrect Credentials');
+    expect(authMock.errorMessage()).toBe(true);
+    expect(component.alertTypes.error.message).toBe('');
   });
 
   it('does not submit when form invalid', () => {

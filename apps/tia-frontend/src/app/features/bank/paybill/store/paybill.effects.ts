@@ -660,4 +660,24 @@ export class PaybillEffect {
       }),
     );
   });
+
+  payManyBill$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(TemplatesPageActions.payManyBills),
+      switchMap(({ payments }) =>
+        this.payBillTemplatesService.payManyBills(payments).pipe(
+          map((response) => {
+            return TemplatesPageActions.payManyBillsSuccess({ response });
+          }),
+          catchError((error) =>
+            of(
+              TemplatesPageActions.checkBillForTemplateFailure({
+                error: this.getErrorMessage(error),
+              }),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
 }

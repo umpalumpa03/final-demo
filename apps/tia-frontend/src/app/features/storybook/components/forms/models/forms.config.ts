@@ -2,7 +2,7 @@ export const REGISTATION_FORM = {
   firstName: {
     label: 'auth.sign-up.firstname',
     required: false,
-    placeholder: 'Jhon',
+    placeholder: 'John',
   },
   lastName: {
     label: 'auth.sign-up.lastname',
@@ -12,7 +12,7 @@ export const REGISTATION_FORM = {
   email: {
     label: 'auth.sign-up.email',
     required: false,
-    placeholder: 'jonh@example.com',
+    placeholder: 'john@example.com',
   },
   password: {
     label: 'auth.sign-up.password',

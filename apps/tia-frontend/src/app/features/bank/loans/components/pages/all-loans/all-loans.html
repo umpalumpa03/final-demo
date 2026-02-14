@@ -1,3 +1,12 @@
+@if (store.error()) {
+<div class="loans-error-wrapper">
+    <app-error-states variant="failed" [header]="'loans.dashboard.error_title' | translate"
+        [message]="store.error() || ''" [buttonMessage]="'loans.buttons.resend' | translate" (buttonClick)="loadData()">
+    </app-error-states>
+</div>
+}
+@else {
 <app-loans-grid [loans]="store.filteredLoans()" [variant]="'default'" [emptyConfig]="emptyState.allCfg()"
     (cardClick)="store.openDetails($event)" (rename)="store.renameLoan($event)" (emptyClick)="onRequestLoan()">
 </app-loans-grid>
+}

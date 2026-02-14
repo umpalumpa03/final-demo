@@ -11,10 +11,11 @@ import {
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import { of } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
-import { signal } from '@angular/core';
+import { signal, computed } from '@angular/core';
 import { DashboardService } from '../services/dashboard.service';
 import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
 import { UserInfoActions } from 'apps/tia-frontend/src/app/store/user-info/user-info.actions';
+import { BirthdayLogicService } from 'apps/tia-frontend/src/app/features/birthday/services/birthday-logic.service';
 
 describe('DashboardContainer', () => {
   let component: DashboardContainer;
@@ -22,6 +23,7 @@ describe('DashboardContainer', () => {
   let mockRouter: any;
   let mockDashService: any;
   let mockBreakpointService: any;
+  let mockBirthdayLogic: any;
 
   const mockTranslate = {
     instant: (key: string) => key,
@@ -39,18 +41,48 @@ describe('DashboardContainer', () => {
       navigate: vi.fn(),
     };
 
+    mockBreakpointService = {
+      isXsMobile: signal(false),
+      isTablet: signal(false),
+    };
+
+    const visibleItems = signal<any[]>([]);
+    const myItems = signal<any[]>([]);
+
     mockDashService = {
-      myItems: signal([]),
+      myItems,
       widgetCatalog: signal([]),
-      visibleItems: signal([]),
+      visibleItems,
+
+      gridColumns: computed(() => {
+        const itemCount = visibleItems().length;
+        const isVertical =
+          mockBreakpointService.isXsMobile() ||
+          mockBreakpointService.isTablet() ||
+          itemCount < 3;
+        return isVertical
+          ? { default: 1, md: 1, sm: 1 }
+          : { default: 2, md: 2, sm: 1 };
+      }),
+      dynamicColspans: computed(() => {
+        const items = visibleItems();
+        const isVertical =
+          mockBreakpointService.isXsMobile() ||
+          mockBreakpointService.isTablet() ||
+          items.length < 3;
+        return items.map((_, index) => (isVertical ? 1 : index === 0 ? 2 : 1));
+      }),
+      accountsHidden: signal(false),
+      processedItems: signal([]),
       updateItemsOnDrag: vi.fn(),
       foldWidget: vi.fn(),
       toggleCatalogWidget: vi.fn(),
       syncWidgetsFromDraft: vi.fn(),
     };
 
-    mockBreakpointService = {
-      isXsMobile: signal(false),
+    mockBirthdayLogic = {
+      isModalVisible: signal(false),
+      dismiss: vi.fn(),
     };
 
     TestBed.configureTestingModule({
@@ -61,116 +93,11 @@ describe('DashboardContainer', () => {
         { provide: TranslateService, useValue: mockTranslate },
         { provide: DashboardService, useValue: mockDashService },
         { provide: BreakpointService, useValue: mockBreakpointService },
+        { provide: BirthdayLogicService, useValue: mockBirthdayLogic },
       ],
     });
 
     component = TestBed.inject(DashboardContainer);
-  });
-
-  it('should create the component', () => {
-    expect(component).toBeTruthy();
-  });
-
-  it('should dispatch actions on ngOnInit', () => {
-    component.ngOnInit();
-
-    expect(mockStore.dispatch).toHaveBeenCalledWith(
-      UserInfoActions.loadWidgets({}),
-    );
-    expect(mockStore.dispatch).toHaveBeenCalledWith(TransactionActions.enter());
-    expect(mockStore.dispatch).toHaveBeenCalledWith(
-      loadExchangeRates({ baseCurrency: 'USD' }),
-    );
-    expect(mockStore.dispatch).toHaveBeenCalledWith(
-      AccountsActions.loadAccounts({}),
-    );
-  });
-
-  it('should delegate drag changes to DashboardService', () => {
-    const newItems = [{ id: '1' }] as any;
-    component.onItemsChange(newItems);
-    expect(mockDashService.updateItemsOnDrag).toHaveBeenCalledWith(newItems);
-  });
-
-  it('should delegate widget folding to DashboardService', () => {
-    component.onFoldWidget(true, 'widget-1');
-    expect(mockDashService.foldWidget).toHaveBeenCalledWith(true, 'widget-1');
-  });
-
-  it('should update draft selection locally when toggling catalog widget', () => {
-    component.onToggleCatalogWidget(true, 'widget-2');
-
-    expect((component as any).draftSelection()).toContain('widget-2');
-
-    component.onToggleCatalogWidget(false, 'widget-2');
-    expect((component as any).draftSelection()).not.toContain('widget-2');
-
-    expect(mockDashService.toggleCatalogWidget).not.toHaveBeenCalled();
-  });
-
-  it('should dispatch exchange rate actions on widget refresh', () => {
-    component.onWidgetRefresh();
-
-    expect(mockStore.dispatch).toHaveBeenCalledWith(clearExchangeRates());
-    expect(mockStore.dispatch).toHaveBeenCalledWith(
-      loadExchangeRates({ baseCurrency: 'USD' }),
-    );
-  });
-
-  it('should navigate to accounts page on widget add', () => {
-    component.onWidgetAdd();
-    expect(mockRouter.navigate).toHaveBeenCalledWith([
-      '/bank/products/accounts',
-    ]);
-  });
-
-  it('should check DRAFT selection when customizing', () => {
-    (component as any).isCustomizing.set(true);
-    (component as any).draftSelection.set(['draft-1']);
-    mockDashService.myItems.set([]);
-
-    expect((component as any).isWidgetActive('draft-1')).toBe(true);
-    expect((component as any).isWidgetActive('other')).toBe(false);
-  });
-
-  it('should check MY ITEMS when NOT customizing', () => {
-    (component as any).isCustomizing.set(false);
-    (component as any).draftSelection.set([]);
-    mockDashService.myItems.set([{ id: 'live-1' }]);
-
-    expect((component as any).isWidgetActive('live-1')).toBe(true);
-    expect((component as any).isWidgetActive('other')).toBe(false);
-  });
-
-  it('should dispatch pagination change and reload actions', () => {
-    const pageLimit = 20;
-    component.onPaginationChange(pageLimit);
-
-    expect(mockStore.dispatch).toHaveBeenCalledWith(
-      TransactionActions.updateFilters({ filters: { pageLimit: 20 } }),
-    );
-    expect(mockStore.dispatch).toHaveBeenCalledWith(
-      TransactionActions.loadTransactions({ forceRefresh: true }),
-    );
-  });
-
-  it('should compute dynamic colspans based on visible items', () => {
-    mockDashService.visibleItems.set([{ id: '1' }, { id: '2' }, { id: '3' }]);
-
-    const colspans = component.dynamicColspans();
-
-    expect(colspans[0]).toBe(2);
-    expect(colspans[1]).toBe(1);
-    expect(colspans[2]).toBe(1);
-  });
-
-  it('should compute horizontal colspans (all 1) on mobile', () => {
-    mockBreakpointService.isXsMobile.set(true);
-    mockDashService.visibleItems.set([{ id: '1' }, { id: '2' }]);
-
-    const colspans = component.dynamicColspans();
-
-    expect(colspans.every((c) => c === 1)).toBe(true);
   });
 
   it('should use 1 column if item count is < 3 (regardless of screen size)', () => {
@@ -192,5 +119,121 @@ describe('DashboardContainer', () => {
 
     const columns = component['gridColumns']();
     expect(columns.default).toBe(1);
+  });
+
+  describe('Initialization and Lifecycle', () => {
+    it('ngOnInit: should dispatch loadWidgets if they are not loaded', () => {
+      mockStore.selectSignal.mockImplementation((selector: any) => {
+        if (selector.name === 'selectWidgetsLoaded') return signal(false);
+        return signal(false);
+      });
+
+      component.ngOnInit();
+
+      expect(mockStore.dispatch).toHaveBeenCalledWith(
+        UserInfoActions.loadWidgets({}),
+      );
+      expect(mockStore.dispatch).toHaveBeenCalledWith(
+        TransactionActions.enter(),
+      );
+      expect(mockStore.dispatch).toHaveBeenCalledWith(
+        loadExchangeRates({ baseCurrency: 'USD' }),
+      );
+      expect(mockStore.dispatch).toHaveBeenCalledWith(
+        AccountsActions.loadAccounts({}),
+      );
+    });
+  });
+
+  describe('Widget Customization and Catalog', () => {
+    it('onToggleCatalogWidget: should add and remove items from draft selection', () => {
+      component.onToggleCatalogWidget(true, 'widget-new');
+      expect((component as any).draftSelection()).toContain('widget-new');
+
+      component.onToggleCatalogWidget(false, 'widget-new');
+      expect((component as any).draftSelection()).not.toContain('widget-new');
+    });
+
+    it('isWidgetActive: should use draft selection when customizing', () => {
+      (component as any).isCustomizing.set(true);
+      (component as any).draftSelection.set(['draft-id']);
+
+      expect((component as any).isWidgetActive('draft-id')).toBe(true);
+      expect((component as any).isWidgetActive('live-id')).toBe(false);
+    });
+
+    it('isWidgetActive: should use live myItems when NOT customizing', () => {
+      (component as any).isCustomizing.set(false);
+      mockDashService.myItems.set([{ id: 'live-id' }] as any);
+
+      expect((component as any).isWidgetActive('live-id')).toBe(true);
+      expect((component as any).isWidgetActive('draft-id')).toBe(false);
+    });
+  });
+
+  describe('Feature Actions', () => {
+    it('onWidgetRefresh: should dispatch exchange rate refresh actions', () => {
+      component.onWidgetRefresh();
+
+      expect(mockStore.dispatch).toHaveBeenCalledWith(clearExchangeRates());
+      expect(mockStore.dispatch).toHaveBeenCalledWith(
+        loadExchangeRates({ baseCurrency: 'USD' }),
+      );
+    });
+
+    it('onWidgetAdd: should navigate to accounts product page', () => {
+      component.onWidgetAdd();
+      expect(mockRouter.navigate).toHaveBeenCalledWith([
+        '/bank/products/accounts',
+      ]);
+    });
+
+    it('onPaginationChange: should update transaction filters and reload', () => {
+      component.onPaginationChange(50);
+
+      expect(mockStore.dispatch).toHaveBeenCalledWith(
+        TransactionActions.updateFilters({ filters: { pageLimit: 50 } }),
+      );
+      expect(mockStore.dispatch).toHaveBeenCalledWith(
+        TransactionActions.loadTransactions({ forceRefresh: true }),
+      );
+    });
+
+    it('Birthday Logic: should link to birthday service state and dismissal', () => {
+      component.onBirthdayDismiss();
+      expect(mockBirthdayLogic.dismiss).toHaveBeenCalled();
+
+      mockBirthdayLogic.isModalVisible.set(true);
+      expect((component as any).isBirthdayVisible()).toBe(true);
+    });
+  });
+
+  describe('Specific Logic Coverage', () => {
+    it('onFoldWidget: should update accountsHidden signal when item type is "accounts"', () => {
+      const accountsWidget = { id: 'acc-1', type: 'accounts' };
+      mockDashService.myItems.set([accountsWidget]);
+
+      component.onFoldWidget(false, 'acc-1');
+
+      expect(mockDashService.accountsHidden()).toBe(true);
+
+      component.onFoldWidget(true, 'acc-1');
+      expect(mockDashService.accountsHidden()).toBe(false);
+    });
+
+    it('pageTitle & pageSubtitle: should return translated strings via computed signals', () => {
+      expect((component as any).pageTitle()).toBe('dashboard.page.title');
+      expect((component as any).pageSubtitle()).toBe('dashboard.page.subtitle');
+    });
+
+    it('openCustomization: should populate draftSelection and set isCustomizing to true', () => {
+      const items = [{ id: 'w1' }, { id: 'w2' }];
+      mockDashService.myItems.set(items);
+
+      component.openCustomization();
+
+      expect((component as any).draftSelection()).toEqual(['w1', 'w2']);
+      expect((component as any).isCustomizing()).toBe(true);
+    });
   });
 });

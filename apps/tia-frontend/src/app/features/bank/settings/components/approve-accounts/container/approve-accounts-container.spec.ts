@@ -5,11 +5,30 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { IAccountsPermissions } from '../../../shared/models/approve-models/accounts-models/account-permissions.models';
 import { BankAccount } from '../../../shared/models/approve-models/accounts-models/pending-accounts.models';
 import { AccountPermissionsStore } from '../store/approve-accounts.store';
-
+import { ApproveAccountsConfig } from '../config/approve-accounts.config';
+import { FormControl } from '@angular/forms';
 describe('ApproveAccountsContainer', () => {
   let component: ApproveAccountsContainer;
   let fixture: ComponentFixture<ApproveAccountsContainer>;
   let mockStore: any;
+
+  const mockConfig = {
+    textConfig: signal({
+      card: { title: 'Test', subtitle: 'Test' },
+      errorState: { header: 'Error', message: 'Msg' },
+      permissionsModal: {
+        modalTitle: 'Title',
+        modalSubtitle: 'Sub',
+        title: 'T',
+      },
+      confirmDialog: {
+        title: 'C',
+        subtitle: 'S',
+        cancelBtn: 'No',
+        confirmBtn: 'Yes',
+      },
+    }),
+  };
 
   beforeEach(async () => {
     mockStore = {
@@ -21,6 +40,7 @@ describe('ApproveAccountsContainer', () => {
       loadPendingAccounts: vi.fn(),
       savePermissions: vi.fn(),
       updateStatus: vi.fn(),
+      selectedAccountId: signal(null),
     };
 
     await TestBed.configureTestingModule({
@@ -32,6 +52,7 @@ describe('ApproveAccountsContainer', () => {
           imports: [],
           providers: [
             { provide: AccountPermissionsStore, useValue: mockStore },
+            { provide: ApproveAccountsConfig, useValue: mockConfig },
           ],
         },
       })
@@ -113,6 +134,7 @@ describe('ApproveAccountsContainer', () => {
       { value: 2, label: 'B' },
       { value: 4, label: 'C' },
     ]);
+
     fixture.detectChanges();
 
     component.activeAccountId.set(accountId);
@@ -182,6 +204,7 @@ describe('ApproveAccountsContainer', () => {
 
   it('should switch account and reset state on confirm accept', () => {
     component.permissionsSavedAccount.set('acc-1');
+
     component.handleAction({ action: 'permissions', id: 'acc-2' });
 
     expect(component.confirmModalActive()).toBe(true);

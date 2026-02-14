@@ -3,8 +3,6 @@ import {
   withState,
   withMethods,
   patchState,
-  // withHooks,
-  // getState,
 } from '@ngrx/signals';
 import { initialTransferState } from './transfers.state';
 import {
@@ -97,6 +95,9 @@ export const TransferStore = signalStore(
     setRecipientInput(input: string) {
       patchState(store, { recipientInput: input });
     },
+    setHasShownAmountToast(hasShownAmountToast: boolean) {
+      patchState(store, { hasShownAmountToast });
+    },
     lookupRecipient: rxMethod<{ value: string; type: RecipientType }>(
       pipe(
         tap(({ value, type }) =>
@@ -141,12 +142,4 @@ export const TransferStore = signalStore(
       patchState(store, initialTransferState);
     },
   })),
-  // withHooks({
-  //   onInit(store) {
-  //     effect(() => {
-  //       const state = getState(store);
-  //       console.log(' stateeee', state);
-  //     });
-  //   },
-  // }),
 );

@@ -1,8 +1,4 @@
-<app-basic-card
-  maxWidth="100%"
-  height="fit-content"
-  padding="2.4rem"
->
+<div class="loan-card">
   <div class="loan-header">
     <h3 class="loan-header__title">{{ config().title }}</h3>
     <p class="loan-header__subtitle">{{ config().subtitle }}</p>
@@ -16,7 +12,7 @@
       (reload)="onReload()"
     ></app-pending-approvals-table>
   </div>
-</app-basic-card>
+</div>
 <app-loan-case-drawer
   [isOpen]="!!store.selectedLoanId()"
   [loanDetails]="store.selectedLoanDetails()"

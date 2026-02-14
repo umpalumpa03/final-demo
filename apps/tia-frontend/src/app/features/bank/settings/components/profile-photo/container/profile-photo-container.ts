@@ -119,6 +119,10 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
   public readonly isUploadModalOpen = signal<boolean>(false);
   public readonly isDragOver = signal<boolean>(false);
   
+
+  public readonly mainAvatarLoading = signal<boolean>(false);
+  public readonly defaultAvatarsLoadingMap = signal<Map<string, boolean>>(new Map());
+  
   private uploadedFile: File | null = null;
   private objectUrl: string | null = null;
   private isUpdatingPersonalInfo = false;
@@ -240,6 +244,25 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
         this.store.dispatch(PersonalInfoActions.resetPhoneUpdate());
         this.originalPhoneBeforeUpdate = null;
       }
+    });
+
+    effect(() => {
+      const url = this.currentAvatarUrl();
+      if (url) {
+        this.mainAvatarLoading.set(true);
+      } else {
+        this.mainAvatarLoading.set(false);
+      }
+    });
+
+   
+    effect(() => {
+      const avatars = this.defaultAvatars();
+      const loadingMap = new Map<string, boolean>();
+      avatars.forEach(avatar => {
+        loadingMap.set(avatar.id, true);
+      });
+      this.defaultAvatarsLoadingMap.set(loadingMap);
     });
   }
 
@@ -389,7 +412,15 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
       return;
     }
 
-   
+    
+    const hasPhotoToRemove = !!currentUrl || hasUnsavedFile || hasSavedAvatarUrl;
+    
+    if (!hasPhotoToRemove) {
+     
+      return;
+    }
+
+  
     this.alertService.warning(
       this.translate.instant('settings.profile-photo.profilePictureRemovedSuccessfully'),
       { variant: 'dismissible', title: 'Success!' },
@@ -434,7 +465,10 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
 
 
     if (this.savedAvatarUrl() && !this.currentAvatarUrl()) {
-    
+      this.alertService.success(
+        this.translate.instant('settings.profile-photo.profilePictureChangedSuccessfully'),
+        { variant: 'dismissible', title: 'Success!' },
+      );
       this.store.dispatch(ProfilePhotoActions.removeAvatar());
       this.store.dispatch(ProfilePhotoActions.removeAvatarRequest());
       
@@ -564,8 +598,26 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
   }
 
   public onImageLoadError(): void {
-
+    this.mainAvatarLoading.set(false);
     this.store.dispatch(ProfilePhotoActions.clearCurrentAvatar());
+  }
+
+  public onMainImageLoad(): void {
+    this.mainAvatarLoading.set(false);
+  }
+
+  public onDefaultAvatarLoad(avatarId: string): void {
+    const currentMap = this.defaultAvatarsLoadingMap();
+    const newMap = new Map(currentMap);
+    newMap.set(avatarId, false);
+    this.defaultAvatarsLoadingMap.set(newMap);
+  }
+
+  public onDefaultAvatarError(avatarId: string): void {
+    const currentMap = this.defaultAvatarsLoadingMap();
+    const newMap = new Map(currentMap);
+    newMap.set(avatarId, false);
+    this.defaultAvatarsLoadingMap.set(newMap);
   }
 
   public onStartTour(): void {

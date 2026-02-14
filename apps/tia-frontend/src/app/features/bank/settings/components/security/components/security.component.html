@@ -42,16 +42,34 @@
       </div>
 
       <div card-footer class="security__footer">
-        <app-button
-          variant="default"
-          size="default"
-          icon="settings-security-key-white.svg"
-          type="submit"
-          [isDisabled]="isFormInvalid() || isLoading()"
-          [isLoading]="isLoading()"
-        >
-          {{ 'settings.security.updatePassword' | translate }}
-        </app-button>
+        @if (updateDisabledReason() && (isFormInvalid() || isLoading())) {
+          <app-tooltip
+            [content]="updateDisabledReason()!"
+            placement="top"
+          >
+            <app-button
+              variant="default"
+              size="default"
+              icon="settings-security-key-white.svg"
+              type="submit"
+              [isDisabled]="true"
+              [isLoading]="isLoading()"
+            >
+              {{ 'settings.security.updatePassword' | translate }}
+            </app-button>
+          </app-tooltip>
+        } @else {
+          <app-button
+            variant="default"
+            size="default"
+            icon="settings-security-key-white.svg"
+            type="submit"
+            [isDisabled]="isFormInvalid() || isLoading()"
+            [isLoading]="isLoading()"
+          >
+            {{ 'settings.security.updatePassword' | translate }}
+          </app-button>
+        }
       </div>
     </app-basic-card>
   </form>

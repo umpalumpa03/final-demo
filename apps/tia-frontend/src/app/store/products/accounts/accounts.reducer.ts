@@ -1,5 +1,5 @@
 import { createFeature, createReducer, on } from '@ngrx/store';
-import { initialAccountsState } from './accounts.state';
+import { initialAccountsState } from './model/accounts-state.model';
 import { AccountsActions } from './accounts.actions';
 import { UserInfoActions } from '../../user-info/user-info.actions';
 
@@ -23,6 +23,23 @@ export const accountsFeature = createFeature({
       isLoading: false,
       error,
     })),
+    on(AccountsActions.loadActiveAccounts, (state) => ({
+      ...state,
+      isLoading: state.accounts.length === 0, //addedchheck load only if data comes rom api and not from cache
+      error: null,
+    })),
+    on(AccountsActions.loadActiveAccountsSuccess, (state, { accounts }) => ({
+      ...state,
+      accounts,
+      isLoading: false,
+      error: null,
+    })),
+    on(AccountsActions.loadActiveAccountsFailure, (state, { error }) => ({
+      ...state,
+      isLoading: false,
+      error,
+    })),
+
     on(AccountsActions.fetchMoreAccounts, (state) => ({
       ...state,
       isFetching: true,

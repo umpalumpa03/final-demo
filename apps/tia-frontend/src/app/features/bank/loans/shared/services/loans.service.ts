@@ -3,7 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ILoan, ILoanDetails, LoanMonthsResponse } from '../models/loan.model';
 import { environment } from '../../../../../../environments/environment';
-import { LoanPurpose } from '../models/loan-request.model';
+import { ILoanRequest, LoanPurpose } from '../models/loan-request.model';
 import {
   IFullPrepaymentResponse,
   IInitiatePrepaymentRequest,
@@ -43,6 +43,10 @@ export class LoansService {
 
   public getLoanById(id: string): Observable<ILoanDetails> {
     return this.http.get<ILoanDetails>(`${this.loansApiUrl}/${id}`);
+  }
+
+  public requestLoan(payload: ILoanRequest): Observable<ILoan> {
+    return this.http.post<ILoan>(`${this.loansApiUrl}/request`, payload);
   }
 
   public getLoanMonths(): Observable<LoanMonthsResponse> {

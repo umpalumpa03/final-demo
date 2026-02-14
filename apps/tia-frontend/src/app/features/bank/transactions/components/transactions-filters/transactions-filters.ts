@@ -21,8 +21,9 @@ import {
   getActiveFilters,
   mapFormIntoTransactionFilter,
 } from '../../utils/transactions-filters.utils';
-import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
 import { TranslateModule, TranslatePipe } from '@ngx-translate/core';
+import { TransactionsViewModelService } from '../../services/transactions-view-model.service';
+import { TransactionsActionsService } from '../../services/transactions-actions.service';
 
 @Component({
   selector: 'app-transactions-filters',
@@ -31,7 +32,6 @@ import { TranslateModule, TranslatePipe } from '@ngx-translate/core';
     TextInput,
     Dropdowns,
     ButtonComponent,
-    BasicCard,
     TranslatePipe,
     TranslateModule,
   ],
@@ -41,6 +41,8 @@ import { TranslateModule, TranslatePipe } from '@ngx-translate/core';
 })
 export class TransactionsFilters {
   private readonly fb = inject(FormBuilder);
+  public readonly vm = inject(TransactionsViewModelService);
+  public readonly actions = inject(TransactionsActionsService);
 
   public readonly filterChange = output<ITransactionFilter>();
   public readonly categoryOptions = input.required<SelectOption[]>();

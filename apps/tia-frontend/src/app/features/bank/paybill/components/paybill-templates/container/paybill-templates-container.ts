@@ -8,7 +8,7 @@ import {
   OnInit,
   signal,
 } from '@angular/core';
-import { PaybillTemplates } from '../components/paybill-templates';
+import { PaybillTemplates } from '../components/paybill-templates/paybill-templates';
 import { Store } from '@ngrx/store';
 import {
   selectCategories,
@@ -31,7 +31,7 @@ import {
 } from '../../../store/paybill.actions';
 import {
   FormSubmitPayload,
-  formSubmitType,
+  FormSubmitType,
   HeaderCtaAction,
   ModalType,
   ProviderTypeForStore,
@@ -64,21 +64,23 @@ import {
 import { paybillSearchConfig } from '../configs/search.config';
 import { PaybillTemplatesService } from '../services/paybill-templates-service';
 import { TreeItem } from '@tia/shared/lib/drag-n-drop/model/drag.model';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-paybill-templates-container',
-  imports: [PaybillTemplates, TextInput, ReactiveFormsModule],
+  imports: [PaybillTemplates, TextInput, ReactiveFormsModule, TranslatePipe],
   templateUrl: './paybill-templates-container.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaybillTemplatesContainer implements OnInit {
+  // Create Forms
   private readonly fb = inject(FormBuilder);
   public createTemplateForm = createTemplateForm(this.fb);
   public editTemplateForm = createEditTemplateForm(this.fb);
   public editGroupForm = createEditGroupForm(this.fb);
   public createGroupForm = createGroupForm(this.fb);
 
-  // //////////////////
+  // inject store and services
   private readonly store = inject(Store);
   private readonly payBill = inject(PaybillDynamicForm);
   private readonly actions$ = inject(Actions);
@@ -149,7 +151,7 @@ export class PaybillTemplatesContainer implements OnInit {
 
   // Action Map
   private readonly formSubmitHandlers: Record<
-    formSubmitType,
+    FormSubmitType,
     (values: Record<string, string>) => void
   > = {
     'create-group': (values) => {
@@ -194,9 +196,6 @@ export class PaybillTemplatesContainer implements OnInit {
         }),
       );
     },
-    'confirm-payment': (values) => {
-      // ShOULD ADD
-    },
   };
 
   public readonly searchControl = new FormControl('');
@@ -240,13 +239,13 @@ export class PaybillTemplatesContainer implements OnInit {
             this.store.select(selectTemplatesAsTreeItems),
             this.store.select(selectTemplatesGroupWithConfigs),
           ]).pipe(
-            map(([templates, groups]) =>
-              this.paybillTemplateService.filterTemplatesAndGroups(
+            map(([templates, groups]) => {
+              return this.paybillTemplateService.filterTemplatesAndGroups(
                 searchValue ?? '',
                 templates,
                 groups,
-              ),
-            ),
+              );
+            }),
           ),
         ),
         tap((filtered) => {
@@ -284,10 +283,13 @@ export class PaybillTemplatesContainer implements OnInit {
     this.isModalOpen.update((val) => !val);
 
     if (willClose) {
+      if (this.selectAll()) {
+        this.selectAll.update((val) => !val);
+      }
+
       this.modalType.set(null);
       this.selectedId.set('');
       this.selectedItemName.set('');
-
       this.store.dispatch(TemplatesPageActions.clearPaymentInfo());
     }
     // To clear store after closing modal
@@ -479,6 +481,8 @@ export class PaybillTemplatesContainer implements OnInit {
       }),
     );
   }
+
+  // If I select a single item
   public onSelectedItem(selectedItemId: string) {
     this.store.dispatch(TemplatesPageActions.clearPaymentInfo());
     const selectedTemplates = [];
@@ -494,5 +498,19 @@ export class PaybillTemplatesContainer implements OnInit {
         selectedItems: selectedTemplates,
       }),
     );
+  }
+  // Here logic if otp is open or not
+  public isOtpModalOpen = signal(false);
+  public isPaymentModalHidden = signal(false);
+
+  public onPayAction() {
+    this.isPaymentModalHidden.set(true);
+    this.isOtpModalOpen.set(true);
+
+    // this.store.dispatch(
+    //   TemplatesPageActions.payManyBills({
+    //     payments: this.billsList.buildPayload(),
+    //   }),
+    // );
   }
 }

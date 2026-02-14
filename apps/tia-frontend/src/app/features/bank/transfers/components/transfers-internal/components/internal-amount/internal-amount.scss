@@ -25,12 +25,12 @@
   &__rate-badge {
     @include flex-center(row, center, center);
     padding: 0.5rem 1rem;
-    background: var(--primary-light, #e3f2fd);
+    background: var(--primary-light, #{$blue-royal-light});
     border-radius: 1.5rem;
 
     span {
       @include font-inter(500, 0.875rem);
-      color: var(--primary, #2563eb);
+      color: var(--primary, #{$blue-royal});
     }
   }
 
@@ -124,7 +124,7 @@
     background: var(--color-bg-primary);
     border-radius: 50%;
     border: 0.1rem solid $gray-200;
-    box-shadow: 0 0.2rem 0.8rem rgba(0, 0, 0, 0.05);
+    box-shadow: 0 0.2rem 0.8rem rgba($black, 0.05);
 
     img {
       @include svg-icon(2.4rem);
@@ -142,6 +142,17 @@
     gap: 3.2rem;
   }
 
+  &__amount-with-error {
+    @include display-flex(column);
+    align-items: stretch;
+    gap: 0.8rem;
+    margin-bottom: 2.4rem;
+
+    .internal-amount__input-group {
+      margin-bottom: 0;
+    }
+  }
+
   &__input-group {
     @include flex-center(column, space-between, stretch);
     position: relative;
@@ -150,6 +161,12 @@
 
     lib-text-input {
       flex-shrink: 0;
+    }
+
+    &--with-error {
+      justify-content: flex-start;
+      gap: 0.8rem;
+      min-height: unset;
     }
   }
 
@@ -169,13 +186,13 @@
   &__error {
     @include font-inter(500, 1.3rem, 1.8rem);
     color: $red-600;
-    position: absolute;
-    top: 6.5rem;
-    left: 0;
-    margin: 0;
+    margin: 0.8rem 0 0;
     padding: 0;
-    background: transparent;
-    border: none;
+
+    .internal-amount__amount-with-error &,
+    .internal-amount__input-group--with-error & {
+      margin: 0;
+    }
   }
 
   &__available {
@@ -231,7 +248,7 @@
     inset: 0;
     z-index: 100;
     @include flex-center();
-    background-color: rgba(255, 255, 255, 0.7);
+    background-color: rgba($white, 0.7);
   }
 
   &__error-toast {

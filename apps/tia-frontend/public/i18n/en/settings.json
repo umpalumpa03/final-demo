@@ -1,5 +1,6 @@
 {
   "title": "Settings",
+  "subtitle": "Manage your preferences and application settings",
   "sections": {
     "profile": "Profile",
     "security": "Security",
@@ -106,7 +107,11 @@
     "confirmNewPasswordPlaceholder": "Confirm new password",
     "updatePassword": "Update Password",
     "twoFactorAuth": "Two-Factor Authentication",
-    "passwordChangedSuccessfully": "Password changed successfully"
+    "passwordChangedSuccessfully": "Password changed successfully",
+    "tooltip": {
+      "passwordMismatch": "The confirmed password does not match",
+      "fillAllFields": "Fill in all fields "
+    }
   },
   "user-management": {
     "title": "User Management",
@@ -145,7 +150,31 @@
   },
   "approve-accounts": {
     "title": "Approve Accounts",
-    "pendingApprovals": "Pending Approvals"
+    "pendingApprovals": "Pending Approvals",
+    "card": {
+      "title": "Approve Accounts",
+      "subtitle": "Review and approve account requests"
+    },
+    "errorState": {
+      "header": "No Accounts Found",
+      "message": "We couldn't find any pending accounts."
+    },
+    "permissionsModal": {
+      "modalTitle": "Modify Account Permissions",
+      "modalSubtitle": "Configure permissions for this Account request",
+      "title": "Account permissions"
+    },
+    "confirmDialog": {
+      "title": "Reset Changes?",
+      "subtitle": "Switching accounts will clear the permissions you selected.",
+      "cancelBtn": "Go back",
+      "confirmBtn": "Discard and switch"
+    },
+    "alerts": {
+      "approved_success": "Account approved successfully",
+      "declined_success": "Account declined successfully",
+      "permissions_saved": "Permissions saved successfully"
+    }
   },
   "approve-cards": {
     "title": "Approve Cards",
@@ -246,6 +275,14 @@
     "errorBtn": "Retry",
     "warningHeader": "No Data Found",
     "warningMessage": "We couldn't find any data to display.",
-    "warningBtn": "Go Back"
+    "warningBtn": "Go Back",
+    "storeAlerts": {
+      "favSuccess": "Favorite status updated successfully",
+      "favFailed": "Failed to update favorite status",
+      "visibilitySuccess": "Account visibility updated successfully",
+      "visibilityFailed": "Failed to update visibility",
+      "nameSuccess": "Account name changed successfully",
+      "nameFailed": "Failed to change friendly name"
+    }
   }
 }

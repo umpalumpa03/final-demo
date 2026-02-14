@@ -6,11 +6,26 @@
   border: 0.18rem solid $blue-400;
   background-color: $white;
   width: 100%;
-  // max-width: 123.2rem;
   border-radius: 1rem;
   padding: 2.5rem;
   gap: 1.6rem;
   position: relative;
+
+  @media (max-width: 768px) {
+    padding: 2rem;
+    gap: 1.4rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 1.5rem;
+    gap: 1.2rem;
+  }
+
+  @media (max-width: 360px) {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
   &--no-border {
     border: none;
     background-color: transparent;
@@ -22,14 +37,38 @@
     gap: 0.8rem;
     width: 100%;
 
+    @media (max-width: 480px) {
+      gap: 0.6rem;
+    }
+
     h2 {
       @include font-inter(600, 1.8rem, 2.7rem);
       color: var(--color-fg);
+
+      @media (max-width: 480px) {
+        font-size: 1.6rem;
+        line-height: 2.4rem;
+      }
+
+      @media (max-width: 360px) {
+        font-size: 1.4rem;
+        line-height: 2rem;
+      }
     }
 
     p {
       @include font-inter(400, 1.4rem, 2rem);
       color: $gray-700;
+
+      @media (max-width: 480px) {
+        font-size: 1.3rem;
+        line-height: 1.8rem;
+      }
+
+      @media (max-width: 360px) {
+        font-size: 1.2rem;
+        line-height: 1.6rem;
+      }
     }
   }
 
@@ -41,6 +80,11 @@
     z-index: 9998;
   }
 
+  &__cards {
+    @include display-flex(column);
+    gap: 0;
+  }
+
   &__group {
     display: flex;
     flex-direction: column;
@@ -48,8 +92,27 @@
     gap: 1.1rem;
     position: relative;
     margin-bottom: 0.8rem;
+
+    @media (max-width: 480px) {
+      gap: 0.8rem;
+      margin-bottom: 0.6rem;
+    }
+
+    @media (max-width: 360px) {
+      gap: 0.6rem;
+      margin-bottom: 0.5rem;
+    }
+
     &:has(.tree-container__children--expanded) {
       margin-bottom: 2rem;
+
+      @media (max-width: 480px) {
+        margin-bottom: 1.5rem;
+      }
+
+      @media (max-width: 360px) {
+        margin-bottom: 1.2rem;
+      }
     }
 
     &--dragging {
@@ -60,6 +123,10 @@
     &--drop-target {
       outline: 2px dashed $blue-400;
       outline-offset: 4px;
+
+      @media (max-width: 480px) {
+        outline-offset: 2px;
+      }
     }
   }
 
@@ -67,20 +134,31 @@
     display: grid;
     grid-template-rows: 0fr;
     opacity: 0;
-    margin-left: 2.8rem;
-    overflow: hidden;
+    padding-left: 2.8rem;
     visibility: hidden;
+    max-width: 100%;
 
     transition:
       grid-template-rows 200ms ease-in-out,
       opacity 200ms ease-in-out,
       visibility 200ms;
 
+    @media (max-width: 768px) {
+      padding-left: 2rem;
+    }
+
+    @media (max-width: 480px) {
+      padding-left: 1.5rem;
+    }
+
+    @media (max-width: 360px) {
+      padding-left: 1rem;
+    }
+
     &--expanded {
       grid-template-rows: 1fr;
       opacity: 1;
       visibility: visible;
-      overflow: visible;
     }
   }
 
@@ -89,6 +167,15 @@
     flex-direction: column;
     gap: 1.1rem;
     min-height: 0;
+    min-width: 0;
+
+    @media (max-width: 480px) {
+      gap: 0.8rem;
+    }
+
+    @media (max-width: 360px) {
+      gap: 0.6rem;
+    }
   }
 
   &__empty {
@@ -102,6 +189,20 @@
     color: $gray-500;
     @include font-inter(400, 1.4rem, 2rem);
     transition: all 200ms ease-in-out;
+
+    @media (max-width: 480px) {
+      min-height: 6rem;
+      padding: 1.5rem;
+      font-size: 1.3rem;
+      line-height: 1.8rem;
+    }
+
+    @media (max-width: 360px) {
+      min-height: 5rem;
+      padding: 1rem;
+      font-size: 1.2rem;
+      line-height: 1.6rem;
+    }
 
     &--active {
       border-color: $blue-400;

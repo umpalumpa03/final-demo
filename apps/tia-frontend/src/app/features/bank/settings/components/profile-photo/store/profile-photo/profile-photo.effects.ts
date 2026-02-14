@@ -8,7 +8,7 @@ import {
 import { ProfilePhotoActions } from './profile-photo.actions';
 import { ProfilePhotoApiService } from '../../../../../../../shared/services/profile-photo/profile-photo.service';
 import { Store } from '@ngrx/store';
-import { catchError, concat, filter, map, of, switchMap, withLatestFrom } from 'rxjs';
+import { catchError, concat, filter, map, mergeMap, of, switchMap, withLatestFrom } from 'rxjs';
 import { environment } from '../../../../../../../../environments/environment';
 import { selectDefaultAvatars, selectSavedAvatarUrl, selectAvatarId, selectCurrentAvatarUrl } from './profile-photo.selectors';
 import { selectUserInfo } from '../../../../../../../store/user-info/user-info.selectors';
@@ -224,7 +224,12 @@ export class ProfilePhotoEffects {
       ofType(ProfilePhotoActions.removeAvatarRequest),
       switchMap(() =>
         this.profilePhotoApiService.removeUserAvatar().pipe(
-          map(() => ProfilePhotoActions.removeAvatar()),
+          mergeMap(() => 
+            concat(
+              of(ProfilePhotoActions.removeAvatar()),
+              of(UserInfoActions.loadUserAvatar({ avatar: null }))
+            )
+          ),
           catchError((error) => {
             return concat(
               of(ProfilePhotoActions.clearUploadedFile()),
