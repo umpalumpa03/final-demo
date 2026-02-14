@@ -48,4 +48,9 @@
   (payAction)="onPayAction()"
   [isOtpModalOpen]="isOtpModalOpen()"
   [isPaymentModalHidden]="isPaymentModalHidden()"
+  (otpCloseEmit)="onOtpClose($event)"
+  [resetTreeState]="resetTree()"
+  (paymentDone)="onPaymentDone()"
+  [succesModalHidden]="isSuccessModalHidden()"
+  (verifyOtp)="onVerifyOtp($event)"
 ></app-paybill-templates>

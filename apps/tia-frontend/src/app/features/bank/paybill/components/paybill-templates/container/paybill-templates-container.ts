@@ -12,7 +12,9 @@ import { PaybillTemplates } from '../components/paybill-templates/paybill-templa
 import { Store } from '@ngrx/store';
 import {
   selectCategories,
+  selectChallengeId,
   selectFilteredProviders,
+  selectFormPayload,
   selectLoading,
   selectPaymentFields,
   selectProviders,
@@ -59,6 +61,7 @@ import {
   map,
   startWith,
   switchMap,
+  take,
   tap,
 } from 'rxjs';
 import { paybillSearchConfig } from '../configs/search.config';
@@ -277,14 +280,17 @@ export class PaybillTemplatesContainer implements OnInit {
     }
   }
 
+  public resetTree = signal<boolean>(false);
+
   // Handle Modal Open / Close Action
   public handleModalToggle(): void {
     const willClose = this.isModalOpen();
     this.isModalOpen.update((val) => !val);
 
     if (willClose) {
-      if (this.selectAll()) {
+      if (this.selectAll() || this.selectedItems().length) {
         this.selectAll.update((val) => !val);
+        this.resetTree.set(true);
       }
 
       this.modalType.set(null);
@@ -502,15 +508,51 @@ export class PaybillTemplatesContainer implements OnInit {
   // Here logic if otp is open or not
   public isOtpModalOpen = signal(false);
   public isPaymentModalHidden = signal(false);
-
+  public isSuccessModalHidden = signal(false);
+  public selectPaymentsForm = this.store.selectSignal(selectFormPayload);
   public onPayAction() {
-    this.isPaymentModalHidden.set(true);
-    this.isOtpModalOpen.set(true);
+    this.actions$
+      .pipe(ofType(TemplatesPageActions.payManyBillsSuccess), take(1))
+      .subscribe(() => {
+        this.isPaymentModalHidden.set(true);
+        this.isOtpModalOpen.set(true);
+      });
 
-    // this.store.dispatch(
-    //   TemplatesPageActions.payManyBills({
-    //     payments: this.billsList.buildPayload(),
-    //   }),
-    // );
+    this.store.dispatch(
+      TemplatesPageActions.payManyBills({
+        payments: this.selectPaymentsForm(),
+      }),
+    );
+  }
+
+  public onOtpClose(event: boolean) {
+    this.isOtpModalOpen.set(event);
+    this.isPaymentModalHidden.set(false);
+  }
+
+  public onPaymentDone() {
+    this.isOtpModalOpen.set(false);
+    this.isPaymentModalHidden.set(true);
+    this.isSuccessModalHidden.set(true);
+  }
+
+  public onVerifyOtp(otp: any) {
+    const challengeId = this.store.selectSignal(selectChallengeId);
+
+    this.actions$
+      .pipe(ofType(PaybillActions.confirmPaymentSuccess), take(1))
+      .subscribe(() => {
+        console.log('confirmPaymentSuccess received!');
+        this.isOtpModalOpen.set(false);
+        this.isSuccessModalHidden.set(true);
+      });
+
+    if (challengeId()) {
+      this.store.dispatch(
+        PaybillActions.confirmPayment({
+          payload: { challengeId: challengeId()!, code: otp.otp },
+        }),
+      );
+    }
   }
 }

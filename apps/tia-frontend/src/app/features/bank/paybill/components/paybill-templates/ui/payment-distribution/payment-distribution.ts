@@ -71,7 +71,6 @@ export class PaymentDistribution implements OnInit {
             .reduce((acc, cur) => acc + cur.amountDue, 0);
 
           if (this.distributionMode() === 'equal' && distributedAmount) {
-            console.log('END___');
             this.store.dispatch(
               TemplatesPageActions.setTotalAmount({
                 amount: +value!,
@@ -88,6 +87,12 @@ export class PaymentDistribution implements OnInit {
           this.store.dispatch(
             TemplatesPageActions.setDistributedAmount({
               amount: distributedAmount,
+            }),
+          );
+
+          this.store.dispatch(
+            TemplatesPageActions.setFormValid({
+              isValid: this.amountControl.valid && distributedAmount > 0,
             }),
           );
         }),

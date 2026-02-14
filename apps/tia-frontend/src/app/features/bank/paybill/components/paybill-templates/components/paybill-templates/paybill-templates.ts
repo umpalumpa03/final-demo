@@ -113,6 +113,8 @@ export class PaybillTemplates implements OnInit {
     this.treeItemMoved.emit(event);
   }
 
+  public resetTreeState = input<boolean>(false);
+
   // Create Form Effect to reset form on modal open/close
   constructor() {
     effect(() => {
@@ -267,11 +269,27 @@ export class PaybillTemplates implements OnInit {
   // Otp Logic (Need to be fixed) WAITING
   public isOtpModalOpen = input<boolean>(false);
   public isPaymentModalHidden = input<boolean>(false);
-
+  public succesModalHidden = input<boolean>(false);
+  public otpCloseEmit = output<boolean>();
+  public paymentDone = output<void>();
   public otpConfig = payBillOtpConfig;
 
   // ANY IMITOM ROM ARVICIT RAIQNEBA BEQASGAN
   public resendOtp(event: any): void {
     console.log(event);
+  }
+
+  public onOtpClose() {
+    this.otpCloseEmit.emit(false);
+  }
+
+  public onSuccessDone(): void {
+    this.paymentDone.emit();
+  }
+
+  public verifyOtp = output<{ isCalled: boolean; otp: string }>();
+
+  public onOtpVerify(event: any) {
+    this.verifyOtp.emit(event);
   }
 }

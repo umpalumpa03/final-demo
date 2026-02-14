@@ -49,7 +49,7 @@ export class BillsList {
           item.id,
           this.fb.control(
             { value: item.amountDue.toFixed(2), disabled: shouldDisable },
-            [Validators.min(0), Validators.max(99999)],
+            [Validators.required, Validators.min(0.01), Validators.max(99999)],
           ),
           { emitEvent: false },
         );
@@ -61,6 +61,10 @@ export class BillsList {
       );
       this.store.dispatch(
         TemplatesPageActions.setPaymentsForm({ payments: this.buildPayload() }),
+      );
+
+      this.store.dispatch(
+        TemplatesPageActions.setFormValid({ isValid: this.payForm.valid }),
       );
     });
 
@@ -78,25 +82,31 @@ export class BillsList {
         });
       }
     });
+  }
 
-    effect(() => {
-      this.payForm.valueChanges.pipe(startWith()).subscribe((values) => {
-        if (!values || Object.keys(values).length === 0) return;
+  ngOnInit() {
+    this.payForm.valueChanges.pipe(startWith()).subscribe((values) => {
+      console.log(values);
+      console.log(this.payForm.valid);
+      if (!values || Object.keys(values).length === 0) return;
 
-        const total = Object.values(values).reduce((sum, value) => {
-          const numValue = parseFloat(value as string) || 0;
-          return +sum! + numValue;
-        }, 0);
+      const total = Object.values(values).reduce((sum, value) => {
+        const numValue = parseFloat(value as string) || 0;
+        return +sum! + numValue;
+      }, 0);
 
-        this.store.dispatch(
-          TemplatesPageActions.setTotalAmount({ amount: +total! }),
-        );
-        this.store.dispatch(
-          TemplatesPageActions.setPaymentsForm({
-            payments: this.buildPayload(),
-          }),
-        );
-      });
+      this.store.dispatch(
+        TemplatesPageActions.setTotalAmount({ amount: +total! }),
+      );
+      this.store.dispatch(
+        TemplatesPageActions.setPaymentsForm({
+          payments: this.buildPayload(),
+        }),
+      );
+
+      this.store.dispatch(
+        TemplatesPageActions.setFormValid({ isValid: this.payForm.valid }),
+      );
     });
   }
 
