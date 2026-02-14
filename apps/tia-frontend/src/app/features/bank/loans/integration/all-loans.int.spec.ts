@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { environment } from '../../../../../environments/environment';
 import {
   TestContext,
@@ -16,7 +16,7 @@ describe('Loans Integration - View Loans Flow', () => {
   });
 
   afterEach(() => {
-    if (ctx && ctx.httpMock) {
+    if (ctx?.httpMock) {
       cleanupLoansTest(ctx.httpMock);
     }
   });
@@ -87,8 +87,22 @@ describe('Loans Integration - View Loans Flow', () => {
 
     ctx.httpMock.expectNone(`${environment.apiUrl}/loans/${loanId}`);
 
-    expect(ctx.loansStore.selectedLoanDetails()).toBeTruthy();
-    expect(ctx.loansStore.selectedLoanDetails()?.id).toBe(loanId);
+    await vi.waitFor(() => {
+      expect(ctx.loansStore.selectedLoanDetails()).toBeTruthy();
+      expect(ctx.loansStore.selectedLoanDetails()?.id).toBe(loanId);
+    });
+  });
+
+  it('should handle load loans error and set error state', async () => {
+    ctx.loansStore.loadLoans({ status: null, forceChange: true });
+
+    const req = ctx.httpMock.expectOne(`${environment.apiUrl}/loans`);
+    req.flush('Server error', { status: 500, statusText: 'Server Error' });
+
+    await vi.waitFor(() => {
+      expect(ctx.loansStore.loading()).toBe(false);
+      expect(ctx.loansStore.error()).toBeTruthy();
+    });
   });
 
   it('should navigate to next loan details', async () => {

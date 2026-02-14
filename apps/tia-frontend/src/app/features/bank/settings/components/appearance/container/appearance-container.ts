@@ -8,15 +8,13 @@ import {
 } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Store } from '@ngrx/store';
-import { catchError, map, Observable, of, Subject, tap } from 'rxjs';
+import { catchError, Observable, of, Subject, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { SettingsBody } from '../../../shared/ui/settings-body/settings-body';
-import { themesConfig } from '../config/appearance.config';
 import { selectActiveTheme } from 'apps/tia-frontend/src/app/store/theme/theme.selectors';
 import { ThemeActions } from 'apps/tia-frontend/src/app/store/theme/theme.actions';
 import { AppearanceService } from '../services/appearance-api.service';
-import { TAvailableThemes } from '../models/appearance.model';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
 import { selectUserTheme } from 'apps/tia-frontend/src/app/store/user-info/user-info.selectors';
@@ -26,6 +24,7 @@ import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 import { TranslateService } from '@ngx-translate/core';
 import { BreakpointService } from '@tia/core/services/breakpoints/breakpoint.service';
 import { AlertService } from '@tia/core/services/alert/alert.service';
+import { AppearanceStore } from '../store/appearance.store';
 
 @Component({
   selector: 'app-appearance-container',
@@ -43,11 +42,16 @@ import { AlertService } from '@tia/core/services/alert/alert.service';
 })
 export class AppearanceContainer implements OnInit, CanComponentDeactivate {
   private readonly store = inject(Store);
-  private readonly appearanceService = inject(AppearanceService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly translate = inject(TranslateService);
   private readonly breakpointService = inject(BreakpointService);
   private readonly alertService = inject(AlertService);
+  private readonly appearanceStore = inject(AppearanceStore);
+
+  public readonly isFetching = this.appearanceStore.isRefreshing;
+  public readonly isLoading = this.appearanceStore.isLoading;
+  public readonly hasLoaded = this.appearanceStore.hasLoaded;
+  public readonly availableThemes = this.appearanceStore.themes;
 
   public readonly isMobile = this.breakpointService.isMobile;
 
@@ -73,9 +77,7 @@ export class AppearanceContainer implements OnInit, CanComponentDeactivate {
   }
 
   private activeTheme = this.store.selectSignal(selectActiveTheme);
-  public availableThemes = signal<TAvailableThemes | null>(null);
 
-  public isLoading = this.appearanceService.isLoading;
 
   private isSubmitted = signal(false);
 
@@ -83,21 +85,8 @@ export class AppearanceContainer implements OnInit, CanComponentDeactivate {
 
   public ngOnInit(): void {
     this.isSubmitted.set(false);
-    this.appearanceService
-      .getAvailableThemes()
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        map((themes) => {
-          return [...themes].map((theme, index) => ({
-            ...theme,
-            subtitle: themesConfig[index].subtitle,
-          }));
-        }),
-        tap((themes) => {
-          this.availableThemes.set(themes);
-        }),
-      )
-      .subscribe();
+
+    this.appearanceStore.fetchThemes({})
   }
 
   public isCurrentTheme(theme: string) {
@@ -126,27 +115,24 @@ export class AppearanceContainer implements OnInit, CanComponentDeactivate {
   }
 
   public onSubmit(): void {
-    this.appearanceService
-      .updateUserTheme(this.activeTheme())
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        tap(() => {
-          this.isSubmitted.set(true);
-          this.alertService.success(
-            this.translate.instant('settings.appearance.saveSuccess'),
-          );
-          this.store.dispatch(
-            UserInfoActions.loadUserTheme({ theme: this.activeTheme() }),
-          );
-        }),
-        catchError(() => {
-          this.alertService.error(
-            this.translate.instant('settings.appearance.saveError'),
-          );
-          return of(null);
-        }),
-      )
-      .subscribe();
+    this.appearanceStore.updateTheme(this.activeTheme()).pipe(
+      takeUntilDestroyed(this.destroyRef),
+      tap(() => {
+        this.isSubmitted.set(true);
+        this.alertService.success(
+          this.translate.instant('settings.appearance.saveSuccess'),
+        );
+        this.store.dispatch(
+          UserInfoActions.loadUserTheme({ theme: this.activeTheme() }),
+        );
+      }),
+      catchError(() => {
+        this.alertService.error(
+          this.translate.instant('settings.appearance.saveError'),
+        );
+        return of(null);
+      }),
+    ).subscribe();
   }
 
   public canDeactivate(): boolean | Observable<boolean> {

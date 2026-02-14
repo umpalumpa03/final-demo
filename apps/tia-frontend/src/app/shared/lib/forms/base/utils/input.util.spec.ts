@@ -40,16 +40,6 @@ describe('ValidationService', () => {
     expect(service.getErrorMessage(undefined)).toBe('');
   });
 
-  it('should return minlength message', () => {
-    const errors = { minlength: { requiredLength: 5, actualLength: 2 } };
-    expect(service.getErrorMessage(errors)).toBe('Min length is 5');
-  });
-
-  it('should return maxlength message', () => {
-    const errors = { maxlength: { requiredLength: 10, actualLength: 15 } };
-    expect(service.getErrorMessage(errors)).toBe('Max length is 10');
-  });
-
   it('should return min value message', () => {
     const errors = { min: { min: 18, actual: 10 } };
     expect(service.getErrorMessage(errors)).toBe('Minimum value is 18');

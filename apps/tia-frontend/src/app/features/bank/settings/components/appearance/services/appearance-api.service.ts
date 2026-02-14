@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { inject, Injectable, signal } from "@angular/core";
 import { TAvailableThemes } from "../models/appearance.model";
 import { environment } from "../../../../../../../environments/environment";
-import { tap } from "rxjs";
+import { Observable, tap } from "rxjs";
 
 @Injectable({
     providedIn: 'root'
@@ -14,16 +14,11 @@ export class AppearanceService {
     
     private http = inject(HttpClient);
 
-    public isLoading = signal(false);    
-
-    public getAvailableThemes() {
-        this.isLoading.set(true);
-        return this.http.get<TAvailableThemes>(`${this.BASE_URL}${this.AVAILABLE_THEMES_ENDPOINT}`).pipe(
-            tap(() => this.isLoading.set(false)),
-        );
+    public getAvailableThemes(): Observable<TAvailableThemes> {
+        return this.http.get<TAvailableThemes>(`${this.BASE_URL}${this.AVAILABLE_THEMES_ENDPOINT}`)
     }
 
-    public updateUserTheme(theme: string) {
-        return this.http.put(`${this.BASE_URL}${this.UPDATE_THEMES_ENDPOINT}`, { theme });
+    public updateUserTheme(theme: string): Observable<void> {
+        return this.http.put<void>(`${this.BASE_URL}${this.UPDATE_THEMES_ENDPOINT}`, { theme });
     }
 }

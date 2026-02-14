@@ -17,6 +17,7 @@
 }
 
 <div class="text-input__wrapper" [class.text-input__wrapper--has-icon]="mergedConfig().icon"
+    [class.text-input__wrapper--has-suffix]="isPasswordType()"
     [class.text-input__wrapper--disabled]="isDisabled()" [class.text-input__wrapper--readonly]="isReadonly()"
     [style.margin]="mergedConfig().margin">
 

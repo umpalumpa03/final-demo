@@ -308,6 +308,10 @@ export const MessagingStore = signalStore(
         const translate = inject(TranslateService);
         const alertService = inject(AlertService);
         return {
+            resetStore(): void {
+                patchState(store, initialState);
+            },
+
             sendEmail: rxMethod<SendEmailRequest>(
                 pipe(
                     tap(() => patchState(store, { isLoading: true })),

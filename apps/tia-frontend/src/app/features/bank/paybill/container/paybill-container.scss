@@ -9,25 +9,6 @@
     gap: 3.2rem;
     padding: 3.2rem;
 
-    &__notification-stack {
-      position: fixed;
-      top: 7rem;
-      right: 2.4rem;
-      z-index: 10000;
-
-      @include display-flex(column);
-      gap: 1.2rem;
-      pointer-events: none;
-    }
-
-    &__notification-item {
-      pointer-events: auto;
-      min-width: 32rem;
-      max-width: 42rem;
-
-      animation: toast-slide-in 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-
     &__header {
       @include display-flex(column);
       gap: 2rem;

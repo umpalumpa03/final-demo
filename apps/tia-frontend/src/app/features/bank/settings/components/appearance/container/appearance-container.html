@@ -3,7 +3,7 @@
     <div class="container">
         <h4 class="container__title">{{'settings.appearance.cardsTitle' | translate}}</h4>
         <div class="container__cards" [class.container__cards--mobile]="isMobile()">
-            @if(isLoading()) {
+            @if(isLoading() && !hasLoaded()) {
             <app-skeleton height="10rem"></app-skeleton>
             <app-skeleton height="10rem"></app-skeleton>
             <app-skeleton height="10rem"></app-skeleton>
@@ -19,7 +19,7 @@
             }
         </div>
         <div class="container__submit">
-            <app-button (click)="onSubmit()">{{'settings.appearance.saveChanges' | translate}}</app-button>
+            <app-button [isLoading]="isFetching()" (click)="onSubmit()">{{'settings.appearance.saveChanges' | translate}}</app-button>
         </div>
     </div>
 </app-settings-body>

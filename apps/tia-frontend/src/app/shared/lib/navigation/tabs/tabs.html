@@ -1,16 +1,25 @@
 @if (tabs()?.length) {
-<ul class="tabs" [class.horizontal]="orientation() === 'horizontal'" [class.vertical]="orientation() === 'vertical'">
+<ul
+  class="tabs"
+  [class.horizontal]="orientation() === 'horizontal'"
+  [class.vertical]="orientation() === 'vertical'"
+>
   @for (tab of tabs(); track tab.label) {
   <li class="tabs__item">
-    <a [routerLink]="tab.route" class="tabs__item--link" routerLinkActive="tabs__item--active"
+    <a
+      [routerLink]="tab.route"
+      class="tabs__item--link"
+      routerLinkActive="tabs__item--active"
       [routerLinkActiveOptions]="{ exact: tab.exact || false }"
-      [queryParamsHandling]="hasQueryHandling() ? 'merge' : null">
+      [queryParamsHandling]="hasQueryHandling() ? 'merge' : null"
+    >
       @if (tab.icon) {
-      <span class="tabs__item--icon">
+      <span class="tabs__item--icon" [class.collapsed]="collapsed()">
         <img class="tabs__item--icon-img" [src]="tab.icon" alt="icon" />
       </span>
-      }
+      } @if (!collapsed()){
       <span>{{ tab.label }}</span>
+      }
     </a>
   </li>
   }
