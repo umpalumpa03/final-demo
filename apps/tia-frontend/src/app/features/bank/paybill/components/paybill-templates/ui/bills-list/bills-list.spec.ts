@@ -39,7 +39,6 @@ describe('BillsList', () => {
     component = fixture.componentInstance;
     store = TestBed.inject(MockStore);
 
-    // Set required input before first detectChanges
     fixture.componentRef.setInput('isDistribution', false);
     fixture.detectChanges();
   });
@@ -54,7 +53,6 @@ describe('BillsList', () => {
     fixture.componentRef.setInput('isDistribution', true);
     fixture.detectChanges();
 
-    // Wait for the effect to propagate to the UI
     await fixture.whenStable();
 
     expect(component.payForm.get('1')?.disabled).toBe(true);
@@ -91,8 +89,11 @@ describe('BillsList', () => {
 
   it('should block "e" and "-" keys in preventNegative', () => {
     const preventSpy = vi.fn();
+    const mockTarget = { value: '123' } as HTMLInputElement;
+
     const mockEvent = {
       key: '-',
+      target: mockTarget,
       preventDefault: preventSpy,
     } as unknown as KeyboardEvent;
 
@@ -102,6 +103,7 @@ describe('BillsList', () => {
     preventSpy.mockClear();
     component.preventNegative({
       key: '1',
+      target: mockTarget,
       preventDefault: preventSpy,
     } as unknown as KeyboardEvent);
     expect(preventSpy).not.toHaveBeenCalled();
