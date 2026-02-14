@@ -7,6 +7,7 @@ import { LoansStore } from '../store/loans.store';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import { Component, signal } from '@angular/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { AlertService } from '@tia/core/services/alert/alert.service';
 
 @Component({ selector: 'app-request-modal', template: '', standalone: true })
 class MockRequestModal {}
@@ -43,6 +44,7 @@ describe('LoansContainer', () => {
         provideRouter([]),
         provideMockStore(),
         { provide: LoansStore, useValue: loansStoreMock },
+        { provide: AlertService, useValue: { showAlert: vi.fn() } },
       ],
     })
       .overrideComponent(LoansContainer, { set: { animations: [] } })
