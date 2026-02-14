@@ -3,6 +3,7 @@ import { WidgetCard } from './widget-card';
 import { By } from '@angular/platform-browser';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { WidgetItem } from '../../models/customizable-widgets.model';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('WidgetCard', () => {
   let component: WidgetCard;
@@ -22,7 +23,7 @@ describe('WidgetCard', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [WidgetCard],
+      imports: [WidgetCard, TranslateModule.forRoot()],
     }).compileComponents();
     fixture = TestBed.createComponent(WidgetCard);
     component = fixture.componentInstance;
@@ -41,9 +42,7 @@ describe('WidgetCard', () => {
     const title = fixture.debugElement.query(By.css('.widget-card__title'));
     const desc = fixture.debugElement.query(By.css('.widget-card__desc'));
 
-    expect(title.nativeElement.textContent).toContain('Recent Transactions');
-    expect(desc.nativeElement.textContent).toContain(
-      'View your latest transactions with details.',
-    );
+    expect(title.nativeElement.textContent).toContain(greenItem.title);
+    expect(desc.nativeElement.textContent).toContain(greenItem.description);
   });
 });

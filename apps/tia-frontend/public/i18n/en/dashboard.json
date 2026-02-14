@@ -38,5 +38,91 @@
       "description": "Apply for a personalized loan with competitive rates tailored for you.",
       "button": "Apply Now"
     }
+  },
+  "onboarding": {
+    "steps": {
+      "welcome": {
+        "title": "Welcome to Your Dashboard!",
+        "desc": "This is your financial command center. Let's take a quick tour to show you around all the amazing features available to you."
+      },
+      "navigation": {
+        "title": "Navigation Hub",
+        "desc": "Your complete navigation menu with access to all features:"
+      },
+      "messages": {
+        "title": "Messages",
+        "desc": "Stay connected with your banking messages. The red badge will show you unread messages counting waiting for your attention. Click to view, compose, and manage your inbox."
+      },
+      "notifications": {
+        "title": "Notifications Center",
+        "desc": "Keep track of all your account activities, security alerts, and important updates. Click here to view, manage, and delete notifications. The red dot indicates unread notifications."
+      },
+      "widgets": {
+        "title": "Your Customizable Widgets",
+        "desc": "Personalize your dashboard with three powerful widgets that provide real-time financial insights:"
+      },
+      "finish": {
+        "title": "You're All Set!",
+        "desc": "You now know how to navigate and use your dashboard effectively. You can restart this tour anytime by clicking the help button in the top right. Happy banking!"
+      }
+    },
+    "modal": {
+      "previous": "Previous",
+      "next": "Next",
+      "finish": "Finish",
+      "skipTour": "Skip tour"
+    },
+    "navigation-hub": {
+      "dashboard": {
+        "title": "Dashboard",
+        "description": "Your financial overview and widgets"
+      },
+      "products": {
+        "title": "My Products",
+        "description": "Manage accounts, cards, and view 3D card designs"
+      },
+      "transactions": {
+        "title": "Transactions",
+        "description": "View and filter all your transaction history"
+      },
+      "transfers": {
+        "title": "Transfers",
+        "description": "Send money between accounts and to others"
+      },
+      "loans": {
+        "title": "Loans",
+        "description": "Apply for and manage your loans"
+      },
+      "finances": {
+        "title": "My Finances",
+        "description": "Track income, expenses, and savings with charts"
+      },
+      "paybill": {
+        "title": "Paybill",
+        "description": "Pay bills, create templates, and manage groups"
+      },
+      "settings": {
+        "title": "Settings",
+        "description": "Customize your profile and preferences"
+      }
+    },
+    "customizable-widgets": {
+      "transactions": {
+        "title": "Recent Transactions",
+        "description": "View your latest transactions with details. Adjust display count (5-20) and use the repeat button for quick re-payments."
+      },
+      "accounts": {
+        "title": "Accounts Overview",
+        "description": "Monitor all account balances, see recent changes, hide/show balances with the eye icon, and add new accounts."
+      },
+      "exchange": {
+        "title": "Live Exchange Rates",
+        "description": "Stay updated with real-time currency and cryptocurrency values. Click refresh for the latest market data."
+      },
+      "pro-tip": {
+        "title": "Pro Tip: Grab any widget by the grip icon (⠿) and drag to reorder!",
+        "description": ""
+      }
+    }
   }
 }

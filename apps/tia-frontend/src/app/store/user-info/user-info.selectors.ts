@@ -73,3 +73,14 @@ export const selectOnboardingStatus = createSelector(
   selectUserInfoState,
   (state) => state.hasCompletedOnboarding,
 );
+
+export const selectIsTodayBirthday = createSelector(
+  selectUserInfo,
+  (user) => {
+    if (!user?.birthday) return false;
+    
+    const today = new Date();
+    const [day, month] = user.birthday.split('-').map(Number);    
+    return today.getDate() === day && today.getMonth() === (month - 1);
+  }
+);

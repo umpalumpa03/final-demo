@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { Action } from '@ngrx/store';
 import { accountsReducer } from './accounts.reducer';
-import { initialAccountsState } from './accounts.state';
+import { initialAccountsState } from './model/accounts-state.model';
 import * as AccountsActions from './accounts.actions';
 import { AccountType } from '../../../shared/models/accounts/accounts.model';
 

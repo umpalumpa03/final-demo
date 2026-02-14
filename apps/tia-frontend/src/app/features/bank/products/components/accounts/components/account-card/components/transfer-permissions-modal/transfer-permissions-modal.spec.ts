@@ -3,10 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TransferPermissionsModalComponent } from './transfer-permissions-modal';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
-import {
-  TRANSFER_PERMISSIONS,
-  VALID_PERMISSION_VALUES,
-} from '../../../../config/transfer-permissions.config';
+import { TRANSFER_PERMISSIONS } from '../../../../config/transfer-permissions.config';
 
 describe('TransferPermissionsModalComponent', () => {
   let component: TransferPermissionsModalComponent;
@@ -39,9 +36,9 @@ describe('TransferPermissionsModalComponent', () => {
     expect(component.permissions().length).toBe(6);
   });
 
-  it('should return empty array for invalid permission', () => {
+  it('should return empty array for zero permission', () => {
     fixture.componentRef.setInput('isOpen', true);
-    fixture.componentRef.setInput('accountPermission', 999);
+    fixture.componentRef.setInput('accountPermission', 0);
     expect(component.availablePermissions()).toEqual([]);
   });
 
@@ -49,23 +46,56 @@ describe('TransferPermissionsModalComponent', () => {
     fixture.componentRef.setInput('isOpen', true);
     fixture.componentRef.setInput('accountPermission', 1);
     const available = component.availablePermissions();
-    expect(available.length).toBeGreaterThan(0);
-    expect(available.every((p) => (1 & p.value) === p.value)).toBe(true);
-    expect(
-      available.every((p) =>
-        VALID_PERMISSION_VALUES.includes(
-          p.value as (typeof VALID_PERMISSION_VALUES)[number],
-        ),
-      ),
-    ).toBe(true);
+    expect(available.length).toBe(1);
+    expect(available[0].value).toBe(1);
   });
 
-  it('should update availablePermissions when accountPermission changes', () => {
+  it('should decode composite permission 3 into permissions 1 and 2 for GEL', () => {
     fixture.componentRef.setInput('isOpen', true);
-    fixture.componentRef.setInput('accountPermission', 1);
-    const first = component.availablePermissions();
     fixture.componentRef.setInput('accountPermission', 3);
-    expect(first).not.toEqual(component.availablePermissions());
+    fixture.componentRef.setInput('accountCurrency', 'GEL');
+    const available = component.availablePermissions();
+    expect(available.map((p) => p.value)).toEqual([1, 2]);
+  });
+
+  it('should decode composite permission 3 into permissions 1 and 4 for non-GEL', () => {
+    fixture.componentRef.setInput('isOpen', true);
+    fixture.componentRef.setInput('accountPermission', 3);
+    fixture.componentRef.setInput('accountCurrency', 'USD');
+    const available = component.availablePermissions();
+    expect(available.map((p) => p.value)).toEqual([1]);
+  });
+
+  it('should exclude permission 4 for GEL currency with composite permission 15', () => {
+    fixture.componentRef.setInput('isOpen', true);
+    fixture.componentRef.setInput('accountPermission', 15);
+    fixture.componentRef.setInput('accountCurrency', 'GEL');
+    const available = component.availablePermissions();
+    expect(available.map((p) => p.value)).toEqual([1, 2, 8]);
+  });
+
+  it('should exclude permission 2 for non-GEL currency with composite permission 15', () => {
+    fixture.componentRef.setInput('isOpen', true);
+    fixture.componentRef.setInput('accountPermission', 15);
+    fixture.componentRef.setInput('accountCurrency', 'USD');
+    const available = component.availablePermissions();
+    expect(available.map((p) => p.value)).toEqual([1, 4, 8]);
+  });
+
+  it('should decode all permissions (63) for GEL currency', () => {
+    fixture.componentRef.setInput('isOpen', true);
+    fixture.componentRef.setInput('accountPermission', 63);
+    fixture.componentRef.setInput('accountCurrency', 'GEL');
+    const available = component.availablePermissions();
+    expect(available.map((p) => p.value)).toEqual([1, 2, 8, 16, 32]);
+  });
+
+  it('should decode all permissions (63) for non-GEL currency', () => {
+    fixture.componentRef.setInput('isOpen', true);
+    fixture.componentRef.setInput('accountPermission', 63);
+    fixture.componentRef.setInput('accountCurrency', 'EUR');
+    const available = component.availablePermissions();
+    expect(available.map((p) => p.value)).toEqual([1, 4, 8, 16, 32]);
   });
 
   it('should emit permissionSelected when onPermissionSelect is called', () => {

@@ -12,18 +12,14 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
-import { Router } from '@angular/router';
 import { Account } from '../../../../../../../../../shared/models/accounts/accounts.model';
 import { ButtonComponent } from '../../../../../../../../../shared/lib/primitives/button/button';
 import { BasicCard } from '../../../../../../../../../shared/lib/cards/basic-card/basic-card';
 import { TextInput } from '../../../../../../../../../shared/lib/forms/input-field/text-input';
 import { Badges } from '../../../../../../../../../shared/lib/primitives/badges/badges';
-import {
-  VALID_PERMISSION_VALUES,
-  TRANSFER_PERMISSIONS,
-} from '../../../../config/transfer-permissions.config';
+import { Tooltip } from '../../../../../../../../../shared/lib/data-display/tooltip/tooltip';
+import { TRANSFER_PERMISSIONS } from '../../../../config/transfer-permissions.config';
 import { filterPermissionsByCurrency } from '../../../../utils/transfer-permissions.utils';
-
 @Component({
   selector: 'app-account-card-view',
   imports: [
@@ -34,6 +30,7 @@ import { filterPermissionsByCurrency } from '../../../../utils/transfer-permissi
     BasicCard,
     TextInput,
     Badges,
+    Tooltip,
   ],
   templateUrl: './account-card-view.html',
   styleUrl: './account-card-view.scss',
@@ -60,14 +57,6 @@ export class AccountCardViewComponent {
   protected canMakeTransfer = computed(() => {
     const permission = this.account().permission;
     const currency = this.account().currency;
-
-    if (
-      !VALID_PERMISSION_VALUES.includes(
-        permission as (typeof VALID_PERMISSION_VALUES)[number],
-      )
-    ) {
-      return false;
-    }
 
     const availablePermissions = filterPermissionsByCurrency(
       TRANSFER_PERMISSIONS,

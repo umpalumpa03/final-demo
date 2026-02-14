@@ -3,6 +3,7 @@ import { NavigationHub } from './navigation-hub';
 import { By } from '@angular/platform-browser';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { NAVIGATION_HUB_ITEMS } from './config/navigation-hub.config';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('NavigationHub', () => {
   let component: NavigationHub;
@@ -10,7 +11,7 @@ describe('NavigationHub', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [NavigationHub],
+      imports: [NavigationHub, TranslateModule.forRoot()],
     }).compileComponents();
     fixture = TestBed.createComponent(NavigationHub);
     component = fixture.componentInstance;

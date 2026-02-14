@@ -7,8 +7,8 @@
       />
     </div>
     <div class="text">
-      <h1>{{title()}}</h1>
-      <p>{{desc()}}</p>
+      <h1>{{title() | translate}}</h1>
+      <p>{{desc() | translate}}</p>
     </div>
   </div>
 
@@ -18,27 +18,33 @@
 
   <footer>
     <div class="footer-content">
-        <app-pill-paging [total]="6" [currentIndex]="page() - 1" (goTo)="goTo($event)"></app-pill-paging>
+      <app-pill-paging
+        [total]="6"
+        [currentIndex]="page() - 1"
+        (goTo)="goTo($event)"
+      ></app-pill-paging>
       <div class="buttons">
         @if (page() >= 2) {
         <app-button variant="outline" (click)="prev.emit()" [icon]="'prev.svg'"
-          >Previous</app-button
+          >{{ 'dashboard.onboarding.modal.previous' | translate }}</app-button
         >
         } @if (page() == 6) {
         <app-button variant="default" (click)="next.emit()"
-          >Finish
+          >{{ 'dashboard.onboarding.modal.finish' | translate }}
           <img src="images/svg/onboarding/finish.svg" alt="Finish" />
         </app-button>
         } @else {
         <app-button variant="default" (click)="next.emit()"
-          >Next
+          >{{ 'dashboard.onboarding.modal.next' | translate }}
           <img src="images/svg/onboarding/next.svg" alt="Next" />
         </app-button>
         }
       </div>
     </div>
 
-    <p class="skip-text" (click)="skip.emit()">Skip tour ({{page()}}/6)</p>
+    <p class="skip-text" (click)="skip.emit()">
+      {{ 'dashboard.onboarding.modal.skipTour' | translate }} ({{page()}}/6)
+    </p>
   </footer>
 </ng-template>
 
