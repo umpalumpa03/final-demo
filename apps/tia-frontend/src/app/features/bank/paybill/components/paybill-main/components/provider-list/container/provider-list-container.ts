@@ -112,11 +112,6 @@ export class ProviderListContainer {
   }
 
   public selectProvider(providerId: string): void {
-    this.store.dispatch(PaybillActions.selectProvider({ providerId }));
-    this.store.dispatch(
-      PaybillActions.loadPaymentDetails({ serviceId: providerId }),
-    );
-
     this.router.navigate([providerId], { relativeTo: this.route });
   }
 }

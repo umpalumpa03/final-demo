@@ -35,6 +35,9 @@ import {
   ProceedPaymentResponse,
 } from '../components/paybill-main/shared/models/paybill.model';
 import { selectTransactionToRepeat } from 'apps/tia-frontend/src/app/store/transactions/transactions.selector';
+import { AlertService } from '@tia/core/services/alert/alert.service';
+import { TranslateService } from '@ngx-translate/core';
+import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions/transactions.actions';
 
 describe('PaybillEffect (Refactored)', () => {
   let actions$: Observable<Action>;
@@ -43,6 +46,8 @@ describe('PaybillEffect (Refactored)', () => {
   let paybillService: Mocked<PaybillService>;
   let paybillTemplatesService: Mocked<PaybillTemplatesService>;
   let router: Mocked<Router>;
+  let alertService: Mocked<AlertService>;
+  let translate: Mocked<TranslateService>;
 
   beforeEach(() => {
     const paybillServiceMock = {
@@ -68,7 +73,16 @@ describe('PaybillEffect (Refactored)', () => {
       payManyBills: vi.fn(),
     };
 
-    const routerMock = { navigate: vi.fn() };
+    const routerMock = {
+      navigate: vi.fn(),
+      events: of(),
+      url: '/bank/paybill/pay',
+    };
+
+    const alertServiceMock = { success: vi.fn(), error: vi.fn() };
+    const translateMock = {
+      instant: vi.fn((key: string) => key),
+    };
 
     TestBed.configureTestingModule({
       providers: [
@@ -81,6 +95,8 @@ describe('PaybillEffect (Refactored)', () => {
         { provide: PaybillService, useValue: paybillServiceMock },
         { provide: PaybillTemplatesService, useValue: templatesServiceMock },
         { provide: Router, useValue: routerMock },
+        { provide: AlertService, useValue: alertServiceMock },
+        { provide: TranslateService, useValue: translateMock },
       ],
     });
 
@@ -89,6 +105,8 @@ describe('PaybillEffect (Refactored)', () => {
     paybillService = TestBed.inject(PaybillService) as any;
     paybillTemplatesService = TestBed.inject(PaybillTemplatesService) as any;
     router = TestBed.inject(Router) as any;
+    alertService = TestBed.inject(AlertService) as any;
+    translate = TestBed.inject(TranslateService) as any;
 
     store.overrideSelector(selectCategoriesLoaded, false);
     store.overrideSelector(selectTemplatesLoaded, false);
@@ -195,7 +213,7 @@ describe('PaybillEffect (Refactored)', () => {
   });
 
   describe('Verification & Payment Flow', () => {
-    it('confirmPayment$: should emit success notification and navigate on success', () => {
+    it('confirmPayment$: should navigate and emit success actions on success', () => {
       paybillService.verifyPayment.mockReturnValue(
         of({ success: true, message: 'Verified' }),
       );
@@ -205,20 +223,19 @@ describe('PaybillEffect (Refactored)', () => {
         }),
       );
 
-      effects.confirmPayment$.subscribe((action) => {
-        expect(router.navigate).toHaveBeenCalledWith([
-          '/bank/paybill/pay/payment-success',
-        ]);
-        expect(action).toEqual(
-          PaybillActions.addNotification({
-            notificationType: 'success',
-            message: 'OTP Verified Successfully',
-          }),
-        );
-      });
+      const results: any[] = [];
+      effects.confirmPayment$.subscribe((a) => results.push(a));
+
+      expect(router.navigate).toHaveBeenCalledWith([
+        '/bank/paybill/pay/payment-success',
+      ]);
+      expect(results).toContainEqual(PaybillActions.confirmPaymentSuccess());
+      expect(results).toContainEqual(
+        TransactionActions.loadTransactions({ forceRefresh: true }),
+      );
     });
 
-    it('confirmPayment$: should emit warning notification on business failure', () => {
+    it('confirmPayment$: should dispatch confirmPaymentFailure on business failure', () => {
       paybillService.verifyPayment.mockReturnValue(
         of({ success: false, message: 'Invalid OTP' }),
       );
@@ -226,9 +243,8 @@ describe('PaybillEffect (Refactored)', () => {
 
       effects.confirmPayment$.subscribe((action) => {
         expect(action).toEqual(
-          PaybillActions.addNotification({
-            notificationType: 'warning',
-            message: 'Invalid OTP',
+          PaybillActions.confirmPaymentFailure({
+            error: 'Invalid OTP',
           }),
         );
       });
@@ -406,36 +422,22 @@ describe('PaybillEffect (Refactored)', () => {
   });
 
   describe('Notification Mapping', () => {
-    it('actionSuccess$: should map success actions to notifications', () => {
-      actions$ = of(
-        TemplatesPageActions.deleteTemplateSuccess({
-          message: 'ok',
-          templateId: '1',
-        }),
-      );
+    it('actionSuccess$: should call alertService.success', () => {
+      actions$ = of(PaybillActions.confirmPaymentSuccess());
 
-      effects.actionSuccess$.subscribe((action) => {
-        expect(action).toEqual(
-          PaybillActions.addNotification({
-            notificationType: 'success',
-            message: 'Template deleted successfully',
-          }),
-        );
-      });
+      effects.actionSuccess$.subscribe();
+
+      expect(alertService.success).toHaveBeenCalled();
     });
 
-    it('actionFailure$: should map failure actions to warning notifications', () => {
+    it('actionFailure$: should call alertService.error for failure actions', () => {
       const error = 'Global Error';
+
       actions$ = of(TemplatesPageActions.loadTemplatesFailure({ error }));
 
-      effects.actionFailure$.subscribe((action) => {
-        expect(action).toEqual(
-          PaybillActions.addNotification({
-            notificationType: 'warning',
-            message: error,
-          }),
-        );
-      });
+      effects.actionFailure$.subscribe();
+
+      expect(alertService.error).toHaveBeenCalled();
     });
   });
 
@@ -695,7 +697,6 @@ describe('PaybillEffect (Refactored)', () => {
     });
 
     it('getErrorMessage: should handle error.error.message structure', () => {
-      // Testing the middle branch of your error helper
       const complexError = { error: { message: 'Deep Error' } };
       paybillService.getCategories.mockReturnValue(
         throwError(() => complexError),
@@ -709,21 +710,20 @@ describe('PaybillEffect (Refactored)', () => {
     });
   });
 
-  it('should dispatch payManyBillsSuccess on successful API call', () => {
-    const response = { verify: { challengeId: 'bulk-123' } } as any;
-    const payments = [{ templateId: 't1', amount: 100 }] as any;
-
+  it('should dispatch payManyBillsSuccess and reload transactions', () => {
+    const response = { success: true } as any;
     paybillTemplatesService.payManyBills.mockReturnValue(of(response));
-    actions$ = of(TemplatesPageActions.payManyBills({ payments }));
+    actions$ = of(TemplatesPageActions.payManyBills({ payments: [] }));
 
-    effects.payManyBill$.subscribe((action) => {
-      expect(action).toEqual(
-        TemplatesPageActions.payManyBillsSuccess({ response }),
-      );
-      expect(paybillTemplatesService.payManyBills).toHaveBeenCalledWith(
-        payments,
-      );
-    });
+    const results: any[] = [];
+    effects.payManyBill$.subscribe((a) => results.push(a));
+
+    expect(results).toContainEqual(
+      TemplatesPageActions.payManyBillsSuccess({ response }),
+    );
+    expect(results).toContainEqual(
+      TransactionActions.loadTransactions({ forceRefresh: true }),
+    );
   });
 
   it('should dispatch checkBillForTemplateFailure on API error', () => {
