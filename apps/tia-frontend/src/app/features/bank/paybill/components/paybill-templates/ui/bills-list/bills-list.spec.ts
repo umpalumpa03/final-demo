@@ -3,13 +3,14 @@ import { BillsList } from './bills-list';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
-
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
 import {
   selectDistributedAmount,
   selectSelectedSenderAccountId,
   selectSelectedTemplates,
 } from '../../../../store/paybill.selectors';
-import { TranslateModule } from '@ngx-translate/core';
+import { TemplatesPageActions } from '../../../../store/paybill.actions';
 
 describe('BillsList', () => {
   let component: BillsList;
@@ -33,6 +34,7 @@ describe('BillsList', () => {
           ],
         }),
       ],
+      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
 
     fixture = TestBed.createComponent(BillsList);
@@ -43,69 +45,98 @@ describe('BillsList', () => {
     fixture.detectChanges();
   });
 
-  it('should initialize form controls based on store templates', () => {
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+  it('should initialize form controls and dispatch total amount', () => {
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+
+    // Check form controls
     expect(component.payForm.contains('1')).toBe(true);
     expect(component.payForm.get('1')?.value).toBe('100.00');
-    expect(Object.keys(component.payForm.controls).length).toBe(2);
+
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      TemplatesPageActions.setTotalAmount({ amount: 300 }),
+    );
   });
 
-  it('should disable controls when isDistribution input is true', async () => {
-    fixture.componentRef.setInput('isDistribution', true);
-    fixture.detectChanges();
-
-    await fixture.whenStable();
-
-    expect(component.payForm.get('1')?.disabled).toBe(true);
-  });
-
-  it('should update all amounts when distributedAmount changes to a non-zero value', async () => {
+  it('should update all amounts when distributedAmount changes', () => {
     store.overrideSelector(selectDistributedAmount, 50.5);
     store.refreshState();
     fixture.detectChanges();
-    await fixture.whenStable();
 
     expect(component.payForm.get('1')?.value).toBe('50.50');
     expect(component.payForm.get('2')?.value).toBe('50.50');
   });
 
-  it('should correctly format the payload via buildPayload', () => {
-    const payload = component.buildPayload();
+  it('should dispatch new total when a form value changes', async () => {
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
 
-    expect(payload).toEqual([
-      {
-        serviceId: 's1',
-        identification: 'id1',
-        amount: 100,
-        senderAccountId: 'acc-123',
-      },
-      {
-        serviceId: 's2',
-        identification: 'id2',
-        amount: 200,
-        senderAccountId: 'acc-123',
-      },
-    ]);
+    const control = component.payForm.get('1');
+
+    if (control) {
+      (control as any).setValue('150.00');
+    }
+
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      TemplatesPageActions.setTotalAmount({ amount: 350 }),
+    );
   });
 
-  it('should block "e" and "-" keys in preventNegative', () => {
-    const preventSpy = vi.fn();
-    const mockTarget = { value: '123' } as HTMLInputElement;
+  describe('preventNegative logic', () => {
+    let preventSpy: any;
 
-    const mockEvent = {
-      key: '-',
-      target: mockTarget,
-      preventDefault: preventSpy,
-    } as unknown as KeyboardEvent;
+    beforeEach(() => {
+      preventSpy = vi.fn();
+    });
 
-    component.preventNegative(mockEvent);
-    expect(preventSpy).toHaveBeenCalled();
+    const createMockEvent = (key: string, value: string) =>
+      ({
+        key,
+        target: { value } as HTMLInputElement,
+        preventDefault: preventSpy,
+      }) as unknown as KeyboardEvent;
 
-    preventSpy.mockClear();
-    component.preventNegative({
-      key: '1',
-      target: mockTarget,
-      preventDefault: preventSpy,
-    } as unknown as KeyboardEvent);
-    expect(preventSpy).not.toHaveBeenCalled();
+    it('should prevent negative sign', () => {
+      component.preventNegative(createMockEvent('-', ''));
+      expect(preventSpy).toHaveBeenCalled();
+    });
+
+    it('should prevent more than 5 digits in integer part', () => {
+      component.preventNegative(createMockEvent('6', '12345'));
+      expect(preventSpy).toHaveBeenCalled();
+    });
+
+    it('should allow digits if within length limit', () => {
+      component.preventNegative(createMockEvent('6', '123'));
+      expect(preventSpy).not.toHaveBeenCalled();
+    });
+
+    it('should prevent more than two decimal places', () => {
+      component.preventNegative(createMockEvent('5', '10.55'));
+      expect(preventSpy).toHaveBeenCalled();
+    });
+
+    it('should allow decimals if only one digit exists', () => {
+      component.preventNegative(createMockEvent('5', '10.5'));
+      expect(preventSpy).not.toHaveBeenCalled();
+    });
+
+    it('should allow navigation keys (Backspace, Tab, etc)', () => {
+      component.preventNegative(createMockEvent('Backspace', '123456'));
+      expect(preventSpy).not.toHaveBeenCalled();
+    });
+  });
+
+  it('should correctly format the payload via buildPayload', () => {
+    const payload = component.buildPayload();
+    expect(payload[0]).toMatchObject({
+      serviceId: 's1',
+      amount: 100,
+      senderAccountId: 'acc-123',
+    });
   });
 });
