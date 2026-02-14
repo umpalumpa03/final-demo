@@ -124,4 +124,8 @@ export class WidgetAccounts extends BaseWidget {
   public getAnimatedBalance(accountId: string): number {
     return this.animatedBalances()[accountId] ?? 0;
   }
+
+  public formatAsAsterisks(value: number): string {
+    return '******';
+  }
 }

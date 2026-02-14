@@ -30,7 +30,7 @@
               class="account-card__trendline-arrow"
             />
             @if (balancesHidden()) {
-              {{ account.currency | currencySymbol }}*****
+              {{ account.currency | currencySymbol }}{{ formatAsAsterisks(account.trendline.amount) }}
             } @else {
               {{ account.currency | currencySymbol }}{{ account.trendline.amount | number: '1.2-2' }}
             }
@@ -40,13 +40,13 @@
 
       <div class="account-card__balance">
         @if (balancesHidden()) {
-          {{ account.currency | currencySymbol }}*****
+          <span>{{ account.currency | currencySymbol }}{{ formatAsAsterisks(account.balance) }}</span>
         } @else {
-          {{account.currency | currencySymbol }}{{
+          <span>{{account.currency | currencySymbol }}{{
             account.trendline
               ? (getAnimatedBalance(account.id) | number: '1.2-2')
               : (account.balance | number: '1.2-2')
-          }}
+          }}</span>
         }
       </div>
     </div>
