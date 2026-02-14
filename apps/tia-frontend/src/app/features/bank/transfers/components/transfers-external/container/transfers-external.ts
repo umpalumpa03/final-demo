@@ -3,10 +3,12 @@ import {
   Component,
   inject,
   computed,
+  OnDestroy,
 } from '@angular/core';
 import { RouterOutlet, Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { StepperHeader } from 'apps/tia-frontend/src/app/features/storybook/components/forms/multistep-form/stepper-header/stepper-header';
+import { TransferStore } from '../../../store/transfers.store';
 
 @Component({
   selector: 'app-transfers-external',
@@ -15,9 +17,10 @@ import { StepperHeader } from 'apps/tia-frontend/src/app/features/storybook/comp
   styleUrl: './transfers-external.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TransfersExternal {
+export class TransfersExternal implements OnDestroy {
   private readonly router = inject(Router);
   private readonly translate = inject(TranslateService);
+  private readonly transferStore = inject(TransferStore);
 
   public readonly steps = computed(() => [
     {
@@ -40,5 +43,8 @@ export class TransfersExternal {
     if (url.includes('accounts')) return 2;
     if (url.includes('amount')) return 3;
     return 1;
+  }
+  public ngOnDestroy(): void {
+    this.transferStore.reset();
   }
 }

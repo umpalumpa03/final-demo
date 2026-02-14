@@ -5,62 +5,14 @@
     </h1>
   </header>
 
-  <section class="external-amount__summary">
-    <div class="external-amount__summary-grid">
-      <div
-        class="external-amount__summary-item external-amount__summary-item--from"
-      >
-        <span class="external-amount__summary-label">
-          {{ 'transfers.external.amount.from' | translate }}
-        </span>
-        <div class="external-amount__summary-content">
-          <div class="external-amount__summary-icon">
-            <img src="images/svg/transfers/cardicon.svg" alt="account" />
-          </div>
-          <div class="external-amount__summary-details">
-            <p class="external-amount__summary-name">
-              {{ selectedSenderAccount()?.friendlyName }}
-            </p>
-            <p class="external-amount__summary-sub">
-              {{ selectedSenderAccount()?.currency }}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div class="external-amount__summary-divider">
-        <div class="external-amount__transfer-circle">
-          <img src="images/svg/transfers/transfer.svg" alt="transfer" />
-        </div>
-      </div>
-
-      <div
-        class="external-amount__summary-item external-amount__summary-item--to"
-      >
-        <div class="external-amount__summary-to-wrapper">
-          <span class="external-amount__summary-label">
-            {{ 'transfers.external.amount.to' | translate }}
-          </span>
-          <div class="external-amount__summary-content">
-            <div class="external-amount__summary-initials">
-              {{ recipientInitials() }}
-            </div>
-            <div class="external-amount__summary-details">
-              <p class="external-amount__summary-name">
-                @if (isExternalIban()) { {{ manualRecipientName() }} } @else {
-                {{ recipientInfo()?.fullName || selectedRecipientAccount()?.name
-                }} }
-              </p>
-              <p class="external-amount__summary-sub">
-                {{ isExternalIban() ? selectedSenderAccount()?.currency :
-                selectedRecipientAccount()?.currency }}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+  <app-transfer-summary
+    [senderAccount]="selectedSenderAccount()"
+    [recipientAccount]="selectedRecipientAccount()"
+    [recipientInitials]="recipientInitials()"
+    [recipientName]="isExternalIban() ? manualRecipientName() : (recipientInfo()?.fullName || selectedRecipientAccount()?.name)"
+    [fromLabel]="'transfers.external.amount.from' | translate"
+    [toLabel]="'transfers.external.amount.to' | translate"
+  />
 
   <div class="external-amount__divider"></div>
 
