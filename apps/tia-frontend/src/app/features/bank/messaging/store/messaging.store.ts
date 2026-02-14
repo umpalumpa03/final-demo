@@ -120,6 +120,7 @@ export const MessagingStore = signalStore(
                     tap((type) => {
                         patchState(store, {
                             isLoading: true,
+                            error: null,
                             currentType: type,
                             mails: type !== store.currentType() ? [] : [...store.mails()],
                             pagination: type !== store.currentType() ?
@@ -138,12 +139,13 @@ export const MessagingStore = signalStore(
                                     mails: [...existingMails, ...newMails],
                                     pagination: response.pagination,
                                     isLoading: false,
+                                    error: null,
                                 });
                                 inboxService.fetchInboxCount();
                                 store.getUnreadImportantCount();
                             }),
                             catchError(() => {
-                                patchState(store, { isLoading: false });
+                                patchState(store, { isLoading: false, error: translate.instant('messaging.storeErrors.loadMails') });
                                 alertService.error(translate.instant('messaging.storeErrors.loadMails'), { variant: 'dismissible', title: 'Oops!' });
                                 return of(null);
                             }),
@@ -346,13 +348,13 @@ export const MessagingStore = signalStore(
 
             getEmailById: rxMethod<number>(
                 pipe(
-                    tap(() => patchState(store, { isLoading: true, mailReplies: [] })),
+                    tap(() => patchState(store, { isLoading: true, error: null, mailReplies: [] })),
                     switchMap((mailId) => messagingService.getEmailById(mailId).pipe(
                         tap((emailDetail) => {
-                            patchState(store, { emailDetail }, { isLoading: false });
+                            patchState(store, { emailDetail, error: null }, { isLoading: false });
                         }),
                         catchError(() => {
-                            patchState(store, { isLoading: false });
+                            patchState(store, { isLoading: false, error: translate.instant('messaging.storeErrors.loadEmailDetail') });
                             alertService.error(translate.instant('messaging.storeErrors.loadEmailDetail'), { variant: 'dismissible', title: 'Oops!' });
                             return of(null);
                         }),

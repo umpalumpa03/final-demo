@@ -12,12 +12,19 @@ import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { OnboardingTarget } from '../../models/onboarding.model';
 import { ModalOffset } from '@tia/shared/lib/overlay/ui-modal/models/modal-positions.model';
 import { NgTemplateOutlet } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 import { ModalResponsiveService } from '@tia/shared/lib/overlay/ui-modal/services/service-modal';
 import { PillPaging } from '@tia/shared/ui/pill-paging/pill-paging';
 
 @Component({
   selector: 'app-onboarding-modal',
-  imports: [UiModal, ButtonComponent, NgTemplateOutlet, PillPaging],
+  imports: [
+    UiModal,
+    ButtonComponent,
+    NgTemplateOutlet,
+    PillPaging,
+    TranslatePipe,
+  ],
   templateUrl: './onboarding-modal.html',
   styleUrl: './onboarding-modal.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

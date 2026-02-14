@@ -1,0 +1,108 @@
+<app-tree-container
+  [groups]="templateGroups()"
+  [items]="templates()"
+  [canDelete]="true"
+  [editable]="true"
+  [hasButton]="true"
+  [buttonVariant]="'default'"
+  [buttonContent]="'paybill.templates.payButton' | translate"
+  [hasCheckbox]="true"
+  [noCardBorder]="true"
+  [errorHeader]="'paybill.templates.errorHeader' | translate"
+  [errorMessage]="'paybill.templates.errorMessage' | translate"
+  [contentHeader]="true"
+  [cardBackground]="true"
+  (itemRemoved)="onItemDeleteAction($event)"
+  (itemEdited)="onItemEditAction($event)"
+  (groupRemoved)="onGroupDeleteAction($event)"
+  (groupEdited)="onGroupEditAction($event)"
+  (itemMoved)="itemMoved($event)"
+  [isLoading]="isLoading()"
+  [selectAll]="selectAll()"
+  (checkedItemsChange)="onTemplateChecked($event)"
+  (buttonClicked)="singleItemSelected($event)"
+>
+  <app-templates-header
+    [headerButtons]="headerButtons"
+    [showSelectedItems]="!!selectedItems()?.length"
+    (buttonClick)="handleHeaderButtonClick($event)"
+    (paySelected)="paySelected()"
+  />
+</app-tree-container>
+
+<app-ui-modal
+  class="modal"
+  [isOpen]="isModalOpen()"
+  [class.modal--hidden]="isPaymentModalHidden()"
+  (closed)="modalOpenAction.emit()"
+>
+  @if (currentModalConfig(); as config) {
+  <app-library-title
+    [title]="config.title | translate"
+    [subtitle]="config.subtitle | translate"
+    class="modal__header"
+  />
+  @let form = activeForm();
+
+  <main>
+    @if (form) {
+    <app-create-template-modal
+      [form]="form"
+      [fields]="config.fields"
+      [isCategorySelected]="isCategorySelected()"
+      [childProviderOptions]="childProviderOptions()"
+      [createTemplateForm]="createTemplateForm()"
+      [paymentFields]="paymentFields()"
+      [dropdownOptionsMap]="dropdownOptionsMap()"
+      [submitVariant]="config.submitButtonType"
+      [submitLabel]="config.submitLabel"
+      [isLoading]="selectLoading()"
+      (cancel)="modalOpenAction.emit()"
+      (formSubmit)="onFormSubmit(config.formSubmitType)"
+      (childProviderChange)="onChildProviderChange($event.value, $event.index)"
+    />
+    }@else if(config.formSubmitType === 'confirm-payment') {
+    <app-confirm-payment-modal
+      [selectedItemsLength]="selectedItems()!.length"
+      [isDistribution]="isDistribution()"
+      [submitVariant]="config.submitButtonType"
+      [submitLabel]="config.submitLabel"
+      [isLoading]="isLoading()"
+      (cancel)="modalOpenAction.emit()"
+      (submit)="onActionHandler(config.submitAction)"
+      (distributionChange)="paymentTypeChanged($event)"
+    />
+    } @else {
+    <app-delete-confirm-modal
+      [itemIdentifier]="selectedDeleteItem()!"
+      [description]="config.description"
+      [submitVariant]="config.submitButtonType"
+      [submitLabel]="config.submitLabel"
+      [isLoading]="isLoading()"
+      (cancel)="modalOpenAction.emit()"
+      (submit)="onActionHandler(config.submitAction)"
+    />
+    }
+  </main>
+  }
+</app-ui-modal>
+
+<!-- ES MODALZE BEQAS VELODEBI TYUILAD AR DAMIWEROT RAME VICHXUBEBT :D -->
+<app-ui-modal [isOpen]="isOtpModalOpen()">
+  <app-otp-verification
+    type="otp"
+    timerType="otp"
+    [timeLimit]="1"
+    [customRemainingAttempts]="3"
+    [isBtnRowDirection]="true"
+    redirectUrl="/bank/paybill/templates"
+    redirectText="Paybills Template"
+    [inputOtpConfig]="otpConfig"
+    (isResendCalled)="resendOtp($event)"
+  ></app-otp-verification>
+</app-ui-modal>
+
+<!-- (isVerifyCalled)="" -->
+<!-- (isResendCalled)="resendOtp($event)" -->
+
+<app-success-modal [isOpen]="false"></app-success-modal>

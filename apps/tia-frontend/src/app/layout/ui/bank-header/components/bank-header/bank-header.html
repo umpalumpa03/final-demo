@@ -1,20 +1,52 @@
 <div class="bank-header-wrapper">
   <div class="bank-header-wrapper__container">
-    <div class="bank-header-wrapper__container__messaging" id="onboard-messaging" routerLink="messaging"
-      routerLinkActive="active">
-      <img src="images/svg/bank-header/header-messaging.svg" alt="messaging icon" />
+    <div
+      class="bank-header-wrapper__container__messaging"
+      id="onboard-messaging"
+      routerLink="messaging"
+      routerLinkActive="active"
+    >
+      <img
+        src="images/svg/bank-header/header-messaging.svg"
+        alt="messaging icon"
+      />
       @if (hasInboxMessages()) {
-      <app-badges variant="destructive" [text]="inboxCount().toString()" shape="rounded"></app-badges>
+      <app-badges
+        variant="destructive"
+        [text]="inboxCount().toString()"
+        shape="rounded"
+      ></app-badges>
       }
     </div>
-    <div class="bank-header-wrapper__container__notifications" id="onboard-notifications" #bell>
-      <img (click)="onNotification()" src="images/svg/bank-header/header-bell.svg" alt="notification icon" />
+    <div
+      class="bank-header-wrapper__container__notifications"
+      id="onboard-notifications"
+      #bell
+    >
+      <img
+        (click)="onNotification()"
+        src="images/svg/bank-header/header-bell.svg"
+        alt="notification icon"
+      />
       @if (hasUnread()) {
       <span class="badge"></span>
       }
     </div>
-    <div class="bank-header-wrapper__container__avatar" routerLink="settings" routerLinkActive="active">
-      @if (avatarUrl()) {
+    <div
+      class="bank-header-wrapper__container__avatar"
+      routerLink="settings"
+      routerLinkActive="active"
+      [class.birthday]="hasBirthday()"
+    >
+      @if (hasBirthday()) {
+      <span class="birthday-cake">🎂</span>
+      <span class="sparkle sparkle-1"></span>
+      <span class="sparkle sparkle-2 star"></span>
+      <span class="sparkle sparkle-3"></span>
+      <span class="sparkle sparkle-4 star"></span>
+      <span class="sparkle sparkle-5"></span>
+      <span class="sparkle sparkle-6 star"></span>
+      } @if (avatarUrl()) {
       <img [src]="avatarUrl()" alt="user avatar" class="avatar-image" />
       } @else {
       <div class="avatar-fallback">{{ initials() }}</div>

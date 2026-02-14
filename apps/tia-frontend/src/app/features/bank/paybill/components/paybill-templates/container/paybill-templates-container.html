@@ -1,5 +1,15 @@
-<div [style.max-width]="'60rem'" [style.margin-bottom]="'2.4rem'">
-  <lib-text-input [formControl]="searchControl" [config]="searchInputConfig" />
+<div
+  [style.max-width]="'60rem'"
+  [style.margin-bottom]="'2.2rem'"
+  [style.margin-top]="'4.2rem'"
+>
+  <lib-text-input
+    [formControl]="searchControl"
+    [config]="{ 
+    ...searchInputConfig, 
+    placeholder: (searchInputConfig.placeholder | translate) 
+  }"
+  />
 </div>
 
 <app-paybill-templates

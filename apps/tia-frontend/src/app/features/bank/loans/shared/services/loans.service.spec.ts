@@ -155,4 +155,19 @@ describe('LoansService', () => {
     expect(req.request.body).toEqual(payload);
     req.flush(mockResponse);
   });
+
+  it('should send POST request to create loan', () => {
+    const mockRequest = { loanAmount: 5000 } as any;
+    const mockResponse = { id: '123', status: 1 } as any;
+
+    service.requestLoan(mockRequest).subscribe((res) => {
+      expect(res).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/loans/request`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(mockRequest);
+
+    req.flush(mockResponse);
+  });
 });

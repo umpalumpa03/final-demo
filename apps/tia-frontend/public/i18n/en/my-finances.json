@@ -41,6 +41,9 @@
       "syncing": "Syncing your finances...",
       "retry": "Try Again",
       "no_records": "We couldn't find any records for the selected range."
+    },
+    "errors": {
+      "date_range":"Invalid range"
     }
   }
 }

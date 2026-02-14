@@ -4,7 +4,6 @@
 .products-container {
   &__section-header {
     @include flex-center(row, space-between);
-    gap: 2rem;
     margin-bottom: 2rem;
 
     @media (max-width: 768px) {

@@ -3,6 +3,7 @@ import { LibraryContainer } from './storybook.container';
 import { provideRouter } from '@angular/router';
 import { provideMockStore } from '@ngrx/store/testing';
 import { selectActiveTheme } from 'apps/tia-frontend/src/app/store/theme/theme.selectors';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('LibraryContainer', () => {
   let component: LibraryContainer;
@@ -10,7 +11,7 @@ describe('LibraryContainer', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LibraryContainer],
+      imports: [LibraryContainer, TranslateModule.forRoot()],
       providers: [
         provideRouter([]),
         provideMockStore({

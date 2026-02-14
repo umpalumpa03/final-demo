@@ -4,6 +4,8 @@ import { of, throwError } from 'rxjs';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { AccountPermissionsStore } from './approve-accounts.store';
 import { BankAccount } from '../../../shared/models/approve-models/accounts-models/pending-accounts.models';
+import { AlertService } from '@tia/core/services/alert/alert.service';
+import { TranslateService } from '@ngx-translate/core';
 
 describe('AccountPermissionsStore', () => {
   let store: InstanceType<typeof AccountPermissionsStore>;
@@ -13,6 +15,17 @@ describe('AccountPermissionsStore', () => {
     getPendingAccounts: ReturnType<typeof vi.fn>;
     updateAccountStatus: ReturnType<typeof vi.fn>;
     modifyAccountPermissions: ReturnType<typeof vi.fn>;
+  };
+
+  const mockAlertService = {
+    success: vi.fn(),
+    error: vi.fn(),
+    warning: vi.fn(),
+    info: vi.fn(),
+  };
+  const mockTranslateService = {
+    instant: vi.fn((key) => key),
+    get: vi.fn((key) => of(key)),
   };
 
   const mockPermissions = [
@@ -45,6 +58,8 @@ describe('AccountPermissionsStore', () => {
       providers: [
         AccountPermissionsStore,
         { provide: ApproveAccountsApiService, useValue: apiServiceMock },
+        { provide: AlertService, useValue: mockAlertService },
+        { provide: TranslateService, useValue: mockTranslateService },
       ],
     });
 
@@ -126,6 +141,9 @@ describe('AccountPermissionsStore', () => {
     expect(store.pendingAccounts().length).toBe(1);
     expect(store.pendingAccounts()[0].id).toBe('2');
     expect(store.isLoading()).toBe(false);
+
+    expect(mockTranslateService.instant).toHaveBeenCalled();
+    expect(mockAlertService.success).toHaveBeenCalled();
   });
 
   it('should call modify API and stop loading on save', () => {
@@ -140,5 +158,7 @@ describe('AccountPermissionsStore', () => {
       permissions: 5,
     });
     expect(store.isLoading()).toBe(false);
+
+    expect(mockAlertService.success).toHaveBeenCalled();
   });
 });

@@ -42,6 +42,7 @@ describe('SentDraftDetail', () => {
       sendDraft: vi.fn(),
       sendMailReply: vi.fn(),
       isLoading: signal(false),
+      error: signal(null),
       isDeleting: signal(false),
       deleteSuccess: signal(false),
     };

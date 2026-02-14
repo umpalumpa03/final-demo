@@ -10,53 +10,74 @@ import {
   selectUserLanguage,
   selectUserAvatar,
   selectUserRole,
+  selectOnboardingStatus,
+  selectIsTodayBirthday,
+  selectUserWidgets
 } from './user-info.selectors';
 
 describe('user-info selectors', () => {
-  const slice = { fullName: 'X', loading: true, error: 'e', theme: 't', language: 'l' } as any;
-  const state: any = { 'user-info': slice };
+  const slice = { 
+    fullName: 'John Doe', 
+    loading: false, 
+    error: null, 
+    theme: 'dark', 
+    language: 'ka',
+    email: 'test@test.com',
+    loaded: true,
+    avatar: 'url',
+    role: 'ADMIN',
+    hasCompletedOnboarding: true,
+    widgets: [{ id: '1' }],
+    birthday: '14-2'
+  } as any;
 
   it('selectUserLoading returns loading', () => {
-    expect((selectUserLoading as any).projector(slice)).toBe(true);
+    expect(selectUserLoading.projector(slice)).toBe(false);
   });
 
   it('selectUserError returns error', () => {
-    expect((selectUserError as any).projector(slice)).toBe('e');
+    expect(selectUserError.projector(slice)).toBe(null);
   });
 
-  it('shoul d select current user email', () => {
-    slice.email = 'test@example.com';
-    expect((selectCurrentUserEmail as any).projector(slice)).toBe('test@example.com');
+  it('selectCurrentUserEmail returns email', () => {
+    expect(selectCurrentUserEmail.projector(slice)).toBe('test@test.com');
   });
 
-  it('selectUserLoaded returns loaded', () => {
-    slice.loaded = true;
-    expect((selectUserLoaded as any).projector(slice)).toBe(true);
+  it('selectOnboardingStatus returns onboarding status', () => {
+    expect(selectOnboardingStatus.projector(slice)).toBe(true);
   });
 
-  it('selectUserInfo returns the state', () => {
-    expect((selectUserInfo as any).projector(slice)).toBe(slice);
+  it('selectUserWidgets returns widgets', () => {
+    expect(selectUserWidgets.projector(slice)).toEqual([{ id: '1' }]);
   });
 
-  it('selectUserFullName returns fullName', () => {
-    expect((selectUserFullName as any).projector(slice)).toBe('X');
+  describe('selectIsTodayBirthday', () => {
+    it('should return true if today is birthday', () => {
+      const today = new Date();
+      const bDay = `${today.getDate()}-${today.getMonth() + 1}`;
+      const userWithBday = { birthday: bDay } as any;
+      expect(selectIsTodayBirthday.projector(userWithBday)).toBe(true);
+    });
+
+    it('should return false if today is not birthday', () => {
+      const userWithBday = { birthday: '31-12' } as any;
+      const today = new Date();
+      if (today.getDate() === 31 && today.getMonth() === 11) {
+        userWithBday.birthday = '01-01';
+      }
+      expect(selectIsTodayBirthday.projector(userWithBday)).toBe(false);
+    });
+
+    it('should return false if birthday is not provided', () => {
+      expect(selectIsTodayBirthday.projector({})).toBe(false);
+    });
   });
 
-  it('selectUserTheme returns theme', () => {
-    expect((selectUserTheme as any).projector(slice)).toBe('t');
-  });
-
-  it('selectUserLanguage returns language', () => {
-    expect((selectUserLanguage as any).projector(slice)).toBe('l');
-  });
-
-  it('selectUserAvatar returns avatar', () => {
-    slice.avatar = 'url';
-    expect((selectUserAvatar as any).projector(slice)).toBe('url');
+  it('selectUserFullName returns name', () => {
+    expect(selectUserFullName.projector(slice)).toBe('John Doe');
   });
 
   it('selectUserRole returns role', () => {
-    slice.role = 'SUPPORT';
-    expect((selectUserRole as any).projector(slice)).toBe('SUPPORT');
+    expect(selectUserRole.projector(slice)).toBe('ADMIN');
   });
 });

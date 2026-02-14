@@ -41,6 +41,15 @@
         </div>
       </div>
       }
+      @empty {
+        <app-error-states
+          variant="not-found"
+          header="No Transactions Found"
+          message="We couldn't find any transaction to display."
+          [showButton]="false"
+          [border]="false"
+        />
+      }
     </div>
   </div>
 </section>
