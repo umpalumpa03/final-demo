@@ -231,7 +231,9 @@ export class PaybillEffect {
         this.paybillService.verifyPayment(payload).pipe(
           mergeMap((response) => {
             if (response.success) {
-              this.router.navigate(['/bank/paybill/pay/payment-success']);
+              if (!this.router.url.includes('templates')) {
+                this.router.navigate(['/bank/paybill/pay/payment-success']);
+              }
               return [
                 PaybillActions.confirmPaymentSuccess(),
                 TransactionActions.loadTransactions({ forceRefresh: true }),
