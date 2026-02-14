@@ -108,7 +108,8 @@
       "invalid_account": "Account is not correct",
       "default_error": "There is a problem, please try again"
     },
-    "navigate": "Go Back"
+    "navigate": "Go Back",
+    "search-placeholder": "Search..."
   },
   "templates": {
     "title": "Saved Templates",

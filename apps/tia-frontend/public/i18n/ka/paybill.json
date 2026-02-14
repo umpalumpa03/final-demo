@@ -107,7 +107,8 @@
       "default_error": "დაფიქსირდა შეცდომა, სცადეთ მოგვიანებით",
       "invalid_code": "კოდი არასწორია"
     },
-    "navigate": "უკან დაბრუნება"
+    "navigate": "უკან დაბრუნება",
+    "search-placeholder": "ძიება..."
   },
 
   "templates": {
