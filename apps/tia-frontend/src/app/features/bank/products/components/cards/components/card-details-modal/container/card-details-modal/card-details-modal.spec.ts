@@ -146,24 +146,5 @@ it('should combine modalData and cardSensitiveData observables', async () => {
     "expiryDate": "12/28",
   });
 });
-  // it('should return null when modalData cardId is missing', async () => {
-  //   const stateWithoutCardId = {
-  //     ...initialState,
-  //     cards: {
-  //       ...initialState.cards,
-  //       cardDetails: {},
-  //       cardImages: {},
-  //     },
-  //   };
 
-  //   store.setState(stateWithoutCardId);
-
-  //   const data = await firstValueFrom(component.cardSensitiveData$);
-  //   expect(data).toBeNull();
-  // });
-
-  // it('should return null when sensitiveData for cardId does not exist', async () => {
-  //   const data = await firstValueFrom(component.cardSensitiveData$);
-  //   expect(data).toBeNull();
-  // });
 });

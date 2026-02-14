@@ -1,0 +1,111 @@
+@use '../../../../../shared/styles/mixins' as *;
+@use '../../../../../shared/styles/palette' as *;
+
+.transfer-summary {
+  background: $gray-25;
+  border-radius: 1.6rem;
+  padding: 2.4rem 3.2rem;
+  margin-bottom: 3.2rem;
+
+  &__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: 2rem;
+
+    @media (max-width: 700px) {
+      grid-template-columns: 1fr;
+      gap: 2.4rem;
+    }
+  }
+
+  &__item {
+    min-width: 0;
+
+    &--to {
+      @include display-flex();
+      justify-content: flex-end;
+
+      @media (max-width: 700px) {
+        justify-content: flex-start;
+      }
+    }
+  }
+
+  &__to-wrapper {
+    @include display-flex(column);
+    align-items: flex-start;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  &__label {
+    @include font-inter(500, 1.2rem, 1.6rem);
+    color: $gray-500;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 1.2rem;
+    flex-shrink: 0;
+  }
+
+  &__content {
+    @include display-flex(row);
+    align-items: center;
+    gap: 1.6rem;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  &__icon,
+  &__initials {
+    @include svg-icon(4.8rem);
+    @include flex-center();
+    background: var(--color-bg-primary);
+    border-radius: 50%;
+    border: 0.1rem solid $gray-200;
+    flex-shrink: 0;
+  }
+
+  &__initials {
+    @include font-inter(600, 1.4rem, 1);
+    color: var(--color-fg);
+    text-transform: uppercase;
+  }
+
+  &__details {
+    min-width: 0;
+    flex: 1;
+  }
+
+  &__name {
+    @include font-inter(600, 1.6rem, 2.4rem);
+    color: var(--color-fg);
+    word-break: break-word;
+    hyphens: auto;
+  }
+
+  &__sub {
+    @include font-inter(400, 1.4rem, 2rem);
+    color: $gray-500;
+    word-break: break-word;
+  }
+
+  &__divider {
+    @include flex-center();
+    min-width: 6.4rem;
+    flex-shrink: 0;
+  }
+
+  &__transfer-circle {
+    @include svg-icon(4.4rem);
+    @include flex-center();
+    background: var(--color-bg-primary);
+    border-radius: 50%;
+    border: 0.1rem solid $gray-200;
+    box-shadow: 0 0.2rem 0.8rem rgba(0, 0, 0, 0.05);
+
+    img {
+      @include svg-icon(2.4rem);
+    }
+  }
+}

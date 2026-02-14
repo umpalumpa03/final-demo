@@ -1,5 +1,5 @@
-<app-settings-body [title]="'settings.language.title' | translate"
-    [subTitle]="'settings.language.subtitle' | translate">
+<app-basic-card [title]="'settings.language.title' | translate" maxWidth="100%" padding="2rem" height="fit-content">
+    <h2 class="container__subtitle">{{'settings.language.subtitle' | translate}}</h2>
     <div class="container">
         <h4 class="container__title">{{ 'settings.language.available' | translate }}</h4>
 
@@ -11,4 +11,4 @@
             [isFetching]="isRefreshing()"
         />
     </div>
-</app-settings-body>
+</app-basic-card>
