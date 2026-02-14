@@ -62,20 +62,16 @@ describe('ProfilePhotoContainer integration', () => {
     router = TestBed.inject(Router);
     alertService = TestBed.inject(AlertService);
     vi.spyOn(router, 'navigate').mockResolvedValue(true);
-
-    fixture.detectChanges();
   });
 
   afterEach(() => {
-    if (fixture) {
-      fixture.destroy();
-    }
     httpMock.verify();
     vi.clearAllMocks();
-    TestBed.resetTestingModule();
   });
 
   it('should load default avatars on init', async () => {
+    fixture.detectChanges();
+
     const mockAvatars = [
       { id: 'avatar1', iconUri: '/icons/avatar1.png' },
       { id: 'avatar2', iconUri: '/icons/avatar2.png' },
@@ -110,6 +106,8 @@ describe('ProfilePhotoContainer integration', () => {
   });
 
   it('should upload avatar file successfully', async () => {
+    fixture.detectChanges();
+
     const initReq = httpMock.expectOne(
       `${environment.apiUrl}/settings/get-available-default-avatars`
     );
@@ -152,6 +150,8 @@ describe('ProfilePhotoContainer integration', () => {
   });
 
   it('should select default avatar successfully', async () => {
+    fixture.detectChanges();
+
     const initReq = httpMock.expectOne(
       `${environment.apiUrl}/settings/get-available-default-avatars`
     );
@@ -194,6 +194,8 @@ describe('ProfilePhotoContainer integration', () => {
   });
 
   it('should remove avatar successfully', async () => {
+    fixture.detectChanges();
+
     const initReq = httpMock.expectOne(
       `${environment.apiUrl}/settings/get-available-default-avatars`
     );
@@ -230,6 +232,8 @@ describe('ProfilePhotoContainer integration', () => {
   });
 
   it('should handle error when loading default avatars fails', async () => {
+    fixture.detectChanges();
+
     const errorMessage = 'Failed to load avatars';
 
     const req = httpMock.expectOne(
