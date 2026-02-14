@@ -11,6 +11,7 @@ import {
   mergeMap,
   of,
   switchMap,
+  tap,
   withLatestFrom,
 } from 'rxjs';
 import { PaybillService } from '../services/paybill/paybill-service';
@@ -39,6 +40,7 @@ import {
 } from '../components/shared/models/transactions.model';
 import { ITransactions } from '@tia/shared/models/transactions/transactions.models';
 import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions/transactions.actions';
+import { AlertService } from '@tia/core/services/alert/alert.service';
 
 @Injectable()
 export class PaybillEffect {
@@ -47,6 +49,7 @@ export class PaybillEffect {
   public paybillService = inject(PaybillService);
   public payBillTemplatesService = inject(PaybillTemplatesService);
   public router = inject(Router);
+  public alertService = inject(AlertService);
 
   private successMessages: Record<string, string> = {
     '[Paybill Templates Page] Delete Template Success':
@@ -317,15 +320,13 @@ export class PaybillEffect {
         TemplatesPageActions.renameTemplateGroupSuccess,
         TemplatesPageActions.moveTemplateSuccess,
         TemplatesPageActions.createTemplateSuccess,
+        TemplatesPageActions.payManyBillsSuccess,
       ),
-      map((action) =>
-        PaybillActions.addNotification({
-          notificationType: 'success',
-          message:
-            this.successMessages[action.type] ??
-            'Action completed successfully',
-        }),
-      ),
+      tap((action) => {
+        const message =
+          this.successMessages[action.type] ?? 'Action completed successfully';
+        this.alertService.success(message);
+      }),
     );
   });
 
