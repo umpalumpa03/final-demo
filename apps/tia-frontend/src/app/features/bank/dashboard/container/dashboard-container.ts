@@ -59,7 +59,7 @@ import { Tooltip } from '@tia/shared/lib/data-display/tooltip/tooltip';
     RouteLoader,
     Onboarding,
     ErrorStates,
-    Tooltip
+    Tooltip,
 ],
   templateUrl: './dashboard-container.html',
   styleUrl: './dashboard-container.scss',
@@ -117,6 +117,13 @@ export class DashboardContainer implements OnInit {
   }
 
   public onFoldWidget(isSelected: boolean, id: string): void {
+    const item = this.myItems().find((w) => w.id === id);
+
+    if (item?.type === 'accounts') {
+      this.dashService.foldWidget(isSelected, id);
+      return;
+    }
+
     this.dashService.foldWidget(isSelected, id);
   }
 
@@ -164,6 +171,25 @@ export class DashboardContainer implements OnInit {
       TransactionActions.loadTransactions({ forceRefresh: true }),
     );
   }
+
+  protected readonly processedVisibleItems = computed(() => {
+    return this.visibleItems().map((item) => {
+      const visualHiddenStatus =
+        item.type === 'accounts' ? false : item.isHidden;
+
+      return {
+        ...item,
+        isHidden: visualHiddenStatus,
+        headerData: {
+          ...item,
+          title: this.translate.instant(`dashboard.widgets.${item.type}.title`),
+          subtitle: this.translate.instant(
+            `dashboard.widgets.${item.type}.subtitle`,
+          ),
+        },
+      };
+    });
+  });
 
   ngOnInit(): void {
     if (!this.store.selectSignal(selectWidgetsLoaded)()) {
