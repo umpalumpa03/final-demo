@@ -7,11 +7,8 @@
   [class.blurred]="isLoading()"
 >
   @if(isMobile() && !isLoading()) {
-  <button
-    class="header-notifications__close"
-    (click)="onCloseClick()"
-    aria-label="Close notifications"
-  >
+
+  <button class="header-notifications__close" (click)="onCloseClick()">
     <svg
       width="24"
       height="24"
@@ -79,31 +76,33 @@
         Select All
       </label>
       <div class="header-notifications__main__header__cta--all">
-        <button
-          (click)="onMarkAllClick()"
-          [disabled]="!notificationItems().length"
-          class="header-notifications__main__header__cta--all__tooltip-trigger"
-          data-tooltip="Mark all as read"
-        >
-          <img
-            class="header-notifications__main__header__cta--all__read"
-            src="images/svg/header-notifications/read.svg"
-            alt="read all icon"
-          />
-        </button>
+        <app-tooltip content="Mark all as read">
+          <button
+            (click)="onMarkAllClick()"
+            [disabled]="!notificationItems().length"
+            class="header-notifications__main__header__cta--all__tooltip-trigger"
+          >
+            <img
+              class="header-notifications__main__header__cta--all__read"
+              src="images/svg/header-notifications/read.svg"
+              alt="read all icon"
+            />
+          </button>
+        </app-tooltip>
         <p>/</p>
-        <button
-          (click)="onDeleteAllClicked()"
-          [disabled]="!notificationItems().length"
-          class="header-notifications__main__header__cta--all__tooltip-trigger"
-          data-tooltip="delete all"
-        >
-          <img
-            class="header-notifications__main__header__cta--all__delete"
-            src="images/svg/header-notifications/delete.svg"
-            alt="delete all icon"
-          />
-        </button>
+        <app-tooltip content="delete all">
+          <button
+            (click)="onDeleteAllClicked()"
+            [disabled]="!notificationItems().length"
+            class="header-notifications__main__header__cta--all__tooltip-trigger"
+          >
+            <img
+              class="header-notifications__main__header__cta--all__delete"
+              src="images/svg/header-notifications/delete.svg"
+              alt="delete all icon"
+            />
+          </button>
+        </app-tooltip>
       </div>
     </header>
     <app-scroll-area
