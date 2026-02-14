@@ -24,7 +24,7 @@ export class BankHeader {
   public inboxCount = input<number>(0);
   public avatarUrl = input<string | null | undefined>(null);
   public fullName = input<string>('');
-
+  public hasBirthday = input<boolean>(true);
   public hasInboxMessages = computed(() => this.inboxCount() > 0);
 
   public initials = computed(() => {

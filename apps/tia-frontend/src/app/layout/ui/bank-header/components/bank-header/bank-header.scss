@@ -11,6 +11,7 @@
     0px 1px 2px -1px rgba($black, 0.1),
     0px 1px 3px 0px rgba($black, 0.1);
   z-index: 1;
+  overflow: hidden;
 
   &__container {
     @include flex-center(row, center, center);
@@ -24,13 +25,14 @@
 
     &__avatar {
       @include flex-center();
+      position: relative;
       border-radius: 999rem;
       background: $blue-800;
       width: 4rem;
       height: 4rem;
       cursor: pointer;
       transition: transform 0.15s ease;
-      overflow: hidden;
+      overflow: visible;
 
       &:hover {
         transform: scale(1.1);
@@ -43,11 +45,189 @@
       &.active {
         outline: none;
       }
+      &.birthday {
+        &::before {
+          content: '';
+          position: absolute;
+          inset: -0.4rem;
+          border-radius: 999rem;
+          padding: 0.3rem;
+          background: linear-gradient(
+            90deg,
+            #2b7fff 0%,
+            #ad46ff 50%,
+            #f6339a 100%
+          );
+          -webkit-mask:
+            linear-gradient(#fff 0 0) content-box,
+            linear-gradient(#fff 0 0);
+          -webkit-mask-composite: xor;
+          mask-composite: exclude;
+          animation: birthday-pulse 2s ease-in-out infinite;
+        }
+
+        &::after {
+          content: '';
+          position: absolute;
+          inset: -0.6rem;
+          border-radius: 999rem;
+          padding: 0.2rem;
+          background: $white;
+          -webkit-mask:
+            linear-gradient(#fff 0 0) content-box,
+            linear-gradient(#fff 0 0);
+          -webkit-mask-composite: xor;
+          mask-composite: exclude;
+          z-index: -1;
+        }
+
+        .birthday-cake {
+          position: absolute;
+          top: -0.6rem;
+          right: -0.6rem;
+          font-size: 2rem;
+          opacity: 0;
+          transform: scale(0);
+          transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+          z-index: 3;
+          filter: drop-shadow(0 2px 4px rgba($black, 0.2));
+        }
+
+        &:hover .birthday-cake {
+          opacity: 1;
+          transform: scale(1);
+        }
+
+        .sparkle {
+          position: absolute;
+          width: 0.8rem;
+          height: 0.8rem;
+          opacity: 0;
+          pointer-events: none;
+          z-index: 2;
+
+          &::before,
+          &::after {
+            content: '';
+            position: absolute;
+            background: linear-gradient(45deg, #ffd700, #ffa500, #ff69b4);
+            border-radius: 50%;
+          }
+
+          &::before {
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+          }
+
+          &::after {
+            width: 60%;
+            height: 60%;
+            top: 20%;
+            left: 20%;
+            background: #fff;
+            box-shadow: 0 0 0.4rem rgba(255, 215, 0, 0.8);
+          }
+
+          &.star {
+            &::before {
+              clip-path: polygon(
+                50% 0%,
+                61% 35%,
+                98% 35%,
+                68% 57%,
+                79% 91%,
+                50% 70%,
+                21% 91%,
+                32% 57%,
+                2% 35%,
+                39% 35%
+              );
+              background: linear-gradient(135deg, #ffd700, #ffa500);
+            }
+
+            &::after {
+              display: none;
+            }
+          }
+        }
+
+        &:hover {
+          .sparkle-1 {
+            animation: sparkle-fly 0.8s ease-out forwards;
+          }
+          .sparkle-2 {
+            animation: sparkle-fly 0.8s ease-out 0.1s forwards;
+          }
+          .sparkle-3 {
+            animation: sparkle-fly 0.8s ease-out 0.2s forwards;
+          }
+          .sparkle-4 {
+            animation: sparkle-fly 0.8s ease-out 0.15s forwards;
+          }
+          .sparkle-5 {
+            animation: sparkle-fly 0.8s ease-out 0.05s forwards;
+          }
+          .sparkle-6 {
+            animation: sparkle-fly 0.8s ease-out 0.25s forwards;
+          }
+        }
+
+        .sparkle-1 {
+          top: 0;
+          left: 50%;
+          --tx: -0.5rem;
+          --ty: -2rem;
+          --rotation: 180deg;
+        }
+
+        .sparkle-2 {
+          top: 50%;
+          right: 0;
+          --tx: 1.5rem;
+          --ty: -0.5rem;
+          --rotation: 270deg;
+        }
+
+        .sparkle-3 {
+          bottom: 0;
+          left: 50%;
+          --tx: -0.5rem;
+          --ty: 2rem;
+          --rotation: 360deg;
+        }
+
+        .sparkle-4 {
+          top: 50%;
+          left: 0;
+          --tx: -1.5rem;
+          --ty: -0.5rem;
+          --rotation: 90deg;
+        }
+
+        .sparkle-5 {
+          top: 25%;
+          right: 15%;
+          --tx: 1.5rem;
+          --ty: -1.5rem;
+          --rotation: 225deg;
+        }
+
+        .sparkle-6 {
+          bottom: 25%;
+          left: 15%;
+          --tx: -1.5rem;
+          --ty: 1.5rem;
+          --rotation: 135deg;
+        }
+      }
 
       .avatar-image {
         width: 100%;
         height: 100%;
         object-fit: cover;
+        border-radius: 999rem;
       }
 
       .avatar-fallback {
@@ -105,5 +285,32 @@
         border-radius: 999rem;
       }
     }
+  }
+}
+
+@keyframes birthday-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 0.85;
+  }
+}
+
+@keyframes sparkle-fly {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) rotate(0deg) scale(0);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--tx), var(--ty)) rotate(var(--rotation))
+      scale(1.8);
   }
 }
