@@ -4,7 +4,6 @@ import {
   inject,
   input,
   output,
-  signal,
 } from '@angular/core';
 import { SelectOption } from '@tia/shared/lib/forms/models/input.model';
 import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
@@ -13,7 +12,6 @@ import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { ITransactions } from '@tia/shared/models/transactions/transactions.models';
 import { DatePipe } from '@angular/common';
-import { SimpleAlerts } from '@tia/shared/lib/alerts/components/simple-alerts/simple-alerts';
 import {
   CATEGORIZE_MODAL_CONFIG,
   CATEGORY_SELECT_CONFIG,
@@ -24,6 +22,8 @@ import {
   TranslatePipe,
   TranslateService,
 } from '@ngx-translate/core';
+import { Tooltip } from '@tia/shared/lib/data-display/tooltip/tooltip';
+import { AlertService } from '@tia/core/services/alert/alert.service';
 
 @Component({
   selector: 'app-categorize-modal',
@@ -33,9 +33,9 @@ import {
     ButtonComponent,
     DatePipe,
     ReactiveFormsModule,
-    SimpleAlerts,
     TranslateModule,
     TranslatePipe,
+    Tooltip,
   ],
   templateUrl: './categorize-modal.html',
   styleUrl: './categorize-modal.scss',
@@ -43,7 +43,8 @@ import {
 })
 export class CategorizeModal {
   private readonly fb = inject(FormBuilder);
-  private translate = inject(TranslateService);
+  private readonly translate = inject(TranslateService);
+  private readonly alertService = inject(AlertService);
 
   public readonly modalConfig = CATEGORIZE_MODAL_CONFIG;
   public readonly selectConfig = CATEGORY_SELECT_CONFIG;
@@ -58,8 +59,6 @@ export class CategorizeModal {
   public save = output<{ transactionId: string; categoryId: string }>();
   public cancel = output<void>();
   public createCategory = output<string>();
-
-  public successMessage = signal<string | null>(null);
 
   public form = this.fb.group({
     categoryId: [null as string | null, Validators.required],
@@ -91,11 +90,10 @@ export class CategorizeModal {
         { name: categoryName },
       );
 
-      this.successMessage.set(msg);
-
-      setTimeout(() => {
-        this.successMessage.set(null);
-      }, CATEGORIZE_MODAL_CONFIG.successMessageDuration);
+      this.alertService.success(msg, {
+        variant: 'dismissible',
+        title: this.translate.instant('Success') || 'Success',
+      });
     }
   }
 }
