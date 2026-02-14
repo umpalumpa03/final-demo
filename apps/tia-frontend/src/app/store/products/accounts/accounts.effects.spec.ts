@@ -40,6 +40,7 @@ describe('AccountsEffects', () => {
   beforeEach(() => {
     const serviceMock = {
       getAccounts: vi.fn(),
+      getActiveAccounts: vi.fn(),
       createAccount: vi.fn(),
       updateFriendlyName: vi.fn(),
     };
@@ -107,6 +108,65 @@ describe('AccountsEffects', () => {
       effects.loadAccounts$.subscribe((action) => (result = action));
       expect(result).toEqual(
         AccountsActions.loadAccountsFailure({
+          error: 'Failed to load accounts',
+        }),
+      );
+    });
+  });
+
+  describe('loadActiveAccounts$', () => {
+    it('should return loadActiveAccountsSuccess when store is empty', () => {
+      vi.spyOn(service, 'getActiveAccounts').mockReturnValue(of([mockAccount]));
+      actions$ = of(
+        AccountsActions.loadActiveAccounts({ forceRefresh: false }),
+      );
+
+      let result: Action | undefined;
+      effects.loadActiveAccounts$.subscribe((action) => (result = action));
+
+      expect(service.getActiveAccounts).toHaveBeenCalled();
+      expect(result).toEqual(
+        AccountsActions.loadActiveAccountsSuccess({ accounts: [mockAccount] }),
+      );
+    });
+
+    it('should return loadActiveAccountsSuccess when forceRefresh is true even if store has data', () => {
+      store.overrideSelector(selectAccounts, [mockAccount]);
+      vi.spyOn(service, 'getActiveAccounts').mockReturnValue(of([mockAccount]));
+
+      actions$ = of(AccountsActions.loadActiveAccounts({ forceRefresh: true }));
+
+      let result: Action | undefined;
+      effects.loadActiveAccounts$.subscribe((action) => (result = action));
+
+      expect(service.getActiveAccounts).toHaveBeenCalled();
+      expect(result).toBeTruthy();
+    });
+
+    it('should NOT call API if store has data and forceRefresh is false', () => {
+      store.overrideSelector(selectAccounts, [mockAccount]);
+      const spy = vi.spyOn(service, 'getActiveAccounts');
+      actions$ = of(
+        AccountsActions.loadActiveAccounts({ forceRefresh: false }),
+      );
+
+      let result: Action | undefined;
+      effects.loadActiveAccounts$.subscribe((action) => (result = action));
+
+      expect(spy).not.toHaveBeenCalled();
+      expect(result).toBeUndefined();
+    });
+
+    it('should return loadActiveAccountsFailure on error and hit fallback message', () => {
+      vi.spyOn(service, 'getActiveAccounts').mockReturnValue(
+        throwError(() => ({})),
+      );
+      actions$ = of(AccountsActions.loadActiveAccounts({ forceRefresh: true }));
+
+      let result: Action | undefined;
+      effects.loadActiveAccounts$.subscribe((action) => (result = action));
+      expect(result).toEqual(
+        AccountsActions.loadActiveAccountsFailure({
           error: 'Failed to load accounts',
         }),
       );

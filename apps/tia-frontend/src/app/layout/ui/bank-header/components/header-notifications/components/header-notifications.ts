@@ -19,6 +19,7 @@ import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
 import { VisibleInViewportDirective } from '../directives/visible-in-viewport.directive';
 import { TranslatePipe } from '@ngx-translate/core';
+import { Tooltip } from '@tia/shared/lib/data-display/tooltip/tooltip';
 
 @Component({
   selector: 'app-header-notifications',
@@ -32,6 +33,7 @@ import { TranslatePipe } from '@ngx-translate/core';
     ErrorStates,
     VisibleInViewportDirective,
     TranslatePipe,
+    Tooltip,
   ],
   templateUrl: './header-notifications.html',
   styleUrl: './header-notifications.scss',

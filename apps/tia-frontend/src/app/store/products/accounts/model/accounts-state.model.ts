@@ -1,4 +1,4 @@
-import { Account } from '../../../shared/models/accounts/accounts.model';
+import { Account } from '../../../../shared/models/accounts/accounts.model';
 
 export interface AccountsState {
   accounts: Account[];
