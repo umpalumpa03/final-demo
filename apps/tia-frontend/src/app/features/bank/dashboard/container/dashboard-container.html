@@ -39,7 +39,7 @@
     </div>
     }
   </div>
-  }@else { @if (visibleItems().length === 0) {
+  }@else { @if (myItems().length === 0) {
   <app-error-states
     variant="not-found"
     [header]="'dashboard.page.not-available' | translate"
@@ -71,22 +71,20 @@
       [hasPagination]="item.type === 'transactions' || !!item.hasPagination"
       [hasAddOption]="!!item.hasAdd"
       [hasButton]="item.type === 'exchange'"
-      buttonContent="Refresh"
+      [buttonContent]="'dashboard.widgets.exchange.refresh' | translate"
       (buttonClick)="onWidgetRefresh()"
       (add)="onWidgetAdd()"
       (paginationChange)="onPaginationChange($event)"
       [paginationVariants]="[5,10,15,20]"
-      [itemData]="item.headerData"
       [isViewable]="item.isViewable"
       appDragItem
     >
       @if (!item.isHidden) {
       <div class="bank-dashboard__content">
-        @switch (item.type) { 
-          @case ('transactions') {
+        @switch (item.type) { @case ('transactions') {
         <app-widget-transactions [isLarge]="$index === 0" /> } @case
         ('accounts') { <app-widget-accounts [isLarge]="$index === 0" /> } @case
-        ('exchange') { <app-widget-exchange [isLarge]="$index === 0" /> } } 
+        ('exchange') { <app-widget-exchange [isLarge]="$index === 0" /> } }
       </div>
       <!-- aq inputad mieci accounts ro gaigo hiddenia tu ara parentidan chagawodeb -->
       }
@@ -122,10 +120,11 @@
     </div>
   </app-ui-sheet-modal>
 
-  <app-ui-modal 
-      [isOpen]="isBirthdayVisible()" 
-      (closed)="onBirthdayDismiss()"
-      [hideExit]="true">
-      <app-birthday-modal (dismiss)="onBirthdayDismiss()"></app-birthday-modal>
+  <app-ui-modal
+    [isOpen]="isBirthdayVisible()"
+    (closed)="onBirthdayDismiss()"
+    [hideExit]="true"
+  >
+    <app-birthday-modal (dismiss)="onBirthdayDismiss()"></app-birthday-modal>
   </app-ui-modal>
 </div>

@@ -19,7 +19,8 @@
     },
     "exchange": {
       "title": "Exchange Rates",
-      "subtitle": "Live currency exchange rates"
+      "subtitle": "Live currency exchange rates",
+      "refresh": "Refresh"
     }
   },
   "banners": {

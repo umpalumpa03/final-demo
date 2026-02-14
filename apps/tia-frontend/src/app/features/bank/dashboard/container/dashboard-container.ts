@@ -81,36 +81,16 @@ export class DashboardContainer implements OnInit {
   private readonly breakpointService = inject(BreakpointService);
 
   protected readonly myItems = this.dashService.myItems;
+  protected readonly processedVisibleItems = this.dashService.processedItems;
+  protected readonly gridColumns = this.dashService.gridColumns;
+  protected readonly dynamicColspans = this.dashService.dynamicColspans;
+  protected readonly accountsHidden = this.dashService.accountsHidden; // vaxtang fiso es gchirdeba shen inputad gaukete shen komponentshi
   protected readonly widgetCatalog = this.dashService.widgetCatalog;
   protected readonly visibleItems = this.dashService.visibleItems;
   protected readonly isLoading = this.store.selectSignal(selectWidgetsLoading);
 
   protected readonly isCustomizing = signal(false);
   protected readonly bannerConfig = signal(bannerSlides);
-  protected readonly gridColumns = computed(() => {
-    const itemCount = this.myItems().length;
-    const isVertical = this.breakpointService.isTablet() || itemCount < 3;
-
-    return isVertical
-      ? { default: 1, md: 1, sm: 1 }
-      : { default: 2, md: 2, sm: 1 };
-  });
-
-  constructor() {
-    effect(() => {
-      const items = this.myItems();
-      const accountsWidget = items.find((w) => w.type === 'accounts');
-
-      if (accountsWidget) {
-        untracked(() => {
-          this.accountsHidden.set(accountsWidget.isHidden!);
-        });
-      }
-    });
-  }
-
-  // vaxtang es shenia fiso
-  public readonly accountsHidden = signal(false);
 
   protected readonly draftSelection = signal<string[]>([]);
 
@@ -142,9 +122,11 @@ export class DashboardContainer implements OnInit {
 
   public onFoldWidget(isSelected: boolean, id: string): void {
     const item = this.myItems().find((w) => w.id === id);
+
     if (item?.type === 'accounts') {
       this.accountsHidden.set(!isSelected);
     }
+
     this.dashService.foldWidget(isSelected, id);
   }
 
@@ -165,16 +147,6 @@ export class DashboardContainer implements OnInit {
     return this.myItems().some((w) => w.id === id);
   }
 
-  public dynamicColspans = computed(() => {
-    const items = this.myItems();
-    const isVertical = this.breakpointService.isTablet() || items.length < 3;
-
-    return items.map((_, index) => {
-      if (isVertical) return 1;
-      return index === 0 ? 2 : 1;
-    });
-  });
-
   public onWidgetRefresh(): void {
     this.store.dispatch(clearExchangeRates());
     this.store.dispatch(loadExchangeRates({ baseCurrency: 'USD' }));
@@ -192,32 +164,6 @@ export class DashboardContainer implements OnInit {
       TransactionActions.loadTransactions({ forceRefresh: true }),
     );
   }
-
-  protected readonly processedVisibleItems = computed(() => {
-    return this.myItems().map((item) => {
-      const isAccount = item.type === 'accounts';
-
-      const visualHiddenStatus = isAccount ? false : item.isHidden;
-
-      const visualEyeStatus = isAccount
-        ? !this.accountsHidden()
-        : !item.isHidden;
-
-      return {
-        ...item,
-        isHidden: visualHiddenStatus,
-        isViewable: visualEyeStatus,
-        headerData: {
-          id: item.id,
-          title: this.translate.instant(`dashboard.widgets.${item.type}.title`),
-          subtitle: this.translate.instant(
-            `dashboard.widgets.${item.type}.subtitle`,
-          ),
-          icon: `/images/svg/dashboard/${item.type}.svg`,
-        } as DraggableItemType,
-      };
-    });
-  });
 
   private readonly birthdayLogic = inject(BirthdayLogicService);
   protected readonly isBirthdayVisible = this.birthdayLogic.isModalVisible;
