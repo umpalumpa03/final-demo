@@ -8,4 +8,9 @@
         @include font-inter(500, 1.6rem, 2.4rem);
         color: var(--color-fg)
     }
+
+    &__subtitle {
+        @include font-inter(400, 1.4rem, 2rem);
+        color: var(--color-fg);
+    }
 }
