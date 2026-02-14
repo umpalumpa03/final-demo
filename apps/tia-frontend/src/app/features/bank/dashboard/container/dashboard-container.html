@@ -59,11 +59,11 @@
     containerTitle=""
     containerDescription=""
   >
-    @for (item of visibleItems(); track item.id) {
+    @for (item of processedVisibleItems(); track item.id) {
     <app-draggable-card
       [hasMinHeight]="!item.isHidden && (!isHeroMode() || $index !== 0)"
       [itemData]="item"
-      [hasViewOption]="item.type === 'transactions'"
+      [hasViewOption]="item.type === 'transactions' || item.type === 'accounts'"
       (viewOptionChange)="onFoldWidget($event, item.id)"
       [showHeadings]="true"
       [class.bank-dashboard__widget--primary]="$index === 0"
@@ -76,6 +76,7 @@
       (add)="onWidgetAdd()"
       (paginationChange)="onPaginationChange($event)"
       [paginationVariants]="[5,10,15,20]"
+      [itemData]="item.headerData"
       appDragItem
     >
       @if (!item.isHidden) {
