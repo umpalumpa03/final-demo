@@ -13,16 +13,6 @@
     ></app-transactions-filters>
   </div>
 
-  @if (actions.alertMessage()) {
-  <div class="alert-message">
-    <app-simple-alerts
-      [alertType]="actions.alertType()"
-      [alertMessage]="actions.alertMessage()!"
-    >
-    </app-simple-alerts>
-  </div>
-  }
-
   <div class="transactions-table-wrapper">
     <div class="transactions-table-wrapper__heading">
       <div>
