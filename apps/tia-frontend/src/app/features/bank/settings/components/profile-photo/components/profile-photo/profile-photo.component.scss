@@ -53,12 +53,30 @@
     width: fit-content;
   }
 
+  &__avatar-image-container {
+    position: relative;
+    width: 4.8rem;
+    height: 4.8rem;
+  }
+
+  &__avatar-skeleton {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+  }
+
   &__avatar-main-image {
     width: 4.8rem;
     height: 4.8rem;
     border-radius: 50%;
     object-fit: cover;
     display: block;
+    transition: opacity 0.2s ease;
+
+    &--loading {
+      opacity: 0.3;
+    }
   }
 
   &__default-avatar {
@@ -78,12 +96,15 @@
     @include display-flex(row, wrap);
     gap: 1.2rem;
     margin-top: 1.6rem;
+    position: relative;
+    min-height: 4.8rem;
   }
 
   &__skeleton-avatar {
     display: flex;
     align-items: center;
     justify-content: center;
+    animation: fadeIn 0.3s ease-in;
   }
 
   &__avatar-button {
@@ -93,6 +114,9 @@
     cursor: pointer;
     border-radius: 999rem;
     outline: none;
+    position: relative;
+    width: 4.8rem;
+    height: 4.8rem;
 
     &--selected {
       outline: 0.2rem solid var(--color-primary);
@@ -106,6 +130,11 @@
     border-radius: 50%;
     object-fit: cover;
     display: block;
+    transition: opacity 0.2s ease;
+
+    &--loading {
+      opacity: 0.3;
+    }
   }
 
 
@@ -202,5 +231,16 @@
 
   &__file-input {
     display: none;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }

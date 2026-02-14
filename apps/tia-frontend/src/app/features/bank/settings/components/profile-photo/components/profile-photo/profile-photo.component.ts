@@ -35,6 +35,8 @@ export class ProfilePhotoComponent {
   public readonly isUploadModalOpen = input<boolean>(false);
   public readonly isDragOver = input<boolean>(false);
   public readonly savingChanges = input<boolean>(false);
+  public readonly mainAvatarLoading = input<boolean>(false);
+  public readonly defaultAvatarsLoadingMap = input<Map<string, boolean>>(new Map());
 
   public readonly openUploadModal = output<void>();
   public readonly removePhoto = output<void>();
@@ -46,6 +48,9 @@ export class ProfilePhotoComponent {
   public readonly fileDrop = output<DragEvent>();
   public readonly fileInputChange = output<Event>();
   public readonly imageError = output<void>();
+  public readonly mainImageLoad = output<void>();
+  public readonly defaultAvatarLoad = output<string>();
+  public readonly defaultAvatarError = output<string>();
 
   public onFileButtonClick(): void {
     this.openUploadModal.emit();
@@ -57,5 +62,21 @@ export class ProfilePhotoComponent {
 
   public onImageError(): void {
     this.imageError.emit();
+  }
+
+  public onMainImageLoad(): void {
+    this.mainImageLoad.emit();
+  }
+
+  public onDefaultAvatarLoad(avatarId: string): void {
+    this.defaultAvatarLoad.emit(avatarId);
+  }
+
+  public onDefaultAvatarError(avatarId: string): void {
+    this.defaultAvatarError.emit(avatarId);
+  }
+
+  public isDefaultAvatarLoading(avatarId: string): boolean {
+    return this.defaultAvatarsLoadingMap().get(avatarId) ?? false;
   }
 }
