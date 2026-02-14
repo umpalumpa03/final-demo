@@ -48,10 +48,10 @@
 
   &:hover:not(&--skeleton) {
     background: $gray-50;
-    border-color: $blue-500;
+    border-color: var(--color-primary);
 
     .provider-item__chevron {
-      background-color: $blue-ocean;
+      background-color: var(--color-fg);
       transform: translateX(0.4rem);
     }
   }
