@@ -3,6 +3,7 @@ import {
   Component,
   inject,
   signal,
+  input,
 } from '@angular/core';
 import { Store } from '@ngrx/store';
 import {
@@ -42,6 +43,8 @@ import { TranslateModule } from '@ngx-translate/core';
 })
 export class WidgetAccounts extends BaseWidget {
   private readonly store = inject(Store);
+
+  public balancesHidden = input<boolean>(false);
 
   public retryLoad(): void {
     this.store.dispatch(AccountsActions.loadAccounts({}));
