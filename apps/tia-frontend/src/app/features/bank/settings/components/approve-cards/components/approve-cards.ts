@@ -28,7 +28,6 @@ import { IAccountsPermissions } from '../../../shared/models/approve-models/acco
   imports: [
     CardsApproveElement,
     Skeleton,
-    Spinner,
     ErrorStates,
     PermissionsModal,
     UiModal,

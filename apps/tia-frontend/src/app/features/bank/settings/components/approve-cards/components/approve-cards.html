@@ -4,9 +4,10 @@
     @if (store.isLoading()) { @for(card of store.cards(); track card.id) {
     <app-skeleton width="100%" height="6.3rem" />
     } @empty {
-    <div class="approve-card__spinner">
-      <app-spinner size="6rem"></app-spinner>
-    </div>
+       <app-skeleton width="100%" height="11.4rem" />
+       <app-skeleton width="100%" height="11.4rem" />
+       <app-skeleton width="100%" height="11.4rem" />
+       <app-skeleton width="100%" height="11.4rem" />
     } } @else { @for(card of store.cards(); track card.id) {
     <app-cards-approve-element
       [id]="card.id"

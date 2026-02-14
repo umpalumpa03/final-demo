@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  DestroyRef,
   effect,
   HostListener,
   inject,
@@ -85,9 +84,7 @@ export class OtpVerification implements OnInit {
   public isResendCalled = output<boolean>();
   public customError = output<void>();
 
-  // old
-  // public resendTries = signal<number>(3);
-  public resendTries = signal<number>(0);
+  public resendTries = signal<number>(3);
   public internalRemainingAttempts = signal<number | null>(null);
   public isLoading = signal(false);
   public submitError = signal<string | null>(null);
@@ -95,12 +92,6 @@ export class OtpVerification implements OnInit {
   public isResendActive = signal<boolean>(false);
   public isLimitExeeded = signal<boolean>(false);
   public isErrorPageVisible = signal<boolean>(false);
-
-  //
-  // Auth Services mtlianad shemotanis magivrad calke gavitanot settingebi? (sxva option ebi- gacachva)
-  private authService = inject(AuthService);
-  private destroyRef = inject(DestroyRef);
-  //
 
   public isHeaderVisible = computed(
     () =>
@@ -255,27 +246,6 @@ export class OtpVerification implements OnInit {
     if (this.isTimerDisplayed()) {
       this.startTimer();
     }
-
-    /* 
-      {
-        "expirationMinutes": 5,
-        "maxResendAttempts": 3,
-        "maxVerifyAttempts": 5,
-        "resendTimeoutMs": 60000
-      }
-    */
-
-    // Otp Settings changes
-    this.authService
-      .otpSettings()
-      .pipe(
-        tap((res) => {
-          console.log(res, '__RESPONSE');
-          this.resendTries.set(res.otp.maxResendAttempts);
-        }),
-        takeUntilDestroyed(this.destroyRef),
-      )
-    .subscribe();
   }
 
   private startTimer(): void {

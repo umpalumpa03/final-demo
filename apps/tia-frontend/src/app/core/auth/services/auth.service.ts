@@ -156,11 +156,6 @@ export class AuthService {
     );
   }
 
-  public otpSettings(): Observable<OtpInitSettings>{
-
-    return this.http.get<OtpInitSettings>(`${environment.apiUrl}/settings/config`)
-  }
-
   public verifyMfa(verify: IMfaVerifyRequest): Observable<IMfaVerifyResponse> {
     this.isLoginLoading.set(true);
 
