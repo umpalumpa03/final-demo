@@ -7,7 +7,7 @@ import {
   signal,
   DestroyRef,
 } from '@angular/core';
-import { tap } from 'rxjs';
+import { switchMap, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
@@ -73,27 +73,22 @@ export class LanguageSelection implements OnInit {
     if (selected) {
       this.languagesStore
         .updateLanguage(selected.id)
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe({
-          next: () => {
+        .pipe(
+          tap(() => {
             this.translationLoader.clearCache();
             localStorage.setItem('language', selected.value);
-
-            this.translateService
-              .use(selected.value)
-              .pipe(takeUntilDestroyed(this.destroyRef))
-              .subscribe(() => {
-                this.translationLoader
-                  .loadTranslations(['settings', 'storybook'])
-                  .pipe(takeUntilDestroyed(this.destroyRef))
-                  .subscribe(() => {
-                    this.alertService.success(
-                      this.translateService.instant(
-                        'settings.language.saveSuccess',
-                      ),
-                    );
-                  });
-              });
+          }),
+          switchMap(() => this.translateService.use(selected.value)),
+          switchMap(() =>
+            this.translationLoader.loadTranslations(['settings', 'storybook']),
+          ),
+          takeUntilDestroyed(this.destroyRef),
+        )
+        .subscribe({
+          next: () => {
+            this.alertService.success(
+              this.translateService.instant('settings.language.saveSuccess'),
+            );
           },
           error: () => {
             this.alertService.error(
