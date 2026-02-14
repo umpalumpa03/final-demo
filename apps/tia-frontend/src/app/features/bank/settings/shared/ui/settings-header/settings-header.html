@@ -6,7 +6,7 @@
     <app-tabs [tabs]="navItems()" orientation="horizontal" [collapsed]="isMobile()" />
 
     @if (isAdmin()) {
-      <app-tabs [tabs]="adminNavItems" [collapsed]="isMobile()" />
+      <app-tabs [tabs]="adminNavItems()" [collapsed]="isMobile()" />
     }
 
   </nav>

@@ -2,6 +2,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   DestroyRef,
   inject,
   OnInit,
@@ -19,6 +20,7 @@ import {
   take,
   BehaviorSubject,
   tap,
+  startWith,
 
 } from 'rxjs';
 import {
@@ -47,7 +49,7 @@ import {
 } from 'apps/tia-frontend/src/app/store/transactions/transactions.selector';
 import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions/transactions.actions';
 import { Pagination } from '@tia/shared/lib/navigation/pagination/pagination';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { CardAccount } from '@tia/shared/models/cards/card-account.model';
 import { ITransactionFilter } from '@tia/shared/models/transactions/transactions.models';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -82,14 +84,18 @@ export class CardTransactions implements OnInit {
   protected readonly totalCount$ = this.transactions$.pipe(
     map((transactions) => transactions.length),
   );
-
+private readonly translate = inject(TranslateService);
   private readonly currentPageSubject = new BehaviorSubject<number>(1);
   protected readonly currentPage$ = this.currentPageSubject.asObservable();
   protected readonly itemsPerPage = 20;
  
     private readonly destroyRef = inject(DestroyRef);
+protected readonly uncategorizedText$ = this.translate.stream('my-products.card.card-transactions.transaction-list.uncategorized');
 
-
+protected readonly currentLocale$ = this.translate.onLangChange.pipe(
+  map(event => event.lang === 'ka' ? 'ka-GE' : 'en-US'),
+  startWith(this.translate.currentLang === 'ka' ? 'ka-GE' : 'en-US')
+);
   protected readonly cardHeaderData$ = combineLatest([
     this.store.select(selectCardDetailById(this.cardId)),
   ]).pipe(
@@ -234,5 +240,11 @@ private updateTransactionFiltersIfNeeded(
     );
   }
 }
+protected readonly paginationConfig = computed(() => ({
+  previousLabel:" ",
+  nextLabel: " ",
+  maxVisiblePages: 2,  
+  showEllipsis: true
+}));
   
 }

@@ -6,8 +6,8 @@
   } @else if (error$ | async; as errorMsg) {
   <app-error-states
     variant="failed"
-    header="Failed to Load Transactions"
-    buttonMessage="Retry"
+[header]="'my-products.card.card-transactions.failedToLoadTransactions' | translate"
+[buttonMessage]="'my-products.card.card-transactions.retry' | translate"
     (buttonClick)="handleRetry()"
   />
   } @else {
@@ -41,6 +41,8 @@
    
     <app-transaction-list
       [transactions]="(paginatedTransactions$ | async) || []"
+       [uncategorizedText]="(uncategorizedText$ | async) || 'Uncategorized'"
+       [locale]="(currentLocale$ | async) || 'en-US'"
     />
 
     @if ((totalPages$ | async) ?? 0 > 1) {
@@ -48,6 +50,7 @@
       [currentPage]="(currentPage$ | async) ?? 1"
       [totalPages]="(totalPages$ | async) ?? 1"
       (pageChange)="handlePageChange($event)"
+      [config]="paginationConfig()"
     />
     }
   </app-basic-card>

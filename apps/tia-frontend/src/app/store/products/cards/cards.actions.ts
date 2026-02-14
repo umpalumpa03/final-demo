@@ -97,7 +97,6 @@ export const closeCreateCardModal = createAction(
   '[Cards] Close Create Card Modal',
 );
 
-export const hideSuccessAlert = createAction('[Cards] Hide Success Alert');
 
 export const openCardDetailsModal = createAction(
   '[Cards] Open Card Details Modal',
@@ -167,12 +166,6 @@ export const closeCardOtpModal = createAction(
 export const clearCardSensitiveData = createAction(
   '[Cards] Clear Card Sensitive Data',
 );
-export const showGlobalAlert = createAction(
-  '[Cards] Show Global Alert', 
-  props<{ message: string; alertType: 'success' | 'error' }>()
-);
-export const hideGlobalAlert = createAction('[Cards] Hide Global Alert');
-
 export const setCurrentCardIndex = createAction(
   '[Cards] Set Current Card Index',
   props<{ cardIndex: number; accountId: string }>()

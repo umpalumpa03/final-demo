@@ -1,9 +1,9 @@
-<app-settings-body [title]="'settings.appearance.title' | translate"
-    [subTitle]="'settings.appearance.subtitle' | translate">
+<app-basic-card [title]="'settings.appearance.title' | translate" [maxWidth]="'100%'" padding="2rem" height="fit-content">
     <div class="container">
+        <h2 class="container__subtitle">{{'settings.appearance.subtitle' | translate}}</h2>
         <h4 class="container__title">{{'settings.appearance.cardsTitle' | translate}}</h4>
         <div class="container__cards" [class.container__cards--mobile]="isMobile()">
-            @if(isLoading()) {
+            @if(isLoading() && !hasLoaded()) {
             <app-skeleton height="10rem"></app-skeleton>
             <app-skeleton height="10rem"></app-skeleton>
             <app-skeleton height="10rem"></app-skeleton>
@@ -19,10 +19,10 @@
             }
         </div>
         <div class="container__submit">
-            <app-button (click)="onSubmit()">{{'settings.appearance.saveChanges' | translate}}</app-button>
+            <app-button [isLoading]="isFetching()" (click)="onSubmit()">{{'settings.appearance.saveChanges' | translate}}</app-button>
         </div>
     </div>
-</app-settings-body>
+</app-basic-card>
 <app-ui-modal [isOpen]="isModalOpen()" (closed)="onLeave()">
     <div class="confirm-dialog">
         <header class="confirm-dialog__header">

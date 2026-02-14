@@ -91,13 +91,14 @@ describe('AccountsList Component Integration Tests', () => {
 
     it('should emit transfer event when permission is selected', () => {
       TestBed.runInInjectionContext(() => {
+        fixture.componentRef.setInput('accountsGrouped', mockGroupedAccounts);
         const transferSpy = vi.spyOn(component.transfer, 'emit');
         component.selectedAccountForTransfer.set('acc-123');
 
         component.handlePermissionSelected(1);
 
         expect(transferSpy).toHaveBeenCalledWith({
-          accountId: 'acc-123',
+          account: mockAccount,
           permissionValue: 1,
         });
         expect(component.showTransferModal()).toBe(false);

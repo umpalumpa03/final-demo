@@ -110,6 +110,7 @@ export const accountsFeature = createFeature({
       updateFriendlyNameError: error,
     })),
     on(UserInfoActions.loadUser, () => initialAccountsState),
+    on(AccountsActions.clearAccountsStore, () => initialAccountsState),
   ),
 });
 

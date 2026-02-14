@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  inject,
   input,
   output,
 } from '@angular/core';
@@ -12,6 +13,7 @@ import { AccountUtils } from '@tia/shared/utils/accounts-icons/account.utils';
 import { AccountType } from '@tia/shared/models/accounts/accounts.model';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ACCOUNT_ACTIONS } from '../../../config/accounts.config';
+import { BreakpointService } from '@tia/core/services/breakpoints/breakpoint.service';
 
 @Component({
   selector: 'app-account-card',
@@ -22,6 +24,9 @@ import { ACCOUNT_ACTIONS } from '../../../config/accounts.config';
 })
 export class AccountCard {
   private readonly accountUtils = new AccountUtils();
+  private readonly breakpointService = inject(BreakpointService);
+  public readonly isXsMobile = this.breakpointService.isXsMobile;
+  
   public readonly actions = ACCOUNT_ACTIONS;
   public isFavorite = input.required<boolean | null>();
   public isHidden = input.required<boolean | null>();
