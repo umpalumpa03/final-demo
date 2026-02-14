@@ -164,6 +164,11 @@
     "alertMessages": {
       "successDesc": "Card status updated successfully!",
       "errorDesc": "Failed to update card status."
+    },
+    "modal": {
+      "title": "Modify Card Permissions",
+      "subtitle": "Configure permissions for this Card request",
+      "permissionsTitle": "Card permissions"
     }
   },
   "loan-management": {

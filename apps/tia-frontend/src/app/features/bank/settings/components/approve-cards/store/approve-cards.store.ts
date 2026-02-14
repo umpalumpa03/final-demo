@@ -63,17 +63,17 @@ export const ApproveCardsStore = signalStore(
                 });
 
                 alertService.success(
-                  translate.instant('messaging.storeSuccess.cardUpdated'),
-                  { variant: 'dismissible', title: 'Success!' },
+                  translate.instant('settings.approve-cards.alertMessages.successDesc'),
+                  { variant: 'dismissible', title: 'Success!' }
                 );
               }),
               catchError((err) => {
-
-                patchState(store, { isLoading: false, error: err.message})
+                patchState(store, { isLoading: false, error: err.message });
 
                 alertService.error(
-                  translate.instant('storeErrors.loadTotalCount'),
-                   { variant: 'dismissible', title: 'Oops!' });
+                  translate.instant('settings.approve-cards.alertMessages.errorDesc'),
+                  { variant: 'dismissible', title: 'Oops!' }
+                );
                 return EMPTY;
               }),
             ),
