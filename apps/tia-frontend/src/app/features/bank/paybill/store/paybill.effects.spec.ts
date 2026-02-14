@@ -272,7 +272,7 @@ describe('PaybillEffect (Refactored)', () => {
       ]);
     });
 
-    it('proceedPaymentSuccess$: should auto-confirm if amount <= 50', () => {
+    it('proceedPaymentSuccess$: should auto-confirm if amount <= 50', async () => {
       store.overrideSelector(selectPaymentPayload, {
         amount: 20,
       } as PaybillPayload);
@@ -284,13 +284,18 @@ describe('PaybillEffect (Refactored)', () => {
 
       actions$ = of(PaybillActions.proceedPaymentSuccess({ response }));
 
+      const emitted: Action[] = [];
       effects.proceedPaymentSuccess$.subscribe((action) => {
-        expect(action).toEqual(
-          PaybillActions.confirmPayment({
-            payload: { challengeId: 'id-123', code: '6767' },
-          }),
-        );
+        emitted.push(action);
       });
+
+      expect(emitted).toHaveLength(2);
+      expect(emitted[0]).toEqual(PaybillActions.confirmPaymentSuccess());
+      expect(emitted[1]).toEqual(
+        PaybillActions.confirmPayment({
+          payload: { challengeId: 'id-123', code: '6767' },
+        }),
+      );
     });
   });
 
