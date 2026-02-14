@@ -4,7 +4,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { provideMockStore } from '@ngrx/store/testing';
 import { AccountsListComponent } from '../../components/accounts/components/accounts-list/accounts-list';
 import {
-  Account,
   AccountType,
   GroupedAccounts,
   AccountSection,
