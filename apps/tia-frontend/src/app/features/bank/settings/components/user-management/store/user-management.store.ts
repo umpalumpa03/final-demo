@@ -18,12 +18,19 @@ import {
   finalize,
   filter,
   EMPTY,
+  delay,
 } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
+import { TranslateService } from '@ngx-translate/core';
 import { UserManagementService } from '../shared/services/user-management.service';
-import { initialState } from './user-management.state';
+import {
+  initialState,
+  UserErrorKeys,
+  UserSuccessKeys,
+} from './user-management.state';
 import { IUpdateUserRequest } from '../shared/models/users.model';
 import { ProfilePhotoApiService } from '@tia/shared/services/profile-photo/profile-photo.service';
+import { AlertService } from '@tia/core/services/alert/alert.service';
 
 export const UserManagementStore = signalStore(
   withState(initialState),
@@ -35,21 +42,65 @@ export const UserManagementStore = signalStore(
   withMethods((store) => {
     const service = inject(UserManagementService);
     const avatarService = inject(ProfilePhotoApiService);
+    const alertService = inject(AlertService);
+    const translate = inject(TranslateService);
+
+    const _triggerAutoHide = rxMethod<void>(
+      pipe(
+        delay(3000),
+        tap(() => patchState(store, { error: null })),
+      ),
+    );
+
+    const handleError = (
+      err: any,
+      key: string,
+      shouldAutoHide: boolean = true,
+    ) => {
+      if (err.status === 0) {
+        const networkMsg = translate.instant(UserErrorKeys.NETWORK_ERROR);
+
+        patchState(store, {
+          error: networkMsg,
+          loading: false,
+          actionLoading: false,
+        });
+
+        alertService.showAlert('error', networkMsg);
+        if (shouldAutoHide) {
+          _triggerAutoHide();
+        }
+        return EMPTY;
+      }
+
+      const backendMsg = err?.error?.message || err?.message;
+      const translatedKey = translate.instant(key);
+      const displayMsg = backendMsg || translatedKey;
+
+      patchState(store, {
+        error: displayMsg,
+        loading: false,
+        actionLoading: false,
+      });
+
+      alertService.showAlert('error', displayMsg);
+      _triggerAutoHide();
+      return EMPTY;
+    };
 
     return {
+      _triggerAutoHide,
+
       loadUsers: rxMethod<void>(
         pipe(
           filter(() => store.users().length === 0 && !store.loading()),
           tap(() => patchState(store, { loading: true, error: null })),
           switchMap(() =>
             service.getAllUsers().pipe(
-              tap((users) => {
-                patchState(store, { users, loading: false });
-              }),
-              catchError((err: HttpErrorResponse) => {
-                patchState(store, { loading: false, error: err.message });
-                return EMPTY;
-              }),
+              tap((users) => patchState(store, { users, loading: false })),
+              catchError((err) =>
+                handleError(err, UserErrorKeys.LOAD_USERS, false),
+              ),
             ),
           ),
         ),
@@ -91,10 +142,7 @@ export const UserManagementStore = signalStore(
                   userCache: { ...state.userCache, [userId]: fullUserData },
                 }));
               }),
-              catchError((err: HttpErrorResponse) => {
-                patchState(store, { actionLoading: false, error: err.message });
-                return EMPTY;
-              }),
+              catchError((err) => handleError(err, UserErrorKeys.LOAD_DETAILS)),
             );
           }),
         ),
@@ -116,14 +164,11 @@ export const UserManagementStore = signalStore(
                     actionLoading: false,
                   };
                 });
+
+                const msg = translate.instant(UserSuccessKeys.DELETE);
+                alertService.showAlert('success', msg);
               }),
-              catchError((err: HttpErrorResponse) => {
-                patchState(store, {
-                  actionLoading: false,
-                  error: err.message,
-                });
-                return EMPTY;
-              }),
+              catchError((err) => handleError(err, UserErrorKeys.DELETE)),
             ),
           ),
         ),
@@ -148,14 +193,11 @@ export const UserManagementStore = signalStore(
                     userCache: remainingCache,
                   };
                 });
+
+                const msg = translate.instant(UserSuccessKeys.UPDATE);
+                alertService.showAlert('success', msg);
               }),
-              catchError((err: HttpErrorResponse) => {
-                patchState(store, {
-                  actionLoading: false,
-                  error: err.message,
-                });
-                return EMPTY;
-              }),
+              catchError((err) => handleError(err, UserErrorKeys.UPDATE)),
             ),
           ),
         ),
@@ -197,9 +239,18 @@ export const UserManagementStore = signalStore(
                     selectedUser: updatedSelected,
                   };
                 });
+
+                const key = updatedUser.isBlocked
+                  ? UserSuccessKeys.BLOCK
+                  : UserSuccessKeys.UNBLOCK;
+                const msg = translate.instant(key);
+                alertService.showAlert('success', msg);
               }),
               catchError((err: HttpErrorResponse) => {
-                patchState(store, { error: err.message });
+                const msg = translate.instant(UserErrorKeys.BLOCK);
+                patchState(store, { error: err.message || msg });
+                alertService.showAlert('error', err.message || msg);
+                _triggerAutoHide();
                 return EMPTY;
               }),
               finalize(() => {

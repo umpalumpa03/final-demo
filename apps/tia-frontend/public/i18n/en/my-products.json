@@ -34,7 +34,8 @@
     "form": {
       "friendlyName": {
         "label": "Account Name",
-        "placeholder": "e.g., Emergency Fund"
+        "placeholder": "e.g., Emergency Fund",
+        "tooLong": "Account name is too long. Please use a shorter name."
       },
       "type": {
         "label": "Account Type",
@@ -81,6 +82,20 @@
     "failedToCreateAccount": "Failed to create account"
   },
   "card": {
+    "errors": {
+      "failedToLoadCreationData": "Failed to load card creation data",
+      "failedToCreateCard": "Failed to create card",
+      "failedToUpdateCardName": "Failed to update card name",
+      "failedToRequestOtp": "Failed to request OTP",
+      "failedToVerifyOtp": "Failed to verify OTP",
+      "otpNotCorrect": "OTP code is not correct"
+    },
+    "alerts": {
+      "otpSent": "OTP sent successfully",
+      "cardDetailsRetrieved": "Card details retrieved successfully",
+      "remainingAttempts": "Remaining attempts",
+      "otpError": "OTP code is not correct"
+    },
     "card-list": {
       "add-card-button": {
         "getNewCard": "Get New Card"
@@ -94,7 +109,9 @@
       "myCards": "My Cards",
       "manageAccounts": "Manage your bank accounts",
       "alertType": "success",
-      "alertMessage": "Card created successfully!"
+      "alertMessage": "Card created successfully!",
+      "loadingFailed": "error while loading",
+      "retry": "Retry"
     },
     "account-cards": {
       "card-grid": {
@@ -105,7 +122,10 @@
         "cardCountPlural": "Cards"
       },
       "backToCards": "Back to Cards",
-      "accountNotFound": "Account not found"
+      "accountNotFound": "Account not found",
+      "loadingFailed": "Loading Failed",
+      "failedToLoadCards": "Failed to load cards",
+      "retry": "Retry"
     },
     "card-details": {
       "backToCards": "Back to Cards",
@@ -113,6 +133,8 @@
       "manageYourCard": "Manage your card and transactions",
       "cardInfo": "Card Informatoin",
       "cardDetails": "Details about your Personal Card",
+      "failedToLoadCard": "Failed to Load Card",
+      "retry": "Retry",
 
       "card-info-section": {
         "cardName": "Card Name",
@@ -140,7 +162,9 @@
       "create-card-form": {
         "cancelBtn": "Cancel",
         "creating": "Creating...",
-        "createCard": "create Card"
+        "createCard": "create Card",
+        "enterText": "Enter text",
+    "chooseOption": "Choose an option"
       },
       "design-selector": {
         "cardDesign": "Choose Card Design"
@@ -169,12 +193,15 @@
       "backToCard": "Back to Card Details",
       "transactionHistory": "Transaction History",
       "allTransactions": "All transactions made with this card",
+      "failedToLoadTransactions": "Failed to Load Transactions",
+    "retry": "Retry",
       "transaction-card-header": {
         "linkedTo": "Linked to: ",
         "totalTransactions": "Total Transactions"
       },
       "transaction-list": {
-        "noTransactions": "No transactions found"
+        "noTransactions": "No transactions found",
+        "uncategorized": "Uncategorized"
       }
     },
     "card-otp-modal": {

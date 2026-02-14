@@ -13,12 +13,12 @@ export class ValidationService {
 
     if (errors['minlength']) {
       return this.translate.instant('common.validation.minLength', {
-        requiredLength: errors['minlength'].requiredLength,
+        minLength: errors['minlength'].requiredLength,
       });
     }
     if (errors['maxlength']) {
       return this.translate.instant('common.validation.maxLength', {
-        requiredLength: errors['maxlength'].requiredLength,
+        maxLength: errors['maxlength'].requiredLength,
       });
     }
     if (errors['min']) {

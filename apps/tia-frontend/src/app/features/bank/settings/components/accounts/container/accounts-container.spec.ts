@@ -1,9 +1,84 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AccountsContainer } from './accounts-container';
-import { TranslateModule } from '@ngx-translate/core';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { BreakpointService } from '@tia/core/services/breakpoints/breakpoint.service';
+import { AccountsStore } from '../store/accounts.store';
 import { Router } from '@angular/router';
-import { AccountsStore } from '../strore/accounts.store';
+import { TranslateModule } from '@ngx-translate/core';
+import { NO_ERRORS_SCHEMA } from '@angular/compiler';
+
+describe('AccountsContainer', () => {
+  let component: AccountsContainer;
+  let mockStore: any;
+  let mockRouter: any;
+
+  beforeEach(() => {
+    mockStore = {
+      loadAccounts: vi.fn(),
+      favoriteLoadingIds: () => new Set<string>(),
+      visibilityLoadingIds: () => new Set<string>(),
+      changeNameLoadingIds: () => new Set<string>(),
+      toggleFavorite: vi.fn(),
+      toggleVisibility: vi.fn(),
+      changeFriendlyName: vi.fn(),
+    };
+
+    mockRouter = { navigate: vi.fn() };
+
+    TestBed.configureTestingModule({
+      providers: [
+        AccountsContainer,
+        { provide: BreakpointService, useValue: { isXsMobile: false } },
+        { provide: AccountsStore, useValue: mockStore },
+        { provide: Router, useValue: mockRouter },
+      ],
+    });
+
+    component = TestBed.inject(AccountsContainer);
+  });
+
+  it('calls loadAccounts on init', () => {
+    component.ngOnInit();
+    expect(mockStore.loadAccounts).toHaveBeenCalled();
+  });
+
+  it('reports loading states correctly', () => {
+    // set up store loading ids
+    mockStore.favoriteLoadingIds = () => new Set(['fav1']);
+    mockStore.visibilityLoadingIds = () => new Set(['vis1']);
+    mockStore.changeNameLoadingIds = () => new Set(['chg1']);
+
+    expect(component.isFavoriteLoading('fav1')).toBe(true);
+    expect(component.isVisibilityLoading('vis1')).toBe(true);
+    expect(component.isChangeNameLoading('chg1')).toBe(true);
+  });
+
+  it('handles favorite/visibility actions and navigation', () => {
+    component.handleFavorite('id1', false);
+    expect(mockStore.toggleFavorite).toHaveBeenCalledWith({ id: 'id1', isFavorite: false });
+
+    component.handleVisibility('id2', true);
+    expect(mockStore.toggleVisibility).toHaveBeenCalledWith({ id: 'id2', isHidden: true });
+
+    component.backButtonClick();
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['bank/dashboard']);
+  });
+
+  it('open/close/submit change name flow', () => {
+    component.openChangeName('cid', 'Old Name', 'ACC123');
+    expect(component.changeNameOpen()).toBe(true);
+    expect(component.changeNameAccountId()).toBe('cid');
+    expect(component.changeNameInitial()).toBe('Old Name');
+
+    component.submitChangeName('New Name');
+    expect(mockStore.changeFriendlyName).toHaveBeenCalledWith({ id: 'cid', friendlyName: 'New Name' });
+    expect(component.changeNameOpen()).toBe(false);
+  });
+
+  it('retry click triggers reload', () => {
+    component.failRetryClick();
+    expect(mockStore.loadAccounts).toHaveBeenCalled();
+  });
+});
 
 describe('AccountsContainer', () => {
   let component: AccountsContainer;

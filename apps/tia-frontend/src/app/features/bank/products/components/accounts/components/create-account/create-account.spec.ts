@@ -2,8 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CreateAccountComponent } from './create-account';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { AccountType } from '../../../../../../../../shared/models/accounts/accounts.model';
 import { provideTranslateService } from '@ngx-translate/core';
+import { AccountType } from '@tia/shared/models/accounts/accounts.model';
 
 describe('CreateAccountComponent', () => {
   let component: CreateAccountComponent;

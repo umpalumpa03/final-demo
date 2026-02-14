@@ -77,4 +77,24 @@ describe('CardOtpModalContent', () => {
       '/images/svg/auth/secured-blue.svg',
     );
   });
+  it('should emit resendClicked', () => {
+  const spy = vi.fn();
+  component.resendClicked.subscribe(spy);
+  component['handleResend']();
+  expect(spy).toHaveBeenCalled();
+});
+
+it('should emit cancelClicked', () => {
+  const spy = vi.fn();
+  component.cancelClicked.subscribe(spy);
+  component['handleCancel']();
+  expect(spy).toHaveBeenCalled();
+});
+
+it('should not emit verifyClicked when isCalled is false', () => {
+  const spy = vi.fn();
+  component.verifyClicked.subscribe(spy);
+  component['handleVerify']({ isCalled: false, otp: '1234' });
+  expect(spy).not.toHaveBeenCalled();
+});
 });

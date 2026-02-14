@@ -5,7 +5,7 @@
   @include display-flex(column);
   gap: 4rem;
   background-color: $white;
-  border: 0.16rem solid $blue-400;
+  border: 0.16rem solid var(--color-primary);;
   border-radius: 1.4rem;
   padding: 1.6rem 2.4rem ;
   min-height: 15.5rem;

@@ -34,7 +34,8 @@
     "form": {
       "friendlyName": {
         "label": "ანგარიშის სახელი",
-        "placeholder": "მაგ. ანგარიში გადაუდებელი შემთხვევებისთვის"
+        "placeholder": "მაგ. ანგარიში გადაუდებელი შემთხვევებისთვის",
+        "tooLong": "ანგარიშის სახელი ძალიან გრძელია. გთხოვთ, გამოიყენოთ უფრო მოკლე სახელი."
       },
       "type": {
         "label": "ანგარიშის ტიპი",
@@ -81,6 +82,21 @@
     "failedToCreateAccount": "ანგარიშის შექმნა ვერ მოხერხდა"
   },
   "card": {
+    "errors": {
+      "failedToLoadCreationData": "ბარათის შექმნის მონაცემების ჩატვირთვა ვერ მოხერხდა",
+      "failedToCreateCard": "ბარათის შექმნა ვერ მოხერხდა",
+      "failedToUpdateCardName": "ბარათის სახელის განახლება ვერ მოხერხდა",
+      "failedToRequestOtp": "OTP-ს მოთხოვნა ვერ მოხერხდა",
+      "failedToVerifyOtp": "OTP-ს ვერიფიკაცია ვერ მოხერხდა",
+      "otpNotCorrect": "OTP კოდი არასწორია"
+    },
+    "alerts": {
+      "otpError": "OTP კოდი არასწორია",
+
+      "otpSent": "OTP წარმატებით გაიგზავნა",
+      "cardDetailsRetrieved": "ბარათის დეტალები წარმატებით ჩაიტვირთა",
+      "remainingAttempts": "დარჩენილი მცდელობები"
+    },
     "card-list": {
       "add-card-button": {
         "getNewCard": "ახალი ბარათის დამატება"
@@ -94,11 +110,16 @@
       "myCards": "ჩემი ბარათები",
       "manageAccounts": "მართეთ თქვენი ანგარიშები",
       "alertType": "წარმატებით შეიქმნა!",
-      "alertMessage": "ახალი ბარათი დამატებულია!"
+      "alertMessage": "ახალი ბარათი დამატებულია!",
+      "loadingFailed": "ჩატვირთვა ვერ მოხერხდა",
+      "retry": "თავიდან ცდა"
     },
     "account-cards": {
       "backToCards": "ბარათების გვერდზე დაბრუნება",
       "accountNotFound": "ანგარიში არ მოიძებნა",
+      "loadingFailed": "ჩატვირთვა ვერ მოხერხდა",
+      "failedToLoadCards": "ბარათების ჩატვირთვა ვერ მოხერხდა",
+      "retry": "თავიდან ცდა",
       "card-grid": {
         "avaliableAmount": "ხელმისაწვდომი"
       },
@@ -113,6 +134,8 @@
       "manageYourCard": "მართეთ თქვენი ბარათი და ტრანზაქციები",
       "cardInfo": "ბარათის ინფორმაცია",
       "cardDetails": "ბარათის დეტალური ინფორმაცია",
+      "failedToLoadCard": "ბარათის ჩატვირთვა ვერ მოხერხდა",
+      "retry": "თავიდან ცდა",
 
       "card-info-section": {
         "cardName": "ბარათის სახელი",
@@ -140,7 +163,9 @@
       "create-card-form": {
         "cancelBtn": "გაუქმება",
         "creating": "მუშავდება",
-        "createCard": "დამატება"
+        "createCard": "დამატება",
+        "enterText": "შეიყვანეთ ტექსტი",
+        "chooseOption": "აირჩიეთ ვარიანტი"
       },
       "design-selector": {
         "cardDesign": "შეარჩიეთ ბარათის დიზაინი"
@@ -169,12 +194,15 @@
       "backToCard": "ბარათის დეტალებზე დაბრუნება",
       "transactionHistory": "ტრანზაქციების ისტორია",
       "allTransactions": "ბარათის ყველა ტრანზაქცია",
+      "failedToLoadTransactions": "ტრანზაქციების ჩატვირთვა ვერ მოხერხდა",
+      "retry": "თავიდან ცდა",
       "transaction-card-header": {
         "linkedTo": "ბარათი ეკუთვნის: ",
         "totalTransactions": "ტრანზაქციების რაოდენობა:"
       },
       "transaction-list": {
-        "noTransactions": "ტრანზაქციები არ მოიძებნა"
+        "noTransactions": "ტრანზაქციები არ მოიძებნა",
+        "uncategorized": "კატეგორიის გარეშე"
       }
     },
     "card-otp-modal": {
