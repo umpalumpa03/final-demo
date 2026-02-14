@@ -1,9 +1,9 @@
 @let current = currentPage();
 <nav aria-label="Pagination Navigation" class="pagination">
-  <ul class="pagination__list">
+  <ul class="pagination__list" [class.pagination__list--overflow-hidden]="overflowHidden()">
     <li class="pagination__item" [class.pagination__item--disabled]="current === 1">
       <button
-        class="pagination__link"
+        class="pagination__link " [class.pagination__link--previous]="overflowHidden()"
         (click)="onPageChange(current - 1)"
         [disabled]="current === 1"
         [attr.aria-label]="config().previousLabel || 'Previous page'"
@@ -41,7 +41,7 @@
       [class.pagination__item--disabled]="current === totalPages()"
     >
       <button
-        class="pagination__link"
+        class="pagination__link" [class.pagination__link--next]="overflowHidden()"
         (click)="onPageChange(current + 1)"
         [disabled]="current === totalPages()"
         [attr.aria-label]="config().nextLabel || 'Next page'"

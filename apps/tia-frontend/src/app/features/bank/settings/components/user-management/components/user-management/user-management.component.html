@@ -46,7 +46,12 @@
         [isLoading]="store.actionLoading()" (close)="onCloseModal()" (save)="onUpdateUser($event)">
     </app-user-edit-modal>
 
-    <app-pagination [currentPage]="pagination.currentPage()" [totalPages]="pagination.totalPages()"
-        (pageChange)="onPageChange($event)">>
-    </app-pagination>
+    <app-pagination 
+    [currentPage]="pagination.currentPage()" 
+    [totalPages]="pagination.totalPages()"
+    [config]="pagination.paginationConfig()" 
+    (pageChange)="onPageChange($event)"
+    [overflowHidden]="true">
+</app-pagination>
+
 </main>

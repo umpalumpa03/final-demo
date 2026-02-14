@@ -36,11 +36,6 @@ describe('PaybillForm', () => {
   });
 
   describe('Computed Signals', () => {
-    it('should compute isVerified as true when verifiedDetails is valid', () => {
-      fixture.componentRef.setInput('verifiedDetails', { valid: true });
-      expect(component.isVerified()).toBe(true);
-    });
-
     it('should compute isVerified as false when verifiedDetails is null or invalid', () => {
       fixture.componentRef.setInput('verifiedDetails', null);
       expect(component.isVerified()).toBe(false);

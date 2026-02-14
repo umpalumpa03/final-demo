@@ -4,7 +4,9 @@ import {
   inject,
   OnInit,
   signal,
+  computed,
 } from '@angular/core';
+import { BreakpointObserver, BreakpointState } from '@angular/cdk/layout';
 import { DragCard } from '@tia/shared/lib/drag-n-drop/components/drag-card/drag-card';
 import {
   DraggableItemType,
@@ -32,6 +34,7 @@ import { DragContainer } from '@tia/shared/lib/drag-n-drop/components/drag-conta
 import { DragItemDirective } from '@tia/shared/lib/drag-n-drop/directives/drag-item.directive';
 import { TreeContainer } from '@tia/shared/lib/drag-n-drop/components/tree-container/tree-container';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-drag-and-drop-container',
@@ -52,6 +55,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 })
 export class DragAndDropContainer implements OnInit {
   private translate = inject(TranslateService);
+  private breakpointObserver = inject(BreakpointObserver);
 
   public items: DraggableItemType[] = [...items(this.translate)];
   public listItems: DraggableItemType[] = [...items(this.translate)];
@@ -63,6 +67,18 @@ export class DragAndDropContainer implements OnInit {
   ]);
   public treeItems = signal<TreeItem[]>([...treeItems(this.translate)]);
   public canDelete = true;
+
+  private isMobile = toSignal(
+    this.breakpointObserver.observe('(max-width: 500px)'),
+    {
+      initialValue: { matches: false, breakpoints: {} } as BreakpointState,
+    },
+  );
+
+  public colspans = computed(() => {
+    const mobile = this.isMobile();
+    return mobile?.matches ? [1, 1, 1, 1] : [2, 1, 1, 2];
+  });
 
   ngOnInit() {
     this.translate.onLangChange.subscribe(() => {

@@ -31,8 +31,8 @@
   "validation": {
     "required": "ეს ველი სავალდებულოა",
     "email": "გთხოვთ შეიყვანოთ სწორი ელ-ფოსტა",
-    "minLength": "მინიმუმ {{min}} სიმბოლო",
-    "maxLength": "მაქსიმუმ {{max}} სიმბოლო",
+    "minLength": "მინიმუმ {{requiredLength}} სიმბოლო",
+    "maxLength": "მაქსიმუმ {{requiredLength}} სიმბოლო",
     "unsavedChanges": "გაქვთ შეუნახავი ცვლილებები. ნამდვილად გსურთ გასვლა?",
     "confirmAction": "დაადასტურეთ თქვენი მოქმედება",
     "notFound": "ელ. ფოსტა ვერ მოიძებნა",
