@@ -60,7 +60,7 @@ import { Tooltip } from '@tia/shared/lib/data-display/tooltip/tooltip';
     Onboarding,
     ErrorStates,
     Tooltip,
-],
+  ],
   templateUrl: './dashboard-container.html',
   styleUrl: './dashboard-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
