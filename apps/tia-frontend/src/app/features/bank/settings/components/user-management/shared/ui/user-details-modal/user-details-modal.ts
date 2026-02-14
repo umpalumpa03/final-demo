@@ -27,6 +27,7 @@ import { UserDetailsConfigService } from '../../config/user-details.config';
   ],
   templateUrl: './user-details-modal.html',
   styleUrl: './user-details-modal.scss',
+  providers: [UserDetailsConfigService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserDetailsModal {

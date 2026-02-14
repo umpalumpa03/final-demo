@@ -14,7 +14,6 @@ import { ILoan } from '../shared/models/loan.model';
 import { ILoanRequest } from '../shared/models/loan-request.model';
 import { AlertService } from '@tia/core/services/alert/alert.service';
 
-/** Store mock so LoansStore's selectSignal(selectAccounts)() returns an array. */
 const createMockStore = () => ({
   selectSignal: () => () => [] as unknown[],
   dispatch: () => {},

@@ -25,7 +25,7 @@ export const UserSuccessKeys = {
   UPDATE: 'settings.user-management.alerts.success.update_success',
   BLOCK: 'settings.user-management.alerts.success.block_success',
   UNBLOCK: 'settings.user-management.alerts.success.unblock_success',
-};
+} as const;
 
 export const UserErrorKeys = {
   LOAD_USERS: 'settings.user-management.alerts.error.load_error',
@@ -34,4 +34,4 @@ export const UserErrorKeys = {
   UPDATE: 'settings.user-management.alerts.error.update_error',
   BLOCK: 'settings.user-management.alerts.error.block_error',
   NETWORK_ERROR: 'settings.user-management.alerts.error.network_error',
-};
+} as const;

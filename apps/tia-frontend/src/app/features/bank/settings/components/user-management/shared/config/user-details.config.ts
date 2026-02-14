@@ -2,9 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { IUserDetail, DetailRow } from '../models/users.model';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class UserDetailsConfigService {
   private translate = inject(TranslateService);
 
