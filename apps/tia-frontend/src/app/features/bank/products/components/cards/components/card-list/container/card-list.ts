@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
 import { combineLatest, map } from 'rxjs';
 import {
   loadCardAccounts,
-  hideSuccessAlert,
+
   openCreateCardModal,
   closeCreateCardModal,
 } from '../../../../../../../../store/products/cards/cards.actions';
@@ -19,7 +19,7 @@ import {
   selectCardGroups,
   selectLoading,
   selectError,
-  selectShowSuccessAlert,
+  
   selectIsCreateModalOpen,
   selectCardImagesLoading,
 } from '../../../../../../../../store/products/cards/cards.selectors';
@@ -35,6 +35,8 @@ import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader'
 import { TranslatePipe } from '@ngx-translate/core';
 import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
 import { CardGroup } from '../../../models/card-group.model';
+import { AlertService } from '@tia/core/services/alert/alert.service';
+import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
 
 @Component({
   selector: 'app-card-list',
@@ -43,13 +45,12 @@ import { CardGroup } from '../../../models/card-group.model';
   imports: [
     AsyncPipe,
     CreateCard,
-    SimpleAlerts,
     RouteLoader,
     ErrorStates,
     CardGroupItem,
     AddCardButton,
     TranslatePipe,
-    Skeleton,
+    Skeleton,AlertTypesWithIcons
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -58,15 +59,13 @@ export class CardList implements OnInit {
   private readonly router = inject(Router);
   protected readonly loading$ = this.store.select(selectLoading);
   protected readonly error$ = this.store.select(selectError);
-  protected readonly showSuccessAlert$ = this.store.select(
-    selectShowSuccessAlert,
-  );
+
   protected readonly isModalOpen$ = this.store.select(selectIsCreateModalOpen);
   protected readonly cardImagesLoading$ = this.store.select(
     selectCardImagesLoading,
   );
   public readonly activeCardIndex = signal<Record<string, number>>({});
-
+protected readonly alertService = inject(AlertService);
   public readonly cardGroupsWithMeta$ = combineLatest([
     this.store.select(selectCardGroups),
     toObservable(this.activeCardIndex),
@@ -162,7 +161,6 @@ export class CardList implements OnInit {
     error: this.error$,
     groups: this.cardGroupsWithMeta$,
     isModalOpen: this.isModalOpen$,
-    showSuccessAlert: this.showSuccessAlert$,
     cardImagesLoading: this.cardImagesLoading$,
   });
 }

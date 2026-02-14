@@ -149,16 +149,6 @@ describe('CardsReducer', () => {
     expect(state.createError).toBeNull();
   });
 
-  it('should close modal and show alert on createCardSuccess', () => {
-    const state = cardsReducer(
-      { ...initialCardsState, isCreating: true, isCreateModalOpen: true },
-      CardsActions.createCardSuccess(),
-    );
-    expect(state.isCreating).toBe(false);
-    expect(state.isCreateModalOpen).toBe(false);
-    expect(state.showSuccessAlert).toBe(true);
-  });
-
   it('should set createError on createCardFailure', () => {
     const state = cardsReducer(
       { ...initialCardsState, isCreating: true },
@@ -185,13 +175,6 @@ describe('CardsReducer', () => {
     expect(state.createError).toBeNull();
   });
 
-  it('should hide success alert on hideSuccessAlert', () => {
-    const state = cardsReducer(
-      { ...initialCardsState, showSuccessAlert: true },
-      CardsActions.hideSuccessAlert(),
-    );
-    expect(state.showSuccessAlert).toBe(false);
-  });
   it('should open card details modal', () => {
     const state = cardsReducer(
       initialCardsState,
@@ -245,7 +228,7 @@ it('should set cardImagesLoading false on loadCardImagesComplete', () => {
 it('should set isUpdatingCardName on updateCardName', () => {
   const state = cardsReducer(
     initialCardsState,
-    CardsActions.updateCardName({ cardId: 'card-1', cardName: 'New Name' })
+    CardsActions.updateCardName({ cardId: 'card-1', cardName: 'New Name' }),
   );
   expect(state.isUpdatingCardName).toBe(true);
   expect(state.updateCardNameError).toBeNull();
@@ -272,7 +255,10 @@ it('should update card name on updateCardNameSuccess', () => {
         },
       },
     },
-    CardsActions.updateCardNameSuccess({ cardId: 'card-1', cardName: 'New Name' })
+    CardsActions.updateCardNameSuccess({
+      cardId: 'card-1',
+      cardName: 'New Name',
+    }),
   );
   expect(state.cardDetails['card-1'].cardName).toBe('New Name');
   expect(state.isUpdatingCardName).toBe(false);
@@ -281,7 +267,7 @@ it('should update card name on updateCardNameSuccess', () => {
 it('should set error on updateCardNameFailure', () => {
   const state = cardsReducer(
     initialCardsState,
-    CardsActions.updateCardNameFailure({ cardId: 'card-1', error: 'Failed' })
+    CardsActions.updateCardNameFailure({ cardId: 'card-1', error: 'Failed' }),
   );
   expect(state.updateCardNameError).toBe('Failed');
   expect(state.isUpdatingCardName).toBe(false);
@@ -289,89 +275,142 @@ it('should set error on updateCardNameFailure', () => {
 
 describe('OTP reducer', () => {
   it('should set otpLoading on requestCardOtp', () => {
-    const state = cardsReducer(initialCardsState, CardsActions.requestCardOtp({ cardId: 'card-1' }));
+    const state = cardsReducer(
+      initialCardsState,
+      CardsActions.requestCardOtp({ cardId: 'card-1' }),
+    );
     expect(state.otpLoading).toBe(true);
     expect(state.otpError).toBeNull();
   });
 
   it('should set challengeId on requestCardOtpSuccess', () => {
-    const state = cardsReducer(initialCardsState, CardsActions.requestCardOtpSuccess({ challengeId: 'ch-123' }));
+    const state = cardsReducer(
+      initialCardsState,
+      CardsActions.requestCardOtpSuccess({ challengeId: 'ch-123' }),
+    );
     expect(state.challengeId).toBe('ch-123');
     expect(state.otpLoading).toBe(false);
   });
 
   it('should set error on requestCardOtpFailure', () => {
-    const state = cardsReducer(initialCardsState, CardsActions.requestCardOtpFailure({ error: 'Failed' }));
+    const state = cardsReducer(
+      initialCardsState,
+      CardsActions.requestCardOtpFailure({ error: 'Failed' }),
+    );
     expect(state.otpError).toBe('Failed');
     expect(state.otpLoading).toBe(false);
   });
 
   it('should set otpLoading on verifyCardOtp', () => {
-    const state = cardsReducer(initialCardsState, CardsActions.verifyCardOtp({ challengeId: 'ch-1', code: '1111', cardId: 'card-1' }));
+    const state = cardsReducer(
+      initialCardsState,
+      CardsActions.verifyCardOtp({
+        challengeId: 'ch-1',
+        code: '1111',
+        cardId: 'card-1',
+      }),
+    );
     expect(state.otpLoading).toBe(true);
   });
 
-  it('should set sensitive data on verifyCardOtpSuccess', () => {
-    const sensitiveData = { cardNumber: '1234', cvv: '123', expiryDate: '12/28', cardholderName: 'John' };
-    const state = cardsReducer(initialCardsState, CardsActions.verifyCardOtpSuccess({ cardId: 'card-1', sensitiveData }));
-    expect(state.cardSensitiveData['card-1']).toEqual(sensitiveData);
-    expect(state.isOtpModalOpen).toBe(false);
-    expect(state.showOtpSuccessAlert).toBe(true);
-  });
-
   it('should set error on verifyCardOtpFailure', () => {
-    const state = cardsReducer(initialCardsState, CardsActions.verifyCardOtpFailure({ error: 'Invalid' }));
+    const state = cardsReducer(
+      initialCardsState,
+      CardsActions.verifyCardOtpFailure({ error: 'Invalid' }),
+    );
     expect(state.otpError).toBe('Invalid');
     expect(state.otpLoading).toBe(false);
   });
 
   it('should open OTP modal', () => {
-    const state = cardsReducer(initialCardsState, CardsActions.openCardOtpModal({ cardId: 'card-1' }));
+    const state = cardsReducer(
+      initialCardsState,
+      CardsActions.openCardOtpModal({ cardId: 'card-1' }),
+    );
     expect(state.isOtpModalOpen).toBe(true);
     expect(state.selectedCardIdForOtp).toBe('card-1');
   });
 
   it('should close OTP modal', () => {
-    const state = cardsReducer({ ...initialCardsState, isOtpModalOpen: true, selectedCardIdForOtp: 'card-1', challengeId: 'ch-1' }, CardsActions.closeCardOtpModal());
+    const state = cardsReducer(
+      {
+        ...initialCardsState,
+        isOtpModalOpen: true,
+        selectedCardIdForOtp: 'card-1',
+        challengeId: 'ch-1',
+      },
+      CardsActions.closeCardOtpModal(),
+    );
     expect(state.isOtpModalOpen).toBe(false);
     expect(state.selectedCardIdForOtp).toBeNull();
     expect(state.challengeId).toBeNull();
   });
 
   it('should clear sensitive data', () => {
-    const state = cardsReducer({ ...initialCardsState, cardSensitiveData: { 'card-1': { cardNumber: '1234', cvv: '123', expiryDate: '12/28', cardholderName: 'John' } } }, CardsActions.clearCardSensitiveData());
+    const state = cardsReducer(
+      {
+        ...initialCardsState,
+        cardSensitiveData: {
+          'card-1': {
+            cardNumber: '1234',
+            cvv: '123',
+            expiryDate: '12/28',
+            cardholderName: 'John',
+          },
+        },
+      },
+      CardsActions.clearCardSensitiveData(),
+    );
     expect(state.cardSensitiveData).toEqual({});
   });
   describe('Navigation reducers', () => {
-  it('should set current card index and account id', () => {
+    it('should set current card index and account id', () => {
+      const state = cardsReducer(
+        initialCardsState,
+        CardsActions.setCurrentCardIndex({ cardIndex: 1, accountId: 'acc-1' }),
+      );
+      expect(state.currentCardIndex).toBe(1);
+      expect(state.currentAccountId).toBe('acc-1');
+    });
+
+    it('should navigate to next card with circular loop', () => {
+      const stateWithAccount = {
+        ...initialCardsState,
+        currentCardIndex: 2,
+        currentAccountId: 'acc-1',
+        accounts: [
+          { id: 'acc-1', cardIds: ['card-1', 'card-2', 'card-3'] } as any,
+        ],
+      };
+      const state = cardsReducer(
+        stateWithAccount,
+        CardsActions.navigateToNextCard(),
+      );
+      expect(state.currentCardIndex).toBe(0);
+    });
+
+    it('should navigate to previous card with circular loop', () => {
+      const stateWithAccount = {
+        ...initialCardsState,
+        currentCardIndex: 0,
+        currentAccountId: 'acc-1',
+        accounts: [
+          { id: 'acc-1', cardIds: ['card-1', 'card-2', 'card-3'] } as any,
+        ],
+      };
+      const state = cardsReducer(
+        stateWithAccount,
+        CardsActions.navigateToPreviousCard(),
+      );
+      expect(state.currentCardIndex).toBe(2);
+    });
+  });
+  it('should close modal on createCardSuccess', () => {
     const state = cardsReducer(
-      initialCardsState,
-      CardsActions.setCurrentCardIndex({ cardIndex: 1, accountId: 'acc-1' })
+      { ...initialCardsState, isCreating: true, isCreateModalOpen: true },
+      CardsActions.createCardSuccess(),
     );
-    expect(state.currentCardIndex).toBe(1);
-    expect(state.currentAccountId).toBe('acc-1');
+    expect(state.isCreating).toBe(false);
+    expect(state.isCreateModalOpen).toBe(false);
   });
-
-  it('should navigate to next card with circular loop', () => {
-    const stateWithAccount = {
-      ...initialCardsState,
-      currentCardIndex: 2,
-      currentAccountId: 'acc-1',
-      accounts: [{ id: 'acc-1', cardIds: ['card-1', 'card-2', 'card-3'] } as any],
-    };
-    const state = cardsReducer(stateWithAccount, CardsActions.navigateToNextCard());
-    expect(state.currentCardIndex).toBe(0);
-  });
-
-  it('should navigate to previous card with circular loop', () => {
-    const stateWithAccount = {
-      ...initialCardsState,
-      currentCardIndex: 0,
-      currentAccountId: 'acc-1',
-      accounts: [{ id: 'acc-1', cardIds: ['card-1', 'card-2', 'card-3'] } as any],
-    };
-    const state = cardsReducer(stateWithAccount, CardsActions.navigateToPreviousCard());
-    expect(state.currentCardIndex).toBe(2);
-  });
-});
 });

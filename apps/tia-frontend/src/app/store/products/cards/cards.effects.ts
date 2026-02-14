@@ -9,6 +9,7 @@ import {
   delay,
   filter,
   skip,
+  tap,
 } from 'rxjs/operators';
 import * as CardsActions from './cards.actions';
 import { CardListApiService } from '@tia/shared/services/cards/card-list.service.api';
@@ -30,7 +31,9 @@ import {
 import { CardAccount } from '@tia/shared/models/cards/card-account.model';
 import { CardsService } from '../../../features/bank/products/components/cards/service/cards.service';
 import { TransactionApiService } from '@tia/shared/services/transactions-service/transactions.api.service';
-
+import { AlertService } from '@tia/core/services/alert/alert.service';
+import { TranslateService } from '@ngx-translate/core';
+import * as CardsAlerts from '../../../features/bank/products/components/cards/utils/cards.utils';
 @Injectable()
 export class CardsEffects {
   private readonly actions$ = inject(Actions);
@@ -38,7 +41,8 @@ export class CardsEffects {
   private readonly cardsService = inject(CardsService);
   private readonly store = inject(Store);
   private readonly transactionApiService = inject(TransactionApiService);
-
+  private readonly alertService = inject(AlertService);
+  private readonly translate = inject(TranslateService);
   loadCardAccounts$ = createEffect(() =>
     this.actions$.pipe(
       ofType(CardsActions.loadCardAccounts),
@@ -250,14 +254,6 @@ export class CardsEffects {
     ),
   );
 
-  hideSuccessAlertAfterDelay$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(CardsActions.createCardSuccess),
-      delay(5000),
-      map(() => CardsActions.hideSuccessAlert()),
-    ),
-  );
-
   loadCardCreationDataOnModalOpen$ = createEffect(() =>
     this.actions$.pipe(
       ofType(CardsActions.openCreateCardModal),
@@ -334,62 +330,52 @@ export class CardsEffects {
       map(({ cardId }) => CardsActions.requestCardOtp({ cardId })),
     ),
   );
-  showOtpSentAlert$ = createEffect(() =>
+
+
+showOtpSentAlert$ = createEffect(
+  () =>
     this.actions$.pipe(
       ofType(CardsActions.requestCardOtpSuccess),
-      map(() =>
-        CardsActions.showGlobalAlert({
-          message: 'OTP sent successfully',
-          alertType: 'success',
-        }),
-      ),
+      tap(() => CardsAlerts.showOtpSentAlert(this.alertService, this.translate))
     ),
-  );
+  { dispatch: false },
+);
 
-  showOtpVerifiedAlert$ = createEffect(() =>
+showOtpVerifiedAlert$ = createEffect(
+  () =>
     this.actions$.pipe(
       ofType(CardsActions.verifyCardOtpSuccess),
-      map(() =>
-        CardsActions.showGlobalAlert({
-          message: 'Card details retrieved successfully',
-          alertType: 'success',
-        }),
-      ),
+      tap(() => CardsAlerts.showOtpVerifiedAlert(this.alertService, this.translate))
     ),
-  );
+  { dispatch: false },
+);
 
-  showOtpErrorAlert$ = createEffect(() =>
+showOtpErrorAlert$ = createEffect(
+  () =>
     this.actions$.pipe(
       ofType(CardsActions.verifyCardOtpFailure),
       switchMap(({ error }) =>
         this.store.select(selectOtpRemainingAttempts).pipe(
           take(1),
-          mergeMap((attempts) => {
-            const message =
-              attempts > 0
-                ? `${error} (Remaining attempts: ${attempts})`
-                : error;
-
+          tap((attempts) => {
             if (attempts === 0) {
-              return [
-                CardsActions.showGlobalAlert({ message, alertType: 'error' }),
-                CardsActions.closeCardOtpModal(),
-              ];
+              this.store.dispatch(CardsActions.closeCardOtpModal());
+            } else {
+              CardsAlerts.showOtpErrorAlert(this.alertService, this.translate, error, attempts);
             }
+          })
+        )
+      )
+    ),
+  { dispatch: false },
+);
 
-            return [
-              CardsActions.showGlobalAlert({ message, alertType: 'error' }),
-            ];
-          }),
-        ),
-      ),
-    ),
-  );
-  hideAlertAfterDelay$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(CardsActions.showGlobalAlert),
-      delay(3000),
-      map(() => CardsActions.hideGlobalAlert()),
-    ),
-  );
+createCardSuccessAlert$ = createEffect(() =>
+  this.actions$.pipe(
+    ofType(CardsActions.createCardSuccess),
+    tap(() => CardsAlerts.showCardCreatedAlert(this.alertService, this.translate))
+  ),
+  { dispatch: false }
+);
+
 }

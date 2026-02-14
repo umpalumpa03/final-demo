@@ -1,4 +1,13 @@
 <div class="card-details">
+   @if (alertService.isVisible() && !(isDetailsModalOpen$ | async)) {
+  <div class="card-details__alert">
+    <app-alert-types-with-icons
+      [alertType]="alertService.alertType()!"
+      [alertMessage]="alertService.alertMessage()"
+    />
+  </div>
+  }
+  
   @if (loading$ | async) {
   <div class="card-details__loading">
     <app-route-loader variant="pulsing" />

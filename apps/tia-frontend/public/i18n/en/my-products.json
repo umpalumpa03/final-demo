@@ -80,6 +80,12 @@
     "failedToCreateAccount": "Failed to create account"
   },
   "card": {
+    "alerts": {
+      "otpSent": "OTP sent successfully",
+      "cardDetailsRetrieved": "Card details retrieved successfully",
+      "remainingAttempts": "Remaining attempts",
+      "otpError": "OTP code is not correct"
+    },
     "card-list": {
       "add-card-button": {
         "getNewCard": "Get New Card"
@@ -110,8 +116,8 @@
       "backToCards": "Back to Cards",
       "cardTitle": "Quick Actions",
       "manageYourCard": "Manage your card and transactions",
-      "cardInfo":"Card Informatoin", 
-      "cardDetails":"Details about your Personal Card",
+      "cardInfo": "Card Informatoin",
+      "cardDetails": "Details about your Personal Card",
 
       "card-info-section": {
         "cardName": "Card Name",
@@ -136,13 +142,13 @@
         "cardPreview": "Card Preview",
         "SelectDesign": "Select a design"
       },
-      "create-card-form":{
-        "cancelBtn":"Cancel", 
-        "creating": "Creating...", 
+      "create-card-form": {
+        "cancelBtn": "Cancel",
+        "creating": "Creating...",
         "createCard": "create Card"
-      }, 
-        "design-selector":{
-        "cardDesign":"Choose Card Design"
+      },
+      "design-selector": {
+        "cardDesign": "Choose Card Design"
       }
     },
     "card-details-modal": {
@@ -166,8 +172,8 @@
     },
     "card-transactions": {
       "backToCard": "Back to Card Details",
-      "transactionHistory":"Transaction History",
-      "allTransactions":"All transactions made with this card",
+      "transactionHistory": "Transaction History",
+      "allTransactions": "All transactions made with this card",
       "transaction-card-header": {
         "linkedTo": "Linked to: ",
         "totalTransactions": "Total Transactions"

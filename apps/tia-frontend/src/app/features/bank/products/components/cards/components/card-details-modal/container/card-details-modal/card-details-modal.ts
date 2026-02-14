@@ -12,7 +12,7 @@ import { Store } from '@ngrx/store';
 import {
   selectCardDetailsModalData,
   selectCardSensitiveData,
-  selectGlobalAlert,
+
   selectIsOtpModalOpen,
   selectIsUpdatingCardName,
   selectSelectedCardIdForOtp,
@@ -26,6 +26,9 @@ import {
 import { CardOtpModal } from '../../../otp-modal/container/card-otp-modal/card-otp-modal';
 import { SimpleAlerts } from '@tia/shared/lib/alerts/components/simple-alerts/simple-alerts';
 import { combineLatest, map } from 'rxjs';
+import { AlertService } from '@tia/core/services/alert/alert.service';
+import { AlertsWithActions } from '@tia/shared/lib/alerts/components/alerts-with-actions/alerts-with-actions';
+import { AlertTypesWithIcons } from "@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons";
 @Component({
   selector: 'app-card-details-modal',
   imports: [
@@ -33,8 +36,7 @@ import { combineLatest, map } from 'rxjs';
     UiModal,
     CardDetailsModalContent,
     CardOtpModal,
-    SimpleAlerts,
-  ],
+],
   templateUrl: './card-details-modal.html',
   styleUrl: './card-details-modal.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -51,11 +53,10 @@ export class CardDetailsModal {
   protected readonly selectedCardIdForOtp$ = this.store.select(
     selectSelectedCardIdForOtp,
   );
-  protected readonly globalAlert$ = this.store.select(selectGlobalAlert);
   public handleClose(): void {
     this.closed.emit();
   }
-
+protected readonly alertService = inject(AlertService);
   public handleRequestOtp(): void {
     const cardId = this.store.selectSignal(selectCardDetailsModalData)()
       ?.cardId;

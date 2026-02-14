@@ -97,17 +97,6 @@ export const cardsReducer = createReducer(
     isCreateModalOpen: false,
     createError: null,
   })),
-  on(CardsActions.createCardSuccess, (state) => ({
-    ...state,
-    isCreating: false,
-    createError: null,
-    isCreateModalOpen: false,
-    showSuccessAlert: true,
-  })),
-  on(CardsActions.hideSuccessAlert, (state) => ({
-    ...state,
-    showSuccessAlert: false,
-  })),
 
   on(CardsActions.openCardDetailsModal, (state, { cardId }) => ({
     ...state,
@@ -235,15 +224,7 @@ on(CardsActions.clearCardSensitiveData, (state) => ({
   cardSensitiveData: {},
   showOtpSuccessAlert: false,
 })),
-on(CardsActions.showGlobalAlert, (state, { message, alertType }) => ({
-  ...state,
-  globalAlert: { message, alertType },
-})),
 
-on(CardsActions.hideGlobalAlert, (state) => ({
-  ...state,
-  globalAlert: null,
-})),
 on(CardsActions.openCardOtpModal, (state, { cardId }) => ({
   ...state,
   isOtpModalOpen: true,
@@ -279,5 +260,11 @@ on(CardsActions.navigateToPreviousCard, (state) => {
     currentCardIndex: previousIndex,
   };
 }),
+on(CardsActions.createCardSuccess, (state) => ({
+  ...state,
+  isCreating: false,
+  createError: null,
+  isCreateModalOpen: false,
+})),
 
 );

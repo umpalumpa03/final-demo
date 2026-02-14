@@ -45,6 +45,8 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { CardDetailsModal } from '../../card-details-modal/container/card-details-modal/card-details-modal';
 import { PillsComponent } from 'apps/tia-frontend/src/app/features/storybook/components/navigation/components/pills-component/pills-component';
 import { PillPaging } from '@tia/shared/ui/pill-paging/pill-paging';
+import { AlertService } from '@tia/core/services/alert/alert.service';
+import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
 
 @Component({
   selector: 'app-card-details',
@@ -61,7 +63,7 @@ import { PillPaging } from '@tia/shared/ui/pill-paging/pill-paging';
     QuickActionsSection,
     TranslatePipe,
     CardDetailsModal,
-    PillPaging,
+    PillPaging,AlertTypesWithIcons
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -70,7 +72,7 @@ export class CardDetails implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
-
+protected readonly alertService = inject(AlertService);
   private readonly cardId$ = this.route.paramMap.pipe(
     map((params) => params.get('cardId') || ''),
   );
