@@ -11,6 +11,7 @@ import {
 } from '../../config/settings-header.config';
 import { selectUserRole } from 'apps/tia-frontend/src/app/store/user-info/user-info.selectors';
 import { Tabs } from "@tia/shared/lib/navigation/tabs/tabs";
+import { BreakpointService } from '@tia/core/services/breakpoints/breakpoint.service';
 
 @Component({
   selector: 'app-settings-header',
@@ -23,6 +24,9 @@ export class SettingsHeader {
   private readonly store = inject(Store);
   private readonly translate = inject(TranslateService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly brakepointService = inject(BreakpointService);
+
+  public readonly isMobile = this.brakepointService.isMobile;
 
   public ngOnInit(): void {
     this.translate.onLangChange.pipe(
