@@ -6,22 +6,42 @@ import { ITransactions } from '@tia/shared/models/transactions/transactions.mode
 import { TransactionsFacadeService } from './transactions-facade.service';
 import * as XLSX from 'xlsx';
 import { ITransactionExportRow } from '../models/transactions-excel.models';
+import { AlertService } from '@tia/core/services/alert/alert.service';
 
 @Injectable()
 export class TransactionsActionsService {
   private readonly router = inject(Router);
   private readonly translate = inject(TranslateService);
   private readonly facade = inject(TransactionsFacadeService);
+  private readonly alertService = inject(AlertService);
 
   public readonly isCategorizeModalOpen = signal<boolean>(false);
   public readonly selectedTransaction = signal<ITransactions | null>(null);
-  public readonly alertMessage = signal<string | null>(null);
-  public readonly alertType = signal<SimpleAlertType>('warning');
+  public readonly isFiltersOpen = signal<boolean>(false);
 
   public showValidationAlert(type: SimpleAlertType, messageKey: string): void {
-    this.alertType.set(type);
-    this.alertMessage.set(this.translate.instant(messageKey));
-    setTimeout(() => this.alertMessage.set(null), 3000);
+    const message = this.translate.instant(messageKey);
+
+    switch (type) {
+      case 'warning':
+        this.alertService.warning(message, {
+          variant: 'dismissible',
+          title: 'Warning',
+        });
+        break;
+      case 'error':
+        this.alertService.error(message, {
+          variant: 'dismissible',
+          title: 'Error',
+        });
+        break;
+      case 'success':
+        this.alertService.success(message, {
+          variant: 'dismissible',
+          title: 'Success',
+        });
+        break;
+    }
   }
 
   public openCategorizeModal(transaction: ITransactions): void {
@@ -126,5 +146,9 @@ export class TransactionsActionsService {
       : `${fileNamePrefix}.xlsx`;
 
     XLSX.writeFile(wb, fileName);
+  }
+
+  public toggleFilters(): void {
+    this.isFiltersOpen.update((v) => !v);
   }
 }
