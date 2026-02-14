@@ -60,27 +60,22 @@ export const ApproveCardsStore = signalStore(
                   cards: remainingCards,
                   isLoading: false,
                   error: null,
-                  success: 'success',
                 });
 
-                // alertService.success(
-                //   translate.instant('messaging.storeSuccess.cardUpdated'),
-                //   { variant: 'dismissible', title: 'Success!' },
-                // );
-
-                setTimeout(() => {
-                  patchState(store, { success: null });
-                }, 4000);
+                alertService.success(
+                  translate.instant('messaging.storeSuccess.cardUpdated'),
+                  { variant: 'dismissible', title: 'Success!' },
+                );
               }),
-              // catchError((err) => {
+              catchError((err) => {
 
-              //   patchState(store, { isLoading: false, error: err.message})
+                patchState(store, { isLoading: false, error: err.message})
 
-              //   alertService.error(
-              //     translate.instant('storeErrors.loadTotalCount'),
-              //      { variant: 'dismissible', title: 'Oops!' });
-              //   return EMPTY;
-              // }),
+                alertService.error(
+                  translate.instant('storeErrors.loadTotalCount'),
+                   { variant: 'dismissible', title: 'Oops!' });
+                return EMPTY;
+              }),
             ),
           ),
         ),

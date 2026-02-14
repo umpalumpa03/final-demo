@@ -35,7 +35,6 @@ import { IAccountsPermissions } from '../../../shared/models/approve-models/acco
     UiModal,
     ButtonComponent,
     ScrollArea,
-    AlertTypesWithIcons,
   ],
   templateUrl: './approve-cards.html',
   providers: [],
