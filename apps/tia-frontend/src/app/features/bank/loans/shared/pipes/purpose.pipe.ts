@@ -3,7 +3,7 @@ import { formatPurpose } from '../utils/purposes.util';
 
 @Pipe({
   name: 'purposeFmt',
-  standalone: true,
+  pure: true,
 })
 export class PurposeFormatPipe implements PipeTransform {
   public transform(value: string | null): string {

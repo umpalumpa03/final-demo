@@ -15,7 +15,8 @@
             <lib-select [config]="cfg.select()" [options]="(typeOptions()) ?? []" formControlName="type">
             </lib-select>
 
-            <lib-text-input type="number" [config]="cfg.amountInput()" formControlName="amount">
+            <lib-text-input type="number" [config]="cfg.amountInput()" formControlName="amount"
+                (keydown.enter)='onEnter()'>
             </lib-text-input>
         </div>
 

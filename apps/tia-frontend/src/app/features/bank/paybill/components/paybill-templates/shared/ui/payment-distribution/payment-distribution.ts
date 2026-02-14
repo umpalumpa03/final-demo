@@ -20,10 +20,17 @@ import {
   selectDistributedAmount,
   selectSelectedTemplates,
 } from '../../../../../store/paybill.selectors';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-payment-distribution',
-  imports: [ButtonComponent, TextInput, ReactiveFormsModule, CurrencyPipe],
+  imports: [
+    ButtonComponent,
+    TextInput,
+    ReactiveFormsModule,
+    CurrencyPipe,
+    TranslatePipe,
+  ],
   templateUrl: './payment-distribution.html',
   styleUrl: './payment-distribution.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

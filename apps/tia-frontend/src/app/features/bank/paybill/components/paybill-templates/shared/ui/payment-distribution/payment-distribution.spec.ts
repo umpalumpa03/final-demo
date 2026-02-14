@@ -7,6 +7,7 @@ import {
   selectSelectedTemplates,
 } from '../../../../../store/paybill.selectors';
 import { ReactiveFormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 
@@ -24,7 +25,11 @@ describe('PaymentDistribution', () => {
     vi.useFakeTimers();
 
     await TestBed.configureTestingModule({
-      imports: [PaymentDistribution, ReactiveFormsModule],
+      imports: [
+        PaymentDistribution,
+        ReactiveFormsModule,
+        TranslateModule.forRoot(),
+      ],
       providers: [
         provideMockStore({
           selectors: [
@@ -42,10 +47,10 @@ describe('PaymentDistribution', () => {
 
     fixture.componentRef.setInput('selectedItemsLength', 2);
 
+    store.refreshState();
     fixture.detectChanges();
 
     vi.advanceTimersByTime(300);
-
     vi.spyOn(store, 'dispatch');
   });
 
@@ -79,6 +84,17 @@ describe('PaymentDistribution', () => {
 
       expect(store.dispatch).toHaveBeenCalledWith(
         TemplatesPageActions.setTotalAmount({ amount: 300 }),
+      );
+    });
+
+    it('should dispatch distributed amount in equal mode', () => {
+      component.onDistributionChange('equal');
+      component.amountControl.setValue('100');
+
+      vi.advanceTimersByTime(300);
+
+      expect(store.dispatch).toHaveBeenCalledWith(
+        TemplatesPageActions.setDistributedAmount({ amount: 50 }),
       );
     });
 

@@ -9,6 +9,10 @@
     "pending": "Pending ",
     "declined": "Declined ",
     "search": "Search loan by name...",
+    "unknown": "Unknown account",
+    "acc_loading": "Loading accounts...",
+    "error_title": "Failed to load loans",
+
     "empty": {
       "all": {
         "title": "No Loans Found",
@@ -132,7 +136,8 @@
   },
   "buttons": {
     "cancel": "Cancel",
-    "close": "Close"
+    "close": "Close",
+    "resend": "Retry"
   },
   "validation": {
     "postal_error": "Invalid postal code.",
@@ -153,5 +158,25 @@
     "email_ex": "john.doe@example.com",
     "select_type": "Select type",
     "prepayment_amount": "500"
+  },
+  "store-errors": {
+    "load_loans": "Unable to load your loans list.",
+    "load_details": "Unable to retrieve loan details.",
+    "rename": "Failed to rename the loan.",
+    "months": "Failed to load repayment periods.",
+    "purposes": "Failed to load loan purposes.",
+    "options": "Failed to load prepayment options.",
+    "calculation": "Prepayment calculation failed.",
+    "initiate_prepayment": "Could not initiate prepayment request.",
+    "verify_prepayment": "Verification failed. Please check your code.",
+    "insufficient_funds": "Insufficient funds in payment account.",
+    "challenge_missing": "Security challenge ID missing from response.",
+    "invalid_code": "Invalid verification code provided."
+  },
+  "store-success": {
+    "rename": "Loan renamed successfully!",
+    "otp_sent": "OTP sent to your registered mobile number.",
+    "payment_complete": "Prepayment executed successfully.",
+    "request": "Loan created successfully"
   }
 }

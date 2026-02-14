@@ -3,6 +3,7 @@ import { CustomizableWidgets } from './customizable-widgets';
 import { By } from '@angular/platform-browser';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { WIDGET_ITEMS } from './config/customizable-widgets.config';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('CustomizableWidgets', () => {
   let component: CustomizableWidgets;
@@ -10,7 +11,7 @@ describe('CustomizableWidgets', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CustomizableWidgets],
+      imports: [CustomizableWidgets, TranslateModule.forRoot()],
     }).compileComponents();
     fixture = TestBed.createComponent(CustomizableWidgets);
     component = fixture.componentInstance;
