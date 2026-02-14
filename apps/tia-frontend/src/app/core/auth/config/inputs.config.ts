@@ -1,5 +1,3 @@
-import { IFeaturePanel } from '../models/auth.models';
-
 export const SIGN_IN_FORM = {
   username: {
     label: 'auth.sign-in.username',

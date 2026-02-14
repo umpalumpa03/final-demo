@@ -22,7 +22,6 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map, startWith } from 'rxjs';
 import { translateConfig } from '@tia/shared/utils/translate-config/config-translator.util';
-import { SimpleAlerts } from '@tia/shared/lib/alerts/components/simple-alerts/simple-alerts';
 import { AuthHeader } from '../../../shared/auth-header/auth-header';
 import { ILoginRequest } from '../../../models/authRequest.models';
 import { Checkboxes } from '@tia/shared/lib/forms/checkboxes/checkboxes';
