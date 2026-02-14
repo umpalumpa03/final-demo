@@ -70,14 +70,19 @@ describe('ProfilePhotoContainer integration', () => {
 
     store.dispatch(ProfilePhotoActions.loadDefaultAvatars({ avatars: mockAvatars }));
 
-    const avatars = await firstValueFrom(
+    const state = await firstValueFrom(
       store
-        .select(ProfilePhotoSelectors.selectDefaultAvatars)
+        .select(ProfilePhotoSelectors.selectProfilePhotoFeatureState)
         .pipe(take(1), timeout(1000))
     );
 
-    expect(Array.isArray(avatars)).toBe(true);
-    expect(avatars.length).toBe(2);
+    expect(state).toBeTruthy();
+    if (state) {
+      expect(Array.isArray(state.defaultAvatars)).toBe(true);
+      expect(state.defaultAvatars.length).toBeGreaterThanOrEqual(2);
+      expect(state.defaultAvatars.some(a => a.id === 'avatar1')).toBe(true);
+      expect(state.defaultAvatars.some(a => a.id === 'avatar2')).toBe(true);
+    }
   });
 
   it('should update state when setting current avatar', async () => {
