@@ -25,14 +25,14 @@
         formControlName="code"
         [isCentered]="true"
         (completed)="handleAutoSubmit($event)"
-        [config]="formConfig().otp"
+        [config]="otpForms.otpConfig()"
       ></lib-otp>
     </div>
     } @else {
     <div class="otp-field__phone">
       <lib-text-input
         formControlName="phoneNumber"
-        [config]="formConfig().phone"
+        [config]="otpForms.phoneConfig()"
       ></lib-text-input>
     </div>
     } @if (submitError()) {

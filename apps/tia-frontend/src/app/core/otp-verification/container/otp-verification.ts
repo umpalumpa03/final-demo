@@ -31,12 +31,12 @@ import {
   OtpVerificationType,
 } from '../models/otp-verification.models';
 import { TimerType } from '../../auth/models/auth.models';
-import { OTP_VERIFY_FORM } from '../../auth/config/inputs.config';
 import { numberValidator } from '../../auth/utils/validators/form-validations';
 import { OtpVerificationService } from '../services/otp-verification.service';
 import { DEFAULT_SETTING_CONFIG } from '../config/otp.config';
 import { ExpirationTimer } from '../directive/expiration-timer';
 import { OtpResend } from '../components/otp-resend';
+import { OtpVerifyService } from '../config/otp-verify.state';
 
 @Component({
   selector: 'app-otp-verification',
@@ -53,6 +53,7 @@ import { OtpResend } from '../components/otp-resend';
   ],
   templateUrl: './otp-verification.html',
   styleUrl: './otp-verification.scss',
+  providers: [OtpVerifyService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OtpVerification implements OnInit {
@@ -61,6 +62,7 @@ export class OtpVerification implements OnInit {
   private translate = inject(TranslateService);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
+  public otpForms = inject(OtpVerifyService)
 
   public type = input.required<OtpVerificationType>();
   public timerType = input<TimerType>('phone');
@@ -121,25 +123,6 @@ export class OtpVerification implements OnInit {
 
     return '';
   });
-
-  public formConfig = toSignal(
-    this.translate.onLangChange.pipe(
-      startWith({
-        lang: this.translate.getCurrentLang(),
-        translation: null,
-      }),
-      map(() => {
-        return translateConfig(OTP_VERIFY_FORM, (key) =>
-          this.translate.instant(key),
-        );
-      }),
-    ),
-    {
-      initialValue: translateConfig(OTP_VERIFY_FORM, (key) =>
-        this.translate.instant(key),
-      ),
-    },
-  );
 
   public setPhoneNumberForm = this.fb.group({
     phoneNumber: ['', [Validators.required, numberValidator]],
