@@ -18,7 +18,7 @@ import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states'
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { LanguagesStore } from '../../store/languages.store';
 import { TranslationLoaderService } from 'apps/tia-frontend/src/app/core/i18n';
-import { LanguageInfo } from "./language-info/language-info";
+import { LanguageInfo } from './language-info/language-info';
 import { AlertService } from '@tia/core/services/alert/alert.service';
 
 @Component({
@@ -29,8 +29,8 @@ import { AlertService } from '@tia/core/services/alert/alert.service';
     ErrorStates,
     ButtonComponent,
     TranslatePipe,
-    LanguageInfo
-],
+    LanguageInfo,
+  ],
   templateUrl: './language-selection.html',
   styleUrl: './language-selection.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -77,20 +77,28 @@ export class LanguageSelection implements OnInit {
         .subscribe({
           next: () => {
             this.translationLoader.clearCache();
+            localStorage.setItem('language', selected.value);
 
-            this.translateService.use(selected.value).subscribe(() => {
-              this.translationLoader
-                .loadTranslations('settings')
-                .pipe(
-                  tap(() => {
-                    this.alertService.success(this.translateService.instant('settings.language.saveSuccess'));
-                  }),
-                )
-                .subscribe();
-            });
+            this.translateService
+              .use(selected.value)
+              .pipe(takeUntilDestroyed(this.destroyRef))
+              .subscribe(() => {
+                this.translationLoader
+                  .loadTranslations(['settings', 'storybook'])
+                  .pipe(takeUntilDestroyed(this.destroyRef))
+                  .subscribe(() => {
+                    this.alertService.success(
+                      this.translateService.instant(
+                        'settings.language.saveSuccess',
+                      ),
+                    );
+                  });
+              });
           },
           error: () => {
-            this.alertService.error(this.translateService.instant('settings.language.saveError'));
+            this.alertService.error(
+              this.translateService.instant('settings.language.saveError'),
+            );
           },
         });
     }

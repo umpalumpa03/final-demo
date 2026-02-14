@@ -6,7 +6,7 @@
     <app-tabs [tabs]="navItems()" orientation="horizontal" />
 
     @if (isAdmin()) {
-      <app-tabs [tabs]="adminNavItems" />
+      <app-tabs [tabs]="adminNavItems()" />
     }
 
   </nav>

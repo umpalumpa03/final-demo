@@ -1,6 +1,5 @@
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { inject } from '@angular/core';
-import { LanguageService } from '../services/language-api.service';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import {
   pipe,
@@ -12,7 +11,11 @@ import {
   EMPTY,
   exhaustMap,
 } from 'rxjs';
+import { Store } from '@ngrx/store';
+
+import { LanguageService } from '../services/language-api.service';
 import { Language, LanguagesState } from '../models/language.model';
+import { UserInfoActions } from 'apps/tia-frontend/src/app/store/user-info/user-info.actions';
 
 export const initialState: LanguagesState = {
   languages: [
@@ -46,6 +49,7 @@ export const LanguagesStore = signalStore(
   withState(initialState),
   withMethods((store) => {
     const languageService = inject(LanguageService);
+    const globalStore = inject(Store);
 
     return {
       fetchLanguages: rxMethod<{ force?: boolean }>(
@@ -108,6 +112,8 @@ export const LanguagesStore = signalStore(
           isRefreshing: true,
         });
 
+        const languageCode = language === 'georgian' ? 'ka' : 'en';
+
         return languageService.updateUserLanguage(language).pipe(
           tap(() => {
             patchState(store, {
@@ -115,6 +121,7 @@ export const LanguagesStore = signalStore(
               isRefreshing: false,
               hasError: false,
             });
+            globalStore.dispatch(UserInfoActions.loadUserLanguage({ language: languageCode }));
           }),
           catchError(() => {
             patchState(store, {
