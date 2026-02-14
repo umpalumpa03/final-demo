@@ -5,14 +5,14 @@ import {
   inject,
 } from '@angular/core';
 import { AuthService } from '../../../services/auth.service';
-import { OtpVerification } from '../../../shared/otp-verification/otp-verification';
-import { IVerified } from '../../../models/otp-verification.models';
+import { IVerified } from '../../../../otp-verification/models/otp-verification.models';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { take } from 'rxjs';
 import { TokenService } from '../../../services/token.service';
 import { Router } from '@angular/router';
 import { Routes } from '../../../models/tokens.model';
 import { otpVerificationConfig } from '../../../config/otp-verification.config';
+import { OtpVerification } from '@tia/core/otp-verification/container/otp-verification';
 
 @Component({
   selector: 'app-verify-signup',

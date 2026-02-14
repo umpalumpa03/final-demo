@@ -8,7 +8,7 @@ import { of, throwError } from 'rxjs';
 import { vi } from 'vitest';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ForgotPasswordVerify } from './forgot-password-verify';
-import { IVerified } from '../../../models/otp-verification.models';
+import { IVerified } from '../../../../otp-verification/models/otp-verification.models';
 import { Routes } from '../../../models/tokens.model';
 
 describe('ForgotPasswordVerify', () => {

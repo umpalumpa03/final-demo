@@ -45,9 +45,9 @@ import { PaymentDistribution } from '../shared/ui/payment-distribution/payment-d
 import { BillsList } from '../shared/ui/bills-list/bills-list';
 import { TotalAmount } from '../shared/ui/total-amount/total-amount';
 import { AccountSelect } from '../../shared/account-select/account-select';
-import { OtpVerification } from '@tia/core/auth/shared/otp-verification/otp-verification';
 import { SuccessModal } from '@tia/shared/lib/overlay/ui-success-modal/ui-success-modal';
 import { payBillOtpConfig } from '../configs/otp.config';
+import { OtpVerification } from '@tia/core/otp-verification/container/otp-verification';
 
 @Component({
   selector: 'app-paybill-templates',

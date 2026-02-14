@@ -4,16 +4,17 @@ import {
   DestroyRef,
   inject,
 } from '@angular/core';
-import { OtpVerification } from '../../../shared/otp-verification/otp-verification';
 import { AuthService } from '../../../services/auth.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { IMfaVerifyRequest } from '../../../models/authRequest.models';
-import { IVerified } from '../../../models/otp-verification.models';
+import { IVerified } from '../../../../otp-verification/models/otp-verification.models';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TokenService } from '../../../services/token.service';
 import { Router } from '@angular/router';
 import { Routes } from '../../../models/tokens.model';
 import { otpVerificationConfig } from '../../../config/otp-verification.config';
+import { OtpVerification } from '@tia/core/otp-verification/container/otp-verification';
+import { OtpVerificationService } from '@tia/core/otp-verification/services/otp-verification.service';
 
 @Component({
   selector: 'app-verify-signin',
@@ -22,6 +23,7 @@ import { otpVerificationConfig } from '../../../config/otp-verification.config';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VerifySignin {
+  private otpService = inject(OtpVerificationService);
   private authService = inject(AuthService);
   private tokenService = inject(TokenService);
   private router = inject(Router);
@@ -43,7 +45,9 @@ export class VerifySignin {
 
   public resendOtp(isCalled: boolean): void {
     if (isCalled) {
-      this.authService.resendVerificationCode().subscribe();
+      this.otpService
+        .resendVerificationCode(this.authService.getChallengeId())
+        .subscribe();
     }
   }
 

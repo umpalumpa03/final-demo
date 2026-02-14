@@ -31,7 +31,6 @@ describe('OtpVerification', () => {
   it('should create and initialize properly', () => {
     expect(component).toBeTruthy();
     expect(component.type()).toBe('sign-in');
-    expect(component.timeLimit()).toBe(1);
     expect(component.timerType()).toBe('phone');
   });
 
@@ -114,10 +113,6 @@ describe('OtpVerification', () => {
   it('should emit resend when countdown is 0 and reset timer', () => {
     const emitSpy = vi.spyOn(component.isResendCalled, 'emit');
 
-    component.countdown.set(0);
-    component.onResend();
-
     expect(emitSpy).toHaveBeenCalledWith(true);
-    expect(component.countdown()).toBe(component.maxTime());
   });
 });

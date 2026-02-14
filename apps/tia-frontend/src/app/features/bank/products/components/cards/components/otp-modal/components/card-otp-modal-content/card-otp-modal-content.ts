@@ -4,12 +4,11 @@ import {
   input,
   output,
 } from '@angular/core';
-import { OtpVerification } from 'apps/tia-frontend/src/app/core/auth/shared/otp-verification/otp-verification';
-import { CARD_OTP_MODAL_CONFIG } from '../../config/card-otp-modal.config';
 import { OtpVerificationData } from '../../../../models/otp-verification-data.model';
 import { inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { IOtpVerificationConfig } from 'apps/tia-frontend/src/app/core/auth/models/otp-verification.models';
+import { IOtpVerificationConfig } from '@tia/core/otp-verification/models/otp-verification.models';
+import { OtpVerification } from '@tia/core/otp-verification/container/otp-verification';
 
 @Component({
   selector: 'app-card-otp-modal-content',

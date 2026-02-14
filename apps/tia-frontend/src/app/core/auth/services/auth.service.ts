@@ -18,7 +18,6 @@ import {
   IMfaVerifyResponse,
   IsAvailableBaseResponse,
   ISignUpResponse,
-  OtpSettingsConfiguration,
   phoneOtpError,
   ResendOtpResponse,
 } from '../models/authResponse.model';
@@ -58,7 +57,6 @@ export class AuthService {
   public isAuthenticated = signal<boolean>(false);
   public isLoginLoading = signal<boolean>(false);
   public errorMessage = signal<boolean | null>(false);
-  public resendRetryCounter = signal<number>(0);
   public otpError = signal<OtpResponse | null>(null);
 
   private challengeId!: string;
@@ -358,31 +356,6 @@ export class AuthService {
     );
   }
 
-  public resendVerificationCode(): Observable<OtpResponse> {
-    if (this.resendRetryCounter() >= 5) {
-      this.resendRetryCounter.set(0);
-      return throwError(() => new Error('MAX_ATTEMPTS_REACHED'));
-    }
-
-    const challengeId = this.getChallengeId();
-    const token =
-      this.tokenService.accessToken || this.tokenService.getSignUpToken;
-
-    if (this.tokenService.accessToken) {
-      this.resendRetryCounter.update((r) => r + 1);
-    }
-
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`,
-    });
-
-    return this.http.post<OtpResponse>(
-      `${this.baseUrl}/mfa/otp-resend`,
-      { challengeId },
-      { headers },
-    );
-  }
-
   private startInactivityMonitoring(): void {
     this.inactivitySubscription = this.monitorInactivity.inactivity$
       .pipe(
@@ -406,10 +379,5 @@ export class AuthService {
     this.isAuthenticated.set(false);
     this.tokenService.clearAuthToken();
     this.stopInactivityMonitoring();
-  }
-
-
-  public getOtpConfig():Observable<OtpSettingsConfiguration> {
-    return this.http.get<OtpSettingsConfiguration>(`${environment.apiUrl}/settings/config`);
   }
 }

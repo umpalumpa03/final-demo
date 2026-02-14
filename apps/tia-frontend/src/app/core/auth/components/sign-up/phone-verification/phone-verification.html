@@ -2,7 +2,6 @@
   (isVerifyCalled)="submit($event)"
   type="sign-up"
   timerType="phone"
-  [timeLimit]="2"
   (onTimeout)="clearedBackout()"
   (onBackOut)="clearedBackout()"
   [phoneErrorMessage]="PhoneOtpError()?.message ?? null"

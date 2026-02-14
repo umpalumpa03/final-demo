@@ -3,9 +3,7 @@
   (isVerifyCalled)="verifyRegisterOtp($event)"
   (isResendCalled)="resendOtp($event)"
   timerType="otp"
-  [timeLimit]="1"
   (onBackOut)="clearedBackout()"
   [errorMessage]="otpError()?.message ?? null"
-  [remainingAttempts]="otpError()?.remainingAttempts ?? null"
   [inputOtpConfig]="inputOtpConfig"
 ></app-otp-verification>

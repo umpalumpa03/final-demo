@@ -1,5 +1,10 @@
 @if(!isErrorPageVisible()) {
-<div class="otp-verification">
+<div
+  appExpirationTimer
+  [maxTimer]="maxTotalTime()"
+  (expirationOutput)="expirationTimerHandle()"
+  class="otp-verification"
+>
   @if(isHeaderVisible()) {
   <div class="otp-verification__icon" aria-hidden="true">
     <img [src]="inputOtpConfig()?.iconUrl" />
@@ -16,12 +21,11 @@
     @if(timerType() === 'otp'){
     <div class="otp-field">
       <lib-otp
-        [isOtpLoading]="isButtonDisabled()"
+        [isOtpLoading]="isInputDisabled() || isButtonDisabled()"
         formControlName="code"
         [isCentered]="true"
         (completed)="handleAutoSubmit($event)"
         [config]="formConfig().otp"
-        [isOtpLoading]="isLoading()"
       ></lib-otp>
     </div>
     } @else {
@@ -46,36 +50,16 @@
       alertType="error"
       [alertMessage]="phoneErrorMessage() ?? 'An error occurred'"
     ></app-simple-alerts>
-    } @if(isTimerDisplayed()) {
-    <div class="timer-compact">
-      <div class="timer-compact__timer">
-        <span
-          class="timer-compact__status-dot"
-          [class.timer-compact__status-dot--pulse]="countdown() > 0"
-        >
-        </span>
-
-        <div class="timer-compact__readout">
-          <span class="timer-compact__value">{{ countdown()}}</span>
-          <span class="timer-compact__unit">s</span>
-        </div>
-      </div>
-      @if(timerType() === 'otp') {
-      <div
-        class="timer-compact__resend"
-        [class.timer-compact__resend--disabled]="!canResend()"
-      >
-        <span class="timer-compact__resend-text"
-          >{{'auth.otp-sign-in.codeQuestion' | translate}}</span
-        >
-        <span class="timer-compact__link" (click)="onResend()">
-          {{'auth.otp-sign-in.code' | translate}}
-        </span>
-        <span class="timer-compact__resend-left"> {{resendTries()}} </span>
-      </div>
-      }
-    </div>
     }
+
+    <app-otp-resend
+      (noMoreAttempts)="expirationTimerHandle()"
+      [maxTimeoutMs]="maxTimeoutMs()"
+      [resendRetries]="resendRetries()"
+      [timerType]="timerType()"
+      (resendClicked)="handleResend()"
+      (timeoutReached)="handleTimeout()"
+    />
 
     <div
       class="auth-form__wrapper"
@@ -87,7 +71,6 @@
           type="submit"
           [fullWidth]="true"
           variant="default"
-          [isLoading]="isLoading()"
         >
           {{ inputOtpConfig()?.submitBtnName | translate}}
         </app-button>
@@ -106,5 +89,8 @@
   </form>
 </div>
 } @else {
-  <app-error-page [redirectUrl]="redirectUrl()" [redirectText]="redirectText()"></app-error-page>
+<app-error-page
+  [redirectUrl]="redirectUrl()"
+  [redirectText]="redirectText()"
+></app-error-page>
 }

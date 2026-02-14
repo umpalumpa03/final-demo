@@ -55,25 +55,10 @@ export interface phoneOtpError {
   remainingAttempts?: number;
 }
 
-export interface OtpResponse {
-  message: string;
-}
-
 export interface ILogoutResponse {
   success: boolean;
 }
 
 export interface IsAvailableBaseResponse {
   available: boolean;
-}
-
-export interface OtpSettings {
-  expirationMinutes: number;
-  maxResendAttempts: number;
-  maxVerifyAttempts: number;
-  resendTimeoutMs: number;
-}
-
-export interface OtpSettingsConfiguration {
-  otp: OtpSettings;
 }

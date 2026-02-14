@@ -14,9 +14,9 @@ import {
   PaybillProvider,
 } from '../../../../shared/models/paybill.model';
 import { TranslatePipe } from '@ngx-translate/core';
-import { OtpVerification } from 'apps/tia-frontend/src/app/core/auth/shared/otp-verification/otp-verification';
-import { IVerified } from 'apps/tia-frontend/src/app/core/auth/models/otp-verification.models';
+import { IVerified } from '@tia/core/otp-verification/models/otp-verification.models';
 import { otpConfiguration } from '../../config/otp.config';
+import { OtpVerification } from '@tia/core/otp-verification/container/otp-verification';
 
 @Component({
   selector: 'app-paybill-otp-verification',

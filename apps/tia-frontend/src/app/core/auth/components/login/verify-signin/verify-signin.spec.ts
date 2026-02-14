@@ -6,7 +6,7 @@ import { signal } from '@angular/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { IVerified } from '../../../models/otp-verification.models';
+import { IVerified } from '../../../../otp-verification/models/otp-verification.models';
 import { IMfaVerifyRequest } from '../../../models/authRequest.models';
 
 describe('VerifySignin Component', () => {
