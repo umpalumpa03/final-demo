@@ -46,6 +46,7 @@ export const appConfig: ApplicationConfig = {
       UserInfoEffects,
       PersonalInfoEffects,
     ]),
+
     provideStore(
       {},
       {

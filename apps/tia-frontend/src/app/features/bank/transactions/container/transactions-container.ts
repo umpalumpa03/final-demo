@@ -9,11 +9,9 @@ import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader'
 import { Tables } from '@tia/shared/lib/tables/components/tables';
 import { TransactionsFilters } from '../components/transactions-filters/transactions-filters';
 import { ITransactionFilter } from '@tia/shared/models/transactions/transactions.models';
-import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
 import { ScrollArea } from '@tia/shared/lib/layout/components/scroll-area/container/scroll-area';
 import { CategorizeModal } from '../components/categorize-modal/categorize-modal';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
-import { SimpleAlerts } from '@tia/shared/lib/alerts/components/simple-alerts/simple-alerts';
 import { LibraryTitle } from '../../../storybook/shared/library-title/library-title';
 import { TranslateModule, TranslatePipe } from '@ngx-translate/core';
 import { TransactionsFacadeService } from '../services/transactions-facade.service';
@@ -28,11 +26,9 @@ import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states'
     RouteLoader,
     Tables,
     TransactionsFilters,
-    BasicCard,
     ScrollArea,
     CategorizeModal,
     UiModal,
-    SimpleAlerts,
     LibraryTitle,
     TranslatePipe,
     TranslateModule,

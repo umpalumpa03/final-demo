@@ -22,6 +22,7 @@ import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
 import { calculateBitwiseSum } from '../utils/permission.utils';
 import { formatUserFullName } from '../utils/user-formatter.utils';
 import { PermissionsModal } from '../../../shared/ui/approve-ui/permissions-modal/permissions-modal';
+import { ApproveAccountsConfig } from '../config/approve-accounts.config';
 
 @Component({
   selector: 'app-approve-accounts-container',
@@ -37,13 +38,14 @@ import { PermissionsModal } from '../../../shared/ui/approve-ui/permissions-moda
     AlertTypesWithIcons,
     BasicCard,
   ],
-  providers: [AccountPermissionsStore],
+  providers: [AccountPermissionsStore, ApproveAccountsConfig],
   templateUrl: './approve-accounts-container.html',
   styleUrl: './approve-accounts-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ApproveAccountsContainer implements OnInit {
   public readonly store = inject(AccountPermissionsStore);
+  public readonly config = inject(ApproveAccountsConfig);
   public readonly fb = inject(FormBuilder);
 
   public permissionsOverlay = signal<boolean>(false);

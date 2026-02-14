@@ -130,9 +130,10 @@ describe('LanguageSelection', () => {
       );
       expect(mockTranslationLoader.clearCache).toHaveBeenCalled();
       expect(mockTranslateService.use).toHaveBeenCalledWith('ka');
-      expect(mockTranslationLoader.loadTranslations).toHaveBeenCalledWith(
+      expect(mockTranslationLoader.loadTranslations).toHaveBeenCalledWith([
         'settings',
-      );
+        'storybook',
+      ]);
     });
 
     it('should show error alert on failure', () => {

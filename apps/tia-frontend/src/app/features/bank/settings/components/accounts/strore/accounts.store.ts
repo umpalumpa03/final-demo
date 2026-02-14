@@ -1,13 +1,21 @@
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { inject } from '@angular/core';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { pipe, switchMap, tap, catchError, filter, EMPTY } from 'rxjs';
-import { AccountManagementService } from '../services/acount-management.service';
-import { initialState } from './accounts.state';
+import {
+  pipe,
+  switchMap,
+  tap,
+  catchError,
+  filter,
+  EMPTY,
+  finalize,
+} from 'rxjs';
+import { AccountManagementService } from '../services/account-management.service';
 import { Store } from '@ngrx/store';
 import { AccountsActions } from '../../../../../../store/products/accounts/accounts.actions';
 import { TranslateService } from '@ngx-translate/core';
 import { AlertService } from '@tia/core/services/alert/alert.service';
+import { initialState } from '../store/accounts.state';
 
 export const AccountsStore = signalStore(
   { providedIn: 'root' },
@@ -18,17 +26,21 @@ export const AccountsStore = signalStore(
     const translate = inject(TranslateService);
     const alertService = inject(AlertService);
 
+    function showAlert(
+      type: 'success' | 'error',
+      messageKey: string,
+      title: string,
+    ) {
+      const fn = type === 'success' ? alertService.success : alertService.error;
+      fn.call(alertService, translate.instant(messageKey), {
+        variant: 'dismissible',
+        title,
+      });
+    }
+
     return {
-      clearError(): void {
-        patchState(store, { error: null });
-      },
-
-      clearSuccessMessage(): void {
-        patchState(store, { successMessage: null });
-      },
-
-      invalidate(): void {
-        patchState(store, { loaded: false });
+      resetStore(): void {
+        patchState(store, initialState);
       },
 
       loadAccounts: rxMethod<void>(
@@ -54,6 +66,11 @@ export const AccountsStore = signalStore(
                   error: 'Failed to load accounts',
                 });
                 return EMPTY;
+              }),
+              finalize(() => {
+                patchState(store, {
+                  loading: false,
+                });
               }),
             ),
           ),
@@ -96,15 +113,12 @@ export const AccountsStore = signalStore(
                     accounts,
                     favoriteLoadingIds: currentIds,
                   });
-                  alertService.success(
-                    translate.instant(
-                      'settings.accounts.storeAlerts.favSuccess',
-                    ),
-                    { variant: 'dismissible', title: 'Success!' },
+                  showAlert(
+                    'success',
+                    'settings.accounts.storeAlerts.favSuccess',
+                    'Success!',
                   );
-                  globalStore.dispatch(
-                    AccountsActions.loadAccounts({ forceRefresh: true }),
-                  );
+                  globalStore.dispatch(AccountsActions.clearAccountsStore());
                 }),
                 catchError(() => {
                   const currentIds = new Set(store.favoriteLoadingIds());
@@ -112,13 +126,17 @@ export const AccountsStore = signalStore(
                   patchState(store, {
                     favoriteLoadingIds: currentIds,
                   });
-                  alertService.error(
-                    translate.instant(
-                      'settings.accounts.storeAlerts.favFailed',
-                    ),
-                    { variant: 'dismissible', title: 'Oops!' },
+                  showAlert(
+                    'error',
+                    'settings.accounts.storeAlerts.favFailed',
+                    'Oops!',
                   );
                   return EMPTY;
+                }),
+                finalize(() => {
+                  patchState(store, {
+                    loading: false,
+                  });
                 }),
               ),
           ),
@@ -158,15 +176,12 @@ export const AccountsStore = signalStore(
                     accounts,
                     visibilityLoadingIds: currentIds,
                   });
-                  alertService.success(
-                    translate.instant(
-                      'settings.accounts.storeAlerts.visibilitySuccess',
-                    ),
-                    { variant: 'dismissible', title: 'Success!' },
+                  showAlert(
+                    'success',
+                    'settings.accounts.storeAlerts.visibilitySuccess',
+                    'Success!',
                   );
-                  globalStore.dispatch(
-                    AccountsActions.loadAccounts({ forceRefresh: true }),
-                  );
+                  globalStore.dispatch(AccountsActions.clearAccountsStore());
                 }),
                 catchError(() => {
                   const currentIds = new Set(store.visibilityLoadingIds());
@@ -174,13 +189,17 @@ export const AccountsStore = signalStore(
                   patchState(store, {
                     visibilityLoadingIds: currentIds,
                   });
-                  alertService.error(
-                    translate.instant(
-                      'settings.accounts.storeAlerts.visibilityFailed',
-                    ),
-                    { variant: 'dismissible', title: 'Oops!' },
+                  showAlert(
+                    'error',
+                    'settings.accounts.storeAlerts.visibilityFailed',
+                    'Oops!',
                   );
                   return EMPTY;
+                }),
+                finalize(() => {
+                  patchState(store, {
+                    loading: false,
+                  });
                 }),
               ),
           ),
@@ -220,15 +239,12 @@ export const AccountsStore = signalStore(
                     accounts,
                     changeNameLoadingIds: currentIds,
                   });
-                  alertService.success(
-                    translate.instant(
-                      'settings.accounts.storeAlerts.nameSuccess',
-                    ),
-                    { variant: 'dismissible', title: 'Oops!' },
+                  showAlert(
+                    'success',
+                    'settings.accounts.storeAlerts.nameSuccess',
+                    'Success!',
                   );
-                  globalStore.dispatch(
-                    AccountsActions.loadAccounts({ forceRefresh: true }),
-                  );
+                  globalStore.dispatch(AccountsActions.clearAccountsStore());
                 }),
                 catchError(() => {
                   const currentIds = new Set(store.changeNameLoadingIds());
@@ -236,11 +252,10 @@ export const AccountsStore = signalStore(
                   patchState(store, {
                     changeNameLoadingIds: currentIds,
                   });
-                  alertService.error(
-                    translate.instant(
-                      'settings.accounts.storeAlerts.nameFailed',
-                    ),
-                    { variant: 'dismissible', title: 'Oops!' },
+                  showAlert(
+                    'error',
+                    'settings.accounts.storeAlerts.nameFailed',
+                    'Oops!',
                   );
                   return EMPTY;
                 }),

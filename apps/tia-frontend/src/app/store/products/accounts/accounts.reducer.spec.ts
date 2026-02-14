@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { Action } from '@ngrx/store';
 import { accountsReducer } from './accounts.reducer';
 import { initialAccountsState } from './model/accounts-state.model';
-import * as AccountsActions from './accounts.actions';
+import { AccountsActions } from './accounts.actions';
 import { AccountType } from '../../../shared/models/accounts/accounts.model';
 
 describe('Accounts Reducer', () => {
@@ -49,14 +49,14 @@ describe('Accounts Reducer', () => {
   });
 
   it('should handle loadAccounts', () => {
-    const action = AccountsActions.AccountsActions.loadAccounts({});
+    const action = AccountsActions.loadAccounts({});
     const state = accountsReducer(initialAccountsState, action);
     expect(state.isLoading).toBe(true);
     expect(state.error).toBeNull();
   });
 
   it('should handle loadAccountsSuccess', () => {
-    const action = AccountsActions.AccountsActions.loadAccountsSuccess({
+    const action = AccountsActions.loadAccountsSuccess({
       accounts: [mockAccount],
     });
     const state = accountsReducer(initialAccountsState, action);
@@ -66,7 +66,7 @@ describe('Accounts Reducer', () => {
   });
 
   it('should handle loadAccountsFailure', () => {
-    const action = AccountsActions.AccountsActions.loadAccountsFailure({
+    const action = AccountsActions.loadAccountsFailure({
       error: 'Network error',
     });
     const state = accountsReducer(initialAccountsState, action);
@@ -75,7 +75,7 @@ describe('Accounts Reducer', () => {
   });
 
   it('should handle selectAccount', () => {
-    const action = AccountsActions.AccountsActions.selectAccount({
+    const action = AccountsActions.selectAccount({
       account: mockAccount,
     });
     const state = accountsReducer(initialAccountsState, action);
@@ -83,7 +83,7 @@ describe('Accounts Reducer', () => {
   });
 
   it('should handle createAccount', () => {
-    const action = AccountsActions.AccountsActions.createAccount({
+    const action = AccountsActions.createAccount({
       request: {
         friendlyName: 'New',
         type: AccountType.saving,
@@ -96,7 +96,7 @@ describe('Accounts Reducer', () => {
   });
 
   it('should handle createAccountSuccess', () => {
-    const action = AccountsActions.AccountsActions.createAccountSuccess({
+    const action = AccountsActions.createAccountSuccess({
       account: mockAccount2,
     });
     const state = accountsReducer(initialAccountsState, action);
@@ -107,7 +107,7 @@ describe('Accounts Reducer', () => {
   });
 
   it('should handle createAccountFailure', () => {
-    const action = AccountsActions.AccountsActions.createAccountFailure({
+    const action = AccountsActions.createAccountFailure({
       error: 'Create error',
     });
     const state = accountsReducer(initialAccountsState, action);
@@ -116,7 +116,7 @@ describe('Accounts Reducer', () => {
   });
 
   it('should handle updateFriendlyName', () => {
-    const action = AccountsActions.AccountsActions.updateFriendlyName({
+    const action = AccountsActions.updateFriendlyName({
       accountId: '2',
       friendlyName: 'Updated Savings',
     });
@@ -129,7 +129,7 @@ describe('Accounts Reducer', () => {
   });
 
   it('should handle updateFriendlyNameSuccess', () => {
-    const action = AccountsActions.AccountsActions.updateFriendlyNameSuccess({
+    const action = AccountsActions.updateFriendlyNameSuccess({
       account: { ...mockAccount2, friendlyName: 'Premium Savings' },
     });
     const state = accountsReducer(
@@ -142,7 +142,7 @@ describe('Accounts Reducer', () => {
   });
 
   it('should handle updateFriendlyNameFailure', () => {
-    const action = AccountsActions.AccountsActions.updateFriendlyNameFailure({
+    const action = AccountsActions.updateFriendlyNameFailure({
       error: 'Update failed',
     });
     const state = accountsReducer(initialAccountsState, action);
@@ -151,13 +151,13 @@ describe('Accounts Reducer', () => {
   });
 
   it('should handle fetchMoreAccounts', () => {
-    const action = AccountsActions.AccountsActions.fetchMoreAccounts();
+    const action = AccountsActions.fetchMoreAccounts();
     const state = accountsReducer(initialAccountsState, action);
     expect(state.isFetching).toBe(true);
   });
 
   it('should handle fetchMoreAccountsSuccess', () => {
-    const action = AccountsActions.AccountsActions.fetchMoreAccountsSuccess({
+    const action = AccountsActions.fetchMoreAccountsSuccess({
       accounts: [mockAccount2],
     });
     const state = accountsReducer(
@@ -169,7 +169,7 @@ describe('Accounts Reducer', () => {
   });
 
   it('should handle fetchMoreAccountsFailure', () => {
-    const action = AccountsActions.AccountsActions.fetchMoreAccountsFailure({
+    const action = AccountsActions.fetchMoreAccountsFailure({
       error: 'Fetch error',
     });
     const state = accountsReducer(initialAccountsState, action);
@@ -178,17 +178,40 @@ describe('Accounts Reducer', () => {
   });
 
   it('should handle openCreateModal', () => {
-    const action = AccountsActions.AccountsActions.openCreateModal();
+    const action = AccountsActions.openCreateModal();
     const state = accountsReducer(initialAccountsState, action);
     expect(state.isCreateModalOpen).toBe(true);
   });
 
   it('should handle closeCreateModal', () => {
-    const action = AccountsActions.AccountsActions.closeCreateModal();
+    const action = AccountsActions.closeCreateModal();
     const state = accountsReducer(
       { ...initialAccountsState, isCreateModalOpen: true },
       action,
     );
     expect(state.isCreateModalOpen).toBe(false);
+  });
+
+  it('should handle loadActiveAccounts and its success/failure', () => {
+    const a1 = AccountsActions.loadActiveAccounts({});
+    let state = accountsReducer(initialAccountsState, a1);
+    expect(state.isLoading).toBe(true);
+
+    const success = AccountsActions.loadActiveAccountsSuccess({ accounts: [mockAccount] });
+    state = accountsReducer(state, success);
+    expect(state.accounts).toEqual([mockAccount]);
+    expect(state.isLoading).toBe(false);
+
+    const failure = AccountsActions.loadActiveAccountsFailure({ error: 'oops' });
+    state = accountsReducer(state, failure);
+    expect(state.isLoading).toBe(false);
+    expect(state.error).toBe('oops');
+  });
+
+  it('updateFriendlyNameSuccess with missing id leaves accounts unchanged', () => {
+    const action = AccountsActions.updateFriendlyNameSuccess({ account: {} as any });
+    const state = accountsReducer({ ...initialAccountsState, accounts: [mockAccount] }, action);
+    expect(state.accounts).toHaveLength(1);
+    expect(state.isUpdatingFriendlyName).toBe(false);
   });
 });

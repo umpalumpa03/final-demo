@@ -18,3 +18,10 @@
     }
   }
 }
+
+@media (max-width: 500px) {
+  .selected__container {
+    @include flex-center($direction: column, $align: flex-start);
+    gap: 1.2rem;
+  }
+}

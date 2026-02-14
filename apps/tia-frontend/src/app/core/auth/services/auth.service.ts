@@ -35,7 +35,7 @@ import { environment } from '../../../../environments/environment';
 import { Router } from '@angular/router';
 import { TokenService } from './token.service';
 import { IRegistrationForm } from '../../../features/storybook/components/forms/models/contact-forms.model';
-import { inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, Injector, signal } from '@angular/core';
 import { Routes } from '../models/tokens.model';
 import { Store } from '@ngrx/store';
 import { UserInfoActions } from '../../../store/user-info/user-info.actions';
@@ -43,6 +43,7 @@ import { MonitorInactivity } from './monitor-inacticity.service';
 import { Subscription } from 'rxjs';
 import { AlertService } from '@tia/core/services/alert/alert.service';
 import { TranslateService } from '@ngx-translate/core';
+import { ClearSignalStoreService } from '@tia/core/services/clearSignalStores/clear-signal-store.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -53,6 +54,8 @@ export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
   private store = inject(Store);
+  private monitorInactivity = inject(MonitorInactivity);
+  private injector = inject(Injector);
 
   public isAuthenticated = signal<boolean>(false);
   public isLoginLoading = signal<boolean>(false);
@@ -161,8 +164,7 @@ export class AuthService {
         if (res.success === true) {
           this.stopInactivityMonitoring();
           this.tokenService.clearAuthToken();
-          this.tokenService.clearUserInfo();
-          this.store.dispatch(UserInfoActions.logout());
+          this.injector.get(ClearSignalStoreService).resetAllStore()
           this.router.navigate([Routes.SIGN_IN]);
         }
       }),

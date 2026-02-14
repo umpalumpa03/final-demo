@@ -16,7 +16,6 @@
     </app-error-states>
   </div>
 } @else {
-  <h2 class="exchange-rates__title">{{ 'dashboard.widgets.exchange.subtitle' | translate }}</h2>
   <div class="exchange-rates">
     @for (rate of exchangeRates$ | async; track rate.code) {
       <div class="exchange-rate-card">

@@ -1,5 +1,5 @@
 <div class="container">
-    @if(isLoading()) {
+    @if(isLoading() && !hasLoaded()) {
     <div class="container__cards">
         <app-skeleton height="10rem"></app-skeleton>
         <app-skeleton height="10rem"></app-skeleton>
@@ -15,7 +15,7 @@
     </div>
     <app-language-info />
     <div class="container__actions">
-        <app-button (click)="onSave()" [isDisabled]="!selectedLanguage()">
+        <app-button [isLoading]="isFetching()" (click)="onSave()" [isDisabled]="!selectedLanguage()">
             {{'settings.language.saveChanges' | translate}}
         </app-button>
     </div>

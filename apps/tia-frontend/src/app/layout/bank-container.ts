@@ -29,8 +29,7 @@ import { PersonalInfoActions } from '../store/personal-info/pesronal-info.action
   styleUrl: './bank-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BankContainer implements OnInit {
-  private readonly store = inject(Store);
+export class BankContainer {
   private monitorInactivity = inject(MonitorInactivity);
   private readonly navigationService = inject(NavigationService);
 
@@ -38,9 +37,4 @@ export class BankContainer implements OnInit {
   public subtitle = 'You will be automatically logged out in';
   public timeWarning = this.monitorInactivity.timeWarning;
   protected readonly isLoading = this.navigationService.isChangingAtSegment(2);
-
-  ngOnInit(): void {
-    //temporary
-    // this.store.dispatch(PersonalInfoActions.loadPersonalInfo({}));
-  }
 }
