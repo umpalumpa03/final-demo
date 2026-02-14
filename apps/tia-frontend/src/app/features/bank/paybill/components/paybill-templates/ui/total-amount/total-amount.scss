@@ -1,0 +1,29 @@
+@use '../../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../../shared/styles/palette' as *;
+.total__amount {
+  @include flex-center($justify: space-between);
+  background-color: $gray-25;
+  border-top: 2px solid $blue-800;
+  border-radius: 1rem;
+  padding: 1.6rem;
+
+  &__text {
+    h3 {
+      @include font-inter(600, 1.8rem, 2.8rem);
+      color: var(--color-fg);
+      margin-bottom: 0.8rem;
+    }
+
+    p {
+      @include font-inter(400, 1.2rem, 1.6rem);
+      color: $gray-600;
+    }
+  }
+
+  &__number {
+    h2 {
+      @include font-inter(700, 2.4rem, 3.2rem);
+      color: $blue-800;
+    }
+  }
+}
