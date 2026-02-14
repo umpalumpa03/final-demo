@@ -6,38 +6,49 @@
     [width]="'100%'"
   >
     <div class="user-info__content">
-      <div class="user-info__item">
-        <span class="user-info__label">{{ 'settings.profile-photo.phoneNumber' | translate }}:</span>
-        @if (isEditing()) {
-          <lib-text-input
-            [config]="{ placeholder: 'Enter phone number', validation: { minLength: 9 } }"
-            [ngModel]="editedPhoneNumber()"
-            (valueChange)="onPhoneNumberChange($event)"
-            size="medium"
-            type="tel"
-          ></lib-text-input>
-        } @else {
-          <span class="user-info__value user-info__value--phone">{{ phoneNumber() || '-' }}</span>
-        }
-      </div>
-      <div class="user-info__item">
-        <span class="user-info__label">{{ 'settings.profile-photo.personalNumber' | translate }}:</span>
-      @if (isEditing()) {
-        @if (!pId()) {
-          <lib-text-input
-            [config]="{ placeholder: 'Enter personal number', validation: { maxLength: 11, minLength: 11 } }"
-            [ngModel]="editedPId()"
-            (valueChange)="onPersonalNumberChange($event)"
-            size="medium"
-            type="number"
-          ></lib-text-input>
-        } @else {
-          <span class="user-info__value user-info__value--personal">{{ pId() }}</span>
-        }
+      @if (personalInfoLoading() && !isEditing()) {
+        <div class="user-info__item">
+          <span class="user-info__label">{{ 'settings.profile-photo.phoneNumber' | translate }}:</span>
+          <app-skeleton variant="text" height="1.6rem" width="12rem"></app-skeleton>
+        </div>
+        <div class="user-info__item">
+          <span class="user-info__label">{{ 'settings.profile-photo.personalNumber' | translate }}:</span>
+          <app-skeleton variant="text" height="1.6rem" width="12rem"></app-skeleton>
+        </div>
       } @else {
-        <span class="user-info__value user-info__value--personal">{{ pId() || '-' }}</span>
+        <div class="user-info__item">
+          <span class="user-info__label">{{ 'settings.profile-photo.phoneNumber' | translate }}:</span>
+          @if (isEditing()) {
+            <lib-text-input
+              [config]="{ placeholder: 'Enter phone number', validation: { minLength: 9 } }"
+              [ngModel]="editedPhoneNumber()"
+              (valueChange)="onPhoneNumberChange($event)"
+              size="medium"
+              type="tel"
+            ></lib-text-input>
+          } @else {
+            <span class="user-info__value user-info__value--phone">{{ phoneNumber() || '-' }}</span>
+          }
+        </div>
+        <div class="user-info__item">
+          <span class="user-info__label">{{ 'settings.profile-photo.personalNumber' | translate }}:</span>
+        @if (isEditing()) {
+          @if (!pId()) {
+            <lib-text-input
+              [config]="{ placeholder: 'Enter personal number', validation: { maxLength: 11, minLength: 11 } }"
+              [ngModel]="editedPId()"
+              (valueChange)="onPersonalNumberChange($event)"
+              size="medium"
+              type="number"
+            ></lib-text-input>
+          } @else {
+            <span class="user-info__value user-info__value--personal">{{ pId() }}</span>
+          }
+        } @else {
+          <span class="user-info__value user-info__value--personal">{{ pId() || '-' }}</span>
+        }
+        </div>
       }
-      </div>
     </div>
     <div card-footer class="user-info__footer">
       @if (isEditing()) {

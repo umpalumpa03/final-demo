@@ -10,6 +10,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { FormsModule } from '@angular/forms';
 import { Tooltip } from '@tia/shared/lib/data-display/tooltip/tooltip';
+import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
 
 @Component({
   selector: 'app-user-info',
@@ -20,6 +21,7 @@ import { Tooltip } from '@tia/shared/lib/data-display/tooltip/tooltip';
     TextInput,
     FormsModule,
     Tooltip,
+    Skeleton,
   ],
   templateUrl: './user-info.component.html',
   styleUrl: './user-info.component.scss',
