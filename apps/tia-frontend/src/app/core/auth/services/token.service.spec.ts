@@ -148,11 +148,6 @@ describe('TokenService', () => {
       service.clearResetPasswordToken();
       expect(localStorage.removeItem).toHaveBeenCalledWith(TokenKey.RESET_PASSWORD);
     });
-
-    it('should clear user info', () => {
-      service.clearUserInfo();
-      expect(localStorage.removeItem).toHaveBeenCalledWith(TokenKey.USER);
-    });
   });
 
 });

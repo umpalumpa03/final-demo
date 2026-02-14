@@ -34,5 +34,6 @@ export const AccountsActions = createActionGroup({
 
     'Open Create Modal': emptyProps(),
     'Close Create Modal': emptyProps(),
+    'Clear Accounts Store': emptyProps(),
   },
 });

@@ -2,7 +2,7 @@
 
 <app-settings-body
   [title]="'settings.accounts.title' | translate"
-  [subTitle]="'settings.accounts.subtitle' | translate"
+  [subTitle]="isXsMobile()? '': 'settings.accounts.subtitle' | translate"
 >
   <app-scroll-area
     height="calc(100vh - 46.4rem)"
