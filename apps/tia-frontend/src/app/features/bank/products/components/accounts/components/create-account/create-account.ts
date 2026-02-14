@@ -11,15 +11,18 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { AccountType } from '../../../../../../../../shared/models/accounts/accounts.model';
-import { UiModal } from '../../../../../../../../shared/lib/overlay/ui-modal/ui-modal';
-import { TextInput } from '../../../../../../../../shared/lib/forms/input-field/text-input';
-import { Dropdowns } from '../../../../../../../../shared/lib/forms/dropdowns/dropdowns';
-import { SelectOption } from '../../../../../../../../shared/lib/forms/models/dropdowns.model';
-import { ButtonComponent } from '../../../../../../../../shared/lib/primitives/button/button';
-import { CreateAccountConfig } from '../../../../../../../../shared/models/accounts/accounts.model';
-import { getCreateAccountConfig } from '../../../config/accounts.config';
+
 import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/shared/library-title/library-title';
+import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
+import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
+import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
+import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
+import {
+  AccountType,
+  CreateAccountConfig,
+} from '@tia/shared/models/accounts/accounts.model';
+import { getCreateAccountConfig } from '../../config/accounts.config';
+import { SelectOption } from '@tia/shared/lib/forms/models/input.model';
 
 @Component({
   selector: 'app-create-account',
