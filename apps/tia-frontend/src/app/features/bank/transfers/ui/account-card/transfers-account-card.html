@@ -3,6 +3,7 @@
   [class.transfers-account-card--selected]="isSelected()"
   [class.transfers-account-card--disabled]="isDisabled()"
   [class.transfers-account-card--recipient]="mode() === 'recipient'"
+  [attr.data-testid]="'account-card-' + cardData().iban"
   (click)="onCardClick()"
 >
   @if (isDisabled() && tooltipMessage()) {

@@ -1,5 +1,4 @@
 import { inject, Injectable, DestroyRef } from '@angular/core';
-import { Location } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Subject, catchError, debounceTime, of, switchMap, tap } from 'rxjs';
 import { TransferStore } from '../../../store/transfers.store';
