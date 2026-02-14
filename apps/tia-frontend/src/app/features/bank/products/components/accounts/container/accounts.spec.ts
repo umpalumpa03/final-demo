@@ -13,7 +13,7 @@ import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accoun
 import * as selectors from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { AccountsApiService } from '@tia/shared/services/accounts/accounts.api.service';
 import { AlertService } from '@tia/core/services/alert/alert.service';
-import { PERMISSION_ROUTE_MAP } from '../shared/config/accounts.config';
+import { TransferService } from '../shared/services/transfer.service';
 
 describe('Accounts', () => {
   let component: Accounts;
@@ -25,6 +25,9 @@ describe('Accounts', () => {
   beforeEach(async () => {
     const mockApiService = {
       getCurrencies: vi.fn().mockReturnValue(of(['GEL', 'USD'])),
+    };
+    const mockTransferService = {
+      navigateToTransferPage: vi.fn(),
     };
 
     await TestBed.configureTestingModule({
@@ -40,6 +43,7 @@ describe('Accounts', () => {
           ],
         }),
         { provide: AccountsApiService, useValue: mockApiService },
+        { provide: TransferService, useValue: mockTransferService },
         {
           provide: AlertService,
           useValue: {
@@ -154,14 +158,13 @@ describe('Accounts', () => {
     store.refreshState();
 
     const dispatchSpy = vi.spyOn(store, 'dispatch');
-    const navigateSpy = vi.spyOn(router, 'navigate');
-    component.handleTransfer({ accountId: 'acc-123', permissionValue: 1 });
+    const transferService = TestBed.inject(TransferService);
+    const transferSpy = vi.spyOn(transferService, 'navigateToTransferPage');
+    component.handleTransfer({ account: mockAccount, permissionValue: 1 });
     expect(dispatchSpy).toHaveBeenCalledWith(
       AccountsActions.selectAccount({ account: mockAccount }),
     );
-    expect(navigateSpy).toHaveBeenCalledWith(['/bank/transfers/internal'], {
-      queryParams: { accountId: 'acc-123' },
-    });
+    expect(transferSpy).toHaveBeenCalledWith('acc-123', 1);
 
     component.handleRetry();
     expect(dispatchSpy).toHaveBeenCalledWith(
@@ -169,7 +172,7 @@ describe('Accounts', () => {
     );
   });
 
-  it('should use PERMISSION_ROUTE_MAP for transfer routing', () => {
+  it('should use TransferService for transfer routing', () => {
     const mockAccount = {
       id: 'acc-456',
       userId: 'user-1',
@@ -190,13 +193,13 @@ describe('Accounts', () => {
     store.overrideSelector(selectors.selectAccounts, [mockAccount]);
     store.refreshState();
 
-    const navigateSpy = vi.spyOn(router, 'navigate');
-    component.handleTransfer({ accountId: 'acc-456', permissionValue: 32 });
-    expect(navigateSpy).toHaveBeenCalledWith([PERMISSION_ROUTE_MAP[32]], {
-      queryParams: { accountId: 'acc-456' },
-    });
-    expect(navigateSpy).toHaveBeenCalledWith(['/bank/loans'], {
-      queryParams: { accountId: 'acc-456' },
-    });
+    const transferService = TestBed.inject(TransferService);
+    const transferSpy = vi.spyOn(transferService, 'navigateToTransferPage');
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+    component.handleTransfer({ account: mockAccount, permissionValue: 32 });
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      AccountsActions.selectAccount({ account: mockAccount }),
+    );
+    expect(transferSpy).toHaveBeenCalledWith('acc-456', 32);
   });
 });

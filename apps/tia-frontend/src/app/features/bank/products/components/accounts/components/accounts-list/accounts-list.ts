@@ -15,6 +15,7 @@ import { RouteLoader } from '../../../../../../../shared/lib/feedback/route-load
 import {
   AccountSection,
   GroupedAccounts,
+  Account,
 } from '../../../../../../../shared/models/accounts/accounts.model';
 import { ErrorStates } from '../../../../../../../shared/lib/feedback/error-states/error-states';
 import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/shared/library-title/library-title';
@@ -54,7 +55,7 @@ export class AccountsListComponent implements OnInit {
   public renameError = input<string | null>(null);
 
   public openModal = output<void>();
-  public transfer = output<{ accountId: string; permissionValue: number }>();
+  public transfer = output<{ account: Account; permissionValue: number }>();
   public retry = output<void>();
   public renameAccount = output<{ accountId: string; friendlyName: string }>();
   public renameSuccess = output<void>();
@@ -210,8 +211,18 @@ export class AccountsListComponent implements OnInit {
   public handlePermissionSelected(permissionValue: number): void {
     const accountId = this.selectedAccountForTransfer();
     if (accountId) {
-      this.showTransferModal.set(false);
-      this.transfer.emit({ accountId, permissionValue });
+      const accounts = this.accountsGrouped();
+      if (!accounts) return;
+      const allAccounts: Account[] = [
+        ...(accounts.current || []),
+        ...(accounts.saving || []),
+        ...(accounts.card || []),
+      ];
+      const account = allAccounts.find((acc: Account) => acc.id === accountId);
+      if (account) {
+        this.showTransferModal.set(false);
+        this.transfer.emit({ account, permissionValue });
+      }
     }
   }
 

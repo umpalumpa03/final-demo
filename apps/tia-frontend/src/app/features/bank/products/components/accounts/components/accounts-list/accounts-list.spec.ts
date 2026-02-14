@@ -87,7 +87,7 @@ describe('AccountsListComponent', () => {
     component.handleTransfer('1');
     component.handlePermissionSelected(1);
     expect(transferSpy).toHaveBeenCalledWith({
-      accountId: '1',
+      account: mockAccount,
       permissionValue: 1,
     });
     component.handleRetry();

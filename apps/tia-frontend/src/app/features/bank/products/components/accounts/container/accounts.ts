@@ -17,6 +17,7 @@ import { CreateAccountComponent } from '../components/create-account/create-acco
 import {
   CreateAccountRequest,
   AccountType,
+  Account,
 } from '../../../../../../shared/models/accounts/accounts.model';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import {
@@ -39,6 +40,7 @@ import { AccountsApiService } from '@tia/shared/services/accounts/accounts.api.s
 import { AlertService } from '@tia/core/services/alert/alert.service';
 import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/shared/library-title/library-title';
 import { ButtonComponent } from '../../../../../../shared/lib/primitives/button/button';
+import { TransferService } from '../shared/services/transfer.service';
 
 @Component({
   selector: 'app-accounts-page',
@@ -62,6 +64,7 @@ export class Accounts implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly translate = inject(TranslateService);
   private readonly alertService = inject(AlertService);
+  private readonly transferService = inject(TransferService);
 
   protected readonly accountsGrouped = this.store.selectSignal(
     selectAccountsGrouped,
@@ -92,7 +95,6 @@ export class Accounts implements OnInit {
     .pipe(shareReplay(1));
 
   protected accountForm = signal<FormGroup>(this.createAccountForm());
-  protected errorTypeSignal = signal<'connection' | 'loading' | null>(null);
 
   private wasCreating = false;
 
@@ -171,20 +173,16 @@ export class Accounts implements OnInit {
   }
 
   public handleTransfer(data: {
-    accountId: string;
+    account: Account;
     permissionValue: number;
   }): void {
-    const accounts = this.accounts();
-    const account =
-      accounts?.find((acc: any) => acc.id === data.accountId) || null;
-    this.store.dispatch(AccountsActions.selectAccount({ account }));
-
-    const route = PERMISSION_ROUTE_MAP[data.permissionValue];
-    if (route) {
-      this.router.navigate([route], {
-        queryParams: { accountId: data.accountId },
-      });
-    }
+    this.store.dispatch(
+      AccountsActions.selectAccount({ account: data.account }),
+    );
+    this.transferService.navigateToTransferPage(
+      data.account.id,
+      data.permissionValue,
+    );
   }
 
   public handleRetry(): void {
