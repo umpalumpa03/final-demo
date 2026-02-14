@@ -9,6 +9,31 @@ import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { of, throwError } from 'rxjs';
 import { selectAccounts } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
+import {
+  Account,
+  AccountType,
+} from 'apps/tia-frontend/src/app/shared/models/accounts/accounts.model';
+
+function createMockAccount(overrides: Partial<Account> = {}): Account {
+  return {
+    id: 'acc-123',
+    userId: 'user-1',
+    permission: 1,
+    friendlyName: null,
+    type: AccountType.current,
+    currency: 'GEL',
+    iban: 'GE00SENDER',
+    name: 'Test Account',
+    status: 'active',
+    balance: 1000,
+    createdAt: '2024-01-01',
+    openedAt: '2024-01-01',
+    closedAt: '',
+    isFavorite: false,
+    isHidden: false,
+    ...overrides,
+  };
+}
 
 describe('TransferRepeatService', () => {
   let service: TransferRepeatService;
@@ -43,6 +68,7 @@ describe('TransferRepeatService', () => {
       updateFeeInfo: vi.fn(),
       setRecipientInfo: vi.fn(),
       setSelectedRecipientAccount: vi.fn(),
+      setReceiverOwnAccount: vi.fn(),
     };
     mockApi = { lookupByIban: vi.fn() };
     mockValidation = { identifyRecipientType: vi.fn() };
@@ -55,7 +81,7 @@ describe('TransferRepeatService', () => {
           selectors: [
             {
               selector: selectAccounts,
-              value: [{ iban: 'GE00SENDER', currency: 'GEL' }],
+              value: [createMockAccount()],
             },
           ],
         }),
@@ -69,13 +95,6 @@ describe('TransferRepeatService', () => {
 
     service = TestBed.inject(TransferRepeatService);
     store = TestBed.inject(MockStore);
-  });
-
-  it('should navigate to internal amount if transferType is ToOwnAccount', () => {
-    service.initRepeatTransfer({ transferType: 'ToOwnAccount' } as any);
-    expect(mockRouter.navigate).toHaveBeenCalledWith([
-      '/bank/transfers/internal/amount',
-    ]);
   });
 
   it('should handle invalid IBAN or empty credit account', () => {
@@ -197,6 +216,194 @@ describe('TransferRepeatService', () => {
       expect(mockTransferStore.setError).toHaveBeenCalledWith(
         'transfers.repeat.recipientNotFound',
       );
+    });
+
+    it('should find recipient account with matching currency', async () => {
+      mockValidation.identifyRecipientType.mockReturnValue('iban-same-bank');
+      const mockInfo = {
+        accounts: [
+          { currency: 'USD', id: 'r1' },
+          { currency: 'GEL', id: 'r2' },
+        ],
+      };
+      mockApi.lookupByIban.mockReturnValue(of(mockInfo));
+      mockUtils.isSenderAccountValid.mockReturnValue(true);
+
+      service.initRepeatTransfer(mockTransaction);
+      await new Promise((r) => setTimeout(r, 0));
+
+      expect(
+        mockTransferStore.setSelectedRecipientAccount,
+      ).toHaveBeenCalledWith(
+        expect.objectContaining({ currency: 'GEL', id: 'r2' }),
+      );
+    });
+
+    it('should handle sender account not found in same bank', async () => {
+      mockValidation.identifyRecipientType.mockReturnValue('iban-same-bank');
+      mockApi.lookupByIban.mockReturnValue(
+        of({ accounts: [{ currency: 'GEL' }] }),
+      );
+      store.overrideSelector(selectAccounts, []);
+      store.refreshState();
+
+      service.initRepeatTransfer(mockTransaction);
+      await new Promise((r) => setTimeout(r, 0));
+
+      expect(mockTransferStore.setError).toHaveBeenCalledWith(
+        'transfers.external.accounts.senderNotFound',
+      );
+    });
+  });
+
+  describe('handleInternalTransfer', () => {
+    const internalTransaction = {
+      transferType: 'OwnAccountTransfer',
+      creditAccountNumber: 'GE00RECEIVER',
+      debitAccountNumber: 'GE00SENDER',
+      amount: 100,
+      description: 'Internal transfer',
+      currency: 'GEL',
+    } as any;
+
+    it('should handle successful internal transfer', async () => {
+      store.overrideSelector(selectAccounts, [
+        createMockAccount({ iban: 'GE00SENDER', permission: 1 }),
+        createMockAccount({ iban: 'GE00RECEIVER', permission: 1 }),
+      ]);
+      store.refreshState();
+
+      service.initRepeatTransfer(internalTransaction);
+      await new Promise((r) => setTimeout(r, 0));
+
+      expect(mockTransferStore.setSenderAccount).toHaveBeenCalled();
+      expect(mockTransferStore.setReceiverOwnAccount).toHaveBeenCalled();
+      expect(mockTransferStore.setAmount).toHaveBeenCalledWith(100);
+      expect(mockTransferStore.setDescription).toHaveBeenCalledWith(
+        'Internal transfer',
+      );
+      expect(mockRouter.navigate).toHaveBeenCalledWith([
+        '/bank/transfers/internal/amount',
+      ]);
+    });
+
+    it('should handle sender account not found in internal transfer', async () => {
+      store.overrideSelector(selectAccounts, [
+        createMockAccount({ iban: 'GE00DIFFERENT' }),
+      ]);
+      store.refreshState();
+
+      service.initRepeatTransfer(internalTransaction);
+      await new Promise((r) => setTimeout(r, 0));
+
+      expect(mockTransferStore.setError).toHaveBeenCalledWith(
+        'transfers.repeat.senderNotFound',
+      );
+      expect(mockRouter.navigate).toHaveBeenCalledWith([
+        '/bank/transfers/internal/from-account',
+      ]);
+    });
+
+    it('should handle sender account without permission', async () => {
+      store.overrideSelector(selectAccounts, [
+        createMockAccount({ iban: 'GE00SENDER', permission: 0 }),
+        createMockAccount({ iban: 'GE00RECEIVER', permission: 1 }),
+      ]);
+      store.refreshState();
+
+      service.initRepeatTransfer(internalTransaction);
+      await new Promise((r) => setTimeout(r, 0));
+
+      expect(mockTransferStore.setError).toHaveBeenCalledWith(
+        'transfers.repeat.senderNoPermission',
+      );
+      expect(mockRouter.navigate).toHaveBeenCalledWith([
+        '/bank/transfers/internal/from-account',
+      ]);
+    });
+
+    it('should handle sender account with null permission', async () => {
+      store.overrideSelector(selectAccounts, [
+        createMockAccount({ iban: 'GE00SENDER', permission: null as any }),
+        createMockAccount({ iban: 'GE00RECEIVER', permission: 1 }),
+      ]);
+      store.refreshState();
+
+      service.initRepeatTransfer(internalTransaction);
+      await new Promise((r) => setTimeout(r, 0));
+
+      expect(mockTransferStore.setError).toHaveBeenCalledWith(
+        'transfers.repeat.senderNoPermission',
+      );
+    });
+
+    it('should handle receiver account not found', async () => {
+      store.overrideSelector(selectAccounts, [
+        createMockAccount({ iban: 'GE00SENDER', permission: 1 }),
+      ]);
+      store.refreshState();
+
+      service.initRepeatTransfer(internalTransaction);
+      await new Promise((r) => setTimeout(r, 0));
+
+      expect(mockTransferStore.setError).toHaveBeenCalledWith(
+        'transfers.repeat.recipientAccountNotFound',
+      );
+      expect(mockRouter.navigate).toHaveBeenCalledWith([
+        '/bank/transfers/internal/from-account',
+      ]);
+    });
+
+    it('should handle empty description in internal transfer', async () => {
+      store.overrideSelector(selectAccounts, [
+        createMockAccount({ iban: 'GE00SENDER', permission: 1 }),
+        createMockAccount({ iban: 'GE00RECEIVER', permission: 1 }),
+      ]);
+      store.refreshState();
+
+      const transactionWithoutDesc = {
+        ...internalTransaction,
+        description: '',
+      };
+
+      service.initRepeatTransfer(transactionWithoutDesc);
+      await new Promise((r) => setTimeout(r, 0));
+
+      expect(mockTransferStore.setDescription).toHaveBeenCalledWith('');
+    });
+  });
+
+  describe('handleExternalBank edge cases', () => {
+    it('should handle missing recipientName in meta', () => {
+      mockValidation.identifyRecipientType.mockReturnValue(
+        'iban-different-bank',
+      );
+      mockUtils.isSenderAccountValid.mockReturnValue(true);
+
+      const transactionWithoutMeta = {
+        ...mockTransaction,
+        meta: {},
+      };
+
+      service.initRepeatTransfer(transactionWithoutMeta);
+
+      expect(mockTransferStore.setManualRecipientName).toHaveBeenCalledWith('');
+    });
+
+    it('should handle undefined meta', () => {
+      mockValidation.identifyRecipientType.mockReturnValue(
+        'iban-different-bank',
+      );
+      mockUtils.isSenderAccountValid.mockReturnValue(true);
+
+      const transactionWithoutMeta = {
+        ...mockTransaction,
+        meta: undefined,
+      };
+
+      service.initRepeatTransfer(transactionWithoutMeta);
+
+      expect(mockTransferStore.setManualRecipientName).toHaveBeenCalledWith('');
     });
   });
 });

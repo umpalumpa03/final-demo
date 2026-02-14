@@ -1,0 +1,14 @@
+@use '../../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../../shared/styles/palette' as *;
+
+.templates__header {
+  &__main-content {
+    @include flex-center($justify: space-between);
+    margin-bottom: 3rem;
+  }
+  &__cta {
+    @include flex-center();
+    flex-wrap: wrap;
+    gap: 0.8rem;
+  }
+}

@@ -1,0 +1,6 @@
+@use '../../../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../../../shared/styles/palette' as *;
+.payment__modal {
+  @include display-flex($direction: column);
+  gap: 1.6rem;
+}

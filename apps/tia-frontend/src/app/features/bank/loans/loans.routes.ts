@@ -5,9 +5,6 @@ import { LoansContainer } from './container/loans-container';
 import { LoansService } from './shared/services/loans.service';
 import { AccountsEffects } from '../../../store/products/accounts/accounts.effects';
 import { accountsFeature } from '../../../store/products/accounts/accounts.reducer';
-import { LoanCreateService } from '@tia/shared/services/loans/loan-create.service';
-import { LoanCreateEffects } from '../../../store/loans/loans.effects';
-import { loansFeature } from '../../../store/loans/loans.reducer';
 import { LoansStore } from './store/loans.store';
 
 export const loansRoutes: Routes = [
@@ -21,11 +18,6 @@ export const loansRoutes: Routes = [
 
       provideState(accountsFeature),
       provideEffects(AccountsEffects),
-
-      provideState(loansFeature),
-      provideEffects([LoanCreateEffects]),
-
-      LoanCreateService,
     ],
     children: [
       { path: '', redirectTo: 'all', pathMatch: 'full' },

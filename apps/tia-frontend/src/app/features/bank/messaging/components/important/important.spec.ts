@@ -49,6 +49,7 @@ describe('Important', () => {
     mockMessagingStore = {
       mails: signal<Mail[]>([]),
       isLoading: signal(false),
+      error: signal(null),
       total: signal({ importants: 2 }),
       pagination: signal({ hasNextPage: false }),
 

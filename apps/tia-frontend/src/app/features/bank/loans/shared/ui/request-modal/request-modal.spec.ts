@@ -1,93 +1,132 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
 import { RequestModal } from './request-modal';
-import { provideMockStore, MockStore } from '@ngrx/store/testing';
-import { LoansCreateActions } from 'apps/tia-frontend/src/app/store/loans/loans.actions';
 import { TranslateModule } from '@ngx-translate/core';
 import { LoansStore } from '../../../store/loans.store';
-import { selectAccounts } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { signal } from '@angular/core';
+import { vi } from 'vitest';
+import { Store } from '@ngrx/store';
 
 describe('RequestModal', () => {
   let component: RequestModal;
   let fixture: ComponentFixture<RequestModal>;
-  let globalStore: MockStore;
-  let loansStoreMock: any;
+
+  const mockGELAccount = {
+    id: 'acc-1',
+    currency: 'GEL',
+    friendlyName: 'My GEL Acc',
+    balance: 100,
+    name: 'Account 1',
+  };
+  const mockUSDAccount = {
+    id: 'acc-2',
+    currency: 'USD',
+    friendlyName: 'My USD Acc',
+    balance: 50,
+    name: 'Account 2',
+  };
+  const mockAccounts = [mockGELAccount, mockUSDAccount];
+
+  const globalStoreMock = {
+    selectSignal: vi.fn().mockReturnValue(signal(mockAccounts)),
+    dispatch: vi.fn(),
+  };
+
+  const loansStoreMock = {
+    loading: signal(false),
+    error: signal(null),
+    requestLoan: vi.fn(),
+    loadPurposes: vi.fn(),
+    loadMonths: vi.fn(),
+    purposeOptions: signal([{ label: 'Purpose 1', value: 'p1' }]),
+    loanMonthsOptions: signal([{ label: '12 Months', value: 12 }]),
+  };
 
   beforeEach(async () => {
-    loansStoreMock = {
-      loanMonthsOptions: signal([{ label: '12 Months', value: 12 }]),
-      purposeOptions: signal([{ label: 'Personal', value: 'personal' }]),
-      loadMonths: vi.fn(),
-      loadPurposes: vi.fn(),
-    };
-
     await TestBed.configureTestingModule({
-      imports: [RequestModal, ReactiveFormsModule, TranslateModule.forRoot()],
+      imports: [RequestModal, TranslateModule.forRoot()],
       providers: [
-        provideMockStore({
-          selectors: [
-            {
-              selector: selectAccounts,
-              value: [
-                {
-                  id: '1',
-                  friendlyName: 'Checking',
-                  balance: 1000,
-                  currency: 'GEL',
-                },
-                {
-                  id: '2',
-                  name: 'Savings',
-                  balance: 5000,
-                  currency: 'GEL',
-                },
-                {
-                  id: '3',
-                  name: 'USD Account',
-                  balance: 500,
-                  currency: 'USD',
-                },
-              ],
-            },
-          ],
-        }),
+        { provide: Store, useValue: globalStoreMock },
         { provide: LoansStore, useValue: loansStoreMock },
       ],
     }).compileComponents();
 
-    globalStore = TestBed.inject(MockStore);
-    vi.spyOn(globalStore, 'dispatch');
-
     fixture = TestBed.createComponent(RequestModal);
     component = fixture.componentInstance;
+
     fixture.componentRef.setInput('isOpen', true);
+
+    vi.spyOn(component.close, 'emit');
+
     fixture.detectChanges();
   });
 
-  afterEach(() => {
-    vi.clearAllMocks();
-  });
-
-  it('should create and load dependencies', () => {
+  it('should create and load initial data on init', () => {
     expect(component).toBeTruthy();
     expect(loansStoreMock.loadMonths).toHaveBeenCalled();
     expect(loansStoreMock.loadPurposes).toHaveBeenCalled();
   });
 
-  it('should filter accounts by GEL currency', () => {
-    const options = (component as any).accountOptions();
-    expect(options).toHaveLength(2);
-    expect(options[0].label).toContain('Checking');
-    expect(options[1].label).toContain('Savings');
+  it('should filter accounts and map them to options correctly', () => {
+    const options = component['accountOptions']();
+
+    expect(options.length).toBe(1);
+    expect(options[0].value).toBe(mockGELAccount.id);
+    expect(options[0].label).toContain('My GEL Acc');
+    expect(options[0].label).toContain('100 GEL');
+
+    const usdOption = options.find((o) => o.value === mockUSDAccount.id);
+    expect(usdOption).toBeUndefined();
   });
 
-  it('should not dispatch if form invalid', () => {
-    component.form.reset();
+  it('should mark form as touched if invalid on save', () => {
+    const markTouchedSpy = vi.spyOn(component.form, 'markAllAsTouched');
+
     component.onSave();
-    expect(globalStore.dispatch).not.toHaveBeenCalledWith(
-      expect.objectContaining({ type: LoansCreateActions.requestLoan.type }),
+
+    expect(component.form.valid).toBe(false);
+    expect(loansStoreMock.requestLoan).not.toHaveBeenCalled();
+    expect(markTouchedSpy).toHaveBeenCalled();
+    expect(component.close.emit).not.toHaveBeenCalled();
+  });
+
+  it('should submit request and close modal if form is valid', () => {
+    component.form.patchValue({
+      loanAmount: 500,
+      amountToReceiveAccountId: 'acc-1',
+      months: 12,
+      purpose: 'p1',
+      firstPaymentDate: '2023-01-01',
+      contact: {
+        address: {
+          street: 'Main St',
+          city: 'Tbilisi',
+          region: 'Tbilisi',
+          postalCode: '1234',
+        },
+        contactPerson: {
+          name: 'John Doe',
+          relationship: 'Brother',
+          phone: '555123456',
+          email: 'john@example.com',
+        },
+      },
+    });
+
+    component.onSave();
+
+    expect(component.form.valid).toBe(true);
+
+    expect(loansStoreMock.requestLoan).toHaveBeenCalledWith(
+      expect.objectContaining({
+        loanAmount: 500,
+        months: 12,
+        amountToReceiveAccountId: 'acc-1',
+        contact: expect.objectContaining({
+          address: expect.objectContaining({ city: 'Tbilisi' }),
+        }),
+      }),
     );
+
+    expect(component.close.emit).toHaveBeenCalled();
   });
 });

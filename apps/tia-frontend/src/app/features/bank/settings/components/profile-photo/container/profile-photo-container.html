@@ -7,6 +7,8 @@
   [isUploadModalOpen]="isUploadModalOpen()"
   [isDragOver]="isDragOver()"
   [savingChanges]="savingChanges()"
+  [mainAvatarLoading]="mainAvatarLoading()"
+  [defaultAvatarsLoadingMap]="defaultAvatarsLoadingMap()"
   (openUploadModal)="onOpenUploadModal()"
   (uploadModalClosed)="onCloseUploadModal()"
   (dragOver)="onDragOver($event)"
@@ -17,6 +19,9 @@
   (saveChanges)="onSaveChanges()"
   (selectDefaultAvatar)="onSelectDefaultAvatar($event)"
   (imageError)="onImageLoadError()"
+  (mainImageLoad)="onMainImageLoad()"
+  (defaultAvatarLoad)="onDefaultAvatarLoad($event)"
+  (defaultAvatarError)="onDefaultAvatarError($event)"
 >
 </app-profile-photo>
 
