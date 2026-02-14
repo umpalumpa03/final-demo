@@ -47,12 +47,11 @@
         (cardReordered)="onCardReordered($event)"
         (cardRemoved)="onCardRemoved($event)"
       />
-
       <app-drag-container
         [items]="myItems"
         [layout]="'grid'"
         [columns]="{ default: 2, md: 1, sm: 1 }"
-        [colspans]="[2, 1, 1, 2]"
+        [colspans]="colspans()"
         [containerTitle]="'storybook.drag-and-drop.sections.addContent.title' | translate"
         (itemsChange)="onItemsChange($event)"
         (orderChange)="onContainerOrderChange($event)"

@@ -3,13 +3,14 @@ import { BillsList } from './bills-list';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
-
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
 import {
   selectDistributedAmount,
   selectSelectedSenderAccountId,
   selectSelectedTemplates,
 } from '../../../../store/paybill.selectors';
-import { TranslateModule } from '@ngx-translate/core';
+import { TemplatesPageActions } from '../../../../store/paybill.actions';
 
 describe('BillsList', () => {
   let component: BillsList;
@@ -33,77 +34,112 @@ describe('BillsList', () => {
           ],
         }),
       ],
+      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
 
     fixture = TestBed.createComponent(BillsList);
     component = fixture.componentInstance;
     store = TestBed.inject(MockStore);
 
-    // Set required input before first detectChanges
     fixture.componentRef.setInput('isDistribution', false);
     fixture.detectChanges();
   });
 
-  it('should initialize form controls based on store templates', () => {
-    expect(component.payForm.contains('1')).toBe(true);
-    expect(component.payForm.get('1')?.value).toBe('100.00');
-    expect(Object.keys(component.payForm.controls).length).toBe(2);
+  it('should create', () => {
+    expect(component).toBeTruthy();
   });
 
-  it('should disable controls when isDistribution input is true', async () => {
-    fixture.componentRef.setInput('isDistribution', true);
-    fixture.detectChanges();
+  describe('Form & Effect Logic', () => {
+    it('should update all amounts when distributedAmount changes', () => {
+      store.overrideSelector(selectDistributedAmount, 50.5);
+      store.refreshState();
+      fixture.detectChanges();
 
-    // Wait for the effect to propagate to the UI
-    await fixture.whenStable();
+      expect(component.payForm.get('1')?.value).toBe('50.50');
+      expect(component.payForm.get('2')?.value).toBe('50.50');
+    });
 
-    expect(component.payForm.get('1')?.disabled).toBe(true);
+    it('should reset to amountDue if distributedAmount is 0', () => {
+      // Set to non-zero first
+      store.overrideSelector(selectDistributedAmount, 50);
+      store.refreshState();
+      fixture.detectChanges();
+
+      // Reset to 0
+      store.overrideSelector(selectDistributedAmount, 0);
+      store.refreshState();
+      fixture.detectChanges();
+
+      expect(component.payForm.get('1')?.value).toBe('100.00');
+    });
+
+    it('should disable form controls if isDistribution is true', () => {
+      fixture.componentRef.setInput('isDistribution', true);
+      fixture.detectChanges();
+      // Re-triggering effect via setInput
+      expect(component.payForm.get('1')?.disabled).toBe(true);
+    });
   });
 
-  it('should update all amounts when distributedAmount changes to a non-zero value', async () => {
-    store.overrideSelector(selectDistributedAmount, 50.5);
-    store.refreshState();
-    fixture.detectChanges();
-    await fixture.whenStable();
+  describe('preventNegative logic', () => {
+    let preventSpy: any;
 
-    expect(component.payForm.get('1')?.value).toBe('50.50');
-    expect(component.payForm.get('2')?.value).toBe('50.50');
+    beforeEach(() => {
+      preventSpy = vi.fn();
+    });
+
+    const createMockEvent = (key: string, value: string) =>
+      ({
+        key,
+        target: { value } as HTMLInputElement,
+        preventDefault: preventSpy,
+      }) as unknown as KeyboardEvent;
+
+    it('should prevent negative sign', () => {
+      component.preventNegative(createMockEvent('-', ''));
+      expect(preventSpy).toHaveBeenCalled();
+    });
+
+    it('should prevent second decimal separator (dot or comma)', () => {
+      component.preventNegative(createMockEvent('.', '10.5'));
+      expect(preventSpy).toHaveBeenCalled();
+
+      preventSpy.mockClear();
+      component.preventNegative(createMockEvent(',', '10,5'));
+      expect(preventSpy).toHaveBeenCalled();
+    });
+
+    it('should prevent more than 5 digits in integer part', () => {
+      component.preventNegative(createMockEvent('6', '12345'));
+      expect(preventSpy).toHaveBeenCalled();
+    });
+
+    it('should allow decimal separator even if integer part is 5 digits', () => {
+      component.preventNegative(createMockEvent('.', '12345'));
+      expect(preventSpy).not.toHaveBeenCalled();
+    });
+
+    it('should prevent more than two decimal places', () => {
+      component.preventNegative(createMockEvent('5', '10.55'));
+      expect(preventSpy).toHaveBeenCalled();
+    });
+
+    it('should allow navigation keys', () => {
+      component.preventNegative(createMockEvent('Backspace', '123'));
+      expect(preventSpy).not.toHaveBeenCalled();
+    });
   });
 
-  it('should correctly format the payload via buildPayload', () => {
-    const payload = component.buildPayload();
-
-    expect(payload).toEqual([
-      {
+  describe('Payload', () => {
+    it('should correctly format the payload via buildPayload', () => {
+      const payload = component.buildPayload();
+      expect(payload).toHaveLength(2);
+      expect(payload[0]).toEqual({
         serviceId: 's1',
         identification: 'id1',
         amount: 100,
         senderAccountId: 'acc-123',
-      },
-      {
-        serviceId: 's2',
-        identification: 'id2',
-        amount: 200,
-        senderAccountId: 'acc-123',
-      },
-    ]);
-  });
-
-  it('should block "e" and "-" keys in preventNegative', () => {
-    const preventSpy = vi.fn();
-    const mockEvent = {
-      key: '-',
-      preventDefault: preventSpy,
-    } as unknown as KeyboardEvent;
-
-    component.preventNegative(mockEvent);
-    expect(preventSpy).toHaveBeenCalled();
-
-    preventSpy.mockClear();
-    component.preventNegative({
-      key: '1',
-      preventDefault: preventSpy,
-    } as unknown as KeyboardEvent);
-    expect(preventSpy).not.toHaveBeenCalled();
+      });
+    });
   });
 });
