@@ -8,6 +8,7 @@
       @for (button of headerButtons(); track button.action) {
       <app-button
         [variant]="button.variant"
+        [fullWidth]="true"
         (click)="buttonClick.emit(button.action)"
         >{{ button.textKey | translate }}</app-button
       >
