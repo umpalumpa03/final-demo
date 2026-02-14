@@ -28,30 +28,48 @@ export class SettingsHeader {
 
   public readonly isMobile = this.brakepointService.isMobile;
 
-  public ngOnInit(): void {
-    this.translate.onLangChange.pipe(
-      takeUntilDestroyed(this.destroyRef),
-      tap(() => {
-        this.navItems.set(SETTINGS_NAV_CONFIG.map((item) => ({
-          label: this.translate.instant(item.translateString),
-          route: item.routerLink,
-          icon: item.src,
-        })));
-      })
-    ).subscribe();
+  private updateNavItems(): void {
+    this.navItems.set(
+      SETTINGS_NAV_CONFIG.map((item) => ({
+        label: this.translate.instant(item.translateString),
+        route: item.routerLink,
+        icon: item.src,
+      })),
+    );
+
+    this.adminNavItems.set(
+      SETTINGS_NAV_ADMIN_CONFIG.map((item) => ({
+        label: this.translate.instant(item.translateString),
+        route: item.routerLink,
+        icon: item.src,
+      })),
+    );
   }
 
-  public readonly navItems = signal(SETTINGS_NAV_CONFIG.map((item) => ({
-    label: this.translate.instant(item.translateString),
-    route: item.routerLink,
-    icon: item.src,
-  })));
+  public ngOnInit(): void {
+    this.updateNavItems();
 
-  public readonly adminNavItems = SETTINGS_NAV_ADMIN_CONFIG.map((item) => ({
-    label: this.translate.instant(item.translateString),
-    route: item.routerLink,
-    icon: item.src,
-  }));
+    this.translate.onLangChange
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        tap(() => this.updateNavItems()),
+      )
+      .subscribe();
+
+    this.translate.onTranslationChange
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        tap(() => this.updateNavItems()),
+      )
+      .subscribe();
+  }
+
+  public readonly navItems = signal<
+    { label: string; route: string; icon: string }[]
+  >([]);
+  public readonly adminNavItems = signal<
+    { label: string; route: string; icon: string }[]
+  >([]);
 
   private readonly userRole = this.store.selectSignal(selectUserRole);
 

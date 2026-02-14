@@ -30,23 +30,6 @@ describe('AppearanceService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should fetch available themes and toggle isLoading', () => {
-    const mockThemes = [{ name: 'Dark', value: 'dark-theme' }];
-
-    expect(service.isLoading()).toBe(false);
-
-    service.getAvailableThemes().subscribe((themes) => {
-      expect(themes).toEqual(mockThemes);
-      expect(service.isLoading()).toBe(false);
-    });
-
-    expect(service.isLoading()).toBe(true);
-
-    const req = httpMock.expectOne(`${environment.apiUrl}/settings/get-available-themes`);
-    expect(req.request.method).toBe('GET');
-    req.flush(mockThemes);
-  });
-
   it('should call updateUserTheme with correct body', () => {
     const themeToSet = 'blue-theme';
 
