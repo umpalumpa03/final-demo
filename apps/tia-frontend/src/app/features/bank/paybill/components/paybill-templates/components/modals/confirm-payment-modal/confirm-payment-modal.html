@@ -1,12 +1,19 @@
 <div class="payment__modal">
-  <app-selected-items [forModal]="true"></app-selected-items>
-  <app-payment-distribution
-    [selectedItemsLength]="selectedItemsLength()"
-    (isDistribution)="distributionChange.emit($event)"
-  ></app-payment-distribution>
-  <app-bills-list [isDistribution]="isDistribution()"></app-bills-list>
-  <app-total-amount></app-total-amount>
-  <app-account-select [maxVisible]="5" [isHeader]="true"></app-account-select>
+  <div class="payment__modal__scroll">
+    <div class="payment__modal__scroll__wrapper">
+      <app-selected-items [forModal]="true"></app-selected-items>
+      <app-payment-distribution
+        [selectedItemsLength]="selectedItemsLength()"
+        (isDistribution)="distributionChange.emit($event)"
+      ></app-payment-distribution>
+      <app-bills-list [isDistribution]="isDistribution()"></app-bills-list>
+      <app-total-amount></app-total-amount>
+      <app-account-select
+        [maxVisible]="5"
+        [isHeader]="true"
+      ></app-account-select>
+    </div>
+  </div>
   <app-modal-actions
     [submitVariant]="submitVariant()"
     [submitLabel]="submitLabel()"

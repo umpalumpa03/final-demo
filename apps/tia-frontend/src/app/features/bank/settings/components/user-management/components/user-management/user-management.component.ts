@@ -56,8 +56,7 @@ export class UserManagementComponent implements OnInit, OnDestroy {
 
   protected readonly isSaving = signal(false);
 
-  protected readonly pagination = usePagination(this.filteredUsers, 4);
-
+  protected readonly pagination = usePagination(this.filteredUsers);
   constructor() {
     effect(() => {
       const mode = this.modalService.modalState();

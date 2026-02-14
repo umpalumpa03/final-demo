@@ -1,10 +1,16 @@
 <div class="modal__buttons">
-  <app-button variant="outline" type="button" (click)="cancel.emit()">
+  <app-button
+    [fullWidth]="true"
+    variant="outline"
+    type="button"
+    (click)="cancel.emit()"
+  >
     {{ 'paybill.templates.cancelButton' | translate}}
   </app-button>
   <app-button
     [variant]="submitVariant()"
     [type]="submitType()"
+    [fullWidth]="true"
     (click)="submit.emit()"
     [isLoading]="isLoading()"
   >
