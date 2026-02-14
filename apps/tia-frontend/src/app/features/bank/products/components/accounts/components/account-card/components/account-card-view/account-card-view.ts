@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Account } from '../../../../../../../../../shared/models/accounts/accounts.model';
 import { ButtonComponent } from '../../../../../../../../../shared/lib/primitives/button/button';
 import { BasicCard } from '../../../../../../../../../shared/lib/cards/basic-card/basic-card';
@@ -65,6 +65,20 @@ export class AccountCardViewComponent {
     );
 
     return availablePermissions.length > 0;
+  });
+  private translate = inject(TranslateService);
+
+  protected displayError = computed(() => {
+    const error = this.renameError();
+    if (!error) return null;
+    if (error.toLowerCase().includes('friendly name')) {
+      return this.translate.instant(
+        'my-products.accounts.form.friendlyName.tooLong',
+      );
+    }
+    return this.translate.instant(
+      'my-products.accounts.form.friendlyName.tooLong',
+    );
   });
 
   private elementRef = inject(ElementRef);

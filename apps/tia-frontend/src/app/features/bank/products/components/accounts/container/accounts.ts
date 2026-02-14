@@ -110,7 +110,7 @@ export class Accounts implements OnInit {
 
   private createAccountForm(): FormGroup {
     return this.fb.group({
-      friendlyName: ['', Validators.minLength(3)],
+      friendlyName: ['', [Validators.minLength(3), Validators.maxLength(50)]],
       type: ['', Validators.required],
       currency: ['', Validators.required],
     });
