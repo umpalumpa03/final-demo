@@ -3,6 +3,7 @@ import { MailHeader } from '../../shared/ui/mail-header/mail-header';
 import { TranslatePipe } from '@ngx-translate/core';
 import { MessagingStore } from '../../store/messaging.store';
 import { EmptyCard } from '../../shared/ui/empty-card/empty-card';
+import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { MailCard } from '../../shared/ui/mail-card/mail-card';
 import { Router } from '@angular/router';
@@ -13,7 +14,7 @@ import { selectCurrentUserEmail } from 'apps/tia-frontend/src/app/store/user-inf
 
 @Component({
   selector: 'app-favorites',
-  imports: [MailHeader, TranslatePipe, EmptyCard, RouteLoader, MailCard, ScrollArea],
+  imports: [MailHeader, TranslatePipe, EmptyCard, ErrorStates, RouteLoader, MailCard, ScrollArea],
   templateUrl: './favorites.html',
   styleUrl: './favorites.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -26,6 +27,7 @@ export class Favorites implements OnInit {
     return this.messagingStore.mails()
   });
   public readonly isLoading = this.messagingStore.isLoading;
+  public readonly error = this.messagingStore.error;
   public readonly selectedMailIds = signal<Set<number>>(new Set());
   public readonly total = computed(() => this.messagingStore.total()['favorite'] ?? 0);
   private readonly nav = inject(NavigationService);
@@ -68,7 +70,7 @@ export class Favorites implements OnInit {
   }
 
   ngOnInit(): void {
-    if (!(this.nav.previous()?.includes('favorites') && this.messagingStore.mails().length > 0)) {
+    if (!(this.nav.previous()?.includes('favorites') && this.messagingStore.mails().length > 0) || this.messagingStore.error()) {
       this.messagingStore.loadMails('favorites');
     }
     this.messagingStore.getTotalCount('favorite');
@@ -85,6 +87,10 @@ export class Favorites implements OnInit {
   public goToDetail(mailId: number): void {
     this.router.navigate(['/bank/messaging/favorites', mailId]);
     this.markAsRead(mailId);
+  }
+
+  public retry(): void {
+    this.messagingStore.loadMails('favorites');
   }
 
   public onScrollBottom(): void {
