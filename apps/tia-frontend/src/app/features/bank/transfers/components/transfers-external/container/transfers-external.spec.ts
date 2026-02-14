@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Component, Pipe, PipeTransform } from '@angular/core';
 import { StepperHeader } from 'apps/tia-frontend/src/app/features/storybook/components/forms/multistep-form/stepper-header/stepper-header';
+import { TransferStore } from '../../../store/transfers.store';
 
 @Component({
   selector: 'app-stepper-header',
@@ -23,11 +24,15 @@ class MockTranslatePipe implements PipeTransform {
 describe('TransfersExternal', () => {
   let mockRouter: { url: string };
   let mockTranslateService: any;
+  let mockTransferStore: any;
 
   beforeEach(() => {
     mockRouter = { url: '/' };
     mockTranslateService = {
       instant: vi.fn((key: string) => key),
+    };
+    mockTransferStore = {
+      reset: vi.fn(),
     };
 
     TestBed.configureTestingModule({
@@ -35,6 +40,7 @@ describe('TransfersExternal', () => {
       providers: [
         { provide: Router, useValue: mockRouter },
         { provide: TranslateService, useValue: mockTranslateService },
+        { provide: TransferStore, useValue: mockTransferStore },
       ],
     }).overrideComponent(TransfersExternal, {
       remove: { imports: [StepperHeader, TranslatePipe] },
@@ -80,5 +86,11 @@ describe('TransfersExternal', () => {
     mockRouter.url = '/transfers/external';
     const fixture = TestBed.createComponent(TransfersExternal);
     expect(fixture.componentInstance.currentStep).toBe(1);
+  });
+
+  it('should call transferStore.reset on destroy', () => {
+    const fixture = TestBed.createComponent(TransfersExternal);
+    fixture.destroy();
+    expect(mockTransferStore.reset).toHaveBeenCalled();
   });
 });

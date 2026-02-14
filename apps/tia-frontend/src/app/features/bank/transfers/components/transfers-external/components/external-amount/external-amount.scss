@@ -16,99 +16,6 @@
     color: var(--color-fg);
   }
 
-  &__summary {
-    background: $gray-25;
-    border-radius: 1.6rem;
-    padding: 2.4rem 3.2rem;
-    margin-bottom: 3.2rem;
-  }
-
-  &__summary-grid {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    align-items: center;
-    gap: 2rem;
-
-    @media (max-width: 700px) {
-      grid-template-columns: 1fr;
-      gap: 2.4rem;
-    }
-  }
-
-  &__summary-item {
-    &--to {
-      @include display-flex();
-      justify-content: flex-end;
-
-      @media (max-width: 700px) {
-        justify-content: flex-start;
-      }
-    }
-  }
-
-  &__summary-to-wrapper {
-    @include display-flex(column);
-    align-items: flex-start;
-  }
-
-  &__summary-label {
-    @include font-inter(500, 1.2rem, 1.6rem);
-    color: $gray-500;
-    text-transform: uppercase;
-    display: block;
-    margin-bottom: 1.2rem;
-  }
-
-  &__summary-content {
-    @include display-flex(row);
-    align-items: center;
-    gap: 1.6rem;
-  }
-
-  &__summary-icon,
-  &__summary-initials {
-    @include svg-icon(4.8rem);
-    @include flex-center();
-    background: var(--color-bg-primary);
-    border-radius: 50%;
-    border: 0.1rem solid $gray-200;
-  }
-
-  &__summary-initials {
-    @include font-inter(600, 1.4rem, 1);
-    color: var(--color-fg);
-    text-transform: uppercase;
-  }
-
-  &__summary-name {
-    @include font-inter(600, 1.6rem, 2.4rem);
-    color: var(--color-fg);
-    white-space: nowrap;
-  }
-
-  &__summary-sub {
-    @include font-inter(400, 1.4rem, 2rem);
-    color: $gray-500;
-  }
-
-  &__summary-divider {
-    @include flex-center();
-    min-width: 6.4rem;
-  }
-
-  &__transfer-circle {
-    @include svg-icon(4.4rem);
-    @include flex-center();
-    background: var(--color-bg-primary);
-    border-radius: 50%;
-    border: 0.1rem solid $gray-200;
-    box-shadow: 0 0.2rem 0.8rem rgba(0, 0, 0, 0.05);
-
-    img {
-      @include svg-icon(2.4rem);
-    }
-  }
-
   &__divider {
     height: 0.1rem;
     background: $gray-200;
@@ -145,6 +52,7 @@
       gap: 0.4rem;
     }
   }
+
   &__error {
     @include font-inter(500, 1.3rem, 1.8rem);
     color: $red-600;
@@ -156,6 +64,7 @@
     background: transparent;
     border: none;
   }
+
   &__available {
     @include font-inter(400, 1.3rem, 1.8rem);
     color: $gray-500;
@@ -205,24 +114,15 @@
       gap: 1.6rem;
     }
   }
-  &__otp-wrapper {
-    position: relative;
-  }
 
   &__otp-loader {
-    @include flex-center() ;
+    @include flex-center();
     position: absolute;
     inset: 0;
     background: rgba(255, 255, 255, 0.8);
     z-index: 10;
   }
 
-  &__success-toast {
-    position: fixed;
-    top: 7rem;
-    right: 1rem;
-    z-index: 1000;
-  }
   &__loader-overlay {
     position: fixed;
     inset: 0;

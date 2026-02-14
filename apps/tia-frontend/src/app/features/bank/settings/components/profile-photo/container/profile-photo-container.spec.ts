@@ -23,6 +23,7 @@ import { environment } from '../../../../../../../environments/environment';
 import { AlertService } from '@tia/core/services/alert/alert.service';
 import { Router } from '@angular/router';
 import { Routes } from '../../../../../../core/auth/models/tokens.model';
+import { IVerified } from '../../../../../../core/auth/models/otp-verification.models';
 
 describe('ProfilePhotoContainer', () => {
   let component: ProfilePhotoContainer;
@@ -530,11 +531,34 @@ describe('ProfilePhotoContainer', () => {
     store.overrideSelector(selectPhoneUpdateChallengeId, 'challenge-123');
     store.refreshState();
 
-    component.onVerifyOtp('123456');
+    const verifiedEvent: IVerified = { isCalled: true, otp: '123456' };
+    component.onVerifyOtp(verifiedEvent);
 
     expect(dispatchSpy).toHaveBeenCalledWith(
       PersonalInfoActions.verifyPhoneUpdate({ challengeId: 'challenge-123', code: '123456' })
     );
+  });
+
+  it('should not dispatch verifyPhoneUpdate when isCalled is false', () => {
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+    store.overrideSelector(selectPhoneUpdateChallengeId, 'challenge-123');
+    store.refreshState();
+
+    const verifiedEvent: IVerified = { isCalled: false, otp: '123456' };
+    component.onVerifyOtp(verifiedEvent);
+
+    expect(dispatchSpy).not.toHaveBeenCalled();
+  });
+
+  it('should not dispatch verifyPhoneUpdate when otp is null', () => {
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+    store.overrideSelector(selectPhoneUpdateChallengeId, 'challenge-123');
+    store.refreshState();
+
+    const verifiedEvent: IVerified = { isCalled: true, otp: null };
+    component.onVerifyOtp(verifiedEvent);
+
+    expect(dispatchSpy).not.toHaveBeenCalled();
   });
 
   it('should handle onResendOtp', () => {
@@ -545,11 +569,22 @@ describe('ProfilePhotoContainer', () => {
     store.overrideSelector(selectPhoneUpdateResendCount, 2);
     store.refreshState();
 
-    component.onResendOtp();
+    component.onResendOtp(true);
 
     expect(dispatchSpy).toHaveBeenCalledWith(
       PersonalInfoActions.resendPhoneOTP({ challengeId: 'challenge-123' })
     );
+  });
+
+  it('should not dispatch resendPhoneOTP when isCalled is false', () => {
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+    store.overrideSelector(selectPhoneUpdateChallengeId, 'challenge-123');
+    store.overrideSelector(selectPhoneUpdateResendCount, 2);
+    store.refreshState();
+
+    component.onResendOtp(false);
+
+    expect(dispatchSpy).not.toHaveBeenCalled();
   });
 
   it('should show alert when resend count is 3 or more', () => {
@@ -559,7 +594,7 @@ describe('ProfilePhotoContainer', () => {
     store.overrideSelector(selectPhoneUpdateResendCount, 3);
     store.refreshState();
 
-    component.onResendOtp();
+    component.onResendOtp(true);
 
     expect(mockAlertService.error).toHaveBeenCalledWith(
       'Max resend reached',

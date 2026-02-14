@@ -58,6 +58,7 @@ export class TreeContainer extends DragBase {
   public readonly cardBackground = input(false);
   public readonly badgeLabel = input('Items:');
   public readonly selectAll = input(false);
+  public readonly unselectAll = input(false);
 
   public readonly isLoading = input(false);
 
@@ -87,18 +88,17 @@ export class TreeContainer extends DragBase {
   public readonly paginationChanged = output<{ id: string; value: number }>();
   public readonly buttonClicked = output<string>();
 
-  public readonly internalItems = linkedSignal<TreeItem[], TreeItem[]>({
+  public readonly internalItems = linkedSignal({
     source: this.items,
-    computation: (newItems) => [...newItems],
+    computation: (newItems: TreeItem[]) => [...newItems],
   });
-  private previousSelectAll: boolean | null = null;
 
-  public readonly internalGroups = linkedSignal<
-    TreeGroupConfig[],
-    TreeGroupConfig[]
-  >({
+  private previousSelectAll: boolean | null = null;
+  private previousUnselectAll: boolean | null = null;
+
+  public readonly internalGroups = linkedSignal({
     source: this.groups,
-    computation: (newGroups) => {
+    computation: (newGroups: TreeGroupConfig[]) => {
       const base = [...newGroups];
       if (!base.some((g) => g.id === UNGROUPED_ID)) {
         base.push({
@@ -120,6 +120,7 @@ export class TreeContainer extends DragBase {
       this.internalItems(),
     ),
   );
+
   public groupHasCheckbox(groupId: string): boolean {
     return (
       this.hasCheckbox() && (this.itemsByGroup()[groupId]?.length ?? 0) > 0
@@ -147,6 +148,19 @@ export class TreeContainer extends DragBase {
       this.checkedItemsChange.emit(
         this.treeService.getCheckedItemIds(this.checkedItemIds()),
       );
+    });
+
+    effect(() => {
+      const shouldUnselectAll = this.unselectAll();
+      if (this.previousUnselectAll === shouldUnselectAll) {
+        return;
+      }
+      this.previousUnselectAll = shouldUnselectAll;
+
+      if (shouldUnselectAll) {
+        this.checkedItemIds.set(new Set());
+        this.checkedItemsChange.emit([]);
+      }
     });
   }
 
