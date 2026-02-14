@@ -110,6 +110,25 @@ export const accountsFeature = createFeature({
       updateFriendlyNameError: error,
     })),
     on(UserInfoActions.loadUser, () => initialAccountsState),
+
+    on(AccountsActions.enrichAccountsWithLastTransactions, (state) => ({
+      ...state,
+      isLoadingLastTransactions: true,
+      lastTransactionsError: null,
+    })),
+
+    on(AccountsActions.enrichAccountsSuccess, (state, { lastTransactions }) => ({
+      ...state,
+      lastTransactions,
+      isLoadingLastTransactions: false,
+      lastTransactionsError: null,
+    })),
+
+    on(AccountsActions.enrichAccountsFailure, (state, { error }) => ({
+      ...state,
+      isLoadingLastTransactions: false,
+      lastTransactionsError: error,
+    })),
   ),
 });
 
@@ -127,4 +146,7 @@ export const {
   selectIsCreateModalOpen,
   selectIsUpdatingFriendlyName,
   selectUpdateFriendlyNameError,
+  selectLastTransactions,
+  selectIsLoadingLastTransactions,
+  selectLastTransactionsError,
 } = accountsFeature;

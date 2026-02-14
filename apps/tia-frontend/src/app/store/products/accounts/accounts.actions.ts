@@ -3,6 +3,7 @@ import {
   Account,
   CreateAccountRequest,
 } from '../../../shared/models/accounts/accounts.model';
+import { ITransactions } from '@tia/shared/models/transactions/transactions.models';
 
 export const AccountsActions = createActionGroup({
   source: 'Accounts',
@@ -34,5 +35,9 @@ export const AccountsActions = createActionGroup({
 
     'Open Create Modal': emptyProps(),
     'Close Create Modal': emptyProps(),
+
+    'Enrich Accounts With Last Transactions': emptyProps(),
+    'Enrich Accounts Success': props<{ lastTransactions: Record<string, ITransactions | null> }>(),
+    'Enrich Accounts Failure': props<{ error: string }>(),
   },
 });

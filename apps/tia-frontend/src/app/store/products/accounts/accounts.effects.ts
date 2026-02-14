@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { of } from 'rxjs';
+import { of, forkJoin } from 'rxjs';
 import {
   map,
   catchError,
@@ -12,12 +12,15 @@ import { AccountsApiService } from '../../../shared/services/accounts/accounts.a
 import { AccountsActions } from './accounts.actions';
 import { Store } from '@ngrx/store';
 import { selectAccounts } from './accounts.selectors';
+import { TransactionApiService } from '../../../shared/services/transactions-service/transactions.api.service';
+import { ITransactions } from '../../../shared/models/transactions/transactions.models';
 
 @Injectable()
 export class AccountsEffects {
   private readonly actions$ = inject(Actions);
   private readonly accountsService = inject(AccountsApiService);
   private readonly store = inject(Store);
+  private readonly transactionService = inject(TransactionApiService);
 
   loadAccounts$ = createEffect(() =>
     this.actions$.pipe(
@@ -119,6 +122,67 @@ export class AccountsEffects {
               );
             }),
           );
+      }),
+    ),
+  );
+
+  enrichAccountsWithLastTransactions$ = createEffect(() =>
+    this.actions$.pipe(
+      // Listen for successful account loading
+      ofType(
+        AccountsActions.loadAccountsSuccess,
+        AccountsActions.loadActiveAccountsSuccess,
+      ),
+      // Extract accounts from the action payload
+      switchMap(({ accounts }) => {
+        // Guard: If no accounts, skip
+        if (!accounts || accounts.length === 0) {
+          return of(
+            AccountsActions.enrichAccountsSuccess({ lastTransactions: {} }),
+          );
+        }
+
+        // Create one API request per account
+        const transactionRequests = accounts.map((account) =>
+          this.transactionService
+            .getTransactions({
+              accountIban: account.iban,
+              pageLimit: 1, // Only get the most recent transaction
+            })
+            .pipe(
+              map((response) => ({
+                iban: account.iban,
+                transaction: response.items[0] || null, // First item or null
+              })),
+              catchError(() =>
+                // If this account's request fails, return null for this account
+                of({ iban: account.iban, transaction: null }),
+              ),
+            ),
+        );
+
+        // Execute all requests in parallel
+        return forkJoin(transactionRequests).pipe(
+          map((results) => {
+            // Convert array to Record<iban, transaction>
+            const lastTransactions = results.reduce(
+              (acc, { iban, transaction }) => {
+                acc[iban] = transaction;
+                return acc;
+              },
+              {} as Record<string, ITransactions | null>,
+            );
+
+            return AccountsActions.enrichAccountsSuccess({ lastTransactions });
+          }),
+          catchError((error) =>
+            of(
+              AccountsActions.enrichAccountsFailure({
+                error: error.message || 'Failed to load last transactions',
+              }),
+            ),
+          ),
+        );
       }),
     ),
   );

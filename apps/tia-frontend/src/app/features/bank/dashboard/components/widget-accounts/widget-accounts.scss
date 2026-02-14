@@ -42,6 +42,26 @@
       }
     }
 
+    &__trendline {
+      @include font-inter(500, 1.4rem, 2rem);
+      @include display-flex(row);
+      align-items: center;
+      gap: 0.4rem;
+
+      &--positive {
+        color: $green-600;
+      }
+
+      &--negative {
+        color: $red-600;
+      }
+
+      &-arrow {
+        width: 1.2rem;
+        height: 1.2rem;
+      }
+    }
+
     &__balance {
       @include font-inter(700, 2rem, 2.8rem);
       color: $blue-1000;
