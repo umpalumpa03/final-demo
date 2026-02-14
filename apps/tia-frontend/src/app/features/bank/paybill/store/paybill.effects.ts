@@ -4,7 +4,6 @@ import { Store } from '@ngrx/store';
 import {
   catchError,
   concatMap,
-  delay,
   EMPTY,
   filter,
   map,
@@ -19,7 +18,6 @@ import { PaybillActions, TemplatesPageActions } from './paybill.actions';
 import {
   selectCategories,
   selectCategoriesLoaded,
-  selectNotifications,
   selectPaymentPayload,
   selectProviders,
   selectSelectedProviderId,
@@ -35,7 +33,6 @@ import { Router } from '@angular/router';
 import { PaybillErrorPayload } from './paybill.state';
 import { selectTransactionToRepeat } from 'apps/tia-frontend/src/app/store/transactions/transactions.selector';
 import {
-  IPaybillTransactions,
   PaybillTransactionMeta,
 } from '../components/shared/models/transactions.model';
 import { ITransactions } from '@tia/shared/models/transactions/transactions.models';
@@ -234,23 +231,6 @@ export class PaybillEffect {
           }),
         ),
       ),
-    );
-  });
-
-  autoDismissNotifications$ = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(PaybillActions.addNotification),
-      delay(100),
-      withLatestFrom(this.store.select(selectNotifications)),
-      mergeMap(([action, notifications]) => {
-        const lastNotification = notifications[notifications.length - 1];
-
-        if (!lastNotification) return EMPTY;
-
-        return of(
-          PaybillActions.dismissNotification({ id: lastNotification.id! }),
-        ).pipe(delay(3000));
-      }),
     );
   });
 
