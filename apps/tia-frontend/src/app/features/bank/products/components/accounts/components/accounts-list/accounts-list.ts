@@ -7,11 +7,9 @@ import {
   OnInit,
   output,
   signal,
-  inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
-import { Router } from '@angular/router';
 import { AccountCardComponent } from '../account-card/container/account-card';
 import { RouteLoader } from '../../../../../../../shared/lib/feedback/route-loader/route-loader';
 import {
@@ -61,7 +59,10 @@ export class AccountsListComponent implements OnInit {
   public renameAccount = output<{ accountId: string; friendlyName: string }>();
   public renameSuccess = output<void>();
 
-  private readonly ITEMS_PER_PAGE = 3;
+  private readonly GAP_SIZE_LARGE = 4;
+  private readonly GAP_SIZE_SMALL = 2.2;
+  private readonly GAP_SIZE_MEDIUM = 2;
+
   public currentPageBySection = signal<Record<string, number>>({});
 
   public skeletonItems = computed(() =>
@@ -73,9 +74,6 @@ export class AccountsListComponent implements OnInit {
   public selectedAccountForTransfer = signal<string | null>(null);
   public selectedAccountPermission = signal<number>(0);
   public selectedAccountCurrency = signal<string>('');
-  public selectedPermissionValue = signal<number>(0);
-
-  private router = inject(Router);
 
   ngOnInit(): void {
     const width = window.innerWidth;
@@ -125,19 +123,14 @@ export class AccountsListComponent implements OnInit {
     const percentOffset = currentPage * 100;
 
     if (itemsPerPage === 1) {
-      const gapSize = this.screenWidth() <= 425 ? 2.2 : 4;
+      const gapSize =
+        this.screenWidth() <= 425 ? this.GAP_SIZE_SMALL : this.GAP_SIZE_LARGE;
       const totalGapOffset = currentPage * gapSize;
       return `translateX(calc(-${percentOffset}% - ${totalGapOffset}rem))`;
     }
 
-    const width = this.screenWidth();
-    let gapSize: number;
-    if (width <= 1250) {
-      gapSize = 4;
-    } else {
-      gapSize = 2;
-    }
-
+    const gapSize =
+      this.screenWidth() <= 1250 ? this.GAP_SIZE_LARGE : this.GAP_SIZE_MEDIUM;
     const gapsPerPage = itemsPerPage - 1;
     const totalGapOffset = currentPage * gapsPerPage * gapSize;
     return `translateX(calc(-${percentOffset}% - ${totalGapOffset}rem))`;

@@ -158,13 +158,6 @@
     &__skel-card {
       flex: 0 0 calc((100% - 4rem) / 2);
     }
-
-    &__carousel {
-      &-button {
-        width: 2.5rem;
-        height: 2.5rem;
-      }
-    }
   }
 
   @media (max-width: 800px) {
@@ -172,6 +165,7 @@
       flex-direction: column;
       align-items: flex-start;
     }
+
     &__section {
       &-grid {
         app-account-card {
@@ -184,17 +178,6 @@
 
     &__skel-card {
       flex: 0 0 100%;
-    }
-
-    &__carousel {
-      &-button {
-        width: 2rem;
-        height: 2rem;
-      }
-
-      &-arrow {
-        font-size: 1rem;
-      }
     }
   }
 
@@ -202,19 +185,11 @@
     &__section {
       &-grid {
         gap: 2.2rem;
-        app-account-card {
-          flex: 0 0 100%;
-          min-width: 100%;
-          max-width: 100%;
-        }
       }
+
       &-header {
         margin: 2rem 9rem 2rem 2rem;
       }
-    }
-
-    &__skel-card {
-      flex: 0 0 100%;
     }
 
     &__carousel {
