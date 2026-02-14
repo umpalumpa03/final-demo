@@ -13,7 +13,6 @@
   cursor: pointer;
   @include flex-center(column, $justify: space-between);
   gap: 1.6rem;
-  transition: all 0.2s ease-in-out;
 
   &:hover {
     border-color: $blue-400;

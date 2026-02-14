@@ -15,7 +15,6 @@
   height: 100%;
   @include display-flex(column);
   gap: 2.4rem;
-  transition: all 0.3s ease;
 
   &--hover {
     &:hover {
