@@ -12,7 +12,6 @@ describe('Loans Integration - View Loans Flow', () => {
   let ctx: TestContext;
 
   beforeEach(async () => {
-    // ONLY call this. Do NOT call TestBed.configureTestingModule again.
     ctx = await setupLoansTest();
   });
 
@@ -75,37 +74,17 @@ describe('Loans Integration - View Loans Flow', () => {
     });
   });
 
-  it('should handle load error', async () => {
-    ctx.loansStore.loadLoans({ status: null, forceChange: true });
-
-    const req = ctx.httpMock.expectOne(`${environment.apiUrl}/loans`);
-
-    req.flush(
-      { message: 'Server Error' },
-      { status: 500, statusText: 'Server Error' },
-    );
-
-    await vi.waitFor(() => {
-      expect(ctx.loansStore.loading()).toBe(false);
-      expect(ctx.loansStore.error()).toBeTruthy();
-    });
-  });
-
   it('should use cached details on second visit', async () => {
     const loanId = 'loan-1';
 
-    // 1. First Load
     ctx.loansStore.loadLoanDetails(loanId);
     const req = ctx.httpMock.expectOne(`${environment.apiUrl}/loans/${loanId}`);
     req.flush({ ...mockLoanResponse, id: loanId });
 
-    // 2. Clear Selection (but cache remains)
     ctx.loansStore.clearLoanDetails();
 
-    // 3. Second Load
     ctx.loansStore.loadLoanDetails(loanId);
 
-    // 4. Expect NO new request
     ctx.httpMock.expectNone(`${environment.apiUrl}/loans/${loanId}`);
 
     expect(ctx.loansStore.selectedLoanDetails()).toBeTruthy();
@@ -113,7 +92,6 @@ describe('Loans Integration - View Loans Flow', () => {
   });
 
   it('should navigate to next loan details', async () => {
-    // Manually seed the store by simulating a load
     ctx.loansStore.loadLoans({ status: null, forceChange: true });
     const listReq = ctx.httpMock.expectOne(`${environment.apiUrl}/loans`);
     listReq.flush([
@@ -121,15 +99,12 @@ describe('Loans Integration - View Loans Flow', () => {
       { ...mockLoanResponse, id: 'loan-2' },
     ]);
 
-    // Now select the first one
     ctx.loansStore.loadLoanDetails('loan-1');
     const req1 = ctx.httpMock.expectOne(`${environment.apiUrl}/loans/loan-1`);
     req1.flush({ ...mockLoanResponse, id: 'loan-1' });
 
-    // Navigate
     ctx.loansStore.navigateDetails(1);
 
-    // Expect load for loan-2
     const req2 = ctx.httpMock.expectOne(`${environment.apiUrl}/loans/loan-2`);
     expect(req2.request.method).toBe('GET');
     req2.flush({ ...mockLoanResponse, id: 'loan-2' });

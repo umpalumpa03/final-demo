@@ -20,11 +20,8 @@ describe('AllLoans', () => {
       loansWithAccountInfo: signal(mockLoans),
       filteredLoans: signal(mockLoans),
       loadLoans: vi.fn(),
-      // Must be signals for template access store.error()
       error: signal(null),
       loading: signal(false),
-
-      // Mock methods used in template
       openDetails: vi.fn(),
       renameLoan: vi.fn(),
       isDetailsOpen: signal(false),
@@ -65,9 +62,6 @@ describe('AllLoans', () => {
   });
 
   it('should call loadLoans on init', () => {
-    expect(loansStoreMock.loadLoans).toHaveBeenCalledWith({
-      status: null,
-      forceChange: true,
-    });
+    expect(loansStoreMock.loadLoans).toHaveBeenCalledWith({ status: null });
   });
 });

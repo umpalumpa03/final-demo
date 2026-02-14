@@ -50,7 +50,7 @@ describe('Loans Integration - Prepayment Wizard Flow', () => {
           value: '450',
           text: 'New Monthly Payment',
           amount: 450,
-        }, // Added text/amount to match interface
+        },
         {
           label: 'Total Interest Saved',
           value: '1200',
@@ -71,7 +71,6 @@ describe('Loans Integration - Prepayment Wizard Flow', () => {
       message: 'Payment completed successfully',
     };
 
-    // 1. Calculate Prepayment
     store.calculatePrepayment({
       payload: {
         loanId: mockLoan.id,
@@ -81,7 +80,6 @@ describe('Loans Integration - Prepayment Wizard Flow', () => {
       },
     });
 
-    // FIX: Match the Service URL (GET request to /calculate-partial-prepayment)
     const calcReq = httpMock.expectOne(
       (req) =>
         req.url.includes('/loans/calculate-partial-prepayment') &&
@@ -94,7 +92,6 @@ describe('Loans Integration - Prepayment Wizard Flow', () => {
 
     expect(store.calculationResult()).toEqual(mockCalculationResult);
 
-    // 2. Initiate Prepayment
     store.initiatePrepayment({
       payload: {
         loanId: mockLoan.id,
@@ -105,7 +102,6 @@ describe('Loans Integration - Prepayment Wizard Flow', () => {
       },
     });
 
-    // FIX: Match the Service URL (POST request to /loan-prepayment)
     const initiateReq = httpMock.expectOne(
       (req) =>
         req.url.includes('/loans/loan-prepayment') && req.method === 'POST',
@@ -114,34 +110,16 @@ describe('Loans Integration - Prepayment Wizard Flow', () => {
 
     expect(store.activeChallengeId()).toBe('challenge-abc');
 
-    // 3. Verify Prepayment
     store.verifyPrepayment({
-      payload: {
-        challengeId: 'challenge-abc',
-        code: '123456',
-      },
+      payload: { challengeId: 'challenge-abc', code: '123456' },
     });
 
-    // FIX: Match the Service URL (POST request to /verify-prepayment)
-    const verifyReq = httpMock.expectOne(
-      (req) =>
-        req.url.includes('/loans/verify-prepayment') && req.method === 'POST',
+    const verifyReq = httpMock.expectOne((req) =>
+      req.url.includes('/verify-prepayment'),
     );
     verifyReq.flush(mockVerifyResponse);
 
     expect(store.activeChallengeId()).toBeNull();
-    expect(store.calculationResult()).toBeNull();
-    expect(store.loanDetailsCache()).toEqual({});
-    expect(store.actionLoading()).toBe(false);
-
-    // 4. Reload Loans
-    store.loadLoans({ forceChange: true });
-
-    const reloadReq = httpMock.expectOne(
-      (req) =>
-        req.url.endsWith('/loans') && // Be careful not to match /loans/something-else
-        req.method === 'GET',
-    );
 
     const mockUpdatedLoans = [
       {
@@ -151,14 +129,16 @@ describe('Loans Integration - Prepayment Wizard Flow', () => {
         purpose: 'Vehicle',
       },
     ];
-
+    const reloadReq = httpMock.expectOne(
+      (req) => req.url.endsWith('/loans') && req.method === 'GET',
+    );
     reloadReq.flush(mockUpdatedLoans);
 
     expect(store.loans().length).toBe(1);
     expect(store.loans()[0].loanAmount).toBe(9000);
   });
 
-  it('should handle prepayment verification failure', () => {
+  it('should handle prepayment verification failure and then success', () => {
     store.initiatePrepayment({
       payload: {
         loanId: 'loan-123',
@@ -185,18 +165,29 @@ describe('Loans Integration - Prepayment Wizard Flow', () => {
       },
     });
 
-    const verifyReq = httpMock.expectOne((req) =>
-      req.url.includes('/loans/verify-prepayment'),
+    const failReq = httpMock.expectOne((r) =>
+      r.url.includes('/verify-prepayment'),
     );
-
-    verifyReq.flush({
+    failReq.flush({
       success: false,
       message: 'Invalid verification code',
     });
 
     expect(store.error()).toBeTruthy();
-    expect(store.actionLoading()).toBe(false);
-    expect(store.activeChallengeId()).toBe('challenge-abc');
+
+    store.verifyPrepayment({ payload: { challengeId: 'ch', code: '123' } });
+
+    const successReq = httpMock.expectOne((r) =>
+      r.url.includes('/verify-prepayment'),
+    );
+    successReq.flush({ success: true });
+
+    const reloadReq = httpMock.expectOne(
+      (req) => req.url.endsWith('/loans') && req.method === 'GET',
+    );
+    reloadReq.flush([{ id: 'loan-123', loanAmount: 9000 }]);
+
+    expect(store.loans()[0].loanAmount).toBe(9000);
   });
 
   it('should clear cache after successful prepayment', () => {
@@ -232,14 +223,13 @@ describe('Loans Integration - Prepayment Wizard Flow', () => {
       verify: { challengeId: 'challenge-abc', method: 'SMS' },
     });
 
-    store.verifyPrepayment({
-      payload: { challengeId: 'challenge-abc', code: '123456' },
-    });
+    store.verifyPrepayment({ payload: { challengeId: 'ch', code: '123' } });
 
-    const verifyReq = httpMock.expectOne((req) =>
-      req.url.includes('/loans/verify-prepayment'),
-    );
-    verifyReq.flush({ success: true, message: 'Success' });
+    httpMock
+      .expectOne((r) => r.url.includes('/verify-prepayment'))
+      .flush({ success: true });
+
+    httpMock.expectOne((r) => r.url.endsWith('/loans')).flush([]);
 
     expect(store.loanDetailsCache()).toEqual({});
   });

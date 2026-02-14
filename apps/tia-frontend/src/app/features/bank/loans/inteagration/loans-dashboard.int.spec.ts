@@ -14,7 +14,6 @@ describe('Loans Integration - Dashboard Interactions', () => {
   beforeEach(async () => {
     ctx = await setupLoansTest();
 
-    // Seed data directly into the store for dashboard tests
     patchState(ctx.loansStore as any, {
       loans: [
         {

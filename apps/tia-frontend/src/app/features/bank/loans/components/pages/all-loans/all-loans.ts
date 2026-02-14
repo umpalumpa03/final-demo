@@ -33,6 +33,6 @@ export class AllLoans implements OnInit {
   }
 
   public loadData(): void {
-    this.store.loadLoans({ status: null, forceChange: true });
+    this.store.loadLoans({ status: null });
   }
 }

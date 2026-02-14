@@ -8,6 +8,8 @@ export const loansInitialState: ILoansState = {
   accounts: [],
   prepaymentOptions: [],
   loanDetailsCache: {},
+  createLoading: false,
+  createError: null as string | null,
   isDetailsOpen: false,
   isPrepaymentOpen: false,
   activePrepaymentLoan: null,
@@ -40,10 +42,10 @@ export enum ErrorKeys {
   VERIFY_PREPAYMENT = 'loans.store-errors.verify_prepayment',
   INSUFFICIENT_FUNDS = 'loans.store-errors.insufficient_funds',
   INVALID_CODE = 'loans.store-errors.invalid_code',
-  PAYMENT_COMPLETE = 'loans.store-success.payment_complete',
 }
 
 export enum SuccessKeys {
+  PAYMENT_COMPLETE = 'loans.store-success.payment_complete',
   OTP_SENT = 'loans.store-success.otp_sent',
   REQUEST = 'loans.store-success.request',
 }
