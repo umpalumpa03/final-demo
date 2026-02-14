@@ -1,76 +1,22 @@
 @use '../../../../../../../../shared/styles/palette' as *;
 @use '../../../../../../../../shared/styles/mixins' as *;
 
-.modal__header {
-  padding: 2.4rem 2.4rem 1.6rem;
-  border-bottom: 0.1rem solid $gray-200;
-}
-
-.modal__title {
-  @include font-arimo(600, 2.4rem);
-  color: $gray-800;
-  margin: 0 0 1rem 0;
-}
-
-.modal__subtitle {
-  @include font-arimo(400, 1.6rem);
-  color: $gray-600;
-  margin: 0;
-}
-
 .modal__form {
-  padding: 2.4rem;
-}
+  padding: 2.4rem 1.4rem;
 
-.modal__actions {
-  @include display-flex(row);
-  gap: 1.2rem;
-  margin-top: 2.4rem;
-}
-
-.modal__button {
-  flex: 1;
-  padding: 1.2rem 2rem;
-  border: none;
-  border-radius: 0.8rem;
-  @include font-arimo(600, 1.6rem);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  @include flex-center(row);
-  gap: 0.8rem;
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+  .form-group {
+    margin-bottom: 2rem;
   }
 
-  &--primary {
-    background: $blue-ocean;
-    color: $white;
+  .modal__actions {
+    @include display-flex(row);
+    gap: 1.5rem;
+    margin-top: 2.4rem;
+    justify-content: flex-end;
+    align-items: center;
 
-    &:hover:not(:disabled) {
-      background: $blue-ocean-muted;
-    }
-
-    &:active:not(:disabled) {
-      background: $blue-ocean-muted;
-    }
-  }
-
-  &--secondary {
-    background: $gray-200;
-    color: $gray-800;
-
-    &:hover {
-      background: $gray-500;
-    }
-
-    &:active {
-      background: $gray-600;
+    @media (max-width: 380px) {
+      flex-direction: column-reverse;
     }
   }
-}
-
-.form-group {
-  margin-bottom: 1.6rem;
 }

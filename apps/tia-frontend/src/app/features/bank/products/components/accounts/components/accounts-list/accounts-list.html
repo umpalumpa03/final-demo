@@ -74,6 +74,7 @@
     [message]="'my-products.accounts.noAccountsMessage' | translate"
     [buttonMessage]="'my-products.accounts.createAccount' | translate"
     (buttonClick)="handleOpenModal()"
+    [border]="false"
   >
   </app-error-states>
   } @else if (accountsGrouped(); as grouped) { @for (section of
