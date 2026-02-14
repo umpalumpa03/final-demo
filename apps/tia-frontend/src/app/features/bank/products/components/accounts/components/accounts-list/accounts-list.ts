@@ -62,13 +62,13 @@ export class AccountsListComponent implements OnInit {
   public renameSuccess = output<void>();
 
   private readonly ITEMS_PER_PAGE = 3;
-  private readonly GAP_SIZE = 2;
   public currentPageBySection = signal<Record<string, number>>({});
 
   public skeletonItems = computed(() =>
     Array.from({ length: this.itemsPerPage() }, (_, i) => i + 1),
   );
   private itemsPerPage = signal<number>(3);
+  private screenWidth = signal<number>(0);
   public showTransferModal = signal<boolean>(false);
   public selectedAccountForTransfer = signal<string | null>(null);
   public selectedAccountPermission = signal<number>(0);
@@ -78,13 +78,17 @@ export class AccountsListComponent implements OnInit {
   private router = inject(Router);
 
   ngOnInit(): void {
-    this.updateItemsPerPage(window.innerWidth);
+    const width = window.innerWidth;
+    this.screenWidth.set(width);
+    this.updateItemsPerPage(width);
   }
 
   @HostListener('window:resize', ['$event'])
   onResize(event: Event): void {
     const target = event.target as Window;
-    this.updateItemsPerPage(target.innerWidth);
+    const width = target.innerWidth;
+    this.screenWidth.set(width);
+    this.updateItemsPerPage(width);
     this.currentPageBySection.set({});
   }
 
@@ -118,16 +122,31 @@ export class AccountsListComponent implements OnInit {
   public getTransformOffset(sectionKey: string): string {
     const currentPage = this.getCurrentPage(sectionKey);
     const itemsPerPage = this.itemsPerPage();
-    const gapsPerPage = itemsPerPage - 1;
-    const totalGapOffset = currentPage * gapsPerPage * this.GAP_SIZE;
     const percentOffset = currentPage * 100;
+
+    if (itemsPerPage === 1) {
+      const gapSize = this.screenWidth() <= 425 ? 2.2 : 4;
+      const totalGapOffset = currentPage * gapSize;
+      return `translateX(calc(-${percentOffset}% - ${totalGapOffset}rem))`;
+    }
+
+    const width = this.screenWidth();
+    let gapSize: number;
+    if (width <= 1250) {
+      gapSize = 4;
+    } else {
+      gapSize = 2;
+    }
+
+    const gapsPerPage = itemsPerPage - 1;
+    const totalGapOffset = currentPage * gapsPerPage * gapSize;
     return `translateX(calc(-${percentOffset}% - ${totalGapOffset}rem))`;
   }
 
   public updateItemsPerPage(width: number): void {
-    if (width <= 768) {
+    if (width <= 800) {
       this.itemsPerPage.set(1);
-    } else if (width <= 1224) {
+    } else if (width <= 1250) {
       this.itemsPerPage.set(2);
     } else {
       this.itemsPerPage.set(3);
