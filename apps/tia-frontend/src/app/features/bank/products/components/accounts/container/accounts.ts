@@ -13,7 +13,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { shareReplay } from 'rxjs/operators';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { AccountsListComponent } from '../components/accounts-list/accounts-list';
-import { CreateAccountComponent } from '../components/create-account/components/create-account';
+import { CreateAccountComponent } from '../components/create-account/create-account';
 import {
   CreateAccountRequest,
   AccountType,
