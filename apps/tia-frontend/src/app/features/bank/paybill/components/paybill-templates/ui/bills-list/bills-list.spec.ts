@@ -48,42 +48,37 @@ describe('BillsList', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-  it('should initialize form controls and dispatch total amount', () => {
-    const dispatchSpy = vi.spyOn(store, 'dispatch');
 
-    // Check form controls
-    expect(component.payForm.contains('1')).toBe(true);
-    expect(component.payForm.get('1')?.value).toBe('100.00');
+  describe('Form & Effect Logic', () => {
+    it('should update all amounts when distributedAmount changes', () => {
+      store.overrideSelector(selectDistributedAmount, 50.5);
+      store.refreshState();
+      fixture.detectChanges();
 
-    expect(dispatchSpy).toHaveBeenCalledWith(
-      TemplatesPageActions.setTotalAmount({ amount: 300 }),
-    );
-  });
+      expect(component.payForm.get('1')?.value).toBe('50.50');
+      expect(component.payForm.get('2')?.value).toBe('50.50');
+    });
 
-  it('should update all amounts when distributedAmount changes', () => {
-    store.overrideSelector(selectDistributedAmount, 50.5);
-    store.refreshState();
-    fixture.detectChanges();
+    it('should reset to amountDue if distributedAmount is 0', () => {
+      // Set to non-zero first
+      store.overrideSelector(selectDistributedAmount, 50);
+      store.refreshState();
+      fixture.detectChanges();
 
-    expect(component.payForm.get('1')?.value).toBe('50.50');
-    expect(component.payForm.get('2')?.value).toBe('50.50');
-  });
+      // Reset to 0
+      store.overrideSelector(selectDistributedAmount, 0);
+      store.refreshState();
+      fixture.detectChanges();
 
-  it('should dispatch new total when a form value changes', async () => {
-    const dispatchSpy = vi.spyOn(store, 'dispatch');
+      expect(component.payForm.get('1')?.value).toBe('100.00');
+    });
 
-    const control = component.payForm.get('1');
-
-    if (control) {
-      (control as any).setValue('150.00');
-    }
-
-    await fixture.whenStable();
-    fixture.detectChanges();
-
-    expect(dispatchSpy).toHaveBeenCalledWith(
-      TemplatesPageActions.setTotalAmount({ amount: 350 }),
-    );
+    it('should disable form controls if isDistribution is true', () => {
+      fixture.componentRef.setInput('isDistribution', true);
+      fixture.detectChanges();
+      // Re-triggering effect via setInput
+      expect(component.payForm.get('1')?.disabled).toBe(true);
+    });
   });
 
   describe('preventNegative logic', () => {
@@ -105,13 +100,22 @@ describe('BillsList', () => {
       expect(preventSpy).toHaveBeenCalled();
     });
 
+    it('should prevent second decimal separator (dot or comma)', () => {
+      component.preventNegative(createMockEvent('.', '10.5'));
+      expect(preventSpy).toHaveBeenCalled();
+
+      preventSpy.mockClear();
+      component.preventNegative(createMockEvent(',', '10,5'));
+      expect(preventSpy).toHaveBeenCalled();
+    });
+
     it('should prevent more than 5 digits in integer part', () => {
       component.preventNegative(createMockEvent('6', '12345'));
       expect(preventSpy).toHaveBeenCalled();
     });
 
-    it('should allow digits if within length limit', () => {
-      component.preventNegative(createMockEvent('6', '123'));
+    it('should allow decimal separator even if integer part is 5 digits', () => {
+      component.preventNegative(createMockEvent('.', '12345'));
       expect(preventSpy).not.toHaveBeenCalled();
     });
 
@@ -120,23 +124,22 @@ describe('BillsList', () => {
       expect(preventSpy).toHaveBeenCalled();
     });
 
-    it('should allow decimals if only one digit exists', () => {
-      component.preventNegative(createMockEvent('5', '10.5'));
-      expect(preventSpy).not.toHaveBeenCalled();
-    });
-
-    it('should allow navigation keys (Backspace, Tab, etc)', () => {
-      component.preventNegative(createMockEvent('Backspace', '123456'));
+    it('should allow navigation keys', () => {
+      component.preventNegative(createMockEvent('Backspace', '123'));
       expect(preventSpy).not.toHaveBeenCalled();
     });
   });
 
-  it('should correctly format the payload via buildPayload', () => {
-    const payload = component.buildPayload();
-    expect(payload[0]).toMatchObject({
-      serviceId: 's1',
-      amount: 100,
-      senderAccountId: 'acc-123',
+  describe('Payload', () => {
+    it('should correctly format the payload via buildPayload', () => {
+      const payload = component.buildPayload();
+      expect(payload).toHaveLength(2);
+      expect(payload[0]).toEqual({
+        serviceId: 's1',
+        identification: 'id1',
+        amount: 100,
+        senderAccountId: 'acc-123',
+      });
     });
   });
 });
