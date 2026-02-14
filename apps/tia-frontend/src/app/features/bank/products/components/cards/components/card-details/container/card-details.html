@@ -1,16 +1,5 @@
-<div class="card-details">
-  @if (alertService.isVisible() && !(isDetailsModalOpen$ | async)) {
-  <div class="card-details__alert">
-    <app-alert-types-with-icons
-      [alertType]="alertService.alertType()!"
-      [alertMessage]="alertService.alertMessage()"
-    />
-  </div>
-  } @if (loading$ | async) {
-  <div class="card-details__loading">
-    <app-route-loader variant="pulsing" />
-  </div>
-  } @else if (error$ | async; as errorMsg) {
+@if (viewState$ | async; as state) {
+  @if (state.error; as errorMsg) {
   <app-error-states
     variant="failed"
     [header]="'my-products.card.card-details.failedToLoadCard' | translate"
@@ -18,92 +7,101 @@
     [buttonMessage]="'my-products.card.card-details.retry' | translate"
     (buttonClick)="handleRetry()"
   />
-  } @else if (cardData$ | async; as data) {
-  <div class="card-details__header">
-    <app-button
-      variant="ghost"
-      [icon]="'left-arrow.svg'"
-      (click)="handleBack()"
-    >
-      {{'my-products.card.card-details.backToCards' | translate }}
-    </app-button>
-  </div>
+  } @else if (state.data; as data) {
+  <div class="card-details">
+    @if (alertService.isVisible() && !(isDetailsModalOpen$ | async)) {
+    <div class="card-details__alert">
+      <app-alert-types-with-icons
+        [alertType]="alertService.alertType()!"
+        [alertMessage]="alertService.alertMessage()"
+      />
+    </div>
+    }
+    
+    <div class="card-details__header">
+      <app-button
+        variant="ghost"
+        [icon]="'left-arrow.svg'"
+        (click)="handleBack()"
+      >
+        {{'my-products.card.card-details.backToCards' | translate }}
+      </app-button>
+    </div>
 
-  @if (hasMultipleCards$ | async) {
-  <div class="card-details__carousel">
+    @if (hasMultipleCards$ | async) {
+    <div class="card-details__carousel">
+      <app-card-image
+        [imageBase64]="data.imageBase64"
+        [cardName]="data.details.cardName"
+      />
+
+      <app-pill-paging
+        [total]="(currentAccountCardIds$ | async)?.length ?? 0"
+        [currentIndex]="(currentCardIndex$ | async) ?? 0"
+         [flexWrap]="true"
+        (goTo)="handleGoToCard($event)"
+      />
+      <div class="card-details__btns">
+        <app-button
+          variant="outline"
+          icon="arrowLeft.svg"
+          (click)="handlePreviousCard()"
+        >
+        </app-button>
+
+        <app-button
+          variant="outline"
+          icon="arrowRight.svg"
+          (click)="handleNextCard()"
+        >
+        </app-button>
+      </div>
+    </div>
+    } @else {
     <app-card-image
       [imageBase64]="data.imageBase64"
       [cardName]="data.details.cardName"
     />
-
-    <app-pill-paging
-      [total]="(currentAccountCardIds$ | async)?.length ?? 0"
-      [currentIndex]="(currentCardIndex$ | async) ?? 0"
-      (goTo)="handleGoToCard($event)"
-    />
-    <div class="card-details__btns">
-      <app-button
-        variant="outline"
-        icon="arrowLeft.svg"
-        (click)="handlePreviousCard()"
+    }
+    
+    <div class="card-details__information">
+      <app-basic-card
+        title="{{'my-products.card.card-details.cardTitle' | translate }}"
+        subtitle="{{'my-products.card.card-details.manageYourCard' | translate }}"
+        maxWidth="100%"
+        padding="2rem"
+        alignItems="center"
       >
-      </app-button>
+        <app-card-info-section
+          [cardName]="data.details.cardName"
+          [cardType]="data.details.type"
+          [currency]="data.currency"
+          [status]="data.details.status"
+          [isActiveStatus]="data.isActiveStatus"
+          [formattedBalance]="data.formattedBalance"
+          [shouldShowCreditLimit]="data.shouldShowCreditLimit"
+          [formattedCreditLimit]="data.formattedCreditLimit"
+        />
+      </app-basic-card>
 
-      <app-button
-        variant="outline"
-        icon="arrowRight.svg"
-        (click)="handleNextCard()"
+      <app-basic-card
+        title="{{'my-products.card.card-details.cardInfo' | translate }}"
+        subtitle="{{'my-products.card.card-details.cardDetails' | translate }}"
+        maxWidth="100%"
+        padding="2rem"
+        alignItems="center"
+        justifyContent="space-evenly"
       >
-      </app-button>
+        <app-quick-actions-section
+          (viewTransactionsClicked)="handleViewTransactions()"
+          (viewSensitiveDetailsClicked)="handleOpenDetailsModal()"
+        />
+      </app-basic-card>
     </div>
   </div>
-  } @else {
-  <app-card-image
-    [imageBase64]="data.imageBase64"
-    [cardName]="data.details.cardName"
-  />
   }
-  <div class="card-details__information">
-    <app-basic-card
-      title="{{'my-products.card.card-details.cardTitle' | translate }}"
-      subtitle="{{'my-products.card.card-details.manageYourCard' | translate }}"
-      maxWidth="100%"
-      padding="2rem"
-      alignItems="center"
-    >
-      <app-card-info-section
-        [cardName]="data.details.cardName"
-        [cardType]="data.details.type"
-        [currency]="data.currency"
-        [status]="data.details.status"
-        [isActiveStatus]="data.isActiveStatus"
-        [formattedBalance]="data.formattedBalance"
-        [shouldShowCreditLimit]="data.shouldShowCreditLimit"
-        [formattedCreditLimit]="data.formattedCreditLimit"
-        
-      />
-    </app-basic-card>
+}
 
-    <app-basic-card
-      title="{{'my-products.card.card-details.cardInfo' | translate }}"
-      subtitle="{{'my-products.card.card-details.cardDetails' | translate }}"
-      maxWidth="100%"
-      padding="2rem"
-      alignItems="center"
-     justifyContent="space-evenly"
-    >
-      <app-quick-actions-section
-        (transferOwnClicked)="handleTransferOwn()"
-        (transferExternalClicked)="handleTransferExternal()"
-        (paybillClicked)="handlePaybill()"
-        (viewTransactionsClicked)="handleViewTransactions()"
-        (viewSensitiveDetailsClicked)="handleOpenDetailsModal()"
-      />
-    </app-basic-card>
-  </div>
-
-  }
-</div>
 @if (isDetailsModalOpen$ | async; as isModalOpen) {
 <app-card-details-modal
   [isOpen]="isModalOpen"

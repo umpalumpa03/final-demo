@@ -264,7 +264,6 @@ on(CardsActions.createCardSuccess, (state) => ({
   ...state,
   isCreating: false,
   createError: null,
-  // isCreateModalOpen: false,
 })),
 
 );

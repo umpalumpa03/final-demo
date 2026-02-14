@@ -27,6 +27,7 @@
   &__loading,
   &__error {
     @include font-inter(400, 1.6rem, 1.5rem);
+    @include flex-center(column, center,center);
     padding: 4rem;
     text-align: center;
   }

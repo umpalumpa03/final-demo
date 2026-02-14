@@ -50,7 +50,7 @@ import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-typ
     CardGroupItem,
     AddCardButton,
     TranslatePipe,
-    Skeleton,AlertTypesWithIcons
+    Skeleton,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

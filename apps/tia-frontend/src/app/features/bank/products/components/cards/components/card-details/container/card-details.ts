@@ -8,7 +8,7 @@ import {
 import { Store } from '@ngrx/store';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { combineLatest, map, switchMap, of, tap, take, filter } from 'rxjs';
+import { combineLatest, map, switchMap, of, tap, take, filter, startWith } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   loadCardDetails,
@@ -47,6 +47,7 @@ import { PillsComponent } from 'apps/tia-frontend/src/app/features/storybook/com
 import { PillPaging } from '@tia/shared/ui/pill-paging/pill-paging';
 import { AlertService } from '@tia/core/services/alert/alert.service';
 import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
+import { selectLoading } from 'apps/tia-frontend/src/app/store/exchange-rates/exchange-rates.selectors';
 
 @Component({
   selector: 'app-card-details',
@@ -54,7 +55,6 @@ import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-typ
   styleUrls: ['./card-details.scss'],
   imports: [
     CommonModule,
-    RouteLoader,
     ButtonComponent,
     BasicCard,
     ErrorStates,
@@ -77,7 +77,7 @@ protected readonly alertService = inject(AlertService);
     map((params) => params.get('cardId') || ''),
   );
 
-  protected readonly loading$ = this.store.select(selectCardDetailsLoading);
+
   protected readonly error$ = this.store.select(selectCardDetailsError);
   protected readonly isDetailsModalOpen$ = this.store.select(
     selectIsCardDetailsModalOpen,
@@ -168,17 +168,6 @@ ngOnInit(): void {
       .subscribe();
   }
 
-  protected handleTransferOwn(): void {
-    this.router.navigate(['/bank/transfers/internal']);
-  }
-
-  protected handleTransferExternal(): void {
-    this.router.navigate(['/bank/transfers/external']);
-  }
-
-  protected handlePaybill(): void {
-    this.router.navigate(['/bank/paybill']);
-  }
 
   protected handleViewTransactions(): void {
     this.cardId$
@@ -317,4 +306,15 @@ private setCurrentIndexAfterLoad(cardId: string, accountId: string): void {
       )
       .subscribe();
   }
+
+protected readonly viewState$ = combineLatest([
+  this.error$,
+  this.cardData$
+]).pipe(
+  map(([error, data]) => ({
+    error,
+    data
+  }))
+);
+  
 }

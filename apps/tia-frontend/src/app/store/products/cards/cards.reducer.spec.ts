@@ -405,12 +405,13 @@ describe('OTP reducer', () => {
       expect(state.currentCardIndex).toBe(2);
     });
   });
-  it('should close modal on createCardSuccess', () => {
-    const state = cardsReducer(
-      { ...initialCardsState, isCreating: true, isCreateModalOpen: true },
-      CardsActions.createCardSuccess(),
-    );
-    expect(state.isCreating).toBe(false);
-    expect(state.isCreateModalOpen).toBe(false);
-  });
+it('should close modal on createCardSuccess', () => {
+  const state = cardsReducer(
+    { ...initialCardsState, isCreating: true, isCreateModalOpen: true },
+    CardsActions.createCardSuccess(),
+  );
+  expect(state.isCreating).toBe(false);
+  expect(state.createError).toBeNull();
+});
+  
 });

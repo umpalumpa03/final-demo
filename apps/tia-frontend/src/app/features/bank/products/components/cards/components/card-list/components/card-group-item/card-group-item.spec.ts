@@ -7,14 +7,14 @@ describe('CardGroupItem', () => {
   let component: CardGroupItem;
   let fixture: ComponentFixture<CardGroupItem>;
 
-  const mockGroup: CardGroupView = {
-    account: { id: '1', name: 'Account 1', iban: 'GB123', balance: 1000, currency: 'GBP', status: 'ACTIVE', cardIds: ['card1'], openedAt: null },
-    cardImages: [{ cardId: 'card1', imageBase64: 'base64' }],
-    cardCountLabel: '1 Card',
-    activeIndex: 0,
-    cards: [{ cardId: 'card1', imageBase64: 'base64', cardAlt: 'Card 1', isStacked: false, isActive: true, zIndex: 100, index: 0 }]
-  };
-
+const mockGroup: CardGroupView = {
+  account: { id: '1', name: 'Account 1', iban: 'GB123', balance: 1000, currency: 'GBP', status: 'ACTIVE', cardIds: ['card1'], openedAt: null },
+  cardImages: [{ cardId: 'card1', imageBase64: 'base64' }],
+  cardCountLabel: '1',
+  cardCountKey: 'my-products.card.card-list.card-group-item.cardCount',
+  activeIndex: 0,
+  cards: [{ cardId: 'card1', imageBase64: 'base64', cardAlt: 'Card 1', isStacked: false, isActive: true, zIndex: 100, index: 0, stackPosition: 0 }]
+};
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [CardGroupItem]

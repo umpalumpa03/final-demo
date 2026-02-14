@@ -243,7 +243,7 @@ private updateTransactionFiltersIfNeeded(
 protected readonly paginationConfig = computed(() => ({
   previousLabel:" ",
   nextLabel: " ",
-  maxVisiblePages: 3,  
+  maxVisiblePages: 2,  
   showEllipsis: true
 }));
   

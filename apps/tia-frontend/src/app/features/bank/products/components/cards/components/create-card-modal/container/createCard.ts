@@ -107,12 +107,6 @@ private readonly translate = inject(TranslateService);
     this.cardForm.patchValue({ design });
   }
 
-  // protected onFormSubmit(): void {
-  //   if (this.cardForm.valid) {
-  //     const request: CreateCardRequest = this.cardForm.getRawValue();
-  //     this.store.dispatch(createCard({ request }));
-  //   }
-  // }
 
   protected onFormSubmit(): void {
   if (this.cardForm.valid) {
