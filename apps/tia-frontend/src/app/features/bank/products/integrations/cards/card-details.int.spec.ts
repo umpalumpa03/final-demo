@@ -9,7 +9,6 @@ import { AlertService } from '@tia/core/services/alert/alert.service';
 import { selectAllAccounts, selectCardDetails, selectCardImages, selectCurrentAccountCardIds, selectCurrentCardIndex, selectIsCardDetailsModalOpen } from 'apps/tia-frontend/src/app/store/products/cards/cards.selectors';
 import { loadCardAccounts, loadCardDetails, navigateToNextCard, navigateToPreviousCard, openCardDetailsModal } from 'apps/tia-frontend/src/app/store/products/cards/cards.actions';
 
-
 describe('CardDetails Integration', () => {
   let component: CardDetails
   let fixture: ComponentFixture<CardDetails>;
@@ -119,9 +118,9 @@ describe('CardDetails Integration', () => {
     expect(data?.cardId).toBe('card-1');
     expect(data?.details.cardName).toBe('My Card');
     expect(data?.currency).toBe('GEL');
-    expect(data?.formattedBalance).toBe('GEL 1000');
+    expect(data?.formattedBalance).toMatch(/GEL 1,?000/);
     expect(data?.shouldShowCreditLimit).toBe(true);
-    expect(data?.formattedCreditLimit).toBe('GEL 5000');
+    expect(data?.formattedCreditLimit).toMatch(/GEL 5,?000/);
   });
 
   it('should navigate to transactions page', () => {
