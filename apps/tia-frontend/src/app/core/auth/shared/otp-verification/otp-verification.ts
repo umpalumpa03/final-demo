@@ -35,11 +35,12 @@ import {
   OtpVerificationType,
 } from '../../models/otp-verification.models';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { translateConfig } from '@tia/shared/utils/translate-config/config-translator.util';
 import { OTP_VERIFY_FORM } from '../../config/inputs.config';
 import { Routes } from '../../models/tokens.model';
 import { ErrorPage } from '../error-page/error-page';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-otp-verification',

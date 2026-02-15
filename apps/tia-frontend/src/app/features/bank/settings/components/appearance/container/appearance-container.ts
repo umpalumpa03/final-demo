@@ -11,7 +11,6 @@ import { Store } from '@ngrx/store';
 import { catchError, Observable, of, Subject, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { SettingsBody } from '../../../shared/ui/settings-body/settings-body';
 import { selectActiveTheme } from 'apps/tia-frontend/src/app/store/theme/theme.selectors';
 import { ThemeActions } from 'apps/tia-frontend/src/app/store/theme/theme.actions';
 import { AppearanceService } from '../services/appearance-api.service';
@@ -25,16 +24,12 @@ import { TranslateService } from '@ngx-translate/core';
 import { BreakpointService } from '@tia/core/services/breakpoints/breakpoint.service';
 import { AlertService } from '@tia/core/services/alert/alert.service';
 import { AppearanceStore } from '../store/appearance.store';
+import { NavigationService } from 'apps/tia-frontend/src/app/core/services/navigation/navigation.service';
+import { BasicCard } from "@tia/shared/lib/cards/basic-card/basic-card";
 
 @Component({
   selector: 'app-appearance-container',
-  imports: [
-    SettingsBody,
-    TranslatePipe,
-    ButtonComponent,
-    Skeleton,
-    UiModal,
-  ],
+  imports: [TranslatePipe, ButtonComponent, Skeleton, UiModal, BasicCard],
   providers: [AppearanceService],
   templateUrl: './appearance-container.html',
   styleUrl: './appearance-container.scss',
@@ -47,6 +42,7 @@ export class AppearanceContainer implements OnInit, CanComponentDeactivate {
   private readonly breakpointService = inject(BreakpointService);
   private readonly alertService = inject(AlertService);
   private readonly appearanceStore = inject(AppearanceStore);
+  private readonly navigationService = inject(NavigationService);
 
   public readonly isFetching = this.appearanceStore.isRefreshing;
   public readonly isLoading = this.appearanceStore.isLoading;
@@ -72,12 +68,12 @@ export class AppearanceContainer implements OnInit, CanComponentDeactivate {
     if (savedTheme) {
       this.setActiveColor(savedTheme);
     }
+    this.navigationService.suppressNextLoader();
     this.leaveDecision$.next(true);
     this.isModalOpen.set(false);
   }
 
   private activeTheme = this.store.selectSignal(selectActiveTheme);
-
 
   private isSubmitted = signal(false);
 
@@ -86,7 +82,7 @@ export class AppearanceContainer implements OnInit, CanComponentDeactivate {
   public ngOnInit(): void {
     this.isSubmitted.set(false);
 
-    this.appearanceStore.fetchThemes({})
+    this.appearanceStore.fetchThemes({});
   }
 
   public isCurrentTheme(theme: string) {
@@ -115,24 +111,27 @@ export class AppearanceContainer implements OnInit, CanComponentDeactivate {
   }
 
   public onSubmit(): void {
-    this.appearanceStore.updateTheme(this.activeTheme()).pipe(
-      takeUntilDestroyed(this.destroyRef),
-      tap(() => {
-        this.isSubmitted.set(true);
-        this.alertService.success(
-          this.translate.instant('settings.appearance.saveSuccess'),
-        );
-        this.store.dispatch(
-          UserInfoActions.loadUserTheme({ theme: this.activeTheme() }),
-        );
-      }),
-      catchError(() => {
-        this.alertService.error(
-          this.translate.instant('settings.appearance.saveError'),
-        );
-        return of(null);
-      }),
-    ).subscribe();
+    this.appearanceStore
+      .updateTheme(this.activeTheme())
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        tap(() => {
+          this.isSubmitted.set(true);
+          this.alertService.success(
+            this.translate.instant('settings.appearance.saveSuccess'),
+          );
+          this.store.dispatch(
+            UserInfoActions.loadUserTheme({ theme: this.activeTheme() }),
+          );
+        }),
+        catchError(() => {
+          this.alertService.error(
+            this.translate.instant('settings.appearance.saveError'),
+          );
+          return of(null);
+        }),
+      )
+      .subscribe();
   }
 
   public canDeactivate(): boolean | Observable<boolean> {
@@ -144,6 +143,7 @@ export class AppearanceContainer implements OnInit, CanComponentDeactivate {
     const savedTheme = this.userTheme();
 
     if (savedTheme && currentTheme !== savedTheme) {
+      this.navigationService.suppressNextLoader();
       this.isModalOpen.set(true);
       return this.leaveDecision$.asObservable();
     }

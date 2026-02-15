@@ -8,9 +8,7 @@
 >
   @if (isDisabled() && tooltipMessage()) {
   <div class="transfers-account-card__info">
-    <app-tooltip [content]="tooltipMessage() | translate" placement="top">
-      <img src="images/svg/transfers/info.svg" alt="Info" />
-    </app-tooltip>
+    <img src="images/svg/transfers/info.svg" alt="Info" />
   </div>
   } @if (isFavorite()) {
   <div class="transfers-account-card__favorite">

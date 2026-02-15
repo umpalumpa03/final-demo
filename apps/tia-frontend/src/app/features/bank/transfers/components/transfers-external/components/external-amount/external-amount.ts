@@ -29,6 +29,7 @@ import { OtpVerification } from 'apps/tia-frontend/src/app/core/auth/shared/otp-
 import { IVerified } from 'apps/tia-frontend/src/app/core/auth/models/otp-verification.models';
 import { transferOtpConfig } from '../../config/transfers-external.config';
 import { AlertService } from 'apps/tia-frontend/src/app/core/services/alert/alert.service';
+import { TransferSummaryComponent } from '../../../../ui/transfer-summary/transfer-summary';
 
 @Component({
   selector: 'app-external-amount',
@@ -43,6 +44,7 @@ import { AlertService } from 'apps/tia-frontend/src/app/core/services/alert/aler
     Tooltip,
     UiModal,
     OtpVerification,
+    TransferSummaryComponent,
   ],
   providers: [],
   templateUrl: './external-amount.html',
