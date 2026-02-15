@@ -34,14 +34,17 @@
       transition: transform 0.15s ease;
       overflow: visible;
 
-      &.has-image {
-        background: $white;
-      }
-
       &:hover {
         transform: scale(1.1);
       }
 
+      &:active {
+        outline: none;
+      }
+
+      &.active {
+        outline: none;
+      }
       &.birthday {
         &::before {
           content: '';
