@@ -114,6 +114,9 @@ export class InboxDetail implements OnInit {
   }
 
   public onCancelDelete(): void {
+    if (this.isDeleting()) {
+      return;
+    }
     this.isDeleteModalOpen.set(false);
   }
 

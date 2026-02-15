@@ -1,9 +1,13 @@
 @use "../../../../../shared/styles/mixins" as *;
 
+:host {
+    flex: 1;
+    @include display-flex(column);
+}
+
 .loading-state {
+    flex: 1;
     width: 100%;
-    height: 92%;
-    min-height: 80vh;
     @include flex-center();
 }
 
@@ -20,6 +24,12 @@
 
 .inbox-container {
     position: relative;
+    flex: 1;
+
+    app-scroll-area {
+        position: absolute;
+        inset: 0;
+    }
 
     .loading-more-indicator {
         position: absolute;
