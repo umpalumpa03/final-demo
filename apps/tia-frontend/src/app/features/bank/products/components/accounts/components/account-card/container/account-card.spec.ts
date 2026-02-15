@@ -45,21 +45,7 @@ describe('AccountCardComponent', () => {
     vi.clearAllMocks();
   });
 
-  it('should create and format currency', () => {
-    expect(component).toBeTruthy();
-    expect(component.formatCurrency(1000.5)).toBe('1,000.50');
-  });
-
-  it('should return correct icon for account types', () => {
-    expect(component.getAccountIcon(AccountType.current)).toBe(
-      '/images/svg/account/wallet.svg',
-    );
-    expect(component.getAccountIcon(AccountType.saving)).toBe(
-      '/images/svg/account/piggy-bank.svg',
-    );
-  });
-
-  it('should emit transfer and rename events', () => {
+  it('should create and emit transfer and rename events', () => {
     const transferSpy = vi.spyOn(component.transfer, 'emit');
     const renameSpy = vi.spyOn(component.rename, 'emit');
     component.handleTransfer();

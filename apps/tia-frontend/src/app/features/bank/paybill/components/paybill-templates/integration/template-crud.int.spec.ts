@@ -4,7 +4,6 @@ import { TemplatesPageActions } from '../../../store/paybill.actions';
 import {
   selectTemplates,
   selectTemplatesAsTreeItems,
-  selectSelectedTemplates,
 } from '../../../store/paybill.selectors';
 import { Templates } from '../models/paybill-templates.model';
 import { mockTemplates, createStore } from './payment.test-helpers';

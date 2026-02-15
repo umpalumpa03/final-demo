@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach } from 'vitest';
-import { FormatUtils } from './format-date.utils';
+import { FormatUtils } from './format-utils.utils';
 
 describe('FormatUtils', () => {
   let service: FormatUtils;
