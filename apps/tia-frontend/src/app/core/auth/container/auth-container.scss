@@ -13,7 +13,7 @@
     background: rgba($white, 0.85);
     z-index: 300;
   }
-  
+
   &__auth-layout {
     @include display-flex();
     width: 100vw;
@@ -55,24 +55,14 @@
 
         &__logo {
           @include flex-center();
-          width: 4rem;
-          height: 4rem;
+          width: 5.2rem;
+          height: 5.2rem;
+          min-width: 5.2rem;
+          min-height: 5.2rem;
+          object-fit: contain;
           border-radius: 0.8rem;
-          background: $blue-800;
-          color: $white;
-
-          @media (max-width: 768px) {
-            width: 5rem;
-            height: 5rem;
-          }
-        }
-
-        &__title {
-          color: var(--color-fg);
-
-          @media (max-width: 768px) {
-            @include font-inter(600, 2.4rem);
-          }
+          flex-shrink: 0;
+          padding: 0;
         }
       }
     }

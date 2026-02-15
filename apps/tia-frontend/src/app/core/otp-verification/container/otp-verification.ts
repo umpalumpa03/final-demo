@@ -93,6 +93,8 @@ export class OtpVerification implements OnInit {
   public submitError = signal<string | null>(null);
   public isErrorPageVisible = signal<boolean>(false);
 
+  public pendingVerification = signal<boolean>(false);
+
   public readonly otpComponent = viewChild(Otp);
 
   public isHeaderVisible = computed(
@@ -146,6 +148,13 @@ export class OtpVerification implements OnInit {
         }
       }
     });
+
+    effect(() => {
+      if (this.pendingVerification() && !!this.errorMessage()) {
+        this.decreaseAttempts();
+        this.pendingVerification.set(false);
+      }
+    });
   }
 
   public ngOnInit(): void {
@@ -182,7 +191,7 @@ export class OtpVerification implements OnInit {
 
     const otp = this.extractOtp();
 
-    this.decreaseAttempts();
+    this.pendingVerification.set(true);
     this.isVerifyCalled.emit(otp);
 
     this.handlePostSubmitReset();

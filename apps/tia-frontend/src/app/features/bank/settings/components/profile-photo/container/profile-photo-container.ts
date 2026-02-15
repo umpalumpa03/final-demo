@@ -70,7 +70,7 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
   public readonly phoneUpdateLoading = this.store.selectSignal(selectPhoneUpdateLoading);
   public readonly phoneUpdateError = this.store.selectSignal(selectPhoneUpdateError);
   public readonly phoneUpdateResendCount = this.store.selectSignal(selectPhoneUpdateResendCount);
-  public readonly otpResendType = OtpResendTypes.PERSONAL_INFO
+  public readonly otpResendType = OtpResendTypes.PERSONAL_INFO;
 
   public readonly otpConfig = personalInfoOtpConfig;
 

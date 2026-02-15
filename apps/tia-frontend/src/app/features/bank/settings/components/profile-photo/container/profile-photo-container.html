@@ -54,11 +54,12 @@
     [inputOtpConfig]="otpConfig"
     [errorMessage]="phoneUpdateError()"
     [isButtonLoading]="phoneUpdateLoading()"
-    [onErrorRedirect]="false"
     (isVerifyCalled)="onVerifyOtp($event)"
     (isResendCalled)="onResendOtp()"
     (onBackOut)="onOtpModalClosed()"
     [otpResendType]="otpResendType"
+    [onErrorRedirect]="true"
+    redirectText="profile info page"
   ></app-otp-verification>
 </app-ui-modal>
 }

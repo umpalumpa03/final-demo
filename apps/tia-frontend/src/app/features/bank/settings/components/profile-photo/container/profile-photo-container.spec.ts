@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { Store } from '@ngrx/store';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { vi } from 'vitest';
@@ -23,7 +24,6 @@ import { environment } from '../../../../../../../environments/environment';
 import { AlertService } from '@tia/core/services/alert/alert.service';
 import { Router } from '@angular/router';
 import { Routes } from '../../../../../../core/auth/models/tokens.model';
-import { IVerified } from '../../../../../../core/auth/models/otp-verification.models';
 
 describe('ProfilePhotoContainer', () => {
   let component: ProfilePhotoContainer;
@@ -570,7 +570,7 @@ describe('ProfilePhotoContainer', () => {
     store.overrideSelector(selectPhoneUpdateResendCount, 2);
     store.refreshState();
 
-    component.onResendOtp(true);
+    component.onResendOtp();
 
     expect(dispatchSpy).toHaveBeenCalledWith(
       PersonalInfoActions.resendPhoneOTP({ challengeId: 'challenge-123' })
@@ -597,7 +597,7 @@ describe('ProfilePhotoContainer', () => {
     store.overrideSelector(selectPhoneUpdateResendCount, 3);
     store.refreshState();
 
-    component.onResendOtp(true);
+    component.onResendOtp();
 
     expect(mockAlertService.error).toHaveBeenCalledWith(
       'Max resend reached',
