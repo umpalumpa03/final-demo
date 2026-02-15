@@ -50,12 +50,17 @@
     </main>
 
     <footer>
-        <app-button variant="outline" (click)="close.emit()">{{'settings.user-management.edit.cancel' |
-            translate}}</app-button>
+        <div>
+            <app-button variant="outline" [fullWidth]="true"
+                (click)="close.emit()">{{'settings.user-management.edit.cancel' |
+                translate}}</app-button>
+        </div>
 
-        <app-button [isLoading]="isLoading()" icon="./white-edit.svg"
-            [isDisabled]="form.invalid || form.pristine || isLoading()" (click)="onSave()">
-            {{'settings.user-management.edit.save' | translate}}
-        </app-button>
+        <div>
+            <app-button [isLoading]="isLoading()" icon="./white-edit.svg" [fullWidth]="true"
+                [isDisabled]="form.invalid || form.pristine || isLoading()" (click)="onSave()">
+                {{'settings.user-management.edit.save' | translate}}
+            </app-button>
+        </div>
     </footer>
 </app-ui-modal>
