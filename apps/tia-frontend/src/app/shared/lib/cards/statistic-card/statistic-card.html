@@ -1,18 +1,19 @@
-<div class="statistic-card"
-     [style.width]="width()"
-     [style.height]="height()"
-     [style.min-width]="minWidth()"
-     [style.max-width]="maxWidth()"
+<div
+  class="statistic-card"
+  [style.width]="width()"
+  [style.height]="height()"
+  [style.min-width]="minWidth()"
+  [style.max-width]="maxWidth()"
+  [style.transition]="transition()"
 >
   <div class="statistic-card__header">
     <span class="statistic-card__label">{{ label() }}</span>
     <img [src]="icon()" [alt]="label()" class="statistic-card__icon" />
   </div>
-  
+
   <div class="statistic-card__body">
     <p class="statistic-card__value">{{ value() }}</p>
-    <p class="statistic-card__change" 
-       [attr.data-type]="changeType()">
+    <p class="statistic-card__change" [attr.data-type]="changeType()">
       {{ change() }}
     </p>
   </div>
