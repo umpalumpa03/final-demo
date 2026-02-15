@@ -19,6 +19,7 @@ import { TransactionsViewModelService } from '../services/transactions-view-mode
 import { TransactionsActionsService } from '../services/transactions-actions.service';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
+import { HeaderBanner } from "@tia/shared/ui/header-banner/header-banner";
 
 @Component({
   selector: 'app-transactions-container',
@@ -34,7 +35,8 @@ import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states'
     TranslateModule,
     ButtonComponent,
     ErrorStates,
-  ],
+    HeaderBanner
+],
   providers: [
     TransactionsFacadeService,
     TransactionsViewModelService,
