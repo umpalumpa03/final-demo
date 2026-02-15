@@ -19,11 +19,8 @@
 }
 
 .summary-header {
-  @include display-flex(row);
-  align-items: center;
-
   &__left {
-    @include display-flex(row);
+    @include flex-center($align: center);
     align-items: center;
     gap: 1.6rem;
     width: 100%;
@@ -101,9 +98,11 @@
 }
 
 .summary-row {
-  @include display-flex(row);
-  justify-content: space-between;
-  align-items: flex-start;
+  @include flex-center(
+    $direction: row,
+    $justify: space-between,
+    $align: flex-start
+  );
   width: 100%;
   gap: 1.2rem;
 

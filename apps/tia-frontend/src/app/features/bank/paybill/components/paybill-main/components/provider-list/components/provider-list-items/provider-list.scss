@@ -58,10 +58,13 @@
   }
 
   &__text {
-    @include flex-center($direction: column, $align: flex-start);
+    @include flex-center(
+      $direction: column,
+      $align: flex-start,
+      $justify: center
+    );
     gap: 0.4rem;
     min-width: 0;
-    justify-content: center;
     height: 6.4rem;
 
     @media (max-width: 480px) {

@@ -14,7 +14,7 @@
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
   &--square {
-    width: 5.6rem; // Matches min-height
+    width: 5.6rem;
     height: 5.6rem;
     padding: 0;
     aspect-ratio: 1 / 1;
