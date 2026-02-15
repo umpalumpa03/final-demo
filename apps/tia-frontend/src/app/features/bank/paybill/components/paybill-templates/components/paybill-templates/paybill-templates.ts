@@ -280,11 +280,6 @@ export class PaybillTemplates implements OnInit {
   public paymentDone = output<void>();
   public otpConfig = payBillOtpConfig;
 
-  // need to be fixed
-  public resendOtp(event: any): void {
-    console.log(event);
-  }
-
   public onOtpClose() {
     this.otpCloseEmit.emit(false);
   }
