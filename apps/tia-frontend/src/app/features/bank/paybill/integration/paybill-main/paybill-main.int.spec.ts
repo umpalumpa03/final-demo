@@ -11,6 +11,7 @@ import {
 
 import { PaybillMain } from '../../components/paybill-main/container/paybill-main';
 import { PaybillMainFacade } from '../../components/paybill-main/services/paybill-main-facade';
+import { provideMockStore } from '@ngrx/store/testing';
 
 describe('Integration: Paybill Main Container', () => {
   let component: PaybillMain;
@@ -25,6 +26,8 @@ describe('Integration: Paybill Main Container', () => {
       setSearchQuery: vi.fn(),
       clearRepeatTransaction: vi.fn(),
       isRootProviderView: signal(true),
+      isCategoriesPage: signal(false),
+      isProviderListVisible: signal(true),
       showSearch: signal(true),
 
       activeCategory: signal({ id: 'cat-1', name: 'Utilities' }),
@@ -41,6 +44,7 @@ describe('Integration: Paybill Main Container', () => {
         }),
       ],
       providers: [
+        provideMockStore(),
         { provide: PaybillMainFacade, useValue: mockFacade },
         { provide: ActivatedRoute, useValue: {} },
       ],
@@ -74,11 +78,13 @@ describe('Integration: Paybill Main Container', () => {
   });
 
   it('should handle visibility of navigation components based on facade state', () => {
+    mockFacade.isCategoriesPage.set(true);
     mockFacade.isRootProviderView.set(true);
     fixture.detectChanges();
     let backNav = fixture.nativeElement.querySelector('app-back-navigation');
     expect(backNav).toBeNull();
 
+    mockFacade.isCategoriesPage.set(false);
     mockFacade.isRootProviderView.set(false);
     fixture.detectChanges();
     backNav = fixture.nativeElement.querySelector('app-back-navigation');

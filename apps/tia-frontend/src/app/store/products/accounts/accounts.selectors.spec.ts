@@ -126,11 +126,11 @@ describe('Accounts Selectors', () => {
     expect(result).toEqual([]);
   });
 
-  it('should select GEL account options', () => {
+it('should select GEL account options', () => {
     const gelAccount = {
       id: '3',
       userId: 'user1',
-      permission: 1,
+      permission: 8, // Fix: Set permission to 8 to satisfy (permission & 8) === 8
       type: AccountType.current,
       iban: '789',
       friendlyName: 'GEL Account',

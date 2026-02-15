@@ -6,6 +6,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { provideMockStore } from '@ngrx/store/testing';
 
 describe('PaybillMain', () => {
   let component: PaybillMain;
@@ -26,6 +27,9 @@ describe('PaybillMain', () => {
       activeCategory: signal(null),
       selectedParentId: signal(null),
       isRootProviderView: signal(false),
+      resetPaymentForm: vi.fn(),
+      isCategoriesPage: signal(false),
+      isProviderListVisible: signal(true),
     };
 
     await TestBed.configureTestingModule({
@@ -35,7 +39,10 @@ describe('PaybillMain', () => {
         RouterModule.forRoot([]),
         TranslateModule.forRoot(),
       ],
-      providers: [{ provide: PaybillMainFacade, useValue: facadeMock }],
+      providers: [
+        provideMockStore({}),
+        { provide: PaybillMainFacade, useValue: facadeMock },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PaybillMain);

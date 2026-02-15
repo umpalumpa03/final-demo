@@ -17,6 +17,7 @@ import { PaybillOtpVerificationContainer } from '../../components/paybill-main/c
 import { PaybillSuccessContainer } from '../../components/paybill-main/components/paybill-success/container/paybill-success-container';
 import { PaybillMainFacade } from '../../components/paybill-main/services/paybill-main-facade';
 import { PaybillActions } from '../../store/paybill.actions';
+import { of } from 'rxjs';
 
 const routes: Routes = [
   {
@@ -43,6 +44,7 @@ describe('Integration: Paybill Payment Flow', () => {
       isRootProviderView: signal(false),
       showSearch: signal(false),
       isLoading: signal(false),
+      isCategoriesPage: signal(false),
 
       activeCategory: signal({ id: 'cat-1', name: 'Utilities' }),
       selectedParentId: signal<string | null>(null),
@@ -63,9 +65,10 @@ describe('Integration: Paybill Payment Flow', () => {
       resetToDashboard: vi.fn(),
     };
 
-    const mockStore = {
+ const mockStore = {
       dispatch: vi.fn(),
       selectSignal: vi.fn().mockReturnValue(signal('acc-456')),
+      select: vi.fn().mockReturnValue(of('acc-456'))
     };
 
     await TestBed.configureTestingModule({
