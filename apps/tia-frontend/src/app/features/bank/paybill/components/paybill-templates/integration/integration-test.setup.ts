@@ -4,6 +4,38 @@ import {
   initialPaybillState,
   PaybillState,
 } from '../../../store/paybill.state';
+import {
+  selectPaybillState,
+  selectTemplates,
+  selectTemplatesAsTreeItems,
+  selectTemplatesGroup,
+  selectTemplatesGroupWithConfigs,
+  selectSelectedTemplates,
+  selectLoading,
+  selectError,
+  selectChallengeId,
+  selectDistributedAmount,
+  selectTotalAmount,
+  selectFormPayload,
+  selectIsFormValid,
+  selectSelectedSenderAccountId,
+  selectTemplatesLoaded,
+  selectTemplateGroupsLoaded,
+  selectCategories,
+  selectSelectedCategoryId,
+  selectSelectedProviderId,
+  selectProviders,
+  selectActiveCategory,
+  selectProvidersDropdown,
+  selectFilteredProviders,
+  selectActiveProvider,
+  selectVerifiedDetails,
+  selectPaymentPayload,
+  selectNotifications,
+  selectPaymentFields,
+  selectServiceId,
+  selectCategoriesLoaded,
+} from '../../../store/paybill.selectors';
 import { Templates, TemplateGroups } from '../models/paybill-templates.model';
 
 export const mockTemplates: Templates[] = [
@@ -42,7 +74,42 @@ export interface RootState {
   paybill: PaybillState;
 }
 
+const allSelectors = [
+  selectPaybillState,
+  selectTemplates,
+  selectTemplatesAsTreeItems,
+  selectTemplatesGroup,
+  selectTemplatesGroupWithConfigs,
+  selectSelectedTemplates,
+  selectLoading,
+  selectError,
+  selectChallengeId,
+  selectDistributedAmount,
+  selectTotalAmount,
+  selectFormPayload,
+  selectIsFormValid,
+  selectSelectedSenderAccountId,
+  selectTemplatesLoaded,
+  selectTemplateGroupsLoaded,
+  selectCategories,
+  selectSelectedCategoryId,
+  selectSelectedProviderId,
+  selectProviders,
+  selectActiveCategory,
+  selectProvidersDropdown,
+  selectFilteredProviders,
+  selectActiveProvider,
+  selectVerifiedDetails,
+  selectPaymentPayload,
+  selectNotifications,
+  selectPaymentFields,
+  selectServiceId,
+  selectCategoriesLoaded,
+];
+
 export function createStore() {
+  allSelectors.forEach((selector) => selector.release());
+
   let state: PaybillState = { ...initialPaybillState };
 
   return {
