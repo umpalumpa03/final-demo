@@ -26,15 +26,15 @@
   padding: 2.4rem;
   @include display-flex(column);
   gap: 2.4rem;
-  height: calc(100vh - 49.8rem);
-
-  @media (max-width: 480px) {
-    height: calc(100vh - 40.6rem);
-  }
+  height: 75rem;
+  position: relative;
 
   &__heading {
     @include flex-center(row, space-between, center);
-
+    position: sticky;
+    left: 0;
+    z-index: 10;
+    width: 100%;
     @media (max-width: 480px) {
       @include flex-center(column, center, flex-start);
       gap: 1rem;

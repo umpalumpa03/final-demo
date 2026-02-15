@@ -5,7 +5,6 @@ import {
   catchError,
   debounceTime,
   EMPTY,
-  filter,
   map,
   mergeMap,
   of,
@@ -18,6 +17,8 @@ import {
   selectFilters,
   selectNextCursor,
   selectTransactionsLoaded,
+  selectCategoriesRaw,
+  selectTotalTransactions,
 } from './transactions.selector';
 import { TransactionApiService } from '@tia/shared/services/transactions-service/transactions.api.service';
 
@@ -81,11 +82,19 @@ export const loadTransactionsEffect = createEffect(
 export const loadTotalEffect = createEffect(
   (
     actions$ = inject(Actions),
+    store = inject(Store),
     transactionService = inject(TransactionApiService),
   ) => {
     return actions$.pipe(
       ofType(TransactionActions.loadTransactions),
-      mergeMap((action) => {
+      withLatestFrom(store.select(selectTotalTransactions)),
+      mergeMap(([action, existingTotal]) => {
+        const forceRefresh = action.forceRefresh;
+
+        if (existingTotal > 0 && !forceRefresh) {
+          return EMPTY;
+        }
+
         return transactionService.getTransactionsTotal().pipe(
           map((total) => TransactionActions.loadTotalSuccess({ total })),
           catchError(() => EMPTY),
@@ -95,10 +104,10 @@ export const loadTotalEffect = createEffect(
   },
   { functional: true },
 );
-
 export const loadTransactionsCategoriesEffect = createEffect(
   (
     actions$ = inject(Actions),
+    store = inject(Store),
     transactionService = inject(TransactionApiService),
   ) => {
     return actions$.pipe(
@@ -107,7 +116,14 @@ export const loadTransactionsCategoriesEffect = createEffect(
         TransactionActions.loadCategories,
         TransactionActions.createCategorySuccess,
       ),
-      switchMap(() => {
+      withLatestFrom(store.select(selectCategoriesRaw)),
+      switchMap(([action, existingCategories]) => {
+        const isForceRefresh =
+          action.type === TransactionActions.createCategorySuccess.type;
+        if (existingCategories.length > 0 && !isForceRefresh) {
+          return EMPTY;
+        }
+
         return transactionService.getTransactionsCategories().pipe(
           map((categories) =>
             TransactionActions.loadCategoriesSuccess({ categories }),
@@ -121,7 +137,6 @@ export const loadTransactionsCategoriesEffect = createEffect(
   },
   { functional: true },
 );
-
 export const createCategoryEffect = createEffect(
   (
     actions$ = inject(Actions),
