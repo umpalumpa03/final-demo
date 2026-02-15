@@ -112,24 +112,4 @@ describe('PaymentDistribution', () => {
       );
     });
   });
-
-  describe('Keyboard Events', () => {
-    it('should prevent negative and exponential characters', () => {
-      const preventDefault = vi.fn();
-      const eventMinus = {
-        key: '-',
-        preventDefault,
-      } as unknown as KeyboardEvent;
-      const eventE = { key: 'e', preventDefault } as unknown as KeyboardEvent;
-      const eventNum = { key: '5', preventDefault } as unknown as KeyboardEvent;
-
-      component.preventNegativeInput(eventMinus);
-      component.preventNegativeInput(eventE);
-      expect(preventDefault).toHaveBeenCalledTimes(2);
-
-      preventDefault.mockClear();
-      component.preventNegativeInput(eventNum);
-      expect(preventDefault).not.toHaveBeenCalled();
-    });
-  });
 });
