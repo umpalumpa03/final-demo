@@ -52,7 +52,10 @@ export class PaymentDistribution implements OnInit {
   }
 
   private readonly destroyRef = inject(DestroyRef);
-  public amountControl = new FormControl('', [Validators.min(5)]);
+  public amountControl = new FormControl('', [
+    Validators.min(10),
+    Validators.max(99999),
+  ]);
   public distributedAmount = this.store.selectSignal(selectDistributedAmount);
 
   ngOnInit(): void {
@@ -101,9 +104,53 @@ export class PaymentDistribution implements OnInit {
       .subscribe();
   }
 
-  public preventNegative(event: KeyboardEvent) {
-    if (event.key === '-' || event.key === 'e') {
+  public preventNegativeInput(event: KeyboardEvent): void {
+    const input = event.target as HTMLInputElement;
+    const value = input.value;
+    const key = event.key;
+
+    if (key === '-' || key === 'e') {
       event.preventDefault();
+      return;
+    }
+
+    if (
+      ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(key)
+    ) {
+      return;
+    }
+
+    if (value === '0' && /\d/.test(key)) {
+      event.preventDefault();
+      return;
+    }
+
+    const decimalSeparator =
+      [',', '.'].find((sep) => value.includes(sep)) ?? null;
+
+    const integerPart = decimalSeparator
+      ? value.split(decimalSeparator)[0]
+      : value;
+    if (
+      integerPart.length >= 5 &&
+      /\d/.test(key) &&
+      key !== '.' &&
+      key !== ','
+    ) {
+      event.preventDefault();
+      return;
+    }
+
+    if (decimalSeparator) {
+      if (key === '.' || key === ',') {
+        event.preventDefault();
+        return;
+      }
+
+      const decimals = value.split(decimalSeparator)[1] || '';
+      if (decimals.length >= 2 && /\d/.test(key)) {
+        event.preventDefault();
+      }
     }
   }
 }
