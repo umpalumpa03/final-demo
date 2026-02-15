@@ -36,6 +36,7 @@ export const mockGroups: TemplateGroups[] = [
 ];
 
 export function setupIntegrationStore(): Store {
+  TestBed.resetTestingModule();
   TestBed.configureTestingModule({
     imports: [StoreModule.forRoot({ paybill: paybillReducer })],
   });
