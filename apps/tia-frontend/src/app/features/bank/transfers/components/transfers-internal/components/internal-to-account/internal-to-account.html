@@ -73,6 +73,7 @@
           [message]="'transfers.internal.accounts.senderError.message' | translate"
           [buttonMessage]="'transfers.internal.accounts.accountsError.retry' | translate"
           (buttonClick)="onRetry()"
+          [border] = 'false'
         />
       </div>
     } @else if (!accounts() || accounts().length === 0) {
@@ -82,6 +83,7 @@
           [header]="'transfers.internal.accounts.noSenderAccounts.header' | translate"
           [message]="'transfers.internal.accounts.noSenderAccounts.message' | translate"
           [showButton]="false"
+          [border] = 'false'
         />
       </div>
     } @else {
@@ -109,16 +111,22 @@
       {{ 'common.buttons.back' | translate }}
     </app-button>
 
-    <app-button
-      variant="default"
-      size="default"
-      [fullWidth]="isFullWidth()"
-      (click)="onContinue()"
-      [isDisabled]="isContinueDisabled()"
+    <app-tooltip
+      [content]="'transfers.internal.accounts.selectRecipientAccount' | translate"
+      placement="top"
+      [disabled]="!isContinueDisabled()"
     >
-      {{ 'common.buttons.continue' | translate }}
-      <img src="images/svg/transfers/arrow-right.svg" alt="arrow" />
-    </app-button>
+      <app-button
+        variant="default"
+        size="default"
+        [fullWidth]="isFullWidth()"
+        (click)="onContinue()"
+        [isDisabled]="isContinueDisabled()"
+      >
+        {{ 'common.buttons.continue' | translate }}
+        <img src="images/svg/transfers/arrow-right.svg" alt="arrow" />
+      </app-button>
+    </app-tooltip>
   </footer>
 </main>
 

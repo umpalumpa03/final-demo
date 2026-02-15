@@ -27,6 +27,7 @@ import { TransfersAccountCard } from 'apps/tia-frontend/src/app/features/bank/tr
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Badges } from '@tia/shared/lib/primitives/badges/badges';
 import { AlertService } from 'apps/tia-frontend/src/app/core/services/alert/alert.service';
+import { Tooltip } from '@tia/shared/lib/data-display/tooltip/tooltip';
 
 @Component({
   selector: 'app-internal-to-account',
@@ -37,6 +38,7 @@ import { AlertService } from 'apps/tia-frontend/src/app/core/services/alert/aler
     TransfersAccountCard,
     TranslatePipe,
     Badges,
+    Tooltip
   ],
   templateUrl: './internal-to-account.html',
   styleUrl: './internal-to-account.scss',
