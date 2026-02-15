@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  input,
+} from '@angular/core';
 
 @Component({
   selector: 'app-statistic-card',
@@ -17,4 +22,9 @@ export class StatisticCard {
   public readonly height = input<string>();
   public readonly minWidth = input<string>();
   public readonly maxWidth = input<string>();
+  public readonly hasTransition = input<boolean>(false);
+  public readonly customTransition = input<string>('all 0.3s ease');
+  public readonly transition = computed(() => {
+    return this.hasTransition() ? this.customTransition() : 'none';
+  });
 }
