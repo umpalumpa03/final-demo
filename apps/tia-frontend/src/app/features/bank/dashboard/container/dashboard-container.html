@@ -124,6 +124,8 @@
     (closed)="onBirthdayDismiss()"
     [hideExit]="true"
   >
-    <app-birthday-modal (dismiss)="onBirthdayDismiss()"></app-birthday-modal>
+    @if (isBirthdayVisible()) {
+      <app-birthday-modal (dismiss)="onBirthdayDismiss()"></app-birthday-modal>
+    }
   </app-ui-modal>
 </div>
