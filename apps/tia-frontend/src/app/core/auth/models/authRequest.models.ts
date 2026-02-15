@@ -39,3 +39,12 @@ export interface CreateNewPasswordRequest {
 export interface ResendOtpRequest {
   challengeId: string;
 }
+
+export interface OtpInitSettings {
+  otp: {
+    expirationMinutes: number;
+    maxResendAttempts: number;
+    maxVerifyAttempts: number;
+    resendTimeoutMs: number;
+  };
+}
