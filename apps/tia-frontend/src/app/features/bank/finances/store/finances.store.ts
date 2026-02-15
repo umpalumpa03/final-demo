@@ -47,10 +47,25 @@ export const FinancesStore = signalStore(
     error: null as string | null,
   }),
   withMethods((store, service = inject(FinancesService)) => ({
+    resetStore: () => {
+      patchState(store, {
+        summary: null,
+        categories: [],
+        transactions: [],
+        incomeVsExpenses: [],
+        savingsTrend: [],
+        dailySpending: [],
+        loading: false,
+        isRefreshing: false,
+        error: null,
+      });
+      service.clearCache();
+    },
+
     loadAllData: rxMethod<{ from: string; to?: string; force?: boolean }>(
       pipe(
         filter((params) => !!params.from),
-        tap(({ force }) => {
+        tap(({ from, to, force }) => {
           if (force) {
             patchState(store, { isRefreshing: true });
           } else {
