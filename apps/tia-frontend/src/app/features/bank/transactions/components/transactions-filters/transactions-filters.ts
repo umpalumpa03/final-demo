@@ -7,7 +7,7 @@ import {
   output,
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SelectOption } from '@tia/shared/lib/forms/models/input.model';
 import { debounceTime, distinctUntilChanged, filter, map, tap } from 'rxjs';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
@@ -61,7 +61,7 @@ export class TransactionsFilters {
   protected readonly today = new Date().toISOString().split('T')[0];
 
   public readonly filterForm = this.fb.group({
-    searchCriteria: [''],
+    searchCriteria: ['', Validators.maxLength(25)],
     category: [null as string | null],
     amountFrom: [null as number | null],
     amountTo: [null as number | null],
