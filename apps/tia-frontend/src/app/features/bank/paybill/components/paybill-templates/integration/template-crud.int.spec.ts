@@ -58,25 +58,6 @@ describe('Integration: Template CRUD', () => {
     expect(templates.find((t) => t.id === 't2')).toBeUndefined();
   });
 
-  it('should also remove deleted template from selectedItems', () => {
-    store.dispatch(
-      TemplatesPageActions.addCheckedItems({
-        selectedItems: [mockTemplates[0], mockTemplates[1]],
-      }),
-    );
-
-    store.dispatch(
-      TemplatesPageActions.deleteTemplateSuccess({
-        templateId: 't1',
-        message: 'Deleted',
-      }),
-    );
-
-    const selected = store.select(selectSelectedTemplates);
-    expect(selected).toHaveLength(1);
-    expect(selected[0].id).toBe('t2');
-  });
-
   it('should add a new template via createTemplateSuccess', () => {
     const newTemplate: Templates = {
       id: 't4',

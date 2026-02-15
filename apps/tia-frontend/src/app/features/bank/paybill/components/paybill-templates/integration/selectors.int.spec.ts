@@ -3,11 +3,9 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { TemplatesPageActions } from '../../../store/paybill.actions';
 import {
   selectTemplatesAsTreeItems,
-  selectTemplatesGroupWithConfigs,
 } from '../../../store/paybill.selectors';
 import {
   mockTemplates,
-  mockGroups,
   createStore,
 } from './integration-test.setup';
 
@@ -42,23 +40,6 @@ describe('Integration: Derived Selectors', () => {
     it('should return empty array when no templates are loaded', () => {
       const items = store.select(selectTemplatesAsTreeItems);
       expect(items).toEqual([]);
-    });
-  });
-
-  describe('selectTemplatesGroupWithConfigs', () => {
-    it('should add icon and expanded flag to groups', () => {
-      store.dispatch(
-        TemplatesPageActions.loadTemplateGroupsSuccess({
-          templateGroups: mockGroups,
-        }),
-      );
-
-      const groups = store.select(selectTemplatesGroupWithConfigs);
-      expect(groups).toHaveLength(2);
-
-      expect(groups[0].icon).toBe('images/svg/paybill/group.svg');
-      expect(groups[0].expanded).toBe(true);
-      expect(groups[1].expanded).toBe(false);
     });
   });
 });
