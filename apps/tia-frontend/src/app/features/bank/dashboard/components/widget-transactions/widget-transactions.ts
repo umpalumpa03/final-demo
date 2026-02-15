@@ -60,7 +60,7 @@ export class WidgetTransactions extends BaseWidget {
 
   ngOnInit(): void {
     this.store.dispatch(
-      TransactionActions.loadTransactions({ forceRefresh: true }),
+      TransactionActions.loadTransactions({ forceRefresh: false }),
     );
   }
 

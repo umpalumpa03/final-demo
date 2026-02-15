@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  OnInit,
+} from '@angular/core';
 import { Skeleton } from '../../../../shared/lib/feedback/skeleton/skeleton';
 import { ShowcaseCard } from '../../shared/showcase-card/showcase-card';
 import { BasicCard } from '../../../../shared/lib/cards/basic-card/basic-card';
@@ -12,9 +17,11 @@ import {
   LIST_ITEMS,
 } from './config/feedback.config';
 import { ErrorStates } from '../../../../shared/lib/feedback/error-states/error-states';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-feedback',
+  standalone: true,
   imports: [
     Skeleton,
     ShowcaseCard,
@@ -22,17 +29,29 @@ import { ErrorStates } from '../../../../shared/lib/feedback/error-states/error-
     Spinner,
     LibraryTitle,
     RouteLoader,
-    ErrorStates
+    ErrorStates,
+    TranslateModule,
   ],
   templateUrl: './feedback.html',
   styleUrl: './feedback.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Feedback {
-  public readonly loadingCards = LOADING_CARDS;
-  public readonly textSkeletons = TEXT_SKELETONS;
-  public readonly imageSkeletons = IMAGE_SKELETONS;
-  public readonly listItems = LIST_ITEMS;
+export class Feedback implements OnInit {
+  private translate = inject(TranslateService);
+
+  public loadingCards = LOADING_CARDS;
+  public textSkeletons = TEXT_SKELETONS;
+  public imageSkeletons = IMAGE_SKELETONS;
+  public listItems = LIST_ITEMS;
+
+  ngOnInit() {
+    this.translate.onLangChange.subscribe(() => {
+      this.loadingCards = [...LOADING_CARDS];
+      this.textSkeletons = [...TEXT_SKELETONS];
+      this.imageSkeletons = [...IMAGE_SKELETONS];
+      this.listItems = [...LIST_ITEMS];
+    });
+  }
 
   protected readonly trackById = (_: number, item: { id: string }) => item.id;
 }

@@ -7,21 +7,34 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TranslateModule } from '@ngx-translate/core';
 import { ITransactions } from '@tia/shared/models/transactions/transactions.models';
+import { ActivatedRoute, Router } from '@angular/router';
 
 describe('TransactionsContainer', () => {
   let component: TransactionsContainer;
   let fixture: ComponentFixture<TransactionsContainer>;
 
+  const mockRouter = {
+    navigate: vi.fn(),
+  };
+
+  const mockActivatedRoute = {
+    snapshot: {
+      queryParams: {},
+    },
+  };
+
   const mockFacade = {
     initializePage: vi.fn(),
     updateFilters: vi.fn(),
     items: vi.fn(() => [] as ITransactions[]),
+    filters: vi.fn(() => ({})),
     isLoading: vi.fn(() => false),
     categoryOptions: vi.fn(() => []),
     loadMore: vi.fn(),
     createCategory: vi.fn(),
     categoryOptionsForModal: vi.fn(() => []),
     retryLoad: vi.fn(),
+    transactionError: vi.fn(() => null),
   };
 
   const mockVm = {
@@ -29,6 +42,7 @@ describe('TransactionsContainer', () => {
     currencyOptions: vi.fn(() => []),
     totalTransactionsString: vi.fn(() => ''),
     tableConfig: vi.fn(() => ({ headers: [], rows: [] })),
+    isEmpty: vi.fn(() => true),
   };
 
   const mockActions = {
@@ -41,11 +55,16 @@ describe('TransactionsContainer', () => {
     closeCategorizeModal: vi.fn(),
     saveCategory: vi.fn(),
     exportSingleTransaction: vi.fn(),
+    exportTransactionsTable: vi.fn(),
   };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [TransactionsContainer, TranslateModule.forRoot()],
+      providers: [
+        { provide: Router, useValue: mockRouter },
+        { provide: ActivatedRoute, useValue: mockActivatedRoute },
+      ],
       schemas: [NO_ERRORS_SCHEMA],
     })
       .overrideComponent(TransactionsContainer, {
@@ -74,10 +93,12 @@ describe('TransactionsContainer', () => {
     expect(mockFacade.initializePage).toHaveBeenCalled();
   });
 
-  it('should delegate filter updates to facade', () => {
+  it('should delegate filter updates to facade and update URL', () => {
     const filters = { searchCriteria: 'test' };
     component.onFiltersChange(filters);
+
     expect(mockFacade.updateFilters).toHaveBeenCalledWith(filters);
+    expect(mockRouter.navigate).toHaveBeenCalled();
   });
 
   it('should delegate retry load to facade', () => {

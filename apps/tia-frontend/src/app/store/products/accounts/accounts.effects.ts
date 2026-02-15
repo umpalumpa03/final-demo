@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { of, forkJoin } from 'rxjs';
+import { of } from 'rxjs';
 import {
   map,
   catchError,
@@ -33,14 +33,26 @@ export class AccountsEffects {
     this.actions$.pipe(
       ofType(AccountsActions.loadAccounts),
       withLatestFrom(this.store.select(selectAccounts)),
-      filter(
-        ([action, accounts]) =>
-          action.forceRefresh || !accounts || accounts.length === 0,
-      ),
+      switchMap(([action, cachedAccounts]) => {
+        // Skip if accounts are cached and we don't need refresh or enrichment
+        if (!action.forceRefresh && !action.enrichWithTransactions && cachedAccounts && cachedAccounts.length > 0) {
+          return []; // No action
+        }
 
-      switchMap(() =>
-        this.accountsService.getAccounts().pipe(
-          map((accounts) => AccountsActions.loadAccountsSuccess({ accounts })),
+        // If enrichment requested and accounts are cached, use cached data
+        if (action.enrichWithTransactions && cachedAccounts && cachedAccounts.length > 0) {
+          return [AccountsActions.loadAccountsSuccess({
+            accounts: cachedAccounts,
+            enrichWithTransactions: true
+          })];
+        }
+
+        // Otherwise fetch from API
+        return this.accountsService.getAccounts().pipe(
+          map((accounts) => AccountsActions.loadAccountsSuccess({
+            accounts,
+            enrichWithTransactions: action.enrichWithTransactions
+          })),
           catchError((error) =>
             of(
               AccountsActions.loadAccountsFailure({
@@ -48,26 +60,36 @@ export class AccountsEffects {
               }),
             ),
           ),
-        ),
-      ),
+        );
+      }),
     ),
   );
 
   loadActiveAccounts$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AccountsActions.loadActiveAccounts),
-
       withLatestFrom(this.store.select(selectAccounts)),
+      switchMap(([action, cachedAccounts]) => {
+        // Skip if accounts are cached and we don't need refresh or enrichment
+        if (!action.forceRefresh && !action.enrichWithTransactions && cachedAccounts && cachedAccounts.length > 0) {
+          return []; // No action
+        }
 
-      filter(
-        ([action, accounts]) =>
-          action.forceRefresh || !accounts || accounts.length === 0,
-      ),
+        // If enrichment requested and accounts are cached, use cached data
+        if (action.enrichWithTransactions && cachedAccounts && cachedAccounts.length > 0) {
+          return [AccountsActions.loadActiveAccountsSuccess({
+            accounts: cachedAccounts,
+            enrichWithTransactions: true
+          })];
+        }
 
-      switchMap(() =>
-        this.accountsService.getActiveAccounts().pipe(
+        // Otherwise fetch from API
+        return this.accountsService.getActiveAccounts().pipe(
           map((accounts) =>
-            AccountsActions.loadActiveAccountsSuccess({ accounts }),
+            AccountsActions.loadActiveAccountsSuccess({
+              accounts,
+              enrichWithTransactions: action.enrichWithTransactions
+            }),
           ),
           catchError((error) =>
             of(
@@ -76,8 +98,8 @@ export class AccountsEffects {
               }),
             ),
           ),
-        ),
-      ),
+        );
+      }),
     ),
   );
 
@@ -127,47 +149,57 @@ export class AccountsEffects {
         AccountsActions.loadAccountsSuccess,
         AccountsActions.loadActiveAccountsSuccess,
       ),
+      filter(({ enrichWithTransactions }) => enrichWithTransactions === true),
       switchMap(({ accounts }) => {
         if (!accounts || accounts.length === 0) {
           return of(
             AccountsActions.enrichAccountsSuccess({ lastTransactions: {} }),
           );
         }
-        const transactionRequests = accounts.map((account) =>
-          this.transactionService
-            .getTransactions({
-              accountIban: account.iban,
-              pageLimit: 1,
-            })
-            .pipe(
-              map((response) => ({
-                iban: account.iban,
-                transaction: response.items[0] || null,
-              })),
-              catchError(() => of({ iban: account.iban, transaction: null })),
-            ),
-        );
 
-        return forkJoin(transactionRequests).pipe(
-          map((results) => {
-            const lastTransactions = results.reduce(
-              (acc, { iban, transaction }) => {
-                acc[iban] = transaction;
-                return acc;
-              },
-              {} as Record<string, ITransactions | null>,
-            );
+        return this.transactionService
+          .getTransactions({
+            pageLimit: Math.min(accounts.length * 2, 100),
+          })
+          .pipe(
+            map((response) => {
+              const lastTransactions: Record<string, ITransactions | null> = {};
 
-            return AccountsActions.enrichAccountsSuccess({ lastTransactions });
-          }),
-          catchError((error) =>
-            of(
-              AccountsActions.enrichAccountsFailure({
-                error: error.message || 'Failed to load last transactions',
-              }),
+              accounts.forEach((account) => {
+                lastTransactions[account.iban] = null;
+              });
+
+              response.items.forEach((transaction) => {
+                const creditIban = transaction.creditAccountNumber;
+                const debitIban = transaction.debitAccountNumber;
+
+                if (creditIban && creditIban in lastTransactions) {
+                  const existingTransaction = lastTransactions[creditIban];
+                  if (!existingTransaction ||
+                      new Date(transaction.createdAt) > new Date(existingTransaction.createdAt)) {
+                    lastTransactions[creditIban] = transaction;
+                  }
+                }
+
+                if (debitIban && debitIban in lastTransactions) {
+                  const existingTransaction = lastTransactions[debitIban];
+                  if (!existingTransaction ||
+                      new Date(transaction.createdAt) > new Date(existingTransaction.createdAt)) {
+                    lastTransactions[debitIban] = transaction;
+                  }
+                }
+              });
+
+              return AccountsActions.enrichAccountsSuccess({ lastTransactions });
+            }),
+            catchError((error) =>
+              of(
+                AccountsActions.enrichAccountsFailure({
+                  error: error.message || 'Failed to load last transactions',
+                }),
+              ),
             ),
-          ),
-        );
+          );
       }),
     ),
   );

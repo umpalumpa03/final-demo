@@ -339,4 +339,142 @@ describe('CardsEffects', () => {
       CardsActions.closeCardOtpModal(),
     );
   });
+
+  it('should return cached accounts when already loaded', async () => {
+    store.select = vi.fn((selector) => {
+      if (selector === selectAccountsLoaded) return of(true);
+      if (selector === selectAllAccounts) return of(mockAccounts);
+      return of(null);
+    });
+
+    actions$ = of(CardsActions.loadCardAccounts({}));
+
+    expect(await firstValueFrom(effects.loadCardAccounts$)).toEqual(
+      CardsActions.loadCardAccountsSuccess({ accounts: mockAccounts }),
+    );
+    expect(cardListApiService.getCardAccounts).not.toHaveBeenCalled();
+  });
+
+  it('should handle loadCardAccounts failure', async () => {
+    store.select = vi.fn((selector) => {
+      if (selector === selectAccountsLoaded) return of(false);
+      if (selector === selectAllAccounts) return of([]);
+      return of(null);
+    });
+
+    cardListApiService.getCardAccounts.mockReturnValue(
+      throwError(() => new Error('Network error')),
+    );
+    actions$ = of(CardsActions.loadCardAccounts({}));
+
+    expect(await firstValueFrom(effects.loadCardAccounts$)).toEqual(
+      CardsActions.loadCardAccountsFailure({ error: 'Network error' }),
+    );
+  });
+
+  it('should handle loadCardDetails failure', async () => {
+    store.select = vi.fn((selector) => {
+      if (selector.name?.includes('selectIsCardDetailLoaded')) return of(false);
+      if (selector.name?.includes('selectCardDetails')) return of({});
+      return of(null);
+    });
+
+    cardListApiService.getCardDetails.mockReturnValue(
+      throwError(() => new Error('Detail error')),
+    );
+    actions$ = of(CardsActions.loadCardDetails({ cardId: 'card-1' }));
+
+    expect(await firstValueFrom(effects.loadCardDetails$)).toEqual(
+      CardsActions.loadCardDetailsFailure({
+        cardId: 'card-1',
+        error: 'Detail error',
+      }),
+    );
+  });
+
+  it('should handle createCard failure', async () => {
+    cardsService.createCard.mockReturnValue(
+      throwError(() => new Error('Create failed')),
+    );
+    actions$ = of(CardsActions.createCard({ request: mockRequest }));
+
+    expect(await firstValueFrom(effects.createCard$)).toEqual(
+      CardsActions.createCardFailure({ error: 'Create failed' }),
+    );
+  });
+
+  it('should handle updateCardName failure', async () => {
+    cardsService.updateCardName.mockReturnValue(
+      throwError(() => new Error('Update failed')),
+    );
+    actions$ = of(
+      CardsActions.updateCardName({ cardId: 'card-1', cardName: 'New Name' }),
+    );
+
+    expect(await firstValueFrom(effects.updateCardName$)).toEqual(
+      CardsActions.updateCardNameFailure({
+        cardId: 'card-1',
+        error: 'Update failed',
+      }),
+    );
+  });
+
+  it('should handle requestCardOtp failure', async () => {
+    cardsService.requestCardOtp.mockReturnValue(
+      throwError(() => new Error('OTP failed')),
+    );
+    actions$ = of(CardsActions.requestCardOtp({ cardId: 'card-1' }));
+
+    expect(await firstValueFrom(effects.requestCardOtp$)).toEqual(
+      CardsActions.requestCardOtpFailure({ error: 'OTP failed' }),
+    );
+  });
+
+  it('should handle verifyCardOtp invalid OTP error', async () => {
+    cardsService.verifyCardOtp.mockReturnValue(
+      throwError(() => ({ status: 400, error: { message: 'Invalid OTP' }, message: 'Invalid OTP' })),
+    );
+    actions$ = of(
+      CardsActions.verifyCardOtp({
+        challengeId: 'ch-1',
+        code: '0000',
+        cardId: 'card-1',
+      }),
+    );
+
+    expect(await firstValueFrom(effects.verifyCardOtp$)).toEqual(
+      CardsActions.verifyCardOtpFailure({
+        error: 'my-products.card.errors.otpNotCorrect',
+      }),
+    );
+  });
+
+  it('should dispatch loadCardDetails for each card in account', async () => {
+    store.select = vi.fn(() => of(mockAccounts));
+    actions$ = of(CardsActions.loadAccountCardsPage({ accountId: 'acc-1' }));
+
+    expect(await firstValueFrom(effects.loadAccountCardsPage$)).toEqual(
+      CardsActions.loadCardDetails({ cardId: 'card-1' }),
+    );
+  });
+
+  it('should handle loadCardTransactionsPage with no accounts', async () => {
+    store.select = vi.fn(() => of([]));
+    actions$ = of(CardsActions.loadCardDetails({ cardId: 'card-1' }));
+
+    expect(await firstValueFrom(effects.loadCardTransactionsPage$)).toEqual(
+      CardsActions.loadCardAccounts({}),
+    );
+  });
+
+  it('should complete loadCardImages when no cards exist', async () => {
+    const emptyAccounts = [{ ...mockAccounts[0], cardIds: [] as string[] }];
+    actions$ = of(
+      CardsActions.loadCardAccountsSuccess({ accounts: emptyAccounts }),
+    );
+
+    expect(await firstValueFrom(effects.loadCardImages$)).toEqual(
+      CardsActions.loadCardImagesComplete(),
+    );
+  });
 });

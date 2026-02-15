@@ -11,8 +11,10 @@ import {
   selectAccounts,
   selectError,
   selectIsLoading,
+  selectSelectedAccount,
 } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { AccountsActions } from '../../../../../../../store/products/accounts/accounts.actions';
+import { of } from 'rxjs';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TranslateModule } from '@ngx-translate/core';
 import { Account } from '@tia/shared/models/accounts/accounts.model';
@@ -51,11 +53,13 @@ describe('InternalFromAccount', () => {
     mockTransferStore = {
       senderAccount: signal(null),
       error: signal(null),
+      setSenderAccount: vi.fn(),
       setError: vi.fn(),
     };
 
     mockRouter = {
       navigate: vi.fn(),
+      events: of(),
     };
 
     mockBreakpointService = {
@@ -75,6 +79,7 @@ describe('InternalFromAccount', () => {
             { selector: selectAccounts, value: mockAccounts },
             { selector: selectIsLoading, value: false },
             { selector: selectError, value: null },
+            { selector: selectSelectedAccount, value: null },
           ],
         }),
         { provide: TransferStore, useValue: mockTransferStore },
@@ -276,14 +281,6 @@ describe('InternalFromAccount', () => {
       component = fixture.componentInstance;
       fixture.detectChanges();
       expect(component.isFullWidth()).toBe(true);
-    });
-
-    it('should have showSuccess initialized to false', () => {
-      expect(component.showSuccess()).toBe(false);
-    });
-
-    it('should have showError initialized to false', () => {
-      expect(component.showError()).toBe(false);
     });
 
     it('should have selectedFromAccount from transferStore', () => {

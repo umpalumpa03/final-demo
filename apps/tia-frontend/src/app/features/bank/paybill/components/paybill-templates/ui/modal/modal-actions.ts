@@ -31,4 +31,12 @@ export class ModalActions {
 
     this.submit.emit();
   }
+
+  public cancelHandler(): void {
+    if (this.isLoading()) {
+      return;
+    }
+
+    this.cancel.emit();
+  }
 }

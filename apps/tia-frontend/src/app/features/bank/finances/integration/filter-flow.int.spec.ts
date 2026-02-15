@@ -14,6 +14,7 @@ describe('Finances Integration - Filter Flow', () => {
   beforeEach(async () => {
     storeMock = {
       loadAllData: vi.fn(),
+      resetStore: vi.fn(), 
       loading: signal(false),
       isRefreshing: signal(false),
       error: signal(null),
@@ -107,5 +108,13 @@ describe('Finances Integration - Filter Flow', () => {
         force: true,
       }),
     );
+  });
+
+  it('should call resetStore on component destruction', () => {
+    const fixture = TestBed.createComponent(FinancesContainer);
+    fixture.detectChanges();
+    fixture.destroy();
+    
+    expect(storeMock.resetStore).toHaveBeenCalled();
   });
 });

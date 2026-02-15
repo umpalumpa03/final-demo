@@ -1,5 +1,5 @@
-@use '../../../styles/mixins' as *;
-@use '../../../styles/palette' as *;
+@use "../../../styles/mixins" as *;
+@use "../../../styles/palette" as *;
 
 .ui-modal {
   @include flex-center;
@@ -59,8 +59,8 @@
     @media (max-width: 600px) {
       background-color: var(--color-fg);
       img {
-        filter: brightness(0) saturate(100%) invert(94%) sepia(100%)
-          saturate(26%) hue-rotate(9deg) brightness(104%) contrast(109%);
+        filter: brightness(0) saturate(100%) invert(94%) sepia(100%) saturate(26%) hue-rotate(9deg) brightness(104%)
+          contrast(109%);
       }
       &.next {
         right: 0.5rem;
@@ -117,6 +117,10 @@
     opacity: 0.7;
     transition: opacity 0.2s;
 
+    &--index {
+      z-index: 1000;
+    }
+
     &:hover {
       opacity: 1;
     }
@@ -130,7 +134,7 @@
 
     &::before,
     &::after {
-      content: '';
+      content: "";
       position: absolute;
       top: 50%;
       left: 50%;

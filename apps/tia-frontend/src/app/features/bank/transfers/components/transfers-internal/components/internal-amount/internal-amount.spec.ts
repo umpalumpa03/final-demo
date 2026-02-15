@@ -17,6 +17,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { TransferStore } from '../../../../store/transfers.store';
 import { TransferInternalService } from '../../services/transfer.internal.service';
 import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
+import { AlertService } from 'apps/tia-frontend/src/app/core/services/alert/alert.service';
+import { of } from 'rxjs';
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 
 @Component({
@@ -46,6 +48,7 @@ class ButtonMock {
 class TextInputMock implements ControlValueAccessor {
   @Input() config?: any;
   @Input() type?: string;
+  @Input() state?: string;
 
   private onChangeFn: (value: any) => void = () => {};
   private onTouchedFn: () => void = () => {};
@@ -103,6 +106,19 @@ class TooltipMock {
 @Component({ selector: 'app-otp-modal', standalone: true, template: '' })
 class OtpModalMock {}
 
+@Component({
+  selector: 'app-transfer-summary',
+  standalone: true,
+  template: '',
+})
+class TransferSummaryMock {
+  @Input() senderAccount?: unknown;
+  @Input() recipientAccount?: unknown;
+  @Input() recipientInitials?: string;
+  @Input() fromLabel?: string;
+  @Input() toLabel?: string;
+}
+
 describe('InternalAmount', () => {
   let component: InternalAmount;
   let fixture: ComponentFixture<InternalAmount>;
@@ -110,6 +126,7 @@ describe('InternalAmount', () => {
   let transferServiceMock: any;
   let transferStoreMock: any;
   let routerMock: any;
+  let alertServiceMock: { success: ReturnType<typeof vi.fn>; error: ReturnType<typeof vi.fn> };
 
   const mockSender = {
     currency: 'EUR',
@@ -121,7 +138,8 @@ describe('InternalAmount', () => {
   beforeEach(async () => {
     vi.useFakeTimers();
 
-    routerMock = { navigate: vi.fn() };
+    routerMock = { navigate: vi.fn(), events: of() };
+    alertServiceMock = { success: vi.fn(), error: vi.fn() };
 
     transferServiceMock = {
       handleAmountInput: vi.fn(),
@@ -154,6 +172,7 @@ describe('InternalAmount', () => {
         { provide: TransferStore, useValue: transferStoreMock },
         { provide: TransferInternalService, useValue: transferServiceMock },
         { provide: Router, useValue: routerMock },
+        { provide: AlertService, useValue: alertServiceMock },
         { provide: BreakpointService, useValue: { isMobile: signal(false) } },
         DecimalPipe,
       ],
@@ -171,6 +190,7 @@ describe('InternalAmount', () => {
             RouteLoaderMock,
             TooltipMock,
             OtpModalMock,
+            TransferSummaryMock,
           ],
         },
       })
@@ -395,36 +415,25 @@ describe('InternalAmount', () => {
       transferStoreMock.error.set('Something went wrong');
       fixture.detectChanges();
 
-      expect(component.showError()).toBe(true);
+      expect(alertServiceMock.error).toHaveBeenCalled();
+      expect(transferStoreMock.setError).toHaveBeenCalledWith('');
 
       vi.advanceTimersByTime(3000);
-
-      expect(component.showError()).toBe(false);
-      expect(transferStoreMock.setError).toHaveBeenCalledWith('');
     });
 
     it('should not show error when error is empty', () => {
+      alertServiceMock.error.mockClear();
       transferStoreMock.error.set('');
       fixture.detectChanges();
-      expect(component.showError()).toBe(false);
+      expect(alertServiceMock.error).not.toHaveBeenCalled();
     });
   });
 
   describe('Toast Behavior', () => {
     it('should set toast message on init', () => {
-      expect(component.currentToastMessage()).toBe(
+      expect(alertServiceMock.success).toHaveBeenCalledWith(
         'transfers.internal.amount.accountsSelected',
       );
-    });
-
-    it('should show and hide success toast with timeout', () => {
-      component.currentToastMessage.set('test.message');
-      component.showSuccess.set(true);
-      expect(component.showSuccess()).toBe(true);
-
-      setTimeout(() => component.showSuccess.set(false), 3000);
-      vi.advanceTimersByTime(3000);
-      expect(component.showSuccess()).toBe(false);
     });
   });
 

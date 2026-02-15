@@ -7,7 +7,7 @@ import {
   OnInit,
   DestroyRef,
   effect,
-  Signal,
+  untracked,
 } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -17,15 +17,14 @@ import { TransferStore } from '../../../../store/transfers.store';
 import { TransferInternalService } from '../../services/transfer.internal.service';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
-import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
 import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
-import { of, tap } from 'rxjs';
+import { tap } from 'rxjs';
 import { SuccessModal } from '@tia/shared/lib/overlay/ui-success-modal/ui-success-modal';
 import { Router } from '@angular/router';
-import { OtpModal } from '@tia/shared/lib/overlay/ui-otp-modal/otp-modal';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { Tooltip } from '@tia/shared/lib/data-display/tooltip/tooltip';
 import { TransferSummaryComponent } from '../../../../ui/transfer-summary/transfer-summary';
+import { AlertService } from 'apps/tia-frontend/src/app/core/services/alert/alert.service';
 
 @Component({
   selector: 'app-internal-amount',
@@ -34,7 +33,6 @@ import { TransferSummaryComponent } from '../../../../ui/transfer-summary/transf
     TranslatePipe,
     TextInput,
     ReactiveFormsModule,
-    AlertTypesWithIcons,
     DecimalPipe,
     SuccessModal,
     RouteLoader,
@@ -53,11 +51,9 @@ export class InternalAmount implements OnInit {
   private readonly breakpointService = inject(BreakpointService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
+  private readonly alertService = inject(AlertService);
 
   public readonly isMobile = this.breakpointService.isMobile;
-  public readonly showSuccess = signal(false);
-  public readonly showError = signal(false);
-  public readonly currentToastMessage = signal('');
 
   public readonly isLoading = this.transferStore.isLoading;
   public readonly selectedSenderAccount = this.transferStore.senderAccount;
@@ -174,11 +170,12 @@ export class InternalAmount implements OnInit {
     effect(() => {
       const error = this.errorFromState();
       if (error) {
-        this.showError.set(true);
-        setTimeout(() => {
-          this.showError.set(false);
+        untracked(() => {
+          this.alertService.error(
+            this.translate.instant('transfers.internal.amount.transferError'),
+          );
           this.transferStore.setError('');
-        }, 3000);
+        });
       }
     });
 
@@ -204,6 +201,15 @@ export class InternalAmount implements OnInit {
   }
 
   public ngOnInit(): void {
+    const initialAmount = this.transferStore.amount();
+    if (initialAmount && initialAmount > 0) {
+      this.transferInternalService.handleAmountInput(initialAmount);
+
+      if (this.isConversionMode() && this.conversionRate()) {
+        this.updateDestinationAmount(initialAmount);
+      }
+    }
+
     this.amountInput.valueChanges
       .pipe(
         takeUntilDestroyed(this.destroyRef),
@@ -232,7 +238,9 @@ export class InternalAmount implements OnInit {
       )
       .subscribe();
 
-    this.triggerToast('transfers.internal.amount.accountsSelected');
+    this.alertService.success(
+      this.translate.instant('transfers.internal.amount.accountsSelected'),
+    );
   }
 
   private updateDestinationAmount(sourceAmount: number): void {
@@ -278,11 +286,6 @@ export class InternalAmount implements OnInit {
     }
   }
 
-  private triggerToast(messageKey: string): void {
-    this.currentToastMessage.set(messageKey);
-    this.showSuccess.set(true);
-    setTimeout(() => this.showSuccess.set(false), 3000);
-  }
 
   public onSuccessDone(): void {
     this.transferInternalService.clearInternalSelection();

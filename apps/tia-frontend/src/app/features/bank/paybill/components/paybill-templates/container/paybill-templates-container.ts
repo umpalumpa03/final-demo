@@ -25,6 +25,7 @@ import {
   selectTemplates,
   selectTemplatesAsTreeItems,
   selectTemplatesGroupWithConfigs,
+  selectTotalAmount,
   selectVerifiedDetails,
 } from '../../../store/paybill.selectors';
 import {
@@ -510,15 +511,24 @@ export class PaybillTemplatesContainer implements OnInit {
   public isPaymentModalVisible = signal(false);
   public isSuccessModalVisible = signal(false);
   public selectPaymentsForm = this.store.selectSignal(selectFormPayload);
-
+  public selectTotalAmount = this.store.selectSignal(selectTotalAmount);
   // Payment Logic
   public onPayAction(): void {
-    this.actions$
-      .pipe(ofType(TemplatesPageActions.payManyBillsSuccess), take(1))
-      .subscribe(() => {
-        this.isPaymentModalVisible.set(true);
-        this.isOtpModalOpen.set(true);
-      });
+    if (this.selectTotalAmount() > 50) {
+      this.actions$
+        .pipe(ofType(TemplatesPageActions.payManyBillsSuccess), take(1))
+        .subscribe(() => {
+          this.isPaymentModalVisible.set(true);
+          this.isOtpModalOpen.set(true);
+        });
+    } else {
+      this.actions$
+        .pipe(ofType(TemplatesPageActions.payManyBillsSuccess), take(1))
+        .subscribe(() => {
+          this.isPaymentModalVisible.set(true);
+          this.isSuccessModalVisible.set(true);
+        });
+    }
 
     this.store.dispatch(
       TemplatesPageActions.payManyBills({

@@ -17,6 +17,9 @@
 
             <div class="internal-accounts__from-card__content">
               <div class="internal-accounts__from-card__name">
+                @if (selectedFromAccount()?.isFavorite) {
+                  <img src="images/svg/transfers/star.svg" alt="favorite" class="internal-accounts__from-card__star" />
+                }
                 {{ selectedFromAccount()?.friendlyName || selectedFromAccount()?.name }}
               </div>
 
@@ -49,6 +52,7 @@
         variant="outline"
         size="default"
         [fullWidth]="isFullWidth()"
+        [isDisabled]="isSwapDisabled()"
         (click)="onSwapAccounts()"
       >
         <img src = 'images/svg/transfers/swap.svg' alt = "swap"/>
@@ -101,8 +105,8 @@
       [fullWidth]="isFullWidth()"
       (click)="onGoBack()"
     >
-      <img src="images/svg/transfers/go-back.svg" alt="back" />
-      {{ 'common.buttons.back' | translate }}
+      {{ 'common.buttons.goBack' | translate }}
+      <img src="images/svg/transfers/arrow-left.svg" alt="arrow" />
     </app-button>
 
     <app-button
@@ -118,11 +122,3 @@
   </footer>
 </main>
 
-@if (showSuccess()) {
-  <div class="internal-accounts__success-toast">
-    <app-alert-types-with-icons
-      [alertType]="'success'"
-      [alertMessage]="'transfers.internal.accounts.recipientVerified' | translate"
-    />
-  </div>
-}

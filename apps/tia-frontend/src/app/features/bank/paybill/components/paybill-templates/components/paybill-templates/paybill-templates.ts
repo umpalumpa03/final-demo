@@ -186,6 +186,9 @@ export class PaybillTemplates implements OnInit {
   // Form Submit Handler
   public onFormSubmit(type: ModalSubmitType): void {
     const form = this.activeForm();
+
+    form!.markAllAsTouched();
+
     if (form?.valid && this.isFormSubmitType(type)) {
       this.formSubmit.emit({ type, values: form.value });
     }
@@ -279,11 +282,6 @@ export class PaybillTemplates implements OnInit {
   public otpCloseEmit = output<boolean>();
   public paymentDone = output<void>();
   public otpConfig = payBillOtpConfig;
-
-  // need to be fixed
-  public resendOtp(event: any): void {
-    console.log(event);
-  }
 
   public onOtpClose() {
     this.otpCloseEmit.emit(false);

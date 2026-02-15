@@ -4,10 +4,11 @@
 .account-cards {
   @include display-flex(column);
   gap: 2.4rem;
+  min-height: 100vh;
   max-height: calc(-19rem + 100vh);
   overflow-y: auto;
   background: $white;
-  border: 0.188rem solid $blue-400;
+  border: 0.188rem solid var(--color-primary);
   border-radius: 0.8rem;
   padding: 2.4rem;
   gap: 1.6rem;
@@ -41,8 +42,8 @@
       grid-template-columns: 1fr 1fr;
       gap: 5rem;
     }
-     @media (max-width: 768px) {
-      grid-template-columns: 1fr ;
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
       gap: 3rem;
     }
   }
@@ -55,4 +56,5 @@
     border-radius: 0.8rem;
     text-align: center;
   }
+
 }

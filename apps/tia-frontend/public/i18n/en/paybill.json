@@ -50,7 +50,9 @@
       "verification_missing_title": "Verification Data Missing",
       "payment_missing_title": "Payment Data Missing",
       "missing_data_message": "We couldn't find your payment details. Please restart the payment process.",
-      "back_to_categories": "Back to Categories"
+      "back_to_categories": "Back to Categories",
+      "not-available": "Not Available",
+      "not-available-subtitle": "Such providers were not found!"
     },
     "form": {
       "subtitle": "Enter your bill details",
@@ -60,15 +62,15 @@
       "verified_title": "Account Verified",
       "amount_label": "Amount To Pay",
       "amount_placeholder": "0.00",
-      "amount_helper": "Enter an amount between 0.01 and 9999",
-      "amount_range_error": "Value must be between 0.01 and 9999",
+      "amount_helper": "Enter an amount between 1 and 9999",
+      "amount_range_error": "Value must be between 1 and 9999",
       "helper_text": "Fetched amount: {{amount}}. You can edit before continuing.",
       "continue_btn": "Continue to Payment",
       "verify_btn": "Verify Account",
       "check_button": "Check",
       "pay_button": "Pay",
       "template": "Save Template",
-      "required_field_error": "Please fill required field!"
+      "required_field_error": "Please recheck the information"
     },
     "confirm": {
       "title": "Confirm Payment",

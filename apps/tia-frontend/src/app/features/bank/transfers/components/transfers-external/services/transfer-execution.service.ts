@@ -4,6 +4,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { catchError, of, tap } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
+import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions/transactions.actions';
 import { TransferStore } from '../../../store/transfers.store';
 import { TransfersApiService } from '../../../services/transfersApi.service';
 
@@ -122,6 +123,7 @@ export class TransferExecutionService {
     }
 
     this.transferStore.setLoading(true);
+    this.transferStore.setError('');
 
     this.transfersApi
       .verifyTransfer({
@@ -135,6 +137,9 @@ export class TransferExecutionService {
             this.transferStore.setTransferSuccess(true);
             this.store.dispatch(
               AccountsActions.loadAccounts({ forceRefresh: true }),
+            );
+            this.store.dispatch(
+              TransactionActions.loadTransactions({ forceRefresh: true }),
             );
           } else {
             this.transferStore.setError(response.message || 'Invalid OTP code');

@@ -169,6 +169,10 @@
     @media (max-width: 450px) {
         flex-direction: column;
         text-align: center;
+        .card__action {
+            display: none;
+        }
+
         &__header-row {
             @include flex-center;
             flex-direction: column;
@@ -183,13 +187,5 @@
                 }
             }
         }
-    }
-}
-
-@media (max-width: 600px) {
-    .card__action {
-        position: absolute;
-        top: 2.4rem;
-        right: 2.4rem;
     }
 }
