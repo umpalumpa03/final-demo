@@ -38,19 +38,36 @@
   </div>
 
   <div class="provider-list">
+    @if (isLoading()) {
+    <div class="providers-container">
+      @for (item of [1, 2, 3, 4, 5]; track item) {
+      <app-provider-item [isLoading]="true" />
+      }
+    </div>
+    } @else if (providers().length > 0) {
     <app-scroll-area [hideBorder]="true" scrollbar="hidden" height="40rem">
       <div class="providers-container">
-        @if (isLoading()) { @for (item of [1, 2, 3, 4, 5]; track item) {
-        <app-provider-item [isLoading]="true" />
-        } } @else { @for (item of providers(); track item.id) {
+        @for (item of providers(); track item.id) {
         <app-provider-item
           [name]="item.name || ''"
           [indicatorColor]="iconBgColor() || ''"
           [isFinal]="!!item.isFinal!"
           (selected)="selected.emit(item.id)"
         />
-        } }
+        }
       </div>
     </app-scroll-area>
+    } @else {
+    <div class="provider-list__empty-state">
+      <app-error-states
+        variant="not-found"
+        [header]="'paybill.main.error.not-available' | translate"
+        [message]="'paybill.main.error.not-available-subtitle' | translate"
+        [showButton]="false"
+        [border]="false"
+        height="22rem"
+      />
+    </div>
+    }
   </div>
 </app-basic-card>
