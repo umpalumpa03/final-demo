@@ -105,8 +105,8 @@
       [fullWidth]="isFullWidth()"
       (click)="onGoBack()"
     >
-      <img src="images/svg/transfers/go-back.svg" alt="back" />
-      {{ 'common.buttons.back' | translate }}
+      {{ 'common.buttons.goBack' | translate }}
+      <img src="images/svg/transfers/arrow-left.svg" alt="arrow" />
     </app-button>
 
     <app-button
@@ -121,13 +121,4 @@
     </app-button>
   </footer>
 </main>
-
-@if (showSuccess()) {
-  <div class="internal-accounts__success-toast">
-    <app-alert-types-with-icons
-      [alertType]="'success'"
-      [alertMessage]="'transfers.internal.accounts.recipientVerified' | translate"
-    />
-  </div>
-}
 
