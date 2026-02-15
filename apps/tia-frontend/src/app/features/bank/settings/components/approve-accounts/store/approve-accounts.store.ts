@@ -141,6 +141,10 @@ export const AccountPermissionsStore = signalStore(
       selectAccount(accountId: string | null): void {
         patchState(store, { selectedAccountId: accountId });
       },
+
+      resetState(): void {
+        patchState(store, initialStateAccountPermissions);
+      },
     }),
   ),
 );
