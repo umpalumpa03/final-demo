@@ -3,6 +3,7 @@ import { TransferStore } from 'apps/tia-frontend/src/app/features/bank/transfers
 import { Account } from '@tia/shared/models/accounts/accounts.model';
 import { catchError, of, tap } from 'rxjs';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
+ import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions/transactions.actions';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -90,6 +91,9 @@ export class TransferInternalService {
             this.store.dispatch(
               AccountsActions.loadAccounts({ forceRefresh: true }),
             );
+            this.store.dispatch(
+              TransactionActions.loadTransactions({ forceRefresh: true }),
+            );
           }
         }),
         catchError((error) => {
@@ -124,6 +128,9 @@ export class TransferInternalService {
 
             this.store.dispatch(
               AccountsActions.loadAccounts({ forceRefresh: true }),
+            );
+            this.store.dispatch(
+              TransactionActions.loadTransactions({ forceRefresh: true }),
             );
           }
           this.transferStore.setLoading(false);
@@ -177,6 +184,9 @@ export class TransferInternalService {
             this.transferStore.setTransferSuccess(true);
             this.store.dispatch(
               AccountsActions.loadAccounts({ forceRefresh: true }),
+            );
+            this.store.dispatch(
+              TransactionActions.loadTransactions({ forceRefresh: true }),
             );
           }
         }),
