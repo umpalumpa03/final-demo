@@ -80,6 +80,10 @@
 
         @media (max-width: 480px) {
             grid-template-columns: 1fr;
+
+            .select {
+                max-width: 48rem;
+            }
         }
 
         &--full-width {
