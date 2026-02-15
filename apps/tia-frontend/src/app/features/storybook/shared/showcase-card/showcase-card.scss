@@ -6,7 +6,7 @@
   width: 100%;
   min-height: 13rem;
   background: $white;
-  border: 0.08rem solid $blue-400;
+  border: 0.08rem solid var(--color-primary);
   border-radius: 1rem;
   padding: 2.38rem;
   @include display-flex(column);
