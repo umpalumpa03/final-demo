@@ -208,16 +208,16 @@ export class AuthService {
               'auth.alert-errors.loginSuccess',
             );
 
-            this.store
-              .select(selectUserInfoState)
-              .pipe(
-                filter((user) => user.loaded || !!user.error),
-                take(1),
-                tap(() => {
-                  () => this.isLoginLoading.set(false);
-                }),
-              )
-              .subscribe();
+            // this.store
+            //   .select(selectUserInfoState)
+            //   .pipe(
+            //     filter((user) => user.loaded || !!user.error),
+            //     take(1),
+            //     finalize(() => {
+            //       () => this.isLoginLoading.set(false);
+            //     }),
+            //   )
+            //   .subscribe();
           }
         }),
         catchError((err) => {
