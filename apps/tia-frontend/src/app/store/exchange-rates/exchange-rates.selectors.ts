@@ -13,6 +13,12 @@ export const selectLoading = createSelector(
   selectExchangeRatesSelector,
   (state) => state.loading,
 );
+
+export const selectError = createSelector(
+  selectExchangeRatesSelector,
+  (state) => state.error,
+);
+
 export const selectRateByCode = (code: string) =>
   createSelector(
     selectExchangeRates,
