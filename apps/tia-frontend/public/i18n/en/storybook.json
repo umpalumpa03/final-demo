@@ -1446,5 +1446,9 @@
     "dataDisplay": "Data Display",
     "overlays": "Overlays",
     "dragAndDrop": "Drag And Drop"
+  },
+  "header": {
+    "title": "Component Library",
+    "subtitle": "A comprehensive showcase of all components with their various states"
   }
 }

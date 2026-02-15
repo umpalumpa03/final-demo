@@ -1,9 +1,10 @@
-@use "../../../../../shared/styles/mixins" as *;
-@use "../../../../../shared/styles/palette" as *;
+@use '../../../../../shared/styles/mixins' as *;
+@use '../../../../../shared/styles/palette' as *;
+@use '../../../../../shared/styles/themes' as *;
 .transactions-filters {
   @include display-flex(column);
   background-color: $white;
-  border: 0.16rem solid $blue-400;
+  border: 0.16rem solid var(--color-primary);
   border-radius: 1.4rem;
   gap: 2.6rem;
   padding: 2.3rem;
