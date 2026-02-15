@@ -14,7 +14,6 @@
     width: 100%;
     flex-wrap: wrap;
     gap: 1.6rem;
-
   }
 
   &__label {
@@ -73,9 +72,10 @@
     min-width: 0;
     max-width: 32.8rem;
     background-color: $white;
-    border: 0.16rem solid $blue-400;
+    border: 0.16rem solid var(--color-primary);
     border-radius: 1.4rem;
-    box-shadow: 0rem 0.1rem 0.3rem 0rem rgba(0, 0, 0, 0.1),
+    box-shadow:
+      0rem 0.1rem 0.3rem 0rem rgba(0, 0, 0, 0.1),
       0rem 0.1rem 0.2rem -0.1rem rgba(0, 0, 0, 0.1);
     padding: 2.4rem;
     min-height: 22rem;
@@ -151,7 +151,4 @@
     align-items: center;
     gap: 1.6rem;
   }
-
 }
-
-
