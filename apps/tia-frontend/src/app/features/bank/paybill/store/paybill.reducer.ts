@@ -256,6 +256,7 @@ export const paybillReducer = createReducer(
     error: null,
     challengeId: null,
     paymentDetails: null,
+    paymentPayload: null,
   })),
 
   on(PaybillActions.setTransactionProvider, (state, { provider }) => ({
