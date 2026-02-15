@@ -97,6 +97,7 @@
       "close": "დახურვა"
     }
   },
+  "redirectText": "სესხების გვერდზე",
   "prepayment_wizard": {
     "step_setup": {
       "title": "სესხის წინსწრებით დაფარვა",
