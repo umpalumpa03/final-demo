@@ -18,7 +18,6 @@ describe('TextInput', () => {
     fixture.detectChanges();
   });
 
-  // --- 1. Basic Config & Display ---
   it('should compute configs, icons, and display values', () => {
     fixture.componentRef.setInput('type', 'search');
     fixture.componentRef.setInput('config', {
@@ -36,12 +35,10 @@ describe('TextInput', () => {
     component['value'].set('hello');
     expect(component['getDisplayValue']()).toBe('hello');
 
-    // Test Date Display Formatting (ISO to DD/MM/YYYY)
     fixture.componentRef.setInput('type', 'date');
     component['value'].set('2025-05-10');
     expect(component['getDisplayValue']()).toBe('10/05/2025');
 
-    // Test Date Display with invalid format gracefully
     component['value'].set('invalid-date');
     expect(component['getDisplayValue']()).toBe('invalid-date');
 
@@ -49,7 +46,6 @@ describe('TextInput', () => {
     expect(component['getDisplayValue']()).toBe('');
   });
 
-  // --- 2. Password & Caps Lock ---
   it('should handle password toggles and caps lock', () => {
     fixture.componentRef.setInput('type', 'password');
     fixture.detectChanges();
@@ -68,12 +64,10 @@ describe('TextInput', () => {
     expect(component['isCapsLockOn']()).toBe(false);
   });
 
-  // --- 3. Date Picker State ---
   it('should handle date picker state and selection', () => {
     fixture.componentRef.setInput('type', 'date');
     expect(component['isDateType']()).toBe(true);
 
-    // Should open when enabled
     component['toggleDatePicker']();
     expect(component['isDatePickerOpen']()).toBe(true);
 
@@ -87,7 +81,6 @@ describe('TextInput', () => {
     expect(component['getDateValue']()).toBe('2025-01-01');
   });
 
-  // --- 4. Date Masking Logic (Complex Branching) ---
   describe('Date Masking', () => {
     beforeEach(() => {
       fixture.componentRef.setInput('type', 'date');
@@ -102,7 +95,6 @@ describe('TextInput', () => {
       component['handleInput'](event);
 
       expect(input.value).toBe('01/05/2025');
-      // Check if model updated to ISO
       expect(component['value']()).toBe('2025-05-01');
     });
 
@@ -119,27 +111,25 @@ describe('TextInput', () => {
 
     it('should clamp day > 31', () => {
       const input = document.createElement('input');
-      input.value = '35'; // Invalid day
+      input.value = '35';
       const event = { target: input } as any;
 
       component['handleInput'](event);
 
-      expect(input.value).toBe('31'); // Should be replaced/clamped depending on logic
+      expect(input.value).toBe('31');
     });
 
     it('should clamp month > 12', () => {
       const input = document.createElement('input');
-      input.value = '0115'; // 01st of 15th month?
+      input.value = '0115';
       const event = { target: input } as any;
 
       component['handleInput'](event);
 
-      // Logic splits digits: 01 (day) / 15 (month) -> 12
       expect(input.value).toBe('01/12');
     });
 
     it('should clear model on empty input', () => {
-      // Set value first
       component['value'].set('2025-01-01');
 
       const input = document.createElement('input');
@@ -183,7 +173,6 @@ describe('TextInput', () => {
     component['validateDateInput']();
     expect(component['internalValidationErrors']().length).toBe(0);
 
-    // Edge case: Non-date type shouldn't error
     fixture.componentRef.setInput('type', 'text');
     component['setValidationErrors']([{ type: 'err', message: '' }]);
     component['validateDateInput']();
