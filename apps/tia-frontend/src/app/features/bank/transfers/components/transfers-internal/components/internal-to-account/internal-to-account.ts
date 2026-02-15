@@ -4,7 +4,6 @@ import {
   computed,
   effect,
   inject,
-  signal,
   untracked,
 } from '@angular/core';
 import { Router } from '@angular/router';
@@ -21,18 +20,17 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import { AccountData } from 'apps/tia-frontend/src/app/features/bank/transfers/models/transfers.state.model';
 import { Account } from '@tia/shared/models/accounts/accounts.model';
-import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { TransfersAccountCard } from 'apps/tia-frontend/src/app/features/bank/transfers/ui/account-card/transfers-account-card';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Badges } from '@tia/shared/lib/primitives/badges/badges';
+import { AlertService } from 'apps/tia-frontend/src/app/core/services/alert/alert.service';
 
 @Component({
   selector: 'app-internal-to-account',
   imports: [
-    AlertTypesWithIcons,
     ButtonComponent,
     ErrorStates,
     RouteLoader,
@@ -50,6 +48,8 @@ export class InternalToAccount {
   private readonly breakpointService = inject(BreakpointService);
   private readonly router = inject(Router);
   private readonly transferInternalService = inject(TransferInternalService);
+  private readonly alertService = inject(AlertService);
+  private readonly translate = inject(TranslateService);
 
   public readonly isFullWidth = computed(() =>
     this.breakpointService.isMobile(),
@@ -64,8 +64,6 @@ export class InternalToAccount {
     initialValue: null,
   });
 
-  public readonly showSuccess = signal(false);
-  public readonly showError = signal(false);
 
   public readonly selectedToAccount = computed(() =>
     this.transferStore.receiverOwnAccount(),
@@ -113,11 +111,10 @@ export class InternalToAccount {
     effect(() => {
       const error = this.transferError();
       if (error && this.hasRepeatError()) {
-        this.showError.set(true);
-        setTimeout(() => {
-          this.showError.set(false);
+        untracked(() => {
+          this.alertService.error(this.translate.instant(error));
           this.transferStore.setError('');
-        }, 5000);
+        });
       }
     });
 
