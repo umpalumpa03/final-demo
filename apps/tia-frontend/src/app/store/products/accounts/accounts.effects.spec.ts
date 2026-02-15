@@ -313,11 +313,17 @@ describe('AccountsEffects', () => {
     it('should return enrichAccountsSuccess with lastTransactions when loadAccountsSuccess has accounts', () => {
       const mockTx = {
         id: 'tx1',
+        userId: 'user-1',
         amount: 100,
-        createdAt: '2026-01-01',
-        creditAccountNumber: mockAccount.iban,
-        debitAccountNumber: 'OTHER',
         transactionType: 'credit' as const,
+        transferType: 'ToSomeoneSameBank',
+        currency: 'USD' as const,
+        description: 'Test transaction',
+        debitAccountNumber: 'OTHER',
+        creditAccountNumber: mockAccount.iban as string | null,
+        category: 'general',
+        createdAt: '2026-01-01',
+        updatedAt: '2026-01-01',
       };
       vi.spyOn(transactionService, 'getTransactions').mockReturnValue(
         of({ items: [mockTx], total: 1 } as any),
