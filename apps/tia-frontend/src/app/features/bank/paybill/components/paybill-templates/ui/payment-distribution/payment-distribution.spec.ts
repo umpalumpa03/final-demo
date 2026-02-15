@@ -15,7 +15,7 @@ describe('PaymentDistribution', () => {
   let component: PaymentDistribution;
   let fixture: ComponentFixture<PaymentDistribution>;
   let store: MockStore;
-
+  let mockEvent: any;
   const mockTemplates = [
     { id: 1, amountDue: 100 },
     { id: 2, amountDue: 200 },
@@ -23,6 +23,12 @@ describe('PaymentDistribution', () => {
 
   beforeEach(async () => {
     vi.useFakeTimers();
+
+    mockEvent = {
+      key: '',
+      target: { value: '' },
+      preventDefault: vi.fn(),
+    };
 
     await TestBed.configureTestingModule({
       imports: [
@@ -110,6 +116,66 @@ describe('PaymentDistribution', () => {
       expect(store.dispatch).toHaveBeenCalledWith(
         TemplatesPageActions.setDistributedAmount({ amount: 0 }),
       );
+    });
+
+    it('should prevent "e" and "-" keys', () => {
+      ['e', '-'].forEach((key) => {
+        mockEvent.key = key;
+        component.preventNegativeInput(mockEvent as KeyboardEvent);
+        expect(mockEvent.preventDefault).toHaveBeenCalled();
+        vi.clearAllMocks();
+      });
+    });
+
+    it('should allow navigation and deletion keys', () => {
+      ['Backspace', 'Delete', 'ArrowLeft', 'Tab'].forEach((key) => {
+        mockEvent.key = key;
+        component.preventNegativeInput(mockEvent as KeyboardEvent);
+        expect(mockEvent.preventDefault).not.toHaveBeenCalled();
+        vi.clearAllMocks();
+      });
+    });
+
+    it('should prevent input if first digit is 0 and another digit is typed', () => {
+      mockEvent.target.value = '0';
+      mockEvent.key = '5';
+      component.preventNegativeInput(mockEvent as KeyboardEvent);
+      expect(mockEvent.preventDefault).toHaveBeenCalled();
+    });
+
+    it('should prevent more than 5 digits in the integer part', () => {
+      mockEvent.target.value = '12345';
+      mockEvent.key = '6';
+      component.preventNegativeInput(mockEvent as KeyboardEvent);
+      expect(mockEvent.preventDefault).toHaveBeenCalled();
+    });
+
+    it('should allow decimals even if integer part is at max length', () => {
+      mockEvent.target.value = '12345';
+      mockEvent.key = '.';
+      component.preventNegativeInput(mockEvent as KeyboardEvent);
+      expect(mockEvent.preventDefault).not.toHaveBeenCalled();
+    });
+
+    it('should prevent more than one decimal separator', () => {
+      mockEvent.target.value = '10.5';
+      mockEvent.key = '.';
+      component.preventNegativeInput(mockEvent as KeyboardEvent);
+      expect(mockEvent.preventDefault).toHaveBeenCalled();
+    });
+
+    it('should prevent more than 2 decimal places', () => {
+      mockEvent.target.value = '10.55';
+      mockEvent.key = '6';
+      component.preventNegativeInput(mockEvent as KeyboardEvent);
+      expect(mockEvent.preventDefault).toHaveBeenCalled();
+    });
+
+    it('should allow typing digits if they are within limits', () => {
+      mockEvent.target.value = '12';
+      mockEvent.key = '3';
+      component.preventNegativeInput(mockEvent as KeyboardEvent);
+      expect(mockEvent.preventDefault).not.toHaveBeenCalled();
     });
   });
 });
