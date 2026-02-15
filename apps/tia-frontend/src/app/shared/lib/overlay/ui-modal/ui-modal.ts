@@ -39,6 +39,7 @@ export class UiModal implements OnDestroy {
   public readonly targetGap = input<number>(16);
   public readonly placement = input<ModalPlacement>('bottom');
   public readonly offset = input<ModalOffset>({});
+  public readonly hasCloseZIndex = input<boolean>();
 
   protected readonly spotlightStyle = this.modalService.spotlightStyle;
   protected readonly cardStyle = this.modalService.cardStyle;
