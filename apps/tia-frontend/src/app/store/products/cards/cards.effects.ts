@@ -367,10 +367,11 @@ showOtpErrorAlert$ = createEffect(
     ),
   { dispatch: false },
 );
+
 createCardSuccessAlert$ = createEffect(() =>
   this.actions$.pipe(
     ofType(CardsActions.createCardSuccess),
-    delay(500), 
+
     tap(() => CardsAlerts.showCardCreatedAlert(this.alertService, this.translate))
   ),
   { dispatch: false }

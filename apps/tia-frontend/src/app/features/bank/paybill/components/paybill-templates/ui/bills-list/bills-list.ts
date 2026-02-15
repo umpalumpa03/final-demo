@@ -19,7 +19,6 @@ import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TemplatesPageActions } from '../../../../store/paybill.actions';
 import { BillPaymentRequest } from '../../models/paybill-templates.model';
-import { startWith } from 'rxjs';
 
 @Component({
   selector: 'app-bills-list',
@@ -77,6 +76,16 @@ export class BillsList implements OnInit {
     });
 
     effect(() => {
+      const senderAccountId = this.senderAccountId();
+
+      this.store.dispatch(
+        TemplatesPageActions.setPaymentsForm({
+          payments: untracked(() => this.buildPayload(senderAccountId)),
+        }),
+      );
+    });
+
+    effect(() => {
       const distributed = this.distributedAmount();
       const items = untracked(() => this.selectedItems());
 
@@ -118,15 +127,16 @@ export class BillsList implements OnInit {
     });
   }
 
-  public buildPayload(): BillPaymentRequest[] {
+  public buildPayload(senderAccountId?: string | null): BillPaymentRequest[] {
     const items = this.selectedItems();
     const formValues = this.payForm.getRawValue() as Record<string, string>;
+    const accountId = senderAccountId ?? this.senderAccountId()!;
 
     return items.map((item) => ({
       serviceId: item.serviceId,
       identification: item.identification,
       amount: +formValues[item.id],
-      senderAccountId: this.senderAccountId()!,
+      senderAccountId: accountId,
     }));
   }
 
