@@ -2,10 +2,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ApproveCards } from './approve-cards';
 import { ApproveCardsStore } from '../store/approve-cards.store';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { signal } from '@angular/core';
 import { ApproveCardsState } from '../shared/state/approve-cards.state';
 import { TranslateModule } from '@ngx-translate/core';
+import { provideMockStore } from '@ngrx/store/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 describe('ApproveCards', () => {
   let component: ApproveCards;
@@ -16,16 +18,19 @@ describe('ApproveCards', () => {
   beforeEach(async () => {
     storeMock = {
       load: vi.fn(),
-      loadPerrmisions: vi.fn(),
+      loadPermissions: vi.fn(),
       updateStatus: vi.fn(),
       isLoading: signal(false),
+      isPermissionsLoading: signal(false),
       error: signal(null),
       success: signal(null),
-      cards: signal([{ 
-        id: '1', 
-        nickname: 'Test Card', 
-        user: { firstName: 'John', lastName: 'Doe' } 
-      }]),
+      cards: signal([
+        {
+          id: '1',
+          nickname: 'Test Card',
+          user: { firstName: 'John', lastName: 'Doe' }
+        }
+      ]),
       permissions: signal([
         { value: 'allowAtm', displayName: 'ATM' },
         { value: 'allowOnline', displayName: 'Online' }
@@ -37,17 +42,25 @@ describe('ApproveCards', () => {
         alertMessages: {
           successDesc: 'Success Message Content',
           errorDesc: 'Error Message Content'
+        },
+        permissionsModal: {
+          modalTitle: 'Modify Permissions',
+          modalSubtitle: 'Subtitle here',
+          title: 'Permission List'
         }
       })
     };
 
     await TestBed.configureTestingModule({
       imports: [
-        ApproveCards, 
+        ApproveCards,
+        ReactiveFormsModule,
         TranslateModule.forRoot()
       ],
       providers: [
         FormBuilder,
+        provideMockStore({}),
+        provideNoopAnimations(),
         { provide: ApproveCardsStore, useValue: storeMock },
         { provide: ApproveCardsState, useValue: stateMock }
       ]
@@ -60,13 +73,13 @@ describe('ApproveCards', () => {
   it('should initialize and load only basic store data on init', () => {
     fixture.detectChanges();
     expect(storeMock.load).toHaveBeenCalled();
-    expect(storeMock.loadPerrmisions).not.toHaveBeenCalled();
+    expect(storeMock.loadPermissions).not.toHaveBeenCalled();
   });
 
   it('should load permissions when handlePermissions is called', () => {
     fixture.detectChanges();
     component.handleAction({ action: 'permissions', id: '1' });
-    expect(storeMock.loadPerrmisions).toHaveBeenCalled();
+    expect(storeMock.loadPermissions).toHaveBeenCalled();
     expect(component.permissionsOverlay()).toBe(true);
   });
 
@@ -105,8 +118,11 @@ describe('ApproveCards', () => {
     component.activeCardId.set('1');
     component.onSavePermissions();
     
-    component.cardPermissionsForm.get('allowAtm')?.setValue(true);
-    component['handleApprove']('1');
+    if (component.cardPermissionsForm.get('allowAtm')) {
+      component.cardPermissionsForm.get('allowAtm')?.setValue(true);
+    }
+    
+    component.handleAction({ action: 'approve', id: '1' });
 
     expect(storeMock.updateStatus).toHaveBeenCalledWith(expect.objectContaining({
       permissions: ['allowAtm'],
@@ -114,25 +130,9 @@ describe('ApproveCards', () => {
     }));
   });
 
-  it('should handle handleAction branching', () => {
-    fixture.detectChanges();
-    const permSpy = vi.spyOn(component as any, 'handlePermissions');
-    const approveSpy = vi.spyOn(component as any, 'handleApprove');
-    const declineSpy = vi.spyOn(component as any, 'handleDecline');
-
-    component.handleAction({ action: 'permissions', id: '1' });
-    expect(permSpy).toHaveBeenCalledWith('1');
-
-    component.handleAction({ action: 'approve', id: '1' });
-    expect(approveSpy).toHaveBeenCalledWith('1');
-
-    component.handleAction({ action: 'decline', id: '1' });
-    expect(declineSpy).toHaveBeenCalledWith('1');
-  });
-
   it('should decline a card', () => {
     fixture.detectChanges();
-    component['handleDecline']('1');
+    component.handleAction({ action: 'decline', id: '1' });
     expect(storeMock.updateStatus).toHaveBeenCalledWith({
       cardId: '1',
       status: 'CANCELLED',
@@ -149,7 +149,7 @@ describe('ApproveCards', () => {
   it('should open confirm modal if switching cards with unsaved permissions', () => {
     fixture.detectChanges();
     component.permissionsSavedCard.set('old-id');
-    component['handlePermissions']('new-id');
+    component.handleAction({ action: 'permissions', id: 'new-id' });
     expect(component.confirmModalActive()).toBe(true);
   });
 
