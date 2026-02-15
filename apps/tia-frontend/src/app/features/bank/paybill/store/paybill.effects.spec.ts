@@ -448,7 +448,15 @@ describe('PaybillEffect (Refactored)', () => {
 
   describe('Create Template', () => {
     it('createTemplate$: should dispatch success', () => {
-      const response = { message: 'Created' };
+      const response = {
+        id: 'tmpl-1',
+        nickname: 'nick',
+        serviceId: '1',
+        identification: { accountNumber: '123' },
+        amountDue: 0,
+        groupId: null,
+        message: 'Created',
+      };
       paybillService.createTemplate.mockReturnValue(of(response));
       actions$ = of(
         TemplatesPageActions.createTemplate({
