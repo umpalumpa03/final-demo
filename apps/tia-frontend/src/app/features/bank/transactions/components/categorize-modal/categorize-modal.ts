@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   inject,
   input,
   output,
@@ -47,11 +48,7 @@ export class CategorizeModal {
   private readonly alertService = inject(AlertService);
 
   public readonly modalConfig = CATEGORIZE_MODAL_CONFIG;
-  public readonly selectConfig = CATEGORY_SELECT_CONFIG;
   public readonly inputConfig = NEW_CATEGORY_INPUT_CONFIG;
-
-  public title = CATEGORIZE_MODAL_CONFIG.title;
-  public subTitle = CATEGORIZE_MODAL_CONFIG.subTitle;
 
   public transaction = input<ITransactions | null>(null);
   public selectCategoryOptions = input.required<SelectOption[]>();
@@ -65,8 +62,17 @@ export class CategorizeModal {
     newCategoryName: [''],
   });
 
+  public readonly selectDropdownConfig = computed(() => ({
+    label: this.translate.instant(CATEGORY_SELECT_CONFIG.label ?? ''),
+    placeholder: this.translate.instant(
+      CATEGORY_SELECT_CONFIG.placeholder ?? '',
+    ),
+    height: CATEGORY_SELECT_CONFIG.height,
+    disabled: this.selectCategoryOptions().length === 0,
+  }));
+
   public onSave(): void {
-    const categoryId = this.form.value.categoryId;
+    const { categoryId } = this.form.getRawValue();
     const transaction = this.transaction();
 
     if (categoryId && transaction) {
