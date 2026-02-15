@@ -1,6 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
 import { TransactionActions } from './transactions.actions';
 import { transactionInitialState } from './config/transaction-state-config';
+import { ITransactionsCategory } from '@tia/shared/models/transactions/transactions-category.models';
 
 export const TRANSACTION_FEATURE_KEY = 'transactions';
 
@@ -61,6 +62,18 @@ export const transactionReducer = createReducer(
     ...state,
     categories: categories,
   })),
+
+  on(TransactionActions.createCategorySuccess, (state, { response }) => {
+    const newCategory: ITransactionsCategory = {
+      id: response.id,
+      categoryName: response.categoryName,
+    };
+
+    return {
+      ...state,
+      categories: [newCategory, ...state.categories],
+    };
+  }),
   on(TransactionActions.loadCategoriesFailure, (state, { error }) => ({
     ...state,
     error,

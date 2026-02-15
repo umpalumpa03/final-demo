@@ -111,16 +111,10 @@ export const loadTransactionsCategoriesEffect = createEffect(
     transactionService = inject(TransactionApiService),
   ) => {
     return actions$.pipe(
-      ofType(
-        TransactionActions.enter,
-        TransactionActions.loadCategories,
-        TransactionActions.createCategorySuccess,
-      ),
+      ofType(TransactionActions.enter, TransactionActions.loadCategories),
       withLatestFrom(store.select(selectCategoriesRaw)),
       switchMap(([action, existingCategories]) => {
-        const isForceRefresh =
-          action.type === TransactionActions.createCategorySuccess.type;
-        if (existingCategories.length > 0 && !isForceRefresh) {
+        if (existingCategories.length > 0) {
           return EMPTY;
         }
 
