@@ -4,12 +4,28 @@ import {
   FilterConfig,
   FilterFormValues,
 } from '../models/transactions-filters.models';
+import { Params } from '@angular/router';
+
+export function mapQueryParamsToFilter(
+  params: Params,
+): Partial<ITransactionFilter> {
+  return {
+    searchCriteria: params['searchCriteria'] || '',
+    category: params['category'] || undefined,
+    amountFrom: params['amountFrom'] ? Number(params['amountFrom']) : undefined,
+    amountTo: params['amountTo'] ? Number(params['amountTo']) : undefined,
+    iban: params['accountIban'] || undefined,
+    currency: params['currency'] || undefined,
+    dateFrom: params['dateFrom'] || undefined,
+    dateTo: params['dateTo'] || undefined,
+  };
+}
 
 export function mapFormIntoTransactionFilter(
   values: Partial<FilterFormValues>,
 ): ITransactionFilter {
   return {
-    searchCriteria: values.searchCriteria || '',
+    searchCriteria: values.searchCriteria?.trim() || '',
     category: values.category || undefined,
     amountFrom: values.amountFrom || undefined,
     amountTo: values.amountTo || undefined,

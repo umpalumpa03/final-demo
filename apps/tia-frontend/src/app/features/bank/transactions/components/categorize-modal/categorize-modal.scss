@@ -63,5 +63,8 @@
     width: 100%;
     @include flex-center(row, flex-end, center);
     gap: 0.8rem;
+    @media (max-width: 400px) {
+      @include flex-center(column-reverse, center, flex-end);
+    }
   }
 }

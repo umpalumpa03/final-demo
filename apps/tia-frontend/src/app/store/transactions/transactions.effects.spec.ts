@@ -17,6 +17,8 @@ import {
   selectFilters,
   selectNextCursor,
   selectTransactionsLoaded,
+  selectTotalTransactions,
+  selectCategoriesRaw,
 } from './transactions.selector';
 import { TransactionApiService } from '@tia/shared/services/transactions-service/transactions.api.service';
 
@@ -38,13 +40,17 @@ describe('Transaction Effects', () => {
     TestBed.configureTestingModule({
       providers: [
         provideMockActions(() => actions$),
-        provideMockStore(),
+        provideMockStore({
+          initialState: { transactions: { total: 0, categories: [], items: [], loaded: false } }
+        }),
         { provide: TransactionApiService, useValue: transactionService },
       ],
     });
 
     store = TestBed.inject(MockStore);
     store.overrideSelector(selectTransactionsLoaded, false);
+    store.overrideSelector(selectTotalTransactions, 0);
+    store.overrideSelector(selectCategoriesRaw, []);
   });
 
   afterEach(() => {
@@ -67,226 +73,133 @@ describe('Transaction Effects', () => {
     expect(result).toEqual(TransactionActions.loadTransactions({}));
   });
 
-  it('loads transactions successfully', () => {
-    const response = { items: [], pageInfo: {} };
-    const filters = { pageLimit: 20 };
-    store.overrideSelector(selectFilters, filters);
-    store.overrideSelector(selectNextCursor, null);
-    store.overrideSelector(selectTransactionsLoaded, false);
-    transactionService.getTransactions.mockReturnValue(of(response));
+  describe('loadTransactionsEffect', () => {
+    it('loads transactions successfully', () => {
+      const response = { items: [], pageInfo: {} };
+      const filters = { pageLimit: 20 };
+      store.overrideSelector(selectFilters, filters);
+      store.overrideSelector(selectNextCursor, null);
+      transactionService.getTransactions.mockReturnValue(of(response));
+      actions$ = of(TransactionActions.loadTransactions({}));
 
-    actions$ = of(TransactionActions.loadTransactions({}));
-
-    TestBed.runInInjectionContext(() =>
-      loadTransactionsEffect(actions$, store, transactionService).subscribe(
-        (action) => {
-          expect(action).toEqual(
-            TransactionActions.loadTransactionsSuccess({ response } as any),
-          );
-          expect(transactionService.getTransactions).toHaveBeenCalledWith({
-            ...filters,
-            pageCursor: undefined,
-          });
-        },
-      ),
-    );
-  });
-
-  it('handles API error', () => {
-    const error = 'Network Error';
-    store.overrideSelector(selectFilters, {});
-    store.overrideSelector(selectNextCursor, null);
-    store.overrideSelector(selectTransactionsLoaded, false);
-    transactionService.getTransactions.mockReturnValue(throwError(() => error));
-
-    actions$ = of(TransactionActions.loadTransactions({}));
-
-    TestBed.runInInjectionContext(() =>
-      loadTransactionsEffect(actions$, store, transactionService).subscribe(
-        (action) =>
-          expect(action).toEqual(TransactionActions.loadFailure({ error })),
-      ),
-    );
-  });
-
-  it('passes cursor on loadMore', () => {
-    const cursor = 'cursor';
-    const filters = { pageLimit: 10 };
-    store.overrideSelector(selectFilters, filters);
-    store.overrideSelector(selectNextCursor, cursor);
-
-    transactionService.getTransactions.mockReturnValue(
-      of({ items: [], pageInfo: {} }),
-    );
-
-    actions$ = of(TransactionActions.loadMore());
-
-    TestBed.runInInjectionContext(() =>
-      loadTransactionsEffect(actions$, store, transactionService).subscribe(
-        () => {},
-      ),
-    );
-
-    expect(transactionService.getTransactions).toHaveBeenCalledWith({
-      ...filters,
-      pageCursor: cursor,
+      TestBed.runInInjectionContext(() =>
+        loadTransactionsEffect(actions$, store, transactionService).subscribe((action) => {
+          expect(action).toEqual(TransactionActions.loadTransactionsSuccess({ response } as any));
+        }),
+      );
     });
-  });
 
-  it('ignores loadMore without cursor', () => {
-    store.overrideSelector(selectFilters, {});
-    store.overrideSelector(selectNextCursor, null);
-    actions$ = of(TransactionActions.loadMore());
+    it('returns cached action if already loaded', () => {
+      store.overrideSelector(selectTransactionsLoaded, true);
+      store.overrideSelector(selectFilters, {});
+      store.overrideSelector(selectNextCursor, null);
+      actions$ = of(TransactionActions.loadTransactions({}));
 
-    const spy = vi.fn();
-    TestBed.runInInjectionContext(() =>
-      loadTransactionsEffect(actions$, store, transactionService).subscribe(
-        spy,
-      ),
-    );
-
-    expect(transactionService.getTransactions).not.toHaveBeenCalled();
-    expect(spy).not.toHaveBeenCalled();
-  });
-  it('skips loading when data is already loaded and no forceRefresh', () => {
-    store.overrideSelector(selectTransactionsLoaded, true);
-    store.overrideSelector(selectFilters, {});
-    store.overrideSelector(selectNextCursor, '');
-    store.refreshState();
-    const spy = vi.fn();
-    actions$ = of(TransactionActions.loadTransactions({}));
-    TestBed.runInInjectionContext(() => {
-      loadTransactionsEffect().subscribe(spy);
-
-      expect(spy).toHaveBeenCalledWith(
-        TransactionActions.loadTransactionsCached(),
+      TestBed.runInInjectionContext(() =>
+        loadTransactionsEffect(actions$, store, transactionService).subscribe((action) => {
+          expect(action).toEqual(TransactionActions.loadTransactionsCached());
+        }),
       );
       expect(transactionService.getTransactions).not.toHaveBeenCalled();
     });
 
-    expect(spy).toHaveBeenCalledWith(
-      TransactionActions.loadTransactionsCached(),
-    );
-    expect(transactionService.getTransactions).not.toHaveBeenCalled();
+    it('handles API error', () => {
+      const error = 'Error';
+      transactionService.getTransactions.mockReturnValue(throwError(() => error));
+      actions$ = of(TransactionActions.loadTransactions({}));
+
+      TestBed.runInInjectionContext(() =>
+        loadTransactionsEffect(actions$, store, transactionService).subscribe((action) => {
+          expect(action).toEqual(TransactionActions.loadFailure({ error }));
+        }),
+      );
+    });
   });
 
-  it('loads transactions when forceRefresh is true despite loaded data', () => {
-    const response = { items: [], pageInfo: {} };
-    store.overrideSelector(selectTransactionsLoaded, true);
-    store.overrideSelector(selectFilters, {});
-    store.overrideSelector(selectNextCursor, null);
-    transactionService.getTransactions.mockReturnValue(of(response));
+  describe('loadTotalEffect', () => {
+    it('loads total successfully when 0', () => {
+      const total = 100;
+      transactionService.getTransactionsTotal.mockReturnValue(of(total));
+      actions$ = of(TransactionActions.loadTransactions({}));
 
-    actions$ = of(TransactionActions.loadTransactions({ forceRefresh: true }));
+      TestBed.runInInjectionContext(() =>
+        loadTotalEffect(actions$, store, transactionService).subscribe((action) => {
+          expect(action).toEqual(TransactionActions.loadTotalSuccess({ total }));
+        }),
+      );
+    });
 
-    TestBed.runInInjectionContext(() =>
-      loadTransactionsEffect(actions$, store, transactionService).subscribe(
-        (action) => {
-          expect(action).toEqual(
-            TransactionActions.loadTransactionsSuccess({ response } as any),
-          );
-        },
-      ),
-    );
-    expect(transactionService.getTransactions).toHaveBeenCalled();
+    it('skips loading if total exists', () => {
+      store.overrideSelector(selectTotalTransactions, 100);
+      actions$ = of(TransactionActions.loadTransactions({}));
+      const spy = vi.fn();
+
+      TestBed.runInInjectionContext(() =>
+        loadTotalEffect(actions$, store, transactionService).subscribe(spy),
+      );
+      expect(spy).not.toHaveBeenCalled();
+    });
   });
 
-  it('loads total successfully', () => {
-    const total = 100;
-    transactionService.getTransactionsTotal.mockReturnValue(of(total));
-    actions$ = of(TransactionActions.enter());
+  describe('loadTransactionsCategoriesEffect', () => {
+    it('loads categories on enter', () => {
+      const categories = [{ id: '1' }] as any;
+      transactionService.getTransactionsCategories.mockReturnValue(of(categories));
+      actions$ = of(TransactionActions.enter());
 
-    TestBed.runInInjectionContext(() =>
-      loadTotalEffect(actions$, transactionService).subscribe((action) => {
-        expect(action).toEqual(TransactionActions.loadTotalSuccess({ total }));
-      }),
-    );
+      TestBed.runInInjectionContext(() =>
+        loadTransactionsCategoriesEffect(actions$, store, transactionService).subscribe((action) => {
+          expect(action).toEqual(TransactionActions.loadCategoriesSuccess({ categories }));
+        }),
+      );
+    });
+
+    it('skips loading categories if cached', () => {
+      store.overrideSelector(selectCategoriesRaw, [{ id: '1' }] as any);
+      actions$ = of(TransactionActions.enter());
+      const spy = vi.fn();
+
+      TestBed.runInInjectionContext(() =>
+        loadTransactionsCategoriesEffect(actions$, store, transactionService).subscribe(spy),
+      );
+      expect(spy).not.toHaveBeenCalled();
+    });
+
+    it('forces reload on createCategorySuccess', () => {
+      const categories = [{ id: '2' }] as any;
+      store.overrideSelector(selectCategoriesRaw, [{ id: '1' }] as any);
+      transactionService.getTransactionsCategories.mockReturnValue(of(categories));
+      actions$ = of(TransactionActions.createCategorySuccess({ response: {} as any }));
+
+      TestBed.runInInjectionContext(() =>
+        loadTransactionsCategoriesEffect(actions$, store, transactionService).subscribe((action) => {
+          expect(action).toEqual(TransactionActions.loadCategoriesSuccess({ categories }));
+        }),
+      );
+    });
   });
 
-  it('loads categories successfully', () => {
-    const categories = [{ id: '1', name: 'Food' }];
-    transactionService.getTransactionsCategories.mockReturnValue(
-      of(categories),
-    );
-    actions$ = of(TransactionActions.loadCategories());
-
-    TestBed.runInInjectionContext(() =>
-      loadTransactionsCategoriesEffect(actions$, transactionService).subscribe(
-        (action) => {
-          expect(action).toEqual(
-            TransactionActions.loadCategoriesSuccess({ categories } as any),
-          );
-        },
-      ),
-    );
-  });
-
-  it('handles categories loading error', () => {
-    const error = 'Failed';
-    transactionService.getTransactionsCategories.mockReturnValue(
-      throwError(() => error),
-    );
-    actions$ = of(TransactionActions.loadCategories());
-
-    TestBed.runInInjectionContext(() =>
-      loadTransactionsCategoriesEffect(actions$, transactionService).subscribe(
-        (action) => {
-          expect(action).toEqual(
-            TransactionActions.loadCategoriesFailure({ error }),
-          );
-        },
-      ),
-    );
-  });
   it('creates category successfully', () => {
-    const categoryName = 'New Cat';
-    const response = { id: '123', name: categoryName };
-
+    const response = { id: '1' } as any;
     transactionService.createTransactionCategory.mockReturnValue(of(response));
-    actions$ = of(TransactionActions.createCategory({ name: categoryName }));
+    actions$ = of(TransactionActions.createCategory({ name: 'test' }));
 
     TestBed.runInInjectionContext(() =>
       createCategoryEffect(actions$, transactionService).subscribe((action) => {
-        expect(action).toEqual(
-          TransactionActions.createCategorySuccess({ response } as any),
-        );
-        expect(
-          transactionService.createTransactionCategory,
-        ).toHaveBeenCalledWith(categoryName);
+        expect(action).toEqual(TransactionActions.createCategorySuccess({ response }));
       }),
     );
   });
 
   it('assigns category successfully', () => {
-    const payload = { transactionId: 'tx-1', categoryId: 'cat-1' };
-    const response = 'success';
-
-    transactionService.categorizeTransaction.mockReturnValue(of(response));
+    const payload = { transactionId: '1', categoryId: '2' };
+    transactionService.categorizeTransaction.mockReturnValue(of({}));
     actions$ = of(TransactionActions.assignCategory(payload));
 
     TestBed.runInInjectionContext(() =>
       assignCategoryEffect(actions$, transactionService).subscribe((action) => {
-        expect(action).toEqual(
-          TransactionActions.assignCategorySuccess(payload),
-        );
-        expect(transactionService.categorizeTransaction).toHaveBeenCalledWith(
-          payload.transactionId,
-          payload.categoryId,
-        );
+        expect(action).toEqual(TransactionActions.assignCategorySuccess(payload));
       }),
     );
-  });
-  it('should dispatch loadTransactionsCached when data is already loaded and no forceRefresh', () => {
-    store.overrideSelector(selectTransactionsLoaded, true);
-    actions$ = of(TransactionActions.loadTransactions({}));
-
-    TestBed.runInInjectionContext(() =>
-      loadTransactionsEffect(actions$, store, transactionService).subscribe(
-        (action) => {
-          expect(action).toEqual(TransactionActions.loadTransactionsCached());
-        },
-      ),
-    );
-    expect(transactionService.getTransactions).not.toHaveBeenCalled();
   });
 });

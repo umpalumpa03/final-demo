@@ -19,6 +19,8 @@ import { TransactionsViewModelService } from '../services/transactions-view-mode
 import { TransactionsActionsService } from '../services/transactions-actions.service';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
+import { ActivatedRoute, Router } from '@angular/router';
+import { mapQueryParamsToFilter } from '../utils/transactions-filters.utils';
 
 @Component({
   selector: 'app-transactions-container',
@@ -48,12 +50,17 @@ export class TransactionsContainer implements OnInit {
   public readonly facade = inject(TransactionsFacadeService);
   public readonly vm = inject(TransactionsViewModelService);
   public readonly actions = inject(TransactionsActionsService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
 
   public ngOnInit(): void {
-    this.facade.initializePage();
+    const params = this.route.snapshot.queryParams;
+    const filtersFromUrl = mapQueryParamsToFilter(params);
+    this.facade.initializePage(filtersFromUrl);
   }
 
   public onFiltersChange(filters: Partial<ITransactionFilter>) {
+    this.updateUrl(filters);
     this.facade.updateFilters(filters);
   }
 
@@ -70,5 +77,23 @@ export class TransactionsContainer implements OnInit {
     if (event.action === 'extract') {
       this.actions.exportSingleTransaction(trx);
     }
+  }
+
+  private updateUrl(filters: Partial<ITransactionFilter>): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        searchCriteria: filters.searchCriteria || null,
+        category: filters.category || null,
+        amountFrom: filters.amountFrom || null,
+        amountTo: filters.amountTo || null,
+        accountIban: filters.iban || null, //
+        currency: filters.currency || null,
+        dateFrom: filters.dateFrom || null,
+        dateTo: filters.dateTo || null,
+      },
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
+    });
   }
 }
