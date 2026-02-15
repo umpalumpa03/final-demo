@@ -12,23 +12,20 @@
   }
 
   .account-card {
-    @include display-flex(row);
+    @include flex-center(row, space-between, center);
     padding: 1.6rem;
     background-color: $gray-25;
     border-radius: 1rem;
     width: 100%;
-    justify-content: space-between;
     height: 8rem;
-    align-items: center;
 
     &__header {
       @include display-flex(column);
       gap: 0.4rem;
 
       &-top {
-        @include display-flex(row);
+        @include flex-center(row, flex-start, center);
         gap: 0.8rem;
-        align-items: center;
         @include font-inter(600, 1.6rem, 2.4rem);
         color: $blue-ocean-foreground;
 
@@ -44,8 +41,7 @@
 
     &__trendline {
       @include font-inter(500, 1.4rem, 2rem);
-      @include display-flex(row);
-      align-items: center;
+      @include flex-center(row, flex-start, center);
       gap: 0.4rem;
 
       &--positive {
@@ -65,8 +61,7 @@
     &__balance {
       @include font-inter(700, 2rem, 2.8rem);
       color: $blue-1000;
-      display: flex;
-      align-items: center;
+      @include flex-center(row, flex-start, center);
 
       span {
         display: inline-flex;
@@ -77,7 +72,6 @@
   }
 }
 
-// Tablet range: 768px to 1024px - keep space-between layout
 @media (min-width: 768px) and (max-width: 1024px) {
   .accounts {
     .account-card {
@@ -110,7 +104,6 @@
   }
 }
 
-// Mobile: 320px to 767px - keep space-between layout
 @media (max-width: 767px) {
   .accounts {
     .account-card {
@@ -158,7 +151,6 @@
   }
 }
 
-// Extra small screens: below 320px - even more compact
 @media (max-width: 320px) {
   .accounts {
     padding: 0.8rem;

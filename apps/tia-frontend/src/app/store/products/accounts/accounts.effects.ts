@@ -24,22 +24,15 @@ export class AccountsEffects {
 
   loadAccounts$ = createEffect(() =>
     this.actions$.pipe(
-      // liisten specifically for the 'loadAccounts' action
       ofType(AccountsActions.loadAccounts),
-      // peek at the current accounts in the Store for comparison
       withLatestFrom(this.store.select(selectAccounts)),
-      // only proceed to the API call if:
-      //  a manual refresh is requested or
-      //    store is empty / null
       filter(
         ([action, accounts]) =>
           action.forceRefresh || !accounts || accounts.length === 0,
       ),
 
-      // than fetch
       switchMap(() =>
         this.accountsService.getAccounts().pipe(
-          // success-> the store with fresh data
           map((accounts) => AccountsActions.loadAccountsSuccess({ accounts })),
           catchError((error) =>
             of(
@@ -55,22 +48,18 @@ export class AccountsEffects {
 
   loadActiveAccounts$ = createEffect(() =>
     this.actions$.pipe(
-      // liisten specifically for the 'loadAccounts' action
+
       ofType(AccountsActions.loadActiveAccounts),
-      // peek at the current accounts in the Store for comparison
+
       withLatestFrom(this.store.select(selectAccounts)),
-      // only proceed to the API call if:
-      //  a manual refresh is requested or
-      //    store is empty / null
+
       filter(
         ([action, accounts]) =>
           action.forceRefresh || !accounts || accounts.length === 0,
       ),
 
-      // than fetch
       switchMap(() =>
         this.accountsService.getActiveAccounts().pipe(
-          // success-> the store with fresh data
           map((accounts) =>
             AccountsActions.loadActiveAccountsSuccess({ accounts }),
           ),
@@ -128,43 +117,37 @@ export class AccountsEffects {
 
   enrichAccountsWithLastTransactions$ = createEffect(() =>
     this.actions$.pipe(
-      // Listen for successful account loading
       ofType(
         AccountsActions.loadAccountsSuccess,
         AccountsActions.loadActiveAccountsSuccess,
       ),
-      // Extract accounts from the action payload
       switchMap(({ accounts }) => {
-        // Guard: If no accounts, skip
         if (!accounts || accounts.length === 0) {
           return of(
             AccountsActions.enrichAccountsSuccess({ lastTransactions: {} }),
           );
         }
-
-        // Create one API request per account
         const transactionRequests = accounts.map((account) =>
           this.transactionService
             .getTransactions({
               accountIban: account.iban,
-              pageLimit: 1, // Only get the most recent transaction
+              pageLimit: 1,
             })
             .pipe(
               map((response) => ({
                 iban: account.iban,
-                transaction: response.items[0] || null, // First item or null
+                transaction: response.items[0] || null,
               })),
               catchError(() =>
-                // If this account's request fails, return null for this account
+
                 of({ iban: account.iban, transaction: null }),
               ),
             ),
         );
 
-        // Execute all requests in parallel
+
         return forkJoin(transactionRequests).pipe(
           map((results) => {
-            // Convert array to Record<iban, transaction>
             const lastTransactions = results.reduce(
               (acc, { iban, transaction }) => {
                 acc[iban] = transaction;
