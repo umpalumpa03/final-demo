@@ -1,6 +1,12 @@
 @use '../../../../../shared/styles/mixins' as *;
 @use '../../../../../shared/styles/palette' as *;
 
+.widget-error {
+  @include flex-center();
+  height: 100%;
+  min-height: 30rem;
+}
+
 .transaction {
   padding: 0 1rem 1rem 1rem;
 

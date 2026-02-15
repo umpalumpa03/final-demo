@@ -10,9 +10,9 @@
     <div class="widget-error">
       <app-error-states
         variant="failed"
-        header="Failed to load"
-        message="Could not load exchange rates"
-        buttonMessage="Retry"
+        [header]="'dashboard.widgets.exchange.error.header' | translate"
+        [message]="'dashboard.widgets.exchange.error.message' | translate"
+        [buttonMessage]="'dashboard.widgets.exchange.error.retry' | translate"
         (buttonClick)="retryLoad()"
         [border]="false"
       >
