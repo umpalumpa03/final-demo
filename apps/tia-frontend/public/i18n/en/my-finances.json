@@ -41,6 +41,11 @@
       "retry": "Try Again",
       "no_records": "We couldn't find any records for the selected range."
     },
+    
+    "empty": {
+      "notransaction":"No Transaction Found",
+      "nomessage":"We couldn't find any transaction to display."
+    },
     "errors": {
       "date_range": "Invalid range",
       "max_date": "Maximum date is {{max}}"

@@ -24,7 +24,7 @@
       </div>
     } @else {
       <app-pending-approvals-table
-        [approvals]="store.pendingApprovals()"
+        [approvals]="store.sortedPendingApprovals()"
         [error]="store.error()"
         (rowClick)="onRowClick($event)"
         (reload)="onReload()"
