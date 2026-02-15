@@ -37,6 +37,7 @@ import { ITransactions } from '@tia/shared/models/transactions/transactions.mode
 import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions/transactions.actions';
 import { AlertService } from '@tia/core/services/alert/alert.service';
 import { TranslateService } from '@ngx-translate/core';
+import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 
 @Injectable()
 export class PaybillEffect {
@@ -238,6 +239,7 @@ export class PaybillEffect {
               return [
                 PaybillActions.confirmPaymentSuccess(),
                 TransactionActions.loadTransactions({ forceRefresh: true }),
+                AccountsActions.loadAccounts({ forceRefresh: true }),
               ];
             }
 
