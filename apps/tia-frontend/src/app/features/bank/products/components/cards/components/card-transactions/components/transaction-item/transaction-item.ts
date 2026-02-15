@@ -16,7 +16,8 @@ export class TransactionItem {
   public readonly referenceNumber = input.required<string>();
   public readonly amount = input.required<string>();
   public readonly status = input.required<string>();
-    public readonly transactionType = input.required<string>(); 
+  public readonly transactionType = input.required<string>(); 
+    
 
       protected readonly iconPath = computed(() => {
     return this.transactionType() === 'credit' 

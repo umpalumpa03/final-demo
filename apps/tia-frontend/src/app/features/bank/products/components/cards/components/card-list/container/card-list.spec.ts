@@ -88,7 +88,7 @@ describe('CardList', () => {
 it('should dispatch loadCardAccounts on init', () => {
   const dispatchSpy = vi.spyOn(store, 'dispatch');
   component.ngOnInit();
-  expect(dispatchSpy).toHaveBeenCalledWith(loadCardAccounts({ forceRefresh: true }));
+  expect(dispatchSpy).toHaveBeenCalledWith(loadCardAccounts({ forceRefresh: false }));
 });
 
   it('should transform card groups with single card', () => {

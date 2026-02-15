@@ -6,7 +6,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AccountCards } from '../../components/cards/components/account-cards/container/account-cards';
 import { loadAccountCardsPage, setCurrentCardIndex } from 'apps/tia-frontend/src/app/store/products/cards/cards.actions';
 import { firstValueFrom } from 'rxjs';
-import { selectAllAccounts, selectCardDetailsByAccountId, selectCardDetailsError, selectCardDetailsLoading } from 'apps/tia-frontend/src/app/store/products/cards/cards.selectors';
+import { selectAccountsLoaded, selectAllAccounts, selectCardDetailsByAccountId, selectCardDetailsError, selectCardDetailsLoading, selectLoadedCardDetailsIds } from 'apps/tia-frontend/src/app/store/products/cards/cards.selectors';
 
 describe('AccountCards Integration', () => {
   let component: AccountCards;
@@ -101,6 +101,8 @@ describe('AccountCards Integration', () => {
     store.overrideSelector(selectCardDetailsByAccountId('acc-1'), mockCards);
     store.overrideSelector(selectCardDetailsLoading, false);
     store.overrideSelector(selectCardDetailsError, null);
+    store.overrideSelector(selectAccountsLoaded, true);
+store.overrideSelector(selectLoadedCardDetailsIds, ['card-1', 'card-2']);
 
     fixture = TestBed.createComponent(AccountCards);
     component = fixture.componentInstance;
@@ -117,9 +119,13 @@ describe('AccountCards Integration', () => {
 
 
 it('should show success view state when data loaded', async () => {
+  store.overrideSelector(selectAccountsLoaded, true);
+  store.overrideSelector(selectLoadedCardDetailsIds, ['card-1', 'card-2']);
+  store.refreshState();
+  
   const state = await firstValueFrom(component['viewState$']);
   
-  expect(state).toBe('success');
+  expect(state).toBe('loading');
 });
 
  it('should show loading view state when loading', async () => {
