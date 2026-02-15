@@ -1,19 +1,42 @@
 @use '../../../../../../../shared/styles/palette' as *;
 @use '../../../../../../../shared/styles/mixins' as *;
 
+:host {
+  display: block;
+  width: 100%;
+}
+
 .customize_card {
   width: 100%;
   padding: 1.6rem 2rem;
   background: $white;
-  border: 1px solid $gray-200;
+  border: 0.1rem solid $gray-200;
   border-radius: 2rem;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   @include flex-center($justify: space-between, $align: center);
 
+  @media (max-width: 480px) {
+    padding: 1.2rem 1.6rem;
+    border-radius: 1.6rem;
+  }
+
+  @media (max-width: 340px) {
+    padding: 1rem 1.2rem;
+  }
+
   &__content {
     @include flex-center($align: center);
     gap: 1.6rem;
+    min-width: 0;
+
+    @media (max-width: 480px) {
+      gap: 1.2rem;
+    }
+
+    @media (max-width: 340px) {
+      gap: 1rem;
+    }
   }
 
   &__icon {
@@ -28,11 +51,24 @@
     -webkit-mask-size: contain;
     -webkit-mask-repeat: no-repeat;
     -webkit-mask-position: center;
+    flex-shrink: 0;
+
+    @media (max-width: 480px) {
+      width: 2.8rem;
+      height: 2.8rem;
+    }
   }
 
   &__title {
     @include font-inter(600, 1.5rem, 2rem);
     color: $gray-800;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    @media (max-width: 480px) {
+      font-size: 1.4rem;
+    }
   }
 
   &__indicator {
@@ -40,9 +76,15 @@
     height: 2.4rem;
     border-radius: 50%;
     background: $gray-50;
-    border: 2px solid $gray-200;
+    border: 0.2rem solid $gray-200;
     @include flex-center;
     transition: all 0.3s ease;
+    flex-shrink: 0;
+
+    @media (max-width: 480px) {
+      width: 2.2rem;
+      height: 2.2rem;
+    }
   }
 
   &__dot {
@@ -53,10 +95,10 @@
     transition: transform 0.2s ease;
   }
 
-  &__is__selected {
+  &--selected {
     background: var(--color-bg);
     border-color: var(--color-primary);
-    box-shadow: 0 10px 15px -3px rgba($black, 0.05);
+    box-shadow: 0 1rem 1.5rem -0.3rem rgba($black, 0.05);
 
     .customize_card__icon {
       background-color: var(--color-primary);
@@ -77,10 +119,10 @@
     }
   }
 
-  &:hover:not(.customize_card__is__selected) {
+  &:hover:not(&--selected) {
     border-color: var(--color-muted);
     background: $gray-25;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 6px -1px rgba($black, 0.02);
+    transform: translateY(-0.2rem);
+    box-shadow: 0 0.4rem 0.6rem -0.1rem rgba($black, 0.02);
   }
 }

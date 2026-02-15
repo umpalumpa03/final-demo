@@ -3,20 +3,46 @@
 @use '../../styles/button-mixins' as *;
 
 .customize-button {
+  @include flex-center($justify: space-between, $align: center);
   width: 100%;
   min-height: 5.6rem;
   padding: 1.2rem 1.6rem;
   background: $white;
-  border: 1px solid $gray-200;
+  border: 0.1rem solid $gray-200;
   border-radius: 1rem;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  @include flex-center($justify: space-between, $align: center);
 
-  &__left {
-    @include flex-center($align: center,$justify:flex-start);
+  &--square {
+    width: 5.6rem; // Matches min-height
+    height: 5.6rem;
+    padding: 0;
+    aspect-ratio: 1 / 1;
+    flex-shrink: 0;
+    justify-content: center;
+
+    .customize-button__content {
+      width: 100%;
+      justify-content: center;
+      flex: none;
+      gap: 0;
+    }
+
+    @media (max-width: 480px) {
+      width: 4.8rem;
+      height: 4.8rem;
+    }
+  }
+
+  &__content {
+    @include flex-center($align: center, $justify: flex-start);
+    gap: 1.2rem;
     min-width: 0;
     flex: 1;
+
+    @media (max-width: 480px) {
+      gap: 0.8rem;
+    }
   }
 
   &__text {
@@ -25,14 +51,18 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    width: 100%;
     text-align: left;
+    width: 100%;
+
+    @media (max-width: 480px) {
+      font-size: 1.3rem;
+    }
   }
 
   .icon {
     flex-shrink: 0;
-    transition: all 0.2s ease;
     display: inline-block;
+    transition: all 0.2s ease;
 
     &__customize {
       @include icon__mask(
@@ -50,23 +80,16 @@
   &:hover {
     border-color: var(--color-primary);
     background: $gray-25;
-    box-shadow: 0 4px 12px rgba($black, 0.05);
+    box-shadow: 0 0.4rem 1.2rem rgba($black, 0.05);
 
     .icon__arrow__right {
       background-color: var(--color-primary);
-      transform: translateX(3px);
+      transform: translateX(0.3rem);
     }
   }
+
   @media (max-width: 480px) {
-    padding: 0.8rem 1.2rem;
     min-height: 4.8rem;
-
-    &__left {
-      gap: 0.8rem;
-    }
-
-    &__text {
-      font-size: 1.3rem;
-    }
+    padding: 0.8rem 1.2rem;
   }
 }
