@@ -35,6 +35,7 @@ import {
   selectPhoneUpdateResendCount,
 } from '../../../../../../store/personal-info/personal-info.selectors';
 import { OtpVerification } from '@tia/core/otp-verification/container/otp-verification';
+import { OtpResendTypes } from '@tia/core/otp-verification/config/otp.config';
 
 @Component({
   selector: 'app-profile-photo-container',
@@ -69,6 +70,7 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
   public readonly phoneUpdateLoading = this.store.selectSignal(selectPhoneUpdateLoading);
   public readonly phoneUpdateError = this.store.selectSignal(selectPhoneUpdateError);
   public readonly phoneUpdateResendCount = this.store.selectSignal(selectPhoneUpdateResendCount);
+  public readonly otpResendType = OtpResendTypes.PERSONAL_INFO
 
   public readonly otpConfig = personalInfoOtpConfig;
 

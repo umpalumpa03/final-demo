@@ -58,6 +58,7 @@
     (isVerifyCalled)="onVerifyOtp($event)"
     (isResendCalled)="onResendOtp()"
     (onBackOut)="onOtpModalClosed()"
+    [otpResendType]="otpResendType"
   ></app-otp-verification>
 </app-ui-modal>
 }

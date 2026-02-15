@@ -42,6 +42,7 @@ export class AccountsContainer implements OnInit {
   public readonly changeNameAccountNumber = signal<string | null>(null);
   public readonly errorState = ERROR_STATE;
   public readonly isXsMobile = this.breakpointService.isXsMobile;
+  public readonly isXlMobile = this.breakpointService.isXlMobile;
 
   public ngOnInit(): void {
     this.store.loadAccounts();

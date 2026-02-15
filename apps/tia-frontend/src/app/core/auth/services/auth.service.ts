@@ -26,7 +26,9 @@ import {
   debounceTime,
   EMPTY,
   finalize,
+  filter,
   Observable,
+  take,
   tap,
   throwError,
 } from 'rxjs';
@@ -39,6 +41,7 @@ import { inject, Injectable, Injector, signal } from '@angular/core';
 import { Routes } from '../models/tokens.model';
 import { Store } from '@ngrx/store';
 import { UserInfoActions } from '../../../store/user-info/user-info.actions';
+import { selectUserInfoState } from '../../../store/user-info/user-info.selectors';
 import { MonitorInactivity } from './monitor-inacticity.service';
 import { Subscription } from 'rxjs';
 import { AlertService } from '@tia/core/services/alert/alert.service';
@@ -176,7 +179,7 @@ export class AuthService {
           showAlert(
             this.alertService,
             this.translate,
-            'warning',
+            'success',
             'auth.alert-errors.logourWarn',
           );
         }
@@ -204,6 +207,17 @@ export class AuthService {
               'success',
               'auth.alert-errors.loginSuccess',
             );
+
+            this.store
+              .select(selectUserInfoState)
+              .pipe(
+                filter((user) => user.loaded || !!user.error),
+                take(1),
+                tap(() => {
+                  () => this.isLoginLoading.set(false);
+                }),
+              )
+              .subscribe();
           }
         }),
         catchError((err) => {
@@ -213,11 +227,11 @@ export class AuthService {
           this.errorMessage.set(true);
 
           setTimeout(() => this.otpError.set(null), 2000);
-          return EMPTY;
-        }),
-        finalize(() => {
+
           this.isLoginLoading.set(false);
-        }),
+
+          return EMPTY;
+        })
       );
   }
 

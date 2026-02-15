@@ -12,7 +12,7 @@
     gap: 1.6rem;
     min-width: 0;
 
-    @media (max-width: 1100px) {
+    @media (max-width: 1200px) {
       @include flex-center(column, $align: flex-start);
       gap: 1rem;
     }
