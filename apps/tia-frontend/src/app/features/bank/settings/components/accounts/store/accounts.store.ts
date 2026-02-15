@@ -112,6 +112,7 @@ export const AccountsStore = signalStore(
                   patchState(store, {
                     accounts,
                     favoriteLoadingIds: currentIds,
+                    loaded: false,
                   });
                   showAlert(
                     'success',
@@ -175,6 +176,7 @@ export const AccountsStore = signalStore(
                   patchState(store, {
                     accounts,
                     visibilityLoadingIds: currentIds,
+                    loaded: false,
                   });
                   showAlert(
                     'success',
@@ -238,6 +240,7 @@ export const AccountsStore = signalStore(
                   patchState(store, {
                     accounts,
                     changeNameLoadingIds: currentIds,
+                    loaded: false,
                   });
                   showAlert(
                     'success',
