@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  input,
+} from '@angular/core';
 
 @Component({
   selector: 'app-header-banner',
@@ -9,4 +14,5 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 })
 export class HeaderBanner {
   public readonly imagePath = input.required<string>();
+  protected readonly imgUrl = computed(() => `url('${this.imagePath()}')`);
 }
