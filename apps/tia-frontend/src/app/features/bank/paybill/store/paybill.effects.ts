@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { Store } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import {
   catchError,
   concatMap,
@@ -23,6 +23,7 @@ import {
   selectSelectedProviderId,
   selectTemplatesGroup,
   selectTemplatesLoaded,
+  selectTotalAmount,
 } from './paybill.selectors';
 import {
   PaybillIdentification,
@@ -63,8 +64,6 @@ export class PaybillEffect {
       'templates.notifications.move_success',
     '[Paybill Templates Page] Create Template Success':
       'templates.notifications.create_success',
-    '[Paybill Templates Page] Pay Many Bills Success':
-      'templates.notifications.bulk_pay_success',
     '[Paybill] Proceed Payment Success': 'main.success.title',
     '[Paybill] Confirm Payment Success': 'main.otp.verify_success',
   };
@@ -310,8 +309,19 @@ export class PaybillEffect {
         ofType(
           ...Object.keys(this.successMessages),
           PaybillActions.confirmPaymentSuccess,
+          TemplatesPageActions.payManyBillsSuccess,
         ),
-        tap((action) => {
+        withLatestFrom(this.store.select(selectTotalAmount)),
+        tap(([action, totalAmount]) => {
+          if (action.type === TemplatesPageActions.payManyBillsSuccess.type) {
+            const key =
+              totalAmount > 50
+                ? 'main.otp.otp_sent'
+                : 'templates.notifications.bulk_pay_success';
+            this.alertService.success(this.translate.instant(`paybill.${key}`));
+            return;
+          }
+
           const key = this.successMessages[action.type] || 'main.success.title';
           this.alertService.success(this.translate.instant(`paybill.${key}`));
         }),
