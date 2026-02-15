@@ -78,7 +78,7 @@ describe('Accounts Container Integration Tests', () => {
       component.ngOnInit();
 
       expect(dispatchSpy).toHaveBeenCalledWith(
-        AccountsActions.loadActiveAccounts({ forceRefresh: true }),
+        AccountsActions.loadActiveAccounts({ forceRefresh: false }),
       );
     });
 

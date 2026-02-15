@@ -77,7 +77,7 @@ describe('Accounts', () => {
     );
     component.ngOnInit();
     expect(dispatchSpy).toHaveBeenCalledWith(
-      AccountsActions.loadActiveAccounts({ forceRefresh: true }),
+      AccountsActions.loadActiveAccounts({ forceRefresh: false }),
     );
     expect(dispatchSpy).toHaveBeenCalledWith(AccountsActions.loadCurrencies());
     expect(dispatchSpy).toHaveBeenCalledWith(AccountsActions.openCreateModal());
