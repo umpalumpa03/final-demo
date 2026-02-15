@@ -204,6 +204,15 @@ export class InternalAmount implements OnInit {
   }
 
   public ngOnInit(): void {
+    const initialAmount = this.transferStore.amount();
+    if (initialAmount && initialAmount > 0) {
+      this.transferInternalService.handleAmountInput(initialAmount);
+
+      if (this.isConversionMode() && this.conversionRate()) {
+        this.updateDestinationAmount(initialAmount);
+      }
+    }
+
     this.amountInput.valueChanges
       .pipe(
         takeUntilDestroyed(this.destroyRef),

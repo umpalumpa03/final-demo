@@ -5,6 +5,7 @@ import {
   effect,
   inject,
   signal,
+  untracked,
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { TransferInternalService } from 'apps/tia-frontend/src/app/features/bank/transfers/components/transfers-internal/services/transfer.internal.service';
@@ -20,7 +21,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import { AccountData } from 'apps/tia-frontend/src/app/features/bank/transfers/models/transfers.state.model';
 import { Account } from '@tia/shared/models/accounts/accounts.model';
-import { Location } from '@angular/common';
 import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
@@ -47,7 +47,6 @@ import { Badges } from '@tia/shared/lib/primitives/badges/badges';
 export class InternalToAccount {
   private readonly transferStore = inject(TransferStore);
   private readonly store = inject(Store);
-  private readonly location = inject(Location);
   private readonly breakpointService = inject(BreakpointService);
   private readonly router = inject(Router);
   private readonly transferInternalService = inject(TransferInternalService);
@@ -66,12 +65,25 @@ export class InternalToAccount {
   });
 
   public readonly showSuccess = signal(false);
+  public readonly showError = signal(false);
+
   public readonly selectedToAccount = computed(() =>
     this.transferStore.receiverOwnAccount(),
   );
   public readonly selectedFromAccount = computed(() =>
     this.transferStore.senderAccount(),
   );
+
+  public readonly transferError = computed(() => this.transferStore.error());
+
+  public readonly hasRepeatError = computed(() => {
+    const error = this.transferError();
+    return (
+      error === 'transfers.repeat.senderNotFound' ||
+      error === 'transfers.repeat.senderNoPermission' ||
+      error === 'transfers.repeat.recipientAccountNotFound'
+    );
+  });
 
   public readonly isContinueDisabled = computed(() => {
     return !this.selectedToAccount();
@@ -83,12 +95,46 @@ export class InternalToAccount {
     );
   });
 
+  public readonly isSwapDisabled = computed(() => {
+    const recipient = this.selectedToAccount();
+
+    if (!recipient) {
+      return true;
+    }
+
+    if (!recipient.permission || (recipient.permission & 1) !== 1) {
+      return true;
+    }
+
+    return false;
+  });
+
   constructor() {
     effect(() => {
-      const accs = this.accounts();
-      if (accs?.length) {
-        this.transferInternalService.restoreInternalSelection(accs);
+      const error = this.transferError();
+      if (error && this.hasRepeatError()) {
+        this.showError.set(true);
+        setTimeout(() => {
+          this.showError.set(false);
+          this.transferStore.setError('');
+        }, 5000);
       }
+    });
+
+    effect(() => {
+      const transferableAccs = this.transferableAccounts();
+      const currentRecipient = this.selectedToAccount();
+      const fromAccount = this.selectedFromAccount();
+
+      if (!fromAccount || currentRecipient || !transferableAccs.length) return;
+
+      untracked(() => {
+        const favoriteAccount = transferableAccs.find((acc) => acc.isFavorite);
+
+        if (favoriteAccount) {
+          this.transferStore.setReceiverOwnAccount(favoriteAccount);
+        }
+      });
     });
   }
 
@@ -108,7 +154,7 @@ export class InternalToAccount {
   }
 
   public onGoBack(): void {
-    this.location.back();
+    this.router.navigate(['/bank/transfers/internal/from-account']);
   }
 
   public onContinue() {

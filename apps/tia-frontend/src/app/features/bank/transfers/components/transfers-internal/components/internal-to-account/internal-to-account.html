@@ -17,6 +17,9 @@
 
             <div class="internal-accounts__from-card__content">
               <div class="internal-accounts__from-card__name">
+                @if (selectedFromAccount()?.isFavorite) {
+                  <img src="images/svg/transfers/star.svg" alt="favorite" class="internal-accounts__from-card__star" />
+                }
                 {{ selectedFromAccount()?.friendlyName || selectedFromAccount()?.name }}
               </div>
 
@@ -49,6 +52,7 @@
         variant="outline"
         size="default"
         [fullWidth]="isFullWidth()"
+        [isDisabled]="isSwapDisabled()"
         (click)="onSwapAccounts()"
       >
         <img src = 'images/svg/transfers/swap.svg' alt = "swap"/>
@@ -126,3 +130,4 @@
     />
   </div>
 }
+
