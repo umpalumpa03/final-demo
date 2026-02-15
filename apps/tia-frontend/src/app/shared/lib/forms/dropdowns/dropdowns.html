@@ -10,7 +10,8 @@
 
     <div class="select__control">
         <div class="select__trigger" [id]="cfg.id" (click)="toggleDropdown($event)" tabindex="0"
-            [style.height]="height()">
+            [style.height]="height()" [class.select__trigger--error]="hasError()">
+
             <span class="select__value" [class.select__value--placeholder]="!value()">
                 {{ displayValue() }}
             </span>
@@ -30,7 +31,7 @@
     </div>
 
     @if (hasError()) {
-    <div class="select--error">
+    <div class="select__message select__message--error" aria-live="polite">
         {{ errorMessage() }}
     </div>
     }
