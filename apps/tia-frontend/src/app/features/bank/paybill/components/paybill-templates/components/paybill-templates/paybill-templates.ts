@@ -44,7 +44,6 @@ import { DeleteConfirmModal } from '../modals/delete-confirm-modal/delete-confir
 import { ConfirmPaymentModal } from '../modals/confirm-payment-modal/confirm-payment-modal';
 import { CreateTemplateModal } from '../modals/create-template-modal/create-template-modal';
 import { TemplatesHeader } from '../../ui/templates-header/templates-header';
-import { IVerified } from '@tia/core/auth/models/otp-verification.models';
 
 @Component({
   selector: 'app-paybill-templates',
@@ -288,9 +287,9 @@ export class PaybillTemplates implements OnInit {
     this.paymentDone.emit();
   }
 
-  public verifyOtp = output<IVerified>();
+  public verifyOtp = output<string>();
 
-  public onOtpVerify(event: IVerified): void {
-    this.verifyOtp.emit(event);
+  public onOtpVerify(otp: string): void {
+    this.verifyOtp.emit(otp);
   }
 }
