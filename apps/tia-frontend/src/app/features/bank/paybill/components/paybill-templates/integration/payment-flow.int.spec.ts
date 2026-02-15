@@ -2,11 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 
 import { TemplatesPageActions } from '../../../store/paybill.actions';
 import {
-  selectSelectedTemplates,
-  selectDistributedAmount,
-  selectTotalAmount,
   selectFormPayload,
-  selectSelectedSenderAccountId,
   selectChallengeId,
   selectIsFormValid,
 } from '../../../store/paybill.selectors';

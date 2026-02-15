@@ -14,6 +14,7 @@ import { ModalActions } from '../../../ui/modal/modal-actions';
 import { ButtonVariant } from '@tia/shared/lib/primitives/button/button.model';
 import { selectIsFormValid } from '../../../../../store/paybill.selectors';
 import { Store } from '@ngrx/store';
+import { ScrollArea } from '@tia/shared/lib/layout/components/scroll-area/container/scroll-area';
 
 @Component({
   selector: 'app-confirm-payment-modal',
@@ -24,6 +25,7 @@ import { Store } from '@ngrx/store';
     TotalAmount,
     AccountSelect,
     ModalActions,
+    ScrollArea,
   ],
   templateUrl: './confirm-payment-modal.html',
   styleUrl: './confirm-payment-modal.scss',

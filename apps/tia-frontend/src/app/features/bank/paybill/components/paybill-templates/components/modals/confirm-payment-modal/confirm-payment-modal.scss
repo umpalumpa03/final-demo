@@ -2,12 +2,8 @@
 @use '../../../../../../../../shared/styles/palette' as *;
 .payment__modal {
   @include display-flex($direction: column);
-  gap: 1.6rem;
-  max-height: 80vh;
+  max-height: 60vh;
   &__scroll {
-    flex: 1;
-    min-height: 0;
-    overflow-y: auto;
     &__wrapper {
       @include display-flex($direction: column);
       gap: 1.6rem;

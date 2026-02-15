@@ -7,13 +7,17 @@ import {
   switchMap,
   withLatestFrom,
   filter,
+  tap,
 } from 'rxjs/operators';
 import { AccountsApiService } from '../../../shared/services/accounts/accounts.api.service';
 import { AccountsActions } from './accounts.actions';
 import { Store } from '@ngrx/store';
-import { selectAccounts } from './accounts.selectors';
+import { selectAccounts, selectCurrencies } from './accounts.selectors';
 import { TransactionApiService } from '../../../shared/services/transactions-service/transactions.api.service';
 import { ITransactions } from '../../../shared/models/transactions/transactions.models';
+import { AlertService } from '../../../core/services/alert/alert.service';
+import { TranslateService } from '@ngx-translate/core';
+import { AccountsStore } from '../../../features/bank/settings/components/accounts/store/accounts.store';
 
 @Injectable()
 export class AccountsEffects {
@@ -21,6 +25,9 @@ export class AccountsEffects {
   private readonly accountsService = inject(AccountsApiService);
   private readonly store = inject(Store);
   private readonly transactionService = inject(TransactionApiService);
+  private readonly alertService = inject(AlertService);
+  private readonly translate = inject(TranslateService);
+  private readonly settingsAccountsStore = inject(AccountsStore);
 
   loadAccounts$ = createEffect(() =>
     this.actions$.pipe(
@@ -48,7 +55,6 @@ export class AccountsEffects {
 
   loadActiveAccounts$ = createEffect(() =>
     this.actions$.pipe(
-
       ofType(AccountsActions.loadActiveAccounts),
 
       withLatestFrom(this.store.select(selectAccounts)),
@@ -138,13 +144,9 @@ export class AccountsEffects {
                 iban: account.iban,
                 transaction: response.items[0] || null,
               })),
-              catchError(() =>
-
-                of({ iban: account.iban, transaction: null }),
-              ),
+              catchError(() => of({ iban: account.iban, transaction: null })),
             ),
         );
-
 
         return forkJoin(transactionRequests).pipe(
           map((results) => {
@@ -168,5 +170,104 @@ export class AccountsEffects {
         );
       }),
     ),
+  );
+
+  loadCurrencies$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AccountsActions.loadCurrencies),
+      withLatestFrom(this.store.select(selectCurrencies)),
+      filter(([, currencies]) => !currencies || currencies.length === 0),
+      switchMap(() =>
+        this.accountsService.getCurrencies().pipe(
+          map((currencies) =>
+            AccountsActions.loadCurrenciesSuccess({ currencies }),
+          ),
+          catchError((error) =>
+            of(
+              AccountsActions.loadCurrenciesFailure({
+                error: error.message || 'Failed to load currencies',
+              }),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+
+  createAccountSuccess$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AccountsActions.createAccountSuccess),
+        tap(() => {
+          this.alertService.info(
+            this.translate.instant(
+              'my-products.accounts.accountCreationRequestSent',
+            ),
+            {
+              variant: 'dismissible',
+              title: this.translate.instant('my-products.accounts.information'),
+            },
+          );
+        }),
+      ),
+    { dispatch: false },
+  );
+
+  createAccountFailure$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AccountsActions.createAccountFailure),
+        tap(({ error }) => {
+          this.alertService.error(
+            error ||
+              this.translate.instant(
+                'my-products.accounts.failedToCreateAccount',
+              ),
+            {
+              variant: 'dismissible',
+              title: this.translate.instant('my-products.accounts.error'),
+            },
+          );
+        }),
+      ),
+    { dispatch: false },
+  );
+
+  updateFriendlyNameSuccess$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AccountsActions.updateFriendlyNameSuccess),
+        tap(() => {
+          this.alertService.success(
+            this.translate.instant(
+              'my-products.accounts.accountNameUpdatedSuccessfully',
+            ),
+            {
+              variant: 'dismissible',
+              title: this.translate.instant('my-products.accounts.success'),
+            },
+          );
+          this.settingsAccountsStore.resetStore();
+        }),
+      ),
+    { dispatch: false },
+  );
+
+  updateFriendlyNameFailure$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AccountsActions.updateFriendlyNameFailure),
+        tap(({ error }) => {
+          this.alertService.error(
+            error ||
+              this.translate.instant('my-products.accounts.failedToUpdateName'),
+            {
+              variant: 'dismissible',
+              title: this.translate.instant('my-products.accounts.error'),
+            },
+          );
+        }),
+      ),
+    { dispatch: false },
   );
 }

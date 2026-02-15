@@ -54,6 +54,29 @@
     @include font-inter(500, 0.875rem, 1.5);
     color: var(--text-secondary);
   }
+
+  &__skeletons {
+    @include display-flex(column);
+    gap: 1rem;
+    padding: 1.5rem 0;
+  }
+}
+
+.skeleton-card {
+  width: 100%;
+  @include flex-center;
+  gap: 1.6rem;
+
+  &__content {
+    flex: 1;
+    @include display-flex(column);
+    gap: 0.8rem;
+  }
+
+  &__details {
+    @include display-flex(row);
+    gap: 1.6rem;
+  }
 }
 
 @media (max-width: 780px) {

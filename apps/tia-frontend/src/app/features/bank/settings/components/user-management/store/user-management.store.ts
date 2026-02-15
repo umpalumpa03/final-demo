@@ -33,6 +33,7 @@ import { ProfilePhotoApiService } from '@tia/shared/services/profile-photo/profi
 import { AlertService } from '@tia/core/services/alert/alert.service';
 
 export const UserManagementStore = signalStore(
+  { providedIn: 'root' },
   withState(initialState),
 
   withComputed((store) => ({

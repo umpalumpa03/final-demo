@@ -206,7 +206,8 @@
     "otp": {
       "title": "Verify Payment",
       "subText": "Enter the 4 digit code sent to your registered phone number",
-      "submitBtnName": "Verify and Transfer"
+      "submitBtnName": "Transfer",
+      "cancel": "Cancel"
     },
     "success": {
       "title": "Payment was successful!",

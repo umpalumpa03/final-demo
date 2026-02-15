@@ -293,7 +293,6 @@ export class PaybillTemplatesContainer implements OnInit {
         this.selectAll.set(false);
         this.resetTree.set(true);
       }
-
       this.modalType.set(null);
       this.selectedId.set('');
       this.selectedItemName.set('');
@@ -535,8 +534,10 @@ export class PaybillTemplatesContainer implements OnInit {
 
   public onPaymentDone(): void {
     this.isOtpModalOpen.set(false);
-    this.isPaymentModalVisible.set(true);
+    this.isPaymentModalVisible.set(false);
     this.isSuccessModalVisible.set(false);
+    this.isModalOpen.set(false);
+    this.modalType.set(null);
     this.store.dispatch(TemplatesPageActions.clearPaymentInfo());
     this.resetTree.set(true);
   }

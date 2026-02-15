@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { UserManagementState } from './shared/state/user-management.state';
 import { UserModalService } from './shared/services/user-modal.service';
-import { UserManagementStore } from './store/user-management.store';
 
 export const userManagementRoutes: Routes = [
   {
@@ -10,7 +9,7 @@ export const userManagementRoutes: Routes = [
       import('./container/user-management-container').then(
         (c) => c.UserManagementContainer,
       ),
-    providers: [UserManagementState, UserModalService, UserManagementStore],
+    providers: [UserManagementState, UserModalService],
     children: [
       {
         path: '',

@@ -10,7 +10,7 @@
 
   &__card {
     background-color: $white;
-    border: 0.15rem solid $blue-200;
+    border: 0.15rem solid var(--color-primary);
     border-radius: 2.4rem;
     padding: 3.2rem;
     box-shadow: 0 0.4rem 1.6rem rgba($black, 0.03);

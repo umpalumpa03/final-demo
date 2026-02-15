@@ -18,8 +18,9 @@ export interface CardData {
   padding?: string;
   borderColor?: string;
   gap?: string;
-  backgroundColor?:string;
-  
+  backgroundColor?: string;
+  hasTransition?: boolean;
+  customTransition?: string;
 }
 
 export interface StatisticCardData {
@@ -33,6 +34,8 @@ export interface StatisticCardData {
   maxWidth?: string;
   width?: string;
   height?: string;
+   hasTransition?: boolean;
+  customTransition?: string;
 }
 
 export interface CategoryCardData {
@@ -42,4 +45,5 @@ export interface CategoryCardData {
   icon: string;
   iconBgColor: string;
   count: number;
+  transition?: string;
 }

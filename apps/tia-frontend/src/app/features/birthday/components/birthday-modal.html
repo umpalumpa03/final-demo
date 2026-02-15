@@ -6,11 +6,12 @@
   </div>
 
   <div class="birthday-content__body">
-    <h2 class="birthday-content__title">Happy Birthday, {{ userName() || 'Member' }}!</h2>
+    <h2 class="birthday-content__title">
+      {{ 'dashboard.birthday.modal.title' | translate: { name: userName() || 'Member' } }}
+    </h2>
     
     <p class="birthday-content__message">
-      Wishing you a wonderful birthday filled with <br>
-      joy, success, and amazing moments!
+      {{ 'dashboard.birthday.modal.message' | translate }}
     </p>
 
     <div class="birthday-content__emoji-row">
@@ -22,8 +23,7 @@
     </div>
 
     <p class="birthday-content__note">
-      From all of us at your banking family, we hope this year <br>
-      brings you prosperity and happiness!
+      {{ 'dashboard.birthday.modal.note' | translate }}
     </p>
   </div>
 
@@ -33,7 +33,7 @@
       (click)="onDismiss()"
       icon="birthday-buttonicon.svg"
       >
-      Thank You!
+      {{ 'dashboard.birthday.modal.thanks' | translate }}
     </app-button>
   </div>
 </div>

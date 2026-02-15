@@ -26,17 +26,23 @@
 
         <form [formGroup]="form" class="edit-form">
             <div>
-                <lib-text-input formControlName="firstName" [config]="firstNameConfig">
+                <lib-text-input formControlName="firstName" [config]="editConfig.firstName">
                 </lib-text-input>
             </div>
 
             <div>
-                <lib-text-input formControlName="lastName" [config]="lastNameConfig">
+                <lib-text-input formControlName="lastName" [config]="editConfig.lastName">
                 </lib-text-input>
             </div>
 
             <div>
-                <lib-select formControlName="role" height="3.6rem" [options]="select.options" [config]="select.config">
+                <lib-text-input formControlName="pId" [config]="editConfig.pId">
+                </lib-text-input>
+            </div>
+
+            <div>
+                <lib-select formControlName="role" height="3.6rem" [options]="editConfig.role.options"
+                    [config]="editConfig.role">
                 </lib-select>
             </div>
         </form>
