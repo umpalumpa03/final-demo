@@ -132,7 +132,7 @@ describe('ExternalAmount', () => {
   });
 
   it('should call verifyTransfer when OTP is verified', () => {
-    component.onOtpVerify({ otp: '654321', isCalled: true });
+    component.onOtpVerify('654321');
     expect(mockExecutionService.verifyTransfer).toHaveBeenCalledWith('654321');
   });
 

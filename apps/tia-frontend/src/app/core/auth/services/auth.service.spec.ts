@@ -18,6 +18,7 @@ describe('AuthService', () => {
   let router: Router;
   let tokenService: TokenService;
   let store: Store;
+  let alertService: AlertService;
   const baseUrl = `${environment.apiUrl}/auth`;
 
   beforeEach(() => {
@@ -53,7 +54,7 @@ describe('AuthService', () => {
         { provide: TokenService, useValue: tokenServiceMock },
         { provide: Store, useValue: storeMock },
         { provide: TranslateService, useValue: { instant: (k: any) => k } },
-        { provide: AlertService, useValue: { success: vi.fn(), error: vi.fn() } },
+        { provide: AlertService, useValue: { success: vi.fn(), error: vi.fn(), warning: vi.fn() } },
       ],
     });
 
@@ -62,6 +63,7 @@ describe('AuthService', () => {
     router = TestBed.inject(Router);
     tokenService = TestBed.inject(TokenService);
     store = TestBed.inject(Store);
+    alertService = TestBed.inject(AlertService as any);
   });
 
   afterEach(() => {
@@ -137,7 +139,7 @@ describe('AuthService', () => {
       const promise = new Promise<void>((resolve) => {
         service.loginPostRequest(loginData).subscribe({
           error: () => {
-            expect(service.errorMessage()).toBe(true);
+            expect((alertService as any).error).toHaveBeenCalled();
             resolve();
           },
         });
@@ -473,28 +475,6 @@ describe('AuthService', () => {
         });
       });
 
-      await promise;
-    });
-  });
-
-  describe('resendVerificationCode', () => {
-    it('should resend verification code successfully', async () => {
-      service.setChellangeId('challenge-123');
-      const mockResponse = { message: 'Verification code resent' };
-
-      const promise = new Promise<void>((resolve) => {
-        service.resendVerificationCode().subscribe({
-          next: (res) => {
-            expect(res.message).toBe('Verification code resent');
-            resolve();
-          },
-        });
-      });
-
-      const req = httpMock.expectOne(`${baseUrl}/mfa/otp-resend`);
-      expect(req.request.body).toEqual({ challengeId: 'challenge-123' });
-      expect(req.request.headers.get('Authorization')).toBe('Bearer test-access-token');
-      req.flush(mockResponse);
       await promise;
     });
   });

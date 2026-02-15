@@ -29,7 +29,7 @@ export interface ForgotPasswordRequest {
 
 export interface ForgotPasswordVerifyRequest {
   challengeId: string;
-  code: string;
+  code: string | null;
 }
 
 export interface CreateNewPasswordRequest {
