@@ -97,6 +97,7 @@
       "resend_btn": "Resend",
       "cancel_btn": "Cancel",
       "verify_btn": "Verify",
+      "otp_sent": "OTP has been sent!",
       "summary_fields": {
         "service": "Service:",
         "account": "Account:",
@@ -203,7 +204,7 @@
       "group_rename_success": "Group name has been changed",
       "move_success": "Template moved successfully",
       "create_success": "Template created successfully",
-      "bulk_pay_success": "Batch payment completed successfully"
+      "bulk_pay_success": "Payment has been successful"
     },
     "otp": {
       "title": "Verify Payment",
