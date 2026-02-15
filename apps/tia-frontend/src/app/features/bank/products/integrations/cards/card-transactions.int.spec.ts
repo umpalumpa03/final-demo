@@ -168,36 +168,21 @@ describe('CardTransactions Integration', () => {
     expect(dispatchSpy).toHaveBeenCalledWith(TransactionActions.enter());
   });
 
-//   it('should display card header data', async () => {
-//   store.overrideSelector(selectAccountsLoaded, true);
-//   store.refreshState();
-  
-//   await new Promise(resolve => setTimeout(resolve, 100));
-  
-//   const headerData = await firstValueFrom(component['cardHeaderData$']);
-  
-//   expect(headerData).not.toBeNull();
-//   expect(headerData?.cardId).toBe('card-1');
-//   expect(headerData?.cardName).toBe('My Card');
-// });
-
   it('should display account name', async () => {
     const accountName = await firstValueFrom(component['accountName$']);
 
     expect(accountName).toBe('Main Account');
   });
 
-  it('should paginate transactions correctly', async () => {
-    const paginatedTransactions = await firstValueFrom(
-      component['paginatedTransactions$'],
-    );
+  it('should paginate transactions correctly', () => {
+    const paginatedTransactions = component['getPaginatedTransactions'](mockTransactions, 1);
 
     expect(paginatedTransactions.length).toBe(2);
     expect(paginatedTransactions[0].id).toBe('tx-1');
   });
 
-  it('should calculate total pages', async () => {
-    const totalPages = await firstValueFrom(component['totalPages$']);
+  it('should calculate total pages', () => {
+    const totalPages = component['getTotalPages'](mockTransactions);
 
     expect(totalPages).toBe(1);
   });
@@ -222,11 +207,7 @@ describe('CardTransactions Integration', () => {
   it('should update filters when account iban changes', () => {
     const dispatchSpy = vi.spyOn(store, 'dispatch');
 
-    component['updateTransactionFiltersIfNeeded'](
-      mockAccount,
-      { accountIban: 'DIFFERENT_IBAN', pageLimit: 100 },
-      true,
-    );
+    component.ngOnInit();
 
     expect(dispatchSpy).toHaveBeenCalledWith(TransactionActions.enter());
     expect(dispatchSpy).toHaveBeenCalledWith(
