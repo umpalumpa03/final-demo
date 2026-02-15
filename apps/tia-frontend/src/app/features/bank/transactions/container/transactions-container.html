@@ -9,7 +9,8 @@
       [categoryOptions]="facade.categoryOptions()"
       [accountOptions]="vm.accountOptions()"
       [currencyOptions]="vm.currencyOptions()"
-      (filterChange)="facade.updateFilters($event)"
+      [initialFilters]="facade.filters()"
+      (filterChange)="onFiltersChange($event)"
     ></app-transactions-filters>
   </div>
 
