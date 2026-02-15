@@ -3,11 +3,20 @@
   <app-route-loader variant="pulsing" />
   } @else { @for (item of fieldConfigs(); track item.id) {
   <div class="dynamic-form__field">
+    @if (item.type === 'select') {
+    <lib-select
+      [formControlName]="item.id"
+      [config]="item.config"
+      [options]="item.options"
+      [state]="state()"
+    ></lib-select>
+    } @else {
     <lib-text-input
       [formControlName]="item.id"
       [config]="item.config"
       [state]="state()"
     ></lib-text-input>
+    }
   </div>
   } }
 </form>

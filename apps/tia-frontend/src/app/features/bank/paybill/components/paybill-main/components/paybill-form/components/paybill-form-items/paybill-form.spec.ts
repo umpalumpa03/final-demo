@@ -102,6 +102,23 @@ describe('PaybillForm', () => {
     });
   });
 
+  describe('onAmountInput', () => {
+    const simulateInput = (inputValue: string) => {
+      const inputElement = document.createElement('input');
+      inputElement.value = inputValue;
+      const event = { target: inputElement } as unknown as Event;
+      component.onAmountInput(event);
+      return inputElement.value;
+    };
+
+    it('should consolidate multiple dots into one', () => {
+      const result = simulateInput('12.34.56');
+
+      expect(result).toBe('12.3456');
+      expect(component.paybillForm().get('amount')?.value).toBe('12.3456');
+    });
+  });
+
   it('should initialize with correct default values', () => {
     expect(component.isLoading()).toBe(false);
   });

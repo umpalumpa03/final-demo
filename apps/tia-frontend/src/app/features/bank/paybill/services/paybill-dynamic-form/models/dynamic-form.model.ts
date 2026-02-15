@@ -12,4 +12,5 @@ export interface PaybillDynamicField {
   minLength?: number;
   maxLength?: number;
   component?: 'input' | 'select' | 'date';
+  options?: { key: string; value: string }[];
 }

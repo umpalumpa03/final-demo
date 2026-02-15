@@ -9,14 +9,24 @@ import {
   selectVerifiedDetails,
 } from '../../store/paybill.selectors';
 import { signal } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 
 describe('PaybillDynamicForm', () => {
   let service: PaybillDynamicForm;
   let store: MockStore;
 
+  const mockTranslate = {
+    instant: vi.fn((key: string) => key),
+  };
+
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [PaybillDynamicForm, provideMockStore()],
+      providers: [
+        PaybillDynamicForm,
+        provideMockStore(),
+
+        { provide: TranslateService, useValue: mockTranslate },
+      ],
     });
     service = TestBed.inject(PaybillDynamicForm);
     store = TestBed.inject(MockStore);

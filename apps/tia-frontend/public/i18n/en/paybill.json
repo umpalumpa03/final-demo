@@ -67,7 +67,8 @@
       "verify_btn": "Verify Account",
       "check_button": "Check",
       "pay_button": "Pay",
-      "template": "Save Template"
+      "template": "Save Template",
+      "required_field_error": "Please fill required field!"
     },
     "confirm": {
       "title": "Confirm Payment",
