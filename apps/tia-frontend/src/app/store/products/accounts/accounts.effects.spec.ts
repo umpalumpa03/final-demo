@@ -298,7 +298,12 @@ describe('AccountsEffects', () => {
     });
 
     it('should return enrichAccountsSuccess with empty object when accounts array is empty', () => {
-      actions$ = of(AccountsActions.loadAccountsSuccess({ accounts: [] }));
+      actions$ = of(
+        AccountsActions.loadAccountsSuccess({
+          accounts: [],
+          enrichWithTransactions: true,
+        }),
+      );
 
       let result: Action | undefined;
       effects.enrichAccountsWithLastTransactions$.subscribe(
@@ -329,7 +334,10 @@ describe('AccountsEffects', () => {
         of({ items: [mockTx], total: 1 } as any),
       );
       actions$ = of(
-        AccountsActions.loadAccountsSuccess({ accounts: [mockAccount] }),
+        AccountsActions.loadAccountsSuccess({
+          accounts: [mockAccount],
+          enrichWithTransactions: true,
+        }),
       );
 
       let result: Action | undefined;
@@ -359,6 +367,7 @@ describe('AccountsEffects', () => {
       actions$ = of(
         AccountsActions.loadAccountsSuccess({
           accounts: [mockAccount, account2],
+          enrichWithTransactions: true,
         }),
       );
 
@@ -381,7 +390,10 @@ describe('AccountsEffects', () => {
         of({ items: [], total: 0 } as any),
       );
       actions$ = of(
-        AccountsActions.loadActiveAccountsSuccess({ accounts: [mockAccount] }),
+        AccountsActions.loadActiveAccountsSuccess({
+          accounts: [mockAccount],
+          enrichWithTransactions: true,
+        }),
       );
 
       let result: Action | undefined;
