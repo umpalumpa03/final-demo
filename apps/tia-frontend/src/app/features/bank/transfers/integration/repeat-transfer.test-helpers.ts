@@ -11,7 +11,7 @@ import { signal } from '@angular/core';
 import { TransferStore } from '../store/transfers.store';
 import { TransfersApiService } from '../services/transfersApi.service';
 import { TransferRepeatService } from '../services/transfer-repeat.service';
-import { TransferValidationService } from '../components/transfers-external/services/transfer-validation.service';
+import { TransferValidationService } from '../services/transfer-validation.service';
 import { TransferUtilsService } from '../services/transfer-utils.service';
 import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
 import { selectPhoneNumber } from 'apps/tia-frontend/src/app/store/personal-info/personal-info.selectors';

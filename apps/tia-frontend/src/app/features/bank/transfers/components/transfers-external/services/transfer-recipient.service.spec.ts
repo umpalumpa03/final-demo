@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { TransferRecipientService } from './transfer-recipient.service';
 import { TransferStore } from '../../../store/transfers.store';
-import { TransferValidationService } from './transfer-validation.service';
+import { TransferValidationService } from '../../../services/transfer-validation.service';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { signal } from '@angular/core';
 import { provideMockStore } from '@ngrx/store/testing';
