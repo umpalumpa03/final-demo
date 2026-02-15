@@ -3,6 +3,7 @@ import { SelectedItems } from './selected-items';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { selectSelectedTemplates } from '../../../../store/paybill.selectors';
 import { TranslateModule } from '@ngx-translate/core';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
 
 describe('SelectedItems', () => {
   let component: SelectedItems;
@@ -37,5 +38,11 @@ describe('SelectedItems', () => {
 
   it('should have selectedItems from the store', () => {
     expect(component.selectedItems()).toEqual(mockTemplates);
+  });
+
+  it('should emit paySelectedClick when onPaySelectedClick is called', () => {
+    const spy = vi.spyOn(component.paySelectedClick, 'emit');
+    component.onPaySelectedClick();
+    expect(spy).toHaveBeenCalled();
   });
 });

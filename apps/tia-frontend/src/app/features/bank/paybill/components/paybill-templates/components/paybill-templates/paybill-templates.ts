@@ -44,6 +44,7 @@ import { DeleteConfirmModal } from '../modals/delete-confirm-modal/delete-confir
 import { ConfirmPaymentModal } from '../modals/confirm-payment-modal/confirm-payment-modal';
 import { CreateTemplateModal } from '../modals/create-template-modal/create-template-modal';
 import { TemplatesHeader } from '../../ui/templates-header/templates-header';
+import { IVerified } from '@tia/core/auth/models/otp-verification.models';
 
 @Component({
   selector: 'app-paybill-templates',
@@ -112,6 +113,8 @@ export class PaybillTemplates implements OnInit {
   public itemMoved(event: TreeItemMoved) {
     this.treeItemMoved.emit(event);
   }
+
+  public resetTreeState = input<boolean>(false);
 
   // Create Form Effect to reset form on modal open/close
   constructor() {
@@ -264,14 +267,30 @@ export class PaybillTemplates implements OnInit {
     this.isDistribution.set(value);
   }
 
-  // Otp Logic (Need to be fixed) WAITING
+  // OTP Logic
   public isOtpModalOpen = input<boolean>(false);
   public isPaymentModalHidden = input<boolean>(false);
-
+  public succesModalHidden = input<boolean>(false);
+  public otpCloseEmit = output<boolean>();
+  public paymentDone = output<void>();
   public otpConfig = payBillOtpConfig;
 
-  // ANY IMITOM ROM ARVICIT RAIQNEBA BEQASGAN
+  // need to be fixed
   public resendOtp(event: any): void {
     console.log(event);
+  }
+
+  public onOtpClose() {
+    this.otpCloseEmit.emit(false);
+  }
+
+  public onSuccessDone(): void {
+    this.paymentDone.emit();
+  }
+
+  public verifyOtp = output<IVerified>();
+
+  public onOtpVerify(event: IVerified): void {
+    this.verifyOtp.emit(event);
   }
 }

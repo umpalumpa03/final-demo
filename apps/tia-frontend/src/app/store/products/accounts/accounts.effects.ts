@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { of } from 'rxjs';
+import { of, forkJoin } from 'rxjs';
 import {
   map,
   catchError,
@@ -12,31 +12,27 @@ import { AccountsApiService } from '../../../shared/services/accounts/accounts.a
 import { AccountsActions } from './accounts.actions';
 import { Store } from '@ngrx/store';
 import { selectAccounts } from './accounts.selectors';
+import { TransactionApiService } from '../../../shared/services/transactions-service/transactions.api.service';
+import { ITransactions } from '../../../shared/models/transactions/transactions.models';
 
 @Injectable()
 export class AccountsEffects {
   private readonly actions$ = inject(Actions);
   private readonly accountsService = inject(AccountsApiService);
   private readonly store = inject(Store);
+  private readonly transactionService = inject(TransactionApiService);
 
   loadAccounts$ = createEffect(() =>
     this.actions$.pipe(
-      // liisten specifically for the 'loadAccounts' action
       ofType(AccountsActions.loadAccounts),
-      // peek at the current accounts in the Store for comparison
       withLatestFrom(this.store.select(selectAccounts)),
-      // only proceed to the API call if:
-      //  a manual refresh is requested or
-      //    store is empty / null
       filter(
         ([action, accounts]) =>
           action.forceRefresh || !accounts || accounts.length === 0,
       ),
 
-      // than fetch
       switchMap(() =>
         this.accountsService.getAccounts().pipe(
-          // success-> the store with fresh data
           map((accounts) => AccountsActions.loadAccountsSuccess({ accounts })),
           catchError((error) =>
             of(
@@ -52,22 +48,18 @@ export class AccountsEffects {
 
   loadActiveAccounts$ = createEffect(() =>
     this.actions$.pipe(
-      // liisten specifically for the 'loadAccounts' action
+
       ofType(AccountsActions.loadActiveAccounts),
-      // peek at the current accounts in the Store for comparison
+
       withLatestFrom(this.store.select(selectAccounts)),
-      // only proceed to the API call if:
-      //  a manual refresh is requested or
-      //    store is empty / null
+
       filter(
         ([action, accounts]) =>
           action.forceRefresh || !accounts || accounts.length === 0,
       ),
 
-      // than fetch
       switchMap(() =>
         this.accountsService.getActiveAccounts().pipe(
-          // success-> the store with fresh data
           map((accounts) =>
             AccountsActions.loadActiveAccountsSuccess({ accounts }),
           ),
@@ -119,6 +111,61 @@ export class AccountsEffects {
               );
             }),
           );
+      }),
+    ),
+  );
+
+  enrichAccountsWithLastTransactions$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(
+        AccountsActions.loadAccountsSuccess,
+        AccountsActions.loadActiveAccountsSuccess,
+      ),
+      switchMap(({ accounts }) => {
+        if (!accounts || accounts.length === 0) {
+          return of(
+            AccountsActions.enrichAccountsSuccess({ lastTransactions: {} }),
+          );
+        }
+        const transactionRequests = accounts.map((account) =>
+          this.transactionService
+            .getTransactions({
+              accountIban: account.iban,
+              pageLimit: 1,
+            })
+            .pipe(
+              map((response) => ({
+                iban: account.iban,
+                transaction: response.items[0] || null,
+              })),
+              catchError(() =>
+
+                of({ iban: account.iban, transaction: null }),
+              ),
+            ),
+        );
+
+
+        return forkJoin(transactionRequests).pipe(
+          map((results) => {
+            const lastTransactions = results.reduce(
+              (acc, { iban, transaction }) => {
+                acc[iban] = transaction;
+                return acc;
+              },
+              {} as Record<string, ITransactions | null>,
+            );
+
+            return AccountsActions.enrichAccountsSuccess({ lastTransactions });
+          }),
+          catchError((error) =>
+            of(
+              AccountsActions.enrichAccountsFailure({
+                error: error.message || 'Failed to load last transactions',
+              }),
+            ),
+          ),
+        );
       }),
     ),
   );

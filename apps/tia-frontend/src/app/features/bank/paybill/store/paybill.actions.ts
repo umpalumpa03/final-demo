@@ -173,5 +173,6 @@ export const TemplatesPageActions = createActionGroup({
     'Pay Many Bills': props<{ payments: BillPaymentRequest[] }>(),
     'Pay Many Bills Success': props<{ response: ProceedPaymentResponse }>(),
     'Pay Many Bills Failure': props<{ error: string }>(),
+    'Set Form Valid': props<{ isValid: boolean }>(),
   },
 });

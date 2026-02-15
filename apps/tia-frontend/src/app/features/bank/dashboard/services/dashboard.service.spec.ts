@@ -219,7 +219,6 @@ describe('DashboardService', () => {
       service.myItems.set([
         { id: 'acc', type: 'accounts', isHidden: true },
       ] as any);
-      service.accountsHidden.set(true);
 
       const processed = service.processedItems();
 

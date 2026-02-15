@@ -477,4 +477,9 @@ export const paybillReducer = createReducer(
     loading: false,
     challengeId: response.verify?.challengeId ?? null,
   })),
+  on(TemplatesPageActions.setFormValid, (state, { isValid }) => ({
+    ...state,
+    loading: false,
+    isFormValid: isValid,
+  })),
 );

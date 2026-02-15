@@ -12,7 +12,9 @@ import { PaybillTemplates } from '../components/paybill-templates/paybill-templa
 import { Store } from '@ngrx/store';
 import {
   selectCategories,
+  selectChallengeId,
   selectFilteredProviders,
+  selectFormPayload,
   selectLoading,
   selectPaymentFields,
   selectProviders,
@@ -59,12 +61,14 @@ import {
   map,
   startWith,
   switchMap,
+  take,
   tap,
 } from 'rxjs';
 import { paybillSearchConfig } from '../configs/search.config';
 import { PaybillTemplatesService } from '../services/paybill-templates-service';
 import { TreeItem } from '@tia/shared/lib/drag-n-drop/model/drag.model';
 import { TranslatePipe } from '@ngx-translate/core';
+import { IVerified } from '@tia/core/auth/models/otp-verification.models';
 
 @Component({
   selector: 'app-paybill-templates-container',
@@ -277,14 +281,18 @@ export class PaybillTemplatesContainer implements OnInit {
     }
   }
 
+  public resetTree = signal<boolean>(false);
+
   // Handle Modal Open / Close Action
   public handleModalToggle(): void {
     const willClose = this.isModalOpen();
     this.isModalOpen.update((val) => !val);
+    this.resetTree.set(false);
 
     if (willClose) {
-      if (this.selectAll()) {
-        this.selectAll.update((val) => !val);
+      if (this.selectAll() || this.selectedItems().length) {
+        this.selectAll.set(false);
+        this.resetTree.set(true);
       }
 
       this.modalType.set(null);
@@ -464,7 +472,7 @@ export class PaybillTemplatesContainer implements OnInit {
   public selectedItems = this.store.selectSignal(selectSelectedTemplates);
   public originalTemplates = this.store.selectSignal(selectTemplates);
 
-  public onItemChecked(selectedIds: string[]) {
+  public onItemChecked(selectedIds: string[]): void {
     const selectedTemplates = [];
 
     for (const id of selectedIds) {
@@ -483,7 +491,7 @@ export class PaybillTemplatesContainer implements OnInit {
   }
 
   // If I select a single item
-  public onSelectedItem(selectedItemId: string) {
+  public onSelectedItem(selectedItemId: string): void {
     this.store.dispatch(TemplatesPageActions.clearPaymentInfo());
     const selectedTemplates = [];
     const template = this.originalTemplates().find(
@@ -501,16 +509,55 @@ export class PaybillTemplatesContainer implements OnInit {
   }
   // Here logic if otp is open or not
   public isOtpModalOpen = signal(false);
-  public isPaymentModalHidden = signal(false);
+  public isPaymentModalVisible = signal(false);
+  public isSuccessModalVisible = signal(false);
+  public selectPaymentsForm = this.store.selectSignal(selectFormPayload);
 
-  public onPayAction() {
-    this.isPaymentModalHidden.set(true);
-    this.isOtpModalOpen.set(true);
+  // Payment Logic
+  public onPayAction(): void {
+    this.actions$
+      .pipe(ofType(TemplatesPageActions.payManyBillsSuccess), take(1))
+      .subscribe(() => {
+        this.isPaymentModalVisible.set(true);
+        this.isOtpModalOpen.set(true);
+      });
 
-    // this.store.dispatch(
-    //   TemplatesPageActions.payManyBills({
-    //     payments: this.billsList.buildPayload(),
-    //   }),
-    // );
+    this.store.dispatch(
+      TemplatesPageActions.payManyBills({
+        payments: this.selectPaymentsForm(),
+      }),
+    );
+  }
+
+  public onOtpClose(event: boolean): void {
+    this.isOtpModalOpen.set(event);
+    this.isPaymentModalVisible.set(false);
+  }
+
+  public onPaymentDone(): void {
+    this.isOtpModalOpen.set(false);
+    this.isPaymentModalVisible.set(true);
+    this.isSuccessModalVisible.set(false);
+    this.store.dispatch(TemplatesPageActions.clearPaymentInfo());
+    this.resetTree.set(true);
+  }
+
+  public onVerifyOtp(otp: IVerified): void {
+    const challengeId = this.store.selectSignal(selectChallengeId);
+
+    this.actions$
+      .pipe(ofType(PaybillActions.confirmPaymentSuccess), take(1))
+      .subscribe(() => {
+        this.isOtpModalOpen.set(false);
+        this.isSuccessModalVisible.set(true);
+      });
+
+    if (challengeId()) {
+      this.store.dispatch(
+        PaybillActions.confirmPayment({
+          payload: { challengeId: challengeId()!, code: otp.otp! },
+        }),
+      );
+    }
   }
 }

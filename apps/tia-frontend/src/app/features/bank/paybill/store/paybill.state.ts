@@ -45,6 +45,7 @@ export interface PaybillState {
   totalAmount: number;
   selectedSenderAccountId?: string | null;
   paymentsForm: BillPaymentRequest[];
+  isFormValid: boolean;
 }
 
 export const initialPaybillState: PaybillState = {
@@ -69,4 +70,5 @@ export const initialPaybillState: PaybillState = {
   totalAmount: 0,
   selectedSenderAccountId: null,
   paymentsForm: [],
+  isFormValid: false,
 };

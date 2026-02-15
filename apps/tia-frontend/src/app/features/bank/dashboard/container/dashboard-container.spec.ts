@@ -72,10 +72,15 @@ describe('DashboardContainer', () => {
           items.length < 3;
         return items.map((_, index) => (isVertical ? 1 : index === 0 ? 2 : 1));
       }),
-      accountsHidden: signal(false),
       processedItems: signal([]),
       updateItemsOnDrag: vi.fn(),
-      foldWidget: vi.fn(),
+      foldWidget: vi.fn((isSelected: boolean, id: string) => {
+        myItems.update((items) =>
+          items.map((item) =>
+            item.id === id ? { ...item, isHidden: !isSelected } : item
+          )
+        );
+      }),
       toggleCatalogWidget: vi.fn(),
       syncWidgetsFromDraft: vi.fn(),
     };
@@ -210,15 +215,15 @@ describe('DashboardContainer', () => {
 
   describe('Specific Logic Coverage', () => {
     it('onFoldWidget: should update accountsHidden signal when item type is "accounts"', () => {
-      const accountsWidget = { id: 'acc-1', type: 'accounts' };
+      const accountsWidget = { id: 'acc-1', type: 'accounts', isHidden: false };
       mockDashService.myItems.set([accountsWidget]);
 
       component.onFoldWidget(false, 'acc-1');
 
-      expect(mockDashService.accountsHidden()).toBe(true);
+      expect(component['accountsHidden']()).toBe(true);
 
       component.onFoldWidget(true, 'acc-1');
-      expect(mockDashService.accountsHidden()).toBe(false);
+      expect(component['accountsHidden']()).toBe(false);
     });
 
     it('pageTitle & pageSubtitle: should return translated strings via computed signals', () => {
