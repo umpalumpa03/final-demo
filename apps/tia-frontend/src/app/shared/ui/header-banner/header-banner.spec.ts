@@ -12,6 +12,10 @@ describe('HeaderBanner', () => {
 
     fixture = TestBed.createComponent(HeaderBanner);
     component = fixture.componentInstance;
+
+    fixture.componentRef.setInput('imagePath', 'assets/test-banner.png');
+
+    fixture.detectChanges();
     await fixture.whenStable();
   });
 
