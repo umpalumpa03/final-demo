@@ -213,6 +213,7 @@ export class PaybillEffect {
 
         if (challengeId) {
           return of(
+            PaybillActions.confirmPaymentSuccess(),
             PaybillActions.confirmPayment({
               payload: { challengeId, code: '6767' },
             }),
