@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { of, forkJoin } from 'rxjs';
+import { of } from 'rxjs';
 import {
   map,
   catchError,
@@ -156,41 +156,50 @@ export class AccountsEffects {
             AccountsActions.enrichAccountsSuccess({ lastTransactions: {} }),
           );
         }
-        const transactionRequests = accounts.map((account) =>
-          this.transactionService
-            .getTransactions({
-              accountIban: account.iban,
-              pageLimit: 1,
-            })
-            .pipe(
-              map((response) => ({
-                iban: account.iban,
-                transaction: response.items[0] || null,
-              })),
-              catchError(() => of({ iban: account.iban, transaction: null })),
-            ),
-        );
 
-        return forkJoin(transactionRequests).pipe(
-          map((results) => {
-            const lastTransactions = results.reduce(
-              (acc, { iban, transaction }) => {
-                acc[iban] = transaction;
-                return acc;
-              },
-              {} as Record<string, ITransactions | null>,
-            );
+        return this.transactionService
+          .getTransactions({
+            pageLimit: Math.min(accounts.length * 2, 100),
+          })
+          .pipe(
+            map((response) => {
+              const lastTransactions: Record<string, ITransactions | null> = {};
 
-            return AccountsActions.enrichAccountsSuccess({ lastTransactions });
-          }),
-          catchError((error) =>
-            of(
-              AccountsActions.enrichAccountsFailure({
-                error: error.message || 'Failed to load last transactions',
-              }),
+              accounts.forEach((account) => {
+                lastTransactions[account.iban] = null;
+              });
+
+              response.items.forEach((transaction) => {
+                const creditIban = transaction.creditAccountNumber;
+                const debitIban = transaction.debitAccountNumber;
+
+                if (creditIban && creditIban in lastTransactions) {
+                  const existingTransaction = lastTransactions[creditIban];
+                  if (!existingTransaction ||
+                      new Date(transaction.createdAt) > new Date(existingTransaction.createdAt)) {
+                    lastTransactions[creditIban] = transaction;
+                  }
+                }
+
+                if (debitIban && debitIban in lastTransactions) {
+                  const existingTransaction = lastTransactions[debitIban];
+                  if (!existingTransaction ||
+                      new Date(transaction.createdAt) > new Date(existingTransaction.createdAt)) {
+                    lastTransactions[debitIban] = transaction;
+                  }
+                }
+              });
+
+              return AccountsActions.enrichAccountsSuccess({ lastTransactions });
+            }),
+            catchError((error) =>
+              of(
+                AccountsActions.enrichAccountsFailure({
+                  error: error.message || 'Failed to load last transactions',
+                }),
+              ),
             ),
-          ),
-        );
+          );
       }),
     ),
   );
