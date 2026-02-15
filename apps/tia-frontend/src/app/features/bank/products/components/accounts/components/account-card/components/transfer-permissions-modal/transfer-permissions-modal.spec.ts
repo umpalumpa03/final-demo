@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TransferPermissionsModalComponent } from './transfer-permissions-modal';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
-import { TRANSFER_PERMISSIONS } from '../../../../config/transfer-permissions.config';
+import { TRANSFER_PERMISSIONS } from '../../../../shared/config/transfer-permissions.config';
 
 describe('TransferPermissionsModalComponent', () => {
   let component: TransferPermissionsModalComponent;

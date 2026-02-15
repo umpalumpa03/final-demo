@@ -7,7 +7,7 @@ import {
   signal,
   DestroyRef,
 } from '@angular/core';
-import { switchMap, tap } from 'rxjs';
+import { catchError, EMPTY, switchMap, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
@@ -82,20 +82,20 @@ export class LanguageSelection implements OnInit {
           switchMap(() =>
             this.translationLoader.loadTranslations(['settings', 'storybook']),
           ),
-          takeUntilDestroyed(this.destroyRef),
-        )
-        .subscribe({
-          next: () => {
+          tap(() => {
             this.alertService.success(
               this.translateService.instant('settings.language.saveSuccess'),
             );
-          },
-          error: () => {
+          }),
+          catchError(() => {
             this.alertService.error(
               this.translateService.instant('settings.language.saveError'),
             );
-          },
-        });
+            return EMPTY;
+          }),
+          takeUntilDestroyed(this.destroyRef),
+        )
+        .subscribe();
     }
   }
 }

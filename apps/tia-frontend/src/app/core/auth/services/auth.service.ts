@@ -8,6 +8,7 @@ import {
   CreateNewPasswordRequest,
   ResendOtpRequest,
   IRefreshTokenRequest,
+  OtpInitSettings,
 } from '../models/authRequest.models';
 import {
   CreateNewPasswordResponse,

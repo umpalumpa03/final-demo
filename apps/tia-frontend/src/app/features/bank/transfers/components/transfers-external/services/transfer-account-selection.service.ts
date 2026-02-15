@@ -14,6 +14,8 @@ export class TransferAccountSelectionService {
   private readonly store = inject(Store);
   private readonly utilsService = inject(TransferUtilsService);
 
+  private hasAutoSelectedSender = false;
+
   public initAutoSelectionLogic(
     senderAccounts: Signal<Account[]>,
     recipientAccounts: Signal<RecipientAccount[]>,
@@ -21,6 +23,8 @@ export class TransferAccountSelectionService {
     preSelectedAccount: Signal<Account | null | undefined>,
     onCurrencyMismatch: () => void,
   ): void {
+    this.hasAutoSelectedSender = false;
+
     effect(() => {
       const preSelected = preSelectedAccount();
       const currentSender = this.transferStore.senderAccount();
@@ -45,20 +49,17 @@ export class TransferAccountSelectionService {
             onCurrencyMismatch();
           }
 
-          // Clear the pre-selection from the global store since it's invalid for this context
           this.store.dispatch(AccountsActions.selectAccount({ account: null }));
           return;
         }
 
-        // It's valid! Set it as the sender
         this.transferStore.setSenderAccount(preSelected);
+        this.hasAutoSelectedSender = true;
 
-        // Clear the global "pre-selection" so it doesn't try to re-apply on subsequent changes
         this.store.dispatch(AccountsActions.selectAccount({ account: null }));
       });
     });
 
-    // Effect 2: Handle Favorite Auto-selection
     effect(() => {
       const sAccounts = senderAccounts();
       const rAccounts = recipientAccounts();
@@ -73,7 +74,12 @@ export class TransferAccountSelectionService {
             this.transferStore.setSelectedRecipientAccount(firstRecipient);
           }
         }
-        if (sAccounts.length > 0 && !currentSender) {
+
+        if (
+          sAccounts.length > 0 &&
+          !currentSender &&
+          !this.hasAutoSelectedSender
+        ) {
           const firstSender = sAccounts[0];
           const updatedRecipient =
             this.transferStore.selectedRecipientAccount();
@@ -87,6 +93,7 @@ export class TransferAccountSelectionService {
 
           if (isFav && isValid) {
             this.transferStore.setSenderAccount(firstSender);
+            this.hasAutoSelectedSender = true;
           }
         }
       });
@@ -129,6 +136,8 @@ export class TransferAccountSelectionService {
     } else {
       this.transferStore.setSenderAccount(account);
     }
+
+    this.hasAutoSelectedSender = true;
   }
 
   public handleContinue(

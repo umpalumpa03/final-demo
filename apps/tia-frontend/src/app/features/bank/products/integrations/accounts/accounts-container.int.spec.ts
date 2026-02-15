@@ -163,7 +163,7 @@ describe('Accounts Container Integration Tests', () => {
       const dispatchSpy = vi.spyOn(store, 'dispatch');
       const navigateSpy = vi.spyOn(router, 'navigate');
 
-      component.handleTransfer({ accountId: 'acc-123', permissionValue: 1 });
+      component.handleTransfer({ account: mockAccount, permissionValue: 1 });
 
       expect(dispatchSpy).toHaveBeenCalledWith(
         AccountsActions.selectAccount({ account: mockAccount }),
@@ -176,7 +176,7 @@ describe('Accounts Container Integration Tests', () => {
     it('should route to external transfers for permission values 2 and 4', () => {
       const navigateSpy = vi.spyOn(router, 'navigate');
 
-      component.handleTransfer({ accountId: 'acc-123', permissionValue: 2 });
+      component.handleTransfer({ account: mockAccount, permissionValue: 2 });
       expect(navigateSpy).toHaveBeenCalledWith(['/bank/transfers/external'], {
         queryParams: { accountId: 'acc-123' },
       });
@@ -185,7 +185,7 @@ describe('Accounts Container Integration Tests', () => {
     it('should route to paybill for permission values 8 and 16', () => {
       const navigateSpy = vi.spyOn(router, 'navigate');
 
-      component.handleTransfer({ accountId: 'acc-123', permissionValue: 8 });
+      component.handleTransfer({ account: mockAccount, permissionValue: 8 });
       expect(navigateSpy).toHaveBeenCalledWith(['/bank/paybill'], {
         queryParams: { accountId: 'acc-123' },
       });
@@ -194,10 +194,10 @@ describe('Accounts Container Integration Tests', () => {
     it('should route to loans for permission value 32', () => {
       const navigateSpy = vi.spyOn(router, 'navigate');
 
-      component.handleTransfer({ accountId: 'acc-456', permissionValue: 32 });
+      component.handleTransfer({ account: mockAccount, permissionValue: 32 });
 
       expect(navigateSpy).toHaveBeenCalledWith(['/bank/loans'], {
-        queryParams: { accountId: 'acc-456' },
+        queryParams: { accountId: 'acc-123' },
       });
     });
   });

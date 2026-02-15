@@ -9,9 +9,9 @@ import { CommonModule } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { UiModal } from '../../../../../../../../../shared/lib/overlay/ui-modal/ui-modal';
 import { ButtonComponent } from '../../../../../../../../../shared/lib/primitives/button/button';
-import { TransferPermission } from '../../../../model/transfer-permission.model';
-import { TRANSFER_PERMISSIONS } from '../../../../config/transfer-permissions.config';
-import { filterPermissionsByCurrency } from '../../../../utils/transfer-permissions.utils';
+import { TransferPermission } from '../../../../shared/model/transfer-permission.model';
+import { TRANSFER_PERMISSIONS } from '../../../../shared/config/transfer-permissions.config';
+import { filterPermissionsByCurrency } from '../../../../shared/utils/transfer-permissions.utils';
 
 @Component({
   selector: 'app-transfer-permissions-modal',

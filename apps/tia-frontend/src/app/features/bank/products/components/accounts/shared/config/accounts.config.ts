@@ -1,10 +1,10 @@
 import { AccountUtils } from '@tia/shared/utils/accounts-icons/account.utils';
+import { TranslateService } from '@ngx-translate/core';
 import {
   AccountSection,
+  AccountType,
   CreateAccountConfig,
-} from '../../../../../../shared/models/accounts/accounts.model';
-import { AccountType } from '../../../../../../shared/models/accounts/accounts.model';
-import { TranslateService } from '@ngx-translate/core';
+} from '@tia/shared/models/accounts/accounts.model';
 
 const accountUtils = new AccountUtils();
 
@@ -54,3 +54,12 @@ export const getCreateAccountConfig = (
       required: true,
     },
   }) as const;
+
+export const PERMISSION_ROUTE_MAP: { [key: number]: string } = {
+  1: '/bank/transfers/internal',
+  2: '/bank/transfers/external',
+  4: '/bank/transfers/external',
+  8: '/bank/paybill',
+  16: '/bank/paybill',
+  32: '/bank/loans',
+} as const;

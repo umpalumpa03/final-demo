@@ -6,6 +6,12 @@ export interface IUser extends User {
   createdAt: string;
 }
 
+export interface DetailRow {
+  label: string;
+  value: string | number | boolean | null | undefined;
+  type?: 'text' | 'date' | 'status' | 'role';
+}
+
 export interface IUserDetail extends IUser {
   pId: string;
   phone: string;

@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  input,
+  output,
+} from '@angular/core';
 
 @Component({
   selector: 'app-pill-paging',
@@ -11,6 +17,7 @@ export class PillPaging {
   public readonly total = input.required<number>();
   public readonly currentIndex = input.required<number>();
   public readonly goTo = output<number>();
+  public readonly flexWrap = input<boolean>(false);
 
   protected readonly pageArray = computed(() => Array(this.total()));
 }
