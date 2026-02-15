@@ -1,29 +1,41 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
 import {
-  StepperHeader
-} from 'apps/tia-frontend/src/app/features/storybook/components/forms/multistep-form/stepper-header/stepper-header';
-import { TranslatePipe } from '@ngx-translate/core';
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  computed,
+  OnDestroy,
+} from '@angular/core';
+import { Router, RouterOutlet } from '@angular/router';
+import { StepperHeader } from 'apps/tia-frontend/src/app/features/storybook/components/forms/multistep-form/stepper-header/stepper-header';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TransferStore } from '../../../store/transfers.store';
 
 @Component({
   selector: 'app-transfers-internal',
-  imports: [
-    RouterOutlet,
-    StepperHeader,
-    TranslatePipe
-  ],
+  imports: [RouterOutlet, StepperHeader, TranslatePipe],
   templateUrl: './transfers-internal.html',
   styleUrl: './transfers-internal.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TransfersInternal {
-  private router = inject(Router);
+export class TransfersInternal implements OnDestroy {
+  private readonly router = inject(Router);
+  private readonly translate = inject(TranslateService);
+  private readonly transferStore = inject(TransferStore);
 
-  public steps = [
-    { key: 'from-account', label: 'From Account' },
-    { key: 'to-account', label: 'To Account' },
-    { key: 'amount', label: 'Amount' },
-  ];
+  public readonly steps = computed(() => [
+    {
+      key: 'from-account',
+      label: this.translate.instant('transfers.internal.stepper.fromAccount'),
+    },
+    {
+      key: 'to-account',
+      label: this.translate.instant('transfers.internal.stepper.toAccount'),
+    },
+    {
+      key: 'amount',
+      label: this.translate.instant('transfers.internal.stepper.amount'),
+    },
+  ]);
 
   public get currentStep(): number {
     const url = this.router.url;
@@ -31,5 +43,9 @@ export class TransfersInternal {
     if (url.includes('to-account')) return 2;
     if (url.includes('amount')) return 3;
     return 1;
+  }
+
+  public ngOnDestroy(): void {
+    this.transferStore.reset();
   }
 }
