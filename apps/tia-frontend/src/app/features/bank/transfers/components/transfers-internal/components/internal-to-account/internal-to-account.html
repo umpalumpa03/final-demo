@@ -122,12 +122,3 @@
   </footer>
 </main>
 
-@if (showSuccess()) {
-  <div class="internal-accounts__success-toast">
-    <app-alert-types-with-icons
-      [alertType]="'success'"
-      [alertMessage]="'transfers.internal.accounts.recipientVerified' | translate"
-    />
-  </div>
-}
-
