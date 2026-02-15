@@ -15,6 +15,7 @@
         variant="outline"
         size="default"
         [fullWidth]="true"
+        whiteSpace="break-spaces"
         (click)="onPermissionSelect(permission.value)"
       >
         {{ permission.label | translate }}
@@ -29,6 +30,7 @@
         size="default"
         [fullWidth]="true"
         (click)="onClose()"
+        whiteSpace="break-spaces"
       >
         {{ 'common.buttons.cancel' | translate }}
       </app-button>

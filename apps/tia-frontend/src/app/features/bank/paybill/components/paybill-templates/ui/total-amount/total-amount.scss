@@ -2,6 +2,7 @@
 @use '../../../../../../../shared/styles/palette' as *;
 .total__amount {
   @include flex-center($justify: space-between);
+  flex-wrap: wrap;
   background-color: $gray-25;
   border-top: 2px solid $blue-800;
   border-radius: 1rem;
