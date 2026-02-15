@@ -51,14 +51,12 @@
   <app-otp-verification
     type="otp"
     timerType="otp"
-    [timeLimit]="1"
     [inputOtpConfig]="otpConfig"
     [errorMessage]="phoneUpdateError()"
     [isButtonLoading]="phoneUpdateLoading()"
-    [isTimerDisplayed]="true"
     [onErrorRedirect]="false"
     (isVerifyCalled)="onVerifyOtp($event)"
-    (isResendCalled)="onResendOtp($event)"
+    (isResendCalled)="onResendOtp()"
     (onBackOut)="onOtpModalClosed()"
   ></app-otp-verification>
 </app-ui-modal>

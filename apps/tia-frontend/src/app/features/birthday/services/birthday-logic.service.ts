@@ -1,22 +1,27 @@
 import { Injectable, inject, signal, effect } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { selectUserInfo } from '../../../store/user-info/user-info.selectors';
+import { selectUserInfo, selectUserLoaded } from '../../../store/user-info/user-info.selectors';
 import { UserInfoActions } from '../../../store/user-info/user-info.actions';
 
 @Injectable({ providedIn: 'root' })
 export class BirthdayLogicService {
   private readonly store = inject(Store);
   private readonly userInfo = this.store.selectSignal(selectUserInfo);
+  private readonly isLoaded = this.store.selectSignal(selectUserLoaded);
   
   public readonly isModalVisible = signal(false);
-  public readonly shouldLaunchConfetti = signal(false);
 
   constructor() {
     effect(() => {
       const user = this.userInfo();
-      if (user?.birthday) {
-        this.checkBirthday(user.birthday, user.birthdayModalClosedYear);
+      const loaded = this.isLoaded();
+
+      if (!loaded || !user?.birthday) {
+        this.isModalVisible.set(false);
+        return;
       }
+
+      this.checkBirthday(user.birthday, user.birthdayModalClosedYear);
     });
   }
 
@@ -31,18 +36,11 @@ export class BirthdayLogicService {
 
     const notYetDismissed = closedYear !== currentYear;
 
-    if (isTodayBirthday && notYetDismissed) {
-      this.isModalVisible.set(true);
-      this.shouldLaunchConfetti.set(true);
-    } else {
-      this.isModalVisible.set(false);
-      this.shouldLaunchConfetti.set(false);
-    }
+    this.isModalVisible.set(isTodayBirthday && notYetDismissed);
   }
 
   public dismiss(): void {
     this.isModalVisible.set(false);
-    this.shouldLaunchConfetti.set(false);
     this.store.dispatch(UserInfoActions.dismissBirthdayModal({ 
       year: new Date().getFullYear() 
     }));

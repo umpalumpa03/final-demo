@@ -76,6 +76,11 @@
         color: var(--color-fg);
         flex: 1;
         text-align: left;
+
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        min-width: 0;
     }
 
     &__arrow {
@@ -144,6 +149,7 @@
         @include font-arimo(400, 1.4rem, 1.5);
         color: $gray-800;
         transition: background-color 0.15s ease;
+        min-width: 0;
 
         &:hover:not(&--disabled) {
             background-color: rgba($blue-ocean, 0.05);

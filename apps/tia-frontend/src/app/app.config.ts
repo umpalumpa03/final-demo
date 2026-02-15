@@ -17,8 +17,8 @@ import { SecurityEffects } from './features/bank/settings/components/security/st
 import { userInfoFeature } from './store/user-info/user-info.reducer';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './core/auth/interceptors/auth-interceptor';
-
-import { HttpClient } from '@angular/common/http';
+ 
+import { HttpBackend } from '@angular/common/http';
 import { TranslateLoader, provideTranslateService } from '@ngx-translate/core';
 import { createLazyTranslateLoader } from './core/i18n';
 import { UserInfoEffects } from './store/user-info/user-info.effect';
@@ -26,7 +26,7 @@ import { userInfoReducer } from './store/user-info/user-info.reducer';
 import { personalInfoReducer } from './store/personal-info/personal-info.reducer';
 import { PersonalInfoEffects } from './store/personal-info/personal-info.effects';
 import { clearStateMetaReducer } from './store/meta-reducers';
-
+ 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
@@ -57,13 +57,16 @@ export const appConfig: ApplicationConfig = {
       maxAge: 25,
       logOnly: environment.production,
     }),
+ 
     provideTranslateService({
       loader: {
         provide: TranslateLoader,
         useFactory: createLazyTranslateLoader,
-        deps: [HttpClient],
+        deps: [HttpBackend],
       },
       fallbackLang: 'en',
     }),
   ],
 };
+ 
+ 

@@ -5,8 +5,6 @@ import {
   computed,
   OnInit,
   inject,
-  effect,
-  untracked,
 } from '@angular/core';
 import { DragContainer } from '../../../../shared/lib/drag-n-drop/components/drag-container/drag-container';
 import { DraggableCard } from '../../../../shared/lib/drag-n-drop/components/draggable-card/draggable-card';
@@ -45,7 +43,6 @@ import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/break
 import { Onboarding } from '../components/onboarding/onboarding';
 import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
 import { Tooltip } from '@tia/shared/lib/data-display/tooltip/tooltip';
-import { DraggableItemType } from '@tia/shared/lib/drag-n-drop/model/drag.model';
 @Component({
   selector: 'app-dashboard-container',
   imports: [
@@ -84,7 +81,6 @@ export class DashboardContainer implements OnInit {
   protected readonly processedVisibleItems = this.dashService.processedItems;
   protected readonly gridColumns = this.dashService.gridColumns;
   protected readonly dynamicColspans = this.dashService.dynamicColspans;
-  protected readonly accountsHidden = this.dashService.accountsHidden; // vaxtang fiso es gchirdeba shen inputad gaukete shen komponentshi
   protected readonly widgetCatalog = this.dashService.widgetCatalog;
   protected readonly visibleItems = this.dashService.visibleItems;
   protected readonly isLoading = this.store.selectSignal(selectWidgetsLoading);
@@ -98,6 +94,11 @@ export class DashboardContainer implements OnInit {
     () =>
       this.visibleItems().length >= 3 && !this.breakpointService.isXsMobile(),
   );
+
+  protected readonly accountsHidden = computed(() => {
+    const accountsWidget = this.myItems().find((w) => w.type === 'accounts');
+    return accountsWidget?.isHidden || false;
+  });
 
   protected readonly pageTitle = computed(() =>
     this.translate.instant('dashboard.page.title'),
@@ -121,11 +122,6 @@ export class DashboardContainer implements OnInit {
   }
 
   public onFoldWidget(isSelected: boolean, id: string): void {
-    const item = this.myItems().find((w) => w.id === id);
-
-    if (item?.type === 'accounts') {
-      this.accountsHidden.set(!isSelected);
-    }
 
     this.dashService.foldWidget(isSelected, id);
   }

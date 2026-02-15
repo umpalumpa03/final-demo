@@ -1,7 +1,7 @@
 @let cfg = userState.newConfig();
 <main>
     <div class="search-box">
-        <lib-text-input [config]="cfg" type="search" (valueChange)="onSearch($event)">
+        <lib-text-input [config]="cfg" type="search" [formControl]="searchControl" (valueChange)="onSearch($event)">
         </lib-text-input>
     </div>
 

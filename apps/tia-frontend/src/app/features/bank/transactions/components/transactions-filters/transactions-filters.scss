@@ -1,5 +1,5 @@
-@use '../../../../../shared/styles/mixins' as *;
-@use '../../../../../shared/styles/palette' as *;
+@use "../../../../../shared/styles/mixins" as *;
+@use "../../../../../shared/styles/palette" as *;
 .transactions-filters {
   @include display-flex(column);
   background-color: $white;
@@ -36,7 +36,7 @@
   &__mobile-toggle {
     display: none;
 
-    @media (max-width: 500px) {
+    @media (max-width: 550px) {
       display: block;
       width: 100%;
     }
@@ -44,13 +44,12 @@
   &__form {
     @include display-flex(row, wrap);
     gap: 1.6rem;
-    transition: all 0.3s ease-in-out;
-    @media (max-width: 500px) {
+    @media (max-width: 550px) {
       display: none;
       flex-direction: column;
     }
     &.is-open {
-      @media (max-width: 500px) {
+      @media (max-width: 550px) {
         display: flex;
         gap: 1.2rem;
       }
@@ -61,7 +60,7 @@
       @media (max-width: 800px) {
         width: calc((100% - (0.4rem * 1)) / 2);
       }
-      @media (max-width: 500px) {
+      @media (max-width: 550px) {
         width: 100%;
       }
     }

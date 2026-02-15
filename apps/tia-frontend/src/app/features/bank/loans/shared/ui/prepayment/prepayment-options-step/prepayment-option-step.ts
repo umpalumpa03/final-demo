@@ -81,6 +81,7 @@ export class PrepaymentOptionStep {
   }
 
   public onCalculate(): void {
+    if (this.form.invalid) return;
     const rawValue = this.form.getRawValue();
 
     const payload: PrepaymentCalculationPayload = {

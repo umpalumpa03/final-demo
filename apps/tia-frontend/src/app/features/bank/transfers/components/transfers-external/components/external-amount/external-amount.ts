@@ -25,10 +25,10 @@ import { Router } from '@angular/router';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { Tooltip } from '@tia/shared/lib/data-display/tooltip/tooltip';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
-import { OtpVerification } from 'apps/tia-frontend/src/app/core/auth/shared/otp-verification/otp-verification';
-import { IVerified } from 'apps/tia-frontend/src/app/core/auth/models/otp-verification.models';
 import { transferOtpConfig } from '../../config/transfers-external.config';
 import { AlertService } from 'apps/tia-frontend/src/app/core/services/alert/alert.service';
+import { OtpVerification } from '@tia/core/otp-verification/container/otp-verification';
+import { OtpVerificationService } from '@tia/core/otp-verification/services/otp-verification.service';
 import { TransferSummaryComponent } from '../../../../ui/transfer-summary/transfer-summary';
 
 @Component({
@@ -52,6 +52,7 @@ import { TransferSummaryComponent } from '../../../../ui/transfer-summary/transf
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ExternalAmount implements OnInit {
+  private readonly otpService = inject(OtpVerificationService);
   private readonly transferStore = inject(TransferStore);
   private readonly amountService = inject(TransferAmountService);
   private readonly executionService = inject(TransferExecutionService);
@@ -92,6 +93,7 @@ export class ExternalAmount implements OnInit {
 
   public readonly descriptionInput = this.fb.control(
     this.transferStore.description() || '',
+    [Validators.maxLength(50)],
   );
 
   public readonly currency = computed(
@@ -135,10 +137,19 @@ export class ExternalAmount implements OnInit {
     initialValue: this.amountInput.status,
   });
 
+  private readonly descriptionStatus = toSignal(
+    this.descriptionInput.statusChanges,
+    {
+      initialValue: this.descriptionInput.status,
+    },
+  );
+
   public readonly isTransferDisabled = computed(() => {
     const isInvalid = this.amountStatus() !== 'VALID';
+    const isDescriptionInvalid = this.descriptionStatus() === 'INVALID';
     return (
       isInvalid ||
+      isDescriptionInvalid ||
       this.isLoading() ||
       this.transferStore.hasInsufficientBalance()
     );
@@ -209,16 +220,18 @@ export class ExternalAmount implements OnInit {
     this.noAttemptsLeft.set(false);
   }
 
-  public onOtpVerify(event: IVerified): void {
-    const otpCode = event.otp;
+  public onOtpVerify(otp: string): void {
+    const otpCode = otp;
     if (otpCode) {
       this.executionService.verifyTransfer(otpCode);
     }
   }
 
-  public onResendOtp(): void {}
-
-  public resendOtp(isCalled: boolean): void {}
+  public resendOtp(): void {
+      const challengeId = this.transferStore.challengeId();
+      if (!challengeId) return;
+      this.otpService.resendVerificationCode(challengeId).subscribe();
+  }
 
   public handleNoMoreAttempts(): void {
     this.noAttemptsLeft.set(true);

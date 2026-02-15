@@ -11,8 +11,9 @@
     [variant]="submitVariant()"
     [type]="submitType()"
     [fullWidth]="true"
-    (click)="submit.emit()"
+    (click)="submitHandler()"
     [isLoading]="isLoading()"
+    [isDisabled]="isDisabled()"
   >
     {{ submitLabel() | translate }}
   </app-button>

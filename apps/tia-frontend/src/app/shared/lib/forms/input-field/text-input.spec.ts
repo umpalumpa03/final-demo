@@ -8,91 +8,161 @@ describe('TextInput', () => {
   let component: TextInput;
   let fixture: ComponentFixture<TextInput>;
 
+  const simulateInput = (value: string) => {
+    const input = fixture.nativeElement.querySelector('input');
+    input.value = value;
+    input.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    return input;
+  };
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [TextInput, ReactiveFormsModule, TranslateModule.forRoot()],
     }).compileComponents();
-
     fixture = TestBed.createComponent(TextInput);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
-  it('should apply default configuration based on type', () => {
+  it('should compute configs and icons correctly', () => {
     fixture.componentRef.setInput('type', 'search');
+    fixture.componentRef.setInput('config', {
+      prefixIcon: 'p.svg',
+      labelIconUrl: 'l.svg',
+      id: 'my-id',
+    });
     fixture.detectChanges();
 
-    const config = component['mergedConfig']();
-    expect(config).toBeDefined();
+    expect(component['mergedConfig']().id).toBe('my-id');
+    expect(component['prefixIconUrl']()).toContain('p.svg');
+    expect(component['labelIconUrl']()).toContain('l.svg');
+    expect(component['messageId']()).toBe('my-id-msg');
   });
 
-  it('should manage Caps Lock state correctly', () => {
-    const capsOnEvent = new KeyboardEvent('keydown');
-    vi.spyOn(capsOnEvent, 'getModifierState').mockImplementation(
-      (key) => key === 'CapsLock',
-    );
+  it('should format display values correctly', () => {
+    component['value'].set('hello');
+    expect(component['getDisplayValue']()).toBe('hello');
 
-    (component as any).checkCapsLock(capsOnEvent);
-    expect((component as any).isCapsLockOn()).toBe(true);
+    fixture.componentRef.setInput('type', 'date');
+    component['value'].set('2025-05-10');
+    expect(component['getDisplayValue']()).toBe('10/05/2025');
 
-    const capsOffEvent = new KeyboardEvent('keydown');
-    vi.spyOn(capsOffEvent, 'getModifierState').mockReturnValue(false);
+    fixture.componentRef.setInput('type', 'number');
+    component['value'].set(123456789.99);
+    expect(component['getDisplayValue']()).toBe('123456789.99');
 
-    (component as any).checkCapsLock(capsOffEvent);
-    expect((component as any).isCapsLockOn()).toBe(false);
-
-    (component as any).isCapsLockOn.set(true);
-    const blurEvent = new FocusEvent('blur');
-
-    (component as any).handleBlur(blurEvent);
-
-    expect((component as any).isCapsLockOn()).toBe(false);
+    fixture.componentRef.setInput('type', 'file');
+    expect(component['getDisplayValue']()).toBe('');
   });
 
-  describe('Date Validation', () => {
-    it('should validate min date constraint', () => {
-      fixture.componentRef.setInput('type', 'date');
-      fixture.componentRef.setInput('config', { min: '2023-01-01' });
+  describe('Number Input Handling', () => {
+    beforeEach(() => {
+      fixture.componentRef.setInput('type', 'number');
       fixture.detectChanges();
-
-      const event = { target: { value: '2022-12-31', type: 'date' } } as any;
-
-      component['handleInput'](event);
-
-      const errors = component['internalValidationErrors']();
-      expect(errors.length).toBe(1);
-      expect(errors[0].type).toBe('min');
     });
 
-    it('should validate max date constraint', () => {
-      fixture.componentRef.setInput('type', 'date');
-      fixture.componentRef.setInput('config', { max: '2023-12-31' });
-      fixture.detectChanges();
-
-      const event = { target: { value: '2024-01-01', type: 'date' } } as any;
-      component['handleInput'](event);
-
-      const errors = component['internalValidationErrors']();
-      expect(errors.length).toBe(1);
-      expect(errors[0].type).toBe('max');
+    it('should force input type to "text" even if type is "number"', () => {
+      expect(component['inputType']()).toBe('text');
     });
 
-    it('should clear errors when input becomes valid or empty', () => {
-      fixture.componentRef.setInput('type', 'date');
-      fixture.componentRef.setInput('config', { min: '2023-01-01' });
-      fixture.detectChanges();
+    it('should prevent invalid keys via keydown', () => {
+      const event = new KeyboardEvent('keydown', {
+        key: 'e',
+        cancelable: true,
+      });
+      const preventSpy = vi.spyOn(event, 'preventDefault');
 
-      let event = { target: { value: '2020-01-01', type: 'date' } } as any;
-      component['handleInput'](event);
-      expect(component['internalValidationErrors']().length).toBe(1);
-
-      event = { target: { value: '', type: 'date' } } as any;
-      component['handleInput'](event);
-      expect(component['internalValidationErrors']().length).toBe(0);
+      component['handleKeydown'](event);
+      expect(preventSpy).toHaveBeenCalled();
     });
+
+    it('should allow navigation keys', () => {
+      const event = new KeyboardEvent('keydown', {
+        key: 'Backspace',
+        cancelable: true,
+      });
+      const preventSpy = vi.spyOn(event, 'preventDefault');
+      component['handleKeydown'](event);
+      expect(preventSpy).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Date Input Handling', () => {
+    beforeEach(() => {
+      fixture.componentRef.setInput('type', 'date');
+      fixture.detectChanges();
+    });
+
+    it('should format simple input to dd/mm/yyyy', () => {
+      const input = document.createElement('input');
+      input.value = '01012023';
+      const evt = { target: input, preventDefault: () => {} } as any;
+      component['handleInput'](evt);
+
+      expect(input.value).toBe('01/01/2023');
+      expect(component['value']()).toBe('2023-01-01');
+    });
+
+    it('should clamp invalid day and month values', () => {
+      const input = document.createElement('input');
+      input.value = '35152023';
+      const evt = { target: input } as any;
+      component['handleInput'](evt);
+
+      expect(input.value).toBe('31/12/2023');
+      expect(component['value']()).toBe('2023-12-31');
+    });
+
+    it('should handle date selection from picker', () => {
+      const spy = vi.spyOn(component.valueChange, 'emit');
+      component['handleDateSelected']('2023-10-10');
+
+      expect(component['value']()).toBe('2023-10-10');
+      expect(spy).toHaveBeenCalledWith('2023-10-10');
+      expect(component['isDatePickerOpen']()).toBe(false);
+    });
+
+    it('should toggle date picker visibility', () => {
+      expect(component['isDatePickerOpen']()).toBe(false);
+
+      component['toggleDatePicker']();
+      expect(component['isDatePickerOpen']()).toBe(true);
+
+      component['closeDatePicker']();
+      expect(component['isDatePickerOpen']()).toBe(false);
+    });
+  });
+
+  it('should validate min/max dates', () => {
+    fixture.componentRef.setInput('type', 'date');
+    fixture.componentRef.setInput('config', {
+      min: '2025-01-10',
+      max: '2025-01-20',
+    });
+    fixture.detectChanges();
+
+    component['value'].set('2025-01-01');
+    component['validateDateInput']();
+    expect(component['internalValidationErrors']()[0].type).toBe('min');
+
+    component['value'].set('2025-01-25');
+    component['validateDateInput']();
+    expect(component['internalValidationErrors']()[0].type).toBe('max');
+
+    component['value'].set('2025-01-15');
+    component['validateDateInput']();
+    expect(component['internalValidationErrors']().length).toBe(0);
+  });
+
+  it('should toggle password visibility', () => {
+    fixture.componentRef.setInput('type', 'password');
+    fixture.detectChanges();
+
+    expect(component['inputType']()).toBe('password');
+
+    component['togglePasswordVisibility']();
+    expect(component['inputType']()).toBe('text');
+    expect(component['showPasswordVisibility']()).toBe(true);
   });
 });

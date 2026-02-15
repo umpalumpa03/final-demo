@@ -182,4 +182,48 @@ describe('PaybillTemplatesService', () => {
     expect(result.templates.length).toBe(1);
     expect(result.groups.length).toBe(1);
   });
+
+  it('should call payManyBills with correct payload', () => {
+    const payments = [
+      {
+        serviceId: 's1',
+        identification: { accountNumber: '123' },
+        amount: 100,
+        senderAccountId: 'acc-1',
+      },
+    ];
+    const mockResponse = { challengeId: 'challenge-1' };
+
+    service.payManyBills(payments).subscribe((res) => {
+      expect(res).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(
+      `${environment.apiUrl}/paybill/pay-many`,
+    );
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({ payments });
+    req.flush(mockResponse);
+  });
+
+  it('should include groups that contain matching templates', () => {
+    const templates = [
+      { id: 't1', title: 'Internet Bill', groupId: 'g1' },
+      { id: 't2', title: 'Water', groupId: 'g2' },
+    ] as any;
+    const groups = [
+      { id: 'g1', groupName: 'Utilities' },
+      { id: 'g2', groupName: 'Other' },
+    ] as any;
+
+    const result = service.filterTemplatesAndGroups(
+      'internet',
+      templates,
+      groups,
+    );
+
+    expect(result.templates.length).toBe(1);
+    expect(result.groups.length).toBe(1);
+    expect(result.groups[0].id).toBe('g1');
+  });
 });

@@ -1,5 +1,5 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { TransferValidationService } from '../services/transfer-validation.service';
+import { TransferValidationService } from '../../../services/transfer-validation.service';
 export function recipientValidator(
   validationService: TransferValidationService,
 ): ValidatorFn {

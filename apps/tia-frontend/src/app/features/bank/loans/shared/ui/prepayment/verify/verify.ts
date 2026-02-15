@@ -6,13 +6,12 @@ import {
   input,
   output,
 } from '@angular/core';
-import { OtpVerification } from 'apps/tia-frontend/src/app/core/auth/shared/otp-verification/otp-verification';
-import { IVerified } from 'apps/tia-frontend/src/app/core/auth/models/otp-verification.models';
 import { LoanVerifyState } from '../../../state/loan-verify.state';
 import { LOANS_ROUTES } from '../../../config/loans-redirect.config';
 import { NavigationStart, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter, tap } from 'rxjs';
+import { OtpVerification } from '@tia/core/otp-verification/container/otp-verification';
 
 @Component({
   selector: 'app-verify',
@@ -46,9 +45,7 @@ export class Verify {
       .subscribe();
   }
 
-  public onVerify(event: IVerified): void {
-    if (event.otp) {
-      this.verify.emit(event.otp);
-    }
+  public onVerify(otp: string): void {
+      this.verify.emit(otp);
   }
 }

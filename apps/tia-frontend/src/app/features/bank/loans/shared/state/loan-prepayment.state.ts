@@ -40,7 +40,7 @@ export class LoanPrepaymentState {
       label: this.translate.instant(
         'loans.prepayment_wizard.radio_options.reduce_term_label',
       ),
-      value: 'reduceLoanPeriod',
+      value: 'reduceEndDateOfLoan',
       description: this.translate.instant(
         'loans.prepayment_wizard.radio_options.reduce_term_desc',
       ),

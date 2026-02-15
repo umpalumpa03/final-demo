@@ -15,6 +15,7 @@ export interface FilterConfig {
     placeholder?: string;
     max?: string;
     min?: string;
+    errorMessage?: string;
   };
 }
 

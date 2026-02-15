@@ -44,24 +44,6 @@ export const getTransactionFiltersConfig = (
       },
     },
     {
-      controlName: 'accountIban',
-      type: 'select',
-      options: accountOptions,
-      uiConfig: {
-        label: 'transactions.filters.account',
-        placeholder: 'transactions.filters.select_account',
-      },
-    },
-    {
-      controlName: 'currency',
-      type: 'select',
-      options: currencyOptions,
-      uiConfig: {
-        label: 'transactions.filters.currency',
-        placeholder: 'transactions.filters.all',
-      },
-    },
-    {
       controlName: 'dateFrom',
       type: 'input',
       inputType: 'date',
@@ -77,6 +59,24 @@ export const getTransactionFiltersConfig = (
       uiConfig: {
         label: 'transactions.filters.date_to',
         max: new Date().toISOString().split('T')[0],
+      },
+    },
+    {
+      controlName: 'accountIban',
+      type: 'select',
+      options: accountOptions,
+      uiConfig: {
+        label: 'transactions.filters.account',
+        placeholder: 'transactions.filters.select_account',
+      },
+    },
+    {
+      controlName: 'currency',
+      type: 'select',
+      options: currencyOptions,
+      uiConfig: {
+        label: 'transactions.filters.currency',
+        placeholder: 'transactions.filters.all',
       },
     },
   ] as const;
