@@ -26,6 +26,10 @@ import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
 
 import { LoansStore } from '../../../store/loans.store';
 import { LoanRequestState } from '../../state/loan-request.state';
+import {
+  maxDateValidator,
+  minDateValidator,
+} from '@tia/shared/lib/forms/input-field/date-picker/date-validator/date.validator';
 
 @Component({
   selector: 'app-request-modal',
@@ -74,6 +78,8 @@ export class RequestModal implements OnInit {
     this.store.loadPurposes({});
   }
 
+  private readonly today = new Date().toISOString().split('T')[0];
+
   public readonly form = this.fb.group({
     loanAmount: [
       null as number | null,
@@ -82,7 +88,14 @@ export class RequestModal implements OnInit {
     amountToReceiveAccountId: ['', Validators.required],
     months: [null as number | null, Validators.required],
     purpose: ['', Validators.required],
-    firstPaymentDate: ['', Validators.required],
+    firstPaymentDate: [
+      '',
+      [
+        Validators.required,
+        minDateValidator(this.today),
+        maxDateValidator(this.loanState.date().max),
+      ],
+    ],
     contact: this.fb.group({
       address: this.fb.group({
         street: [
