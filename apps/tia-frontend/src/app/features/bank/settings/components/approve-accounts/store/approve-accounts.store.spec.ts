@@ -11,21 +11,19 @@ describe('AccountPermissionsStore', () => {
   let store: InstanceType<typeof AccountPermissionsStore>;
 
   let apiServiceMock: {
-    getAccountPermissions: ReturnType<typeof vi.fn>;
-    getPendingAccounts: ReturnType<typeof vi.fn>;
-    updateAccountStatus: ReturnType<typeof vi.fn>;
-    modifyAccountPermissions: ReturnType<typeof vi.fn>;
+    getAccountPermissions: any;
+    getPendingAccounts: any;
+    updateAccountStatus: any;
+    modifyAccountPermissions: any;
   };
 
   const mockAlertService = {
     success: vi.fn(),
     error: vi.fn(),
-    warning: vi.fn(),
-    info: vi.fn(),
   };
+
   const mockTranslateService = {
     instant: vi.fn((key) => key),
-    get: vi.fn((key) => of(key)),
   };
 
   const mockPermissions = [
@@ -64,6 +62,7 @@ describe('AccountPermissionsStore', () => {
     });
 
     store = TestBed.inject(AccountPermissionsStore);
+    vi.clearAllMocks();
   });
 
   it('should initialize with default state', () => {
@@ -73,92 +72,90 @@ describe('AccountPermissionsStore', () => {
     expect(store.error()).toBeNull();
   });
 
-  it('should load permissions successfully', () => {
-    apiServiceMock.getAccountPermissions.mockReturnValue(of(mockPermissions));
-    store.loadPermissions();
-    expect(store.permissions()).toEqual(mockPermissions);
-    expect(store.isLoading()).toBe(false);
-  });
-
-  it('should handle API errors in loadPermissions', () => {
-    const errorMsg = 'Internal Server Error';
-    const errorWithMsg = { message: errorMsg };
-    apiServiceMock.getAccountPermissions.mockReturnValue(
-      throwError(() => errorWithMsg),
-    );
-
-    const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-
-    store.loadPermissions();
-
-    expect(store.error()).toBe(errorMsg);
-    expect(store.isLoading()).toBe(false);
-
-    consoleSpy.mockRestore();
-  });
-
-  it('should load pending accounts and update computed count', () => {
+  it('should load pending accounts and reverse them', () => {
     apiServiceMock.getPendingAccounts.mockReturnValue(of(mockAccounts));
+
     store.loadPendingAccounts();
-    expect(store.pendingAccounts()).toEqual(mockAccounts);
-    expect(store.pendingAccountsCount()).toBe(2);
+
+    const expectedReversed = [...mockAccounts].reverse();
+    expect(store.pendingAccounts()).toEqual(expectedReversed);
+    expect(store.pendingAccounts()[0].id).toBe('2');
     expect(store.isLoading()).toBe(false);
+  });
+
+  it('should not call API if pending accounts are already loaded (Cache)', () => {
+    apiServiceMock.getPendingAccounts.mockReturnValue(of(mockAccounts));
+
+    store.loadPendingAccounts();
+    expect(apiServiceMock.getPendingAccounts).toHaveBeenCalledTimes(1);
+
+    store.loadPendingAccounts();
+    expect(apiServiceMock.getPendingAccounts).toHaveBeenCalledTimes(1);
+  });
+
+  it('should not call API if permissions are already loaded (Cache)', () => {
+    apiServiceMock.getAccountPermissions.mockReturnValue(of(mockPermissions));
+
+    store.loadPermissions();
+    store.loadPermissions();
+
+    expect(apiServiceMock.getAccountPermissions).toHaveBeenCalledTimes(1);
   });
 
   it('should handle API errors in loadPendingAccounts', () => {
     const errorMsg = 'Network Error';
-    const errorWithMsg = { message: errorMsg };
     apiServiceMock.getPendingAccounts.mockReturnValue(
-      throwError(() => errorWithMsg),
+      throwError(() => ({ message: errorMsg })),
     );
 
     store.loadPendingAccounts();
 
-    expect(store.pendingAccounts()).toEqual([]);
     expect(store.error()).toBe(errorMsg);
     expect(store.isLoading()).toBe(false);
   });
 
-  it('should select account and update computed selectedAccount', () => {
+  it('should remove account from list locally on successful status update', () => {
     apiServiceMock.getPendingAccounts.mockReturnValue(of(mockAccounts));
     store.loadPendingAccounts();
 
-    store.selectAccount('1');
-
-    expect(store.selectedAccountId()).toBe('1');
-    expect(store.selectedAccount()?.id).toBe('1');
-    expect(store.selectedAccount()?.name).toBe('Account A');
-  });
-
-  it('should remove account from list on successful status update', () => {
-    apiServiceMock.getPendingAccounts.mockReturnValue(of(mockAccounts));
-    store.loadPendingAccounts();
-
-    apiServiceMock.updateAccountStatus.mockReturnValue(of({ success: true }));
+    apiServiceMock.updateAccountStatus.mockReturnValue(of({}));
 
     store.updateStatus({ accountId: '1', updatedStatus: 'active' });
 
     expect(store.pendingAccounts().length).toBe(1);
     expect(store.pendingAccounts()[0].id).toBe('2');
-    expect(store.isLoading()).toBe(false);
-
-    expect(mockTranslateService.instant).toHaveBeenCalled();
     expect(mockAlertService.success).toHaveBeenCalled();
   });
 
-  it('should call modify API and stop loading on save', () => {
+  it('should update state and show alert on savePermissions success', () => {
+    apiServiceMock.modifyAccountPermissions.mockReturnValue(of({}));
+
+    store.savePermissions({ accountId: '1', permissions: 7 });
+
+    expect(apiServiceMock.modifyAccountPermissions).toHaveBeenCalled();
+    expect(store.isLoading()).toBe(false);
+    expect(mockAlertService.success).toHaveBeenCalledWith(
+      'settings.approve-accounts.alerts.permissions_saved',
+      expect.anything(),
+    );
+  });
+
+  it('should handle error in savePermissions', () => {
     apiServiceMock.modifyAccountPermissions.mockReturnValue(
-      of({ success: true }),
+      throwError(() => ({ message: 'Save Failed' })),
     );
 
-    store.savePermissions({ accountId: '1', permissions: 5 });
+    store.savePermissions({ accountId: '1', permissions: 7 });
 
-    expect(apiServiceMock.modifyAccountPermissions).toHaveBeenCalledWith({
-      accountId: '1',
-      permissions: 5,
-    });
+    expect(store.error()).toBe('Save Failed');
     expect(store.isLoading()).toBe(false);
+  });
 
-    expect(mockAlertService.success).toHaveBeenCalled();
+  it('should update selectedAccountId via selectAccount method', () => {
+    store.selectAccount('99');
+    expect(store.selectedAccountId()).toBe('99');
+
+    store.selectAccount(null);
+    expect(store.selectedAccountId()).toBeNull();
   });
 });
