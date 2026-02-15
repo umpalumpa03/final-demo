@@ -173,6 +173,8 @@
     &__value {
         @include font-inter(600, 1.6rem);
         color: $blue-1000;
+        word-break: break-all;
+        text-align: center;
 
         .amount-display {
             display: inline-flex;
@@ -225,6 +227,14 @@
             margin: 0;
             color: $gray-700;
             @include font-inter(400, 1.4rem);
+        }
+
+        &-btn {
+            white-space: normal;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            text-align: center;
+            line-height: 1.2;
         }
     }
 

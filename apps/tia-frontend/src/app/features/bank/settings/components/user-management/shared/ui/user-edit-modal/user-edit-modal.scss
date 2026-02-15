@@ -74,10 +74,13 @@ header {
 footer {
     margin-left: auto;
     gap: 1rem;
-    @include display-flex($wrap: wrap);
-    justify-content: flex-start;
+    @include display-flex();
 
-    @media (min-width: 640px) {
-        @include flex-center($justify: flex-end, $align: flex-start);
+    @media (max-width: 400px) {
+        margin-left: 0;
+        flex-direction: column-reverse;
+        > div {
+            width: 100%;
+        }
     }
 }

@@ -5,7 +5,6 @@ import {
   effect,
   inject,
   OnInit,
-  signal,
   untracked,
 } from '@angular/core';
 import {
@@ -21,16 +20,16 @@ import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accoun
 import { TransfersAccountCard } from 'apps/tia-frontend/src/app/features/bank/transfers/ui/account-card/transfers-account-card';
 import { Account } from '@tia/shared/models/accounts/accounts.model';
 import { AccountData } from 'apps/tia-frontend/src/app/features/bank/transfers/models/transfers.state.model';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
-import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
 
 import { Router } from '@angular/router';
 import { TransferInternalService } from 'apps/tia-frontend/src/app/features/bank/transfers/components/transfers-internal/services/transfer.internal.service';
 import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
 import { DisabledReason } from 'apps/tia-frontend/src/app/features/bank/transfers/components/transfers-internal/models/transfers.internal.model';
+import { AlertService } from 'apps/tia-frontend/src/app/core/services/alert/alert.service';
 
 @Component({
   selector: 'app-internal-from-account',
@@ -40,7 +39,6 @@ import { DisabledReason } from 'apps/tia-frontend/src/app/features/bank/transfer
     ErrorStates,
     RouteLoader,
     ButtonComponent,
-    AlertTypesWithIcons,
   ],
   templateUrl: './internal-from-account.html',
   styleUrl: './internal-from-account.scss',
@@ -52,9 +50,8 @@ export class InternalFromAccount implements OnInit {
   private readonly breakpointService = inject(BreakpointService);
   private readonly router = inject(Router);
   private readonly transferInternalService = inject(TransferInternalService);
-
-  public readonly showSuccess = signal(false);
-  public readonly showError = signal(false);
+  private readonly alertService = inject(AlertService);
+  private readonly translate = inject(TranslateService);
 
   public readonly isFullWidth = computed(() =>
     this.breakpointService.isMobile(),
@@ -107,11 +104,10 @@ export class InternalFromAccount implements OnInit {
     effect(() => {
       const error = this.transferError();
       if (error && this.hasRepeatError()) {
-        this.showError.set(true);
-        setTimeout(() => {
-          this.showError.set(false);
+        untracked(() => {
+          this.alertService.error(this.translate.instant(error));
           this.transferStore.setError('');
-        }, 5000);
+        });
       }
     });
 

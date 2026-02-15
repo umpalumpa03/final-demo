@@ -29,6 +29,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import { Store } from '@ngrx/store';
 import { CurrencySymbolPipe } from 'apps/tia-frontend/src/app/features/bank/dashboard/pipes/currency-symbols.pipe';
+import { Skeleton } from "@tia/shared/lib/feedback/skeleton/skeleton";
 
 @Component({
   selector: 'app-paybill-confirm-payment',
@@ -40,7 +41,8 @@ import { CurrencySymbolPipe } from 'apps/tia-frontend/src/app/features/bank/dash
     CurrencyPipe,
     TranslatePipe,
     CurrencySymbolPipe,
-  ],
+    Skeleton
+],
   templateUrl: './paybill-confirm-payment.html',
   styleUrl: './paybill-confirm-payment.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

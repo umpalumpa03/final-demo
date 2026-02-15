@@ -5,4 +5,11 @@
     gap: 0.8rem;
     padding: 0.4rem;
     margin-bottom: 2rem;
+    max-height: 32.8rem;
+    height: 100%;
+    overflow-y: auto;
+
+    @media (max-width: 416px) {
+        max-height: 25rem;
+    }
 }

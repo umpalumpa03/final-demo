@@ -1,14 +1,17 @@
 <button
   class="customize-button"
-  [style.max-width]="customMaxSize()"
+  [class.customize-button--square]="!label()"
+  [style.max-width]="!label() ? 'none' : customMaxSize()"
   (click)="clicked.emit()"
 >
-  <div class="customize-button__left">
+  <div class="customize-button__content">
     <div class="icon icon__customize"></div>
+    @if (label()) {
     <span class="customize-button__text">{{ label() | translate }}</span>
+    }
   </div>
-  @if(!hideIcon()){
-  <div class="icon icon__arrow__right"></div>
 
+  @if(!hideIcon() && label()){
+  <div class="icon icon__arrow__right"></div>
   }
 </button>

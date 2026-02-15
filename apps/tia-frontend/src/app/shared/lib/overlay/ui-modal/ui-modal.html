@@ -1,12 +1,6 @@
 @if (isOpen()) {
-<div
-  class="ui-modal"
-  [class.ui-modal--tutorial]="isTutorialActive()"
-  (click)="close()"
-  (keydown.escape)="close()"
-  role="button"
-  tabindex="-1"
->
+<div class="ui-modal" [class.ui-modal--tutorial]="isTutorialActive()" (click)="close()" (keydown.escape)="close()"
+  role="button" tabindex="-1">
   @if (isTutorialActive()) {
   <div class="ui-modal__spotlight" [style]="spotlightStyle()"></div>
   } @if (hasNavigation()) {
@@ -18,23 +12,12 @@
   </button>
   }
 
-  <div
-    class="ui-modal__card"
-    [class.ui-modal__card--scroll]="hasScroll()"
-    [style]="cardStyle()"
-    (click)="$event.stopPropagation()"
-    (keydown)="$event.stopPropagation()"
-    role="dialog"
-    aria-modal="true"
-    tabindex="0"
-  >
+  <div class="ui-modal__card" [class.ui-modal__card--scroll]="hasScroll()" [style]="cardStyle()"
+    (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()" role="dialog" aria-modal="true"
+    tabindex="0">
     @if(!hideExit()){
-    <button
-      type="button"
-      class="ui-modal__close"
-      (click)="close()"
-      aria-label="Close"
-    >
+    <button type="button" class="ui-modal__close" (click)="close()" [class.ui-modal__close--index]='hasCloseZIndex()'
+      aria-label="Close">
       <span class="ui-modal__close-icon"></span>
     </button>
     }
