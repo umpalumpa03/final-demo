@@ -67,12 +67,21 @@ export const selectAccountOptions = createSelector(selectAccounts, (accounts) =>
 
 export const selectGelAccountOptions = createSelector(
   selectAccounts,
-  (accounts) =>
-    (accounts ?? [])
-      .filter((acc) => acc.currency === 'GEL')
+  (accounts) => {
+    const CAN_PAY_BILLS = 8;
+
+    return (accounts ?? [])
+      .filter((acc) => {
+        const isGel = acc.currency === 'GEL';
+
+        const canPayBills = (acc.permission & CAN_PAY_BILLS) === CAN_PAY_BILLS;
+
+        return isGel && canPayBills;
+      })
       .map((acc) => ({
         label: `${acc.friendlyName || acc.name} (${acc.currency}) - ${acc.balance} ${acc.currency}`,
         value: acc.id,
         isFavorite: acc.isFavorite,
-      })),
+      }));
+  },
 );
