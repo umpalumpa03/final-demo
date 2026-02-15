@@ -3,6 +3,7 @@ import {
   Component,
   computed,
   inject,
+  OnDestroy,
   OnInit,
 } from '@angular/core';
 import { Breadcrumbs } from '@tia/shared/lib/navigation/breadcrumbs/breadcrumbs';
@@ -24,20 +25,15 @@ import { Tabs } from '@tia/shared/lib/navigation/tabs/tabs';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import * as PAYBILL_SELECTORS from '../store/paybill.selectors';
 import { BreadcrumbService } from '../services/breadcrumb/breadcrumb';
+import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 @Component({
   selector: 'app-paybill-container',
-  imports: [
-    Breadcrumbs,
-    LibraryTitle,
-    RouterModule,
-    Tabs,
-    TranslatePipe,
-  ],
+  imports: [Breadcrumbs, LibraryTitle, RouterModule, Tabs, TranslatePipe],
   templateUrl: './paybill-container.html',
   styleUrl: './paybill-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PaybillContainer implements OnInit {
+export class PaybillContainer implements OnInit, OnDestroy {
   private readonly translate = inject(TranslateService);
   private readonly store = inject(Store);
   private readonly breadcrumbService = inject(BreadcrumbService);
@@ -94,5 +90,9 @@ export class PaybillContainer implements OnInit {
 
   ngOnInit(): void {
     this.store.dispatch(PaybillActions.loadCategories());
+  }
+
+  ngOnDestroy(): void {
+    this.store.dispatch(AccountsActions.selectAccount({ account: null }));
   }
 }
