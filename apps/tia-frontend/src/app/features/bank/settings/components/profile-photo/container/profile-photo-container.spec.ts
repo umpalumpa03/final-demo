@@ -16,7 +16,7 @@ import {
   selectAvatarType,
   selectSavedAvatarUrl,
 } from '../../../../../../features/bank/settings/components/profile-photo/store/profile-photo/profile-photo.selectors';
-import { selectPId, selectPersonalInfo, selectPhoneNumber, selectPhoneUpdateChallengeId, selectPhoneUpdateResendCount } from '../../../../../../store/personal-info/personal-info.selectors';
+import { selectPId, selectPersonalInfo, selectPhoneNumber, selectPhoneUpdateChallengeId, selectPhoneUpdateResendCount, selectPersonalInfoLoading, selectPhoneUpdateLoading } from '../../../../../../store/personal-info/personal-info.selectors';
 import { selectUserInfo } from '../../../../../../store/user-info/user-info.selectors';
 import { PersonalInfoActions } from '../../../../../../store/personal-info/pesronal-info.actions';
 import { UserInfoActions } from '../../../../../../store/user-info/user-info.actions';
@@ -620,6 +620,177 @@ describe('ProfilePhotoContainer', () => {
       UserInfoActions.updateOnboardingStatus({ completed: false })
     );
     expect(navigateSpy).toHaveBeenCalledWith([Routes.DASHBOARD]);
+  });
+
+  it('should dispatch loadPersonalInfo on ngOnInit when no cached data', () => {
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+    store.overrideSelector(selectPId, null);
+    store.overrideSelector(selectPhoneNumber, null);
+    store.refreshState();
+
+    component.ngOnInit();
+
+    expect(dispatchSpy).toHaveBeenCalledWith(PersonalInfoActions.loadPersonalInfo({}));
+  });
+
+  it('should NOT dispatch loadPersonalInfo on ngOnInit when cached data exists', () => {
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+    store.overrideSelector(selectPId, '12345678901');
+    store.overrideSelector(selectPhoneNumber, '555123456');
+    store.refreshState();
+
+    component.ngOnInit();
+
+    expect(dispatchSpy).not.toHaveBeenCalledWith(PersonalInfoActions.loadPersonalInfo({}));
+  });
+
+  it('saveDisabledReason should return translation when nothing changed and return null when loading', () => {
+    const translate = TestBed.inject(TranslateService);
+    vi.spyOn(translate, 'instant').mockReturnValue('No changes to save');
+
+    store.overrideSelector(selectPId, '12345678901');
+    store.overrideSelector(selectPhoneNumber, '555123456');
+    store.overrideSelector(selectPersonalInfoLoading, false);
+    store.overrideSelector(selectPhoneUpdateLoading, false);
+    store.refreshState();
+
+    component.editedPhoneNumber.set('555123456');
+    expect(component.saveDisabledReason()).toBe('No changes to save');
+
+    store.overrideSelector(selectPhoneUpdateLoading, true);
+    store.refreshState();
+    expect(component.saveDisabledReason()).toBeNull();
+  });
+
+  it('userInitials should handle empty, single-name and multi-name values', () => {
+    store.overrideSelector(selectUserInfo, null as any);
+    store.refreshState();
+    expect(component.userInitials()).toBe('');
+
+    store.overrideSelector(selectUserInfo, { fullName: 'Plato' } as any);
+    store.refreshState();
+    expect(component.userInitials()).toBe('P');
+
+    store.overrideSelector(selectUserInfo, { fullName: 'Ada Lovelace' } as any);
+    store.refreshState();
+    expect(component.userInitials()).toBe('AL');
+  });
+
+  it('should process file input change when a file is provided', () => {
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+    vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:file-url');
+
+    const file = new File(['x'], 'file.png', { type: 'image/png' });
+    const input = document.createElement('input');
+    Object.defineProperty(input, 'files', { value: { 0: file, length: 1 } as unknown as FileList });
+    const event = new Event('change');
+    Object.defineProperty(event, 'target', { value: input });
+
+    component.onFileInputChange(event);
+
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      ProfilePhotoActions.uploadFile({ fileName: 'file.png', objectUrl: 'blob:file-url' })
+    );
+    expect(input.value).toBe('');
+  });
+
+  it('should handle file drop with files', () => {
+    const onFileSelectedSpy = vi.spyOn(component as any, 'onFileSelected');
+    const file = new File(['x'], 'd.png', { type: 'image/png' });
+    const event = {
+      preventDefault: vi.fn(),
+      dataTransfer: { files: { 0: file, length: 1 } as unknown as FileList },
+    } as unknown as DragEvent;
+
+    component.onFileDrop(event);
+
+    expect(event.preventDefault).toHaveBeenCalled();
+    expect(onFileSelectedSpy).toHaveBeenCalled();
+    expect(component.isUploadModalOpen()).toBe(false);
+  });
+
+  it('should flip default avatar loading map on load and error', () => {
+    component.defaultAvatarsLoadingMap.set(new Map([['a-1', true]]));
+    component.onDefaultAvatarLoad('a-1');
+    expect(component.defaultAvatarsLoadingMap().get('a-1')).toBe(false);
+
+    component.defaultAvatarsLoadingMap.set(new Map([['a-2', true]]));
+    component.onDefaultAvatarError('a-2');
+    expect(component.defaultAvatarsLoadingMap().get('a-2')).toBe(false);
+  });
+
+  it('should handle main image load and image load error', () => {
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+    component.mainAvatarLoading.set(true);
+
+    component.onMainImageLoad();
+    expect(component.mainAvatarLoading()).toBe(false);
+
+    component.mainAvatarLoading.set(true);
+    component.onImageLoadError();
+    expect(component.mainAvatarLoading()).toBe(false);
+    expect(dispatchSpy).toHaveBeenCalledWith(ProfilePhotoActions.clearCurrentAvatar());
+  });
+
+  it('handleNoMoreAttempts should mark attempts expired and call onErrorPageTimerExpired after timeout', () => {
+    vi.useFakeTimers();
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+
+    (component as any).originalPhoneBeforeUpdate = 'orig-phone';
+    store.overrideSelector(selectPhoneNumber, '555000111');
+    store.refreshState();
+
+    component.isOtpModalOpen.set(true);
+    component.handleNoMoreAttempts();
+
+    expect(component.otpAttemptsExpired()).toBe(true);
+
+    vi.advanceTimersByTime(3000);
+
+    expect(dispatchSpy).toHaveBeenCalledWith(PersonalInfoActions.resetPhoneUpdate());
+    expect(component.isOtpModalOpen()).toBe(false);
+    expect(component.otpAttemptsExpired()).toBe(false);
+    expect(component.editedPhoneNumber()).toBe('orig-phone');
+
+    vi.useRealTimers();
+  });
+
+  it('onSave should dispatch both personal info and phone update when both changed', () => {
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+
+    store.overrideSelector(selectPId, null);
+    store.overrideSelector(selectPhoneNumber, '555111222');
+    store.overrideSelector(selectPersonalInfo, { pId: null, phoneNumber: '555111222' } as any);
+    store.refreshState();
+
+    component.onEdit();
+    component.editedPId.set('98765432109');
+    component.editedPhoneNumber.set('555333444');
+
+    component.onSave();
+
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      PersonalInfoActions.updatePersonalInfo({ personalInfo: expect.objectContaining({ pId: '98765432109' }) })
+    );
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      PersonalInfoActions.initiatePhoneUpdate({ phone: '555333444' })
+    );
+  });
+
+  it('onOtpModalClosed should reset state when attempts expired', () => {
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+    (component as any).originalPhoneBeforeUpdate = 'orig-phone';
+
+    component.otpAttemptsExpired.set(true);
+    store.overrideSelector(selectPhoneNumber, '555000111');
+    store.overrideSelector(selectPhoneUpdateChallengeId, null);
+    store.refreshState();
+
+    component.onOtpModalClosed();
+
+    expect(component.otpAttemptsExpired()).toBe(false);
+    expect(component.editedPhoneNumber()).toBe('orig-phone');
+    expect(dispatchSpy).toHaveBeenCalledWith(PersonalInfoActions.resetPhoneUpdate());
   });
 
 

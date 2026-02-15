@@ -6,6 +6,7 @@ import { LoanManagementStore } from '../../../features/bank/settings/components/
 import { LanguagesStore } from '../../../features/bank/settings/components/language/store/languages.store';
 import { NotificationsStore } from '../../../layout/ui/bank-header/components/header-notifications/store/notifications.store';
 import { AccountsStore } from '../../../features/bank/settings/components/accounts/store/accounts.store';
+import { AppearanceStore } from '../../../features/bank/settings/components/appearance/store/appearance.store';
 
 @Injectable({
   providedIn: 'root',
@@ -23,6 +24,7 @@ export class ClearSignalStoreService {
     this.safelyResetStore(UserManagementStore, (store) => store.reset());
     this.safelyResetStore(LanguagesStore, (store) => store.resetState());
     this.safelyResetStore(LoansStore, (store) => store.reset());
+    this.safelyResetStore(AppearanceStore, (store) => store.resetState());
   }
 
   private safelyResetStore<T>(

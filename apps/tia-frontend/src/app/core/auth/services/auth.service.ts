@@ -295,6 +295,12 @@ export class AuthService {
           this.otpError.set(null);
           this.router.navigate([Routes.SIGN_IN]);
           this.tokenService.clearSignUpToken();
+          showAlert(
+            this.alertService,
+            this.translate,
+            'success',
+            'auth.alert-errors.registerSuccess',
+          );
         }),
         catchError((err) => {
           const errorData = err.error as OtpResponse;

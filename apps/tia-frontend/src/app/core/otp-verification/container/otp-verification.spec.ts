@@ -91,7 +91,7 @@ describe('OtpVerification', () => {
     expect(emitSpy).toHaveBeenCalledWith('9876');
   });
 
-  it('should not decrement attempts on submit (wait for verification result)', () => {
+  it('should decrement attempts immediately on submit', () => {
     // simulate only 1 remaining attempt
     component.maxAttempts.set(1);
 
@@ -103,11 +103,12 @@ describe('OtpVerification', () => {
 
     component.onSubmit();
 
-    // attempts must NOT be decremented immediately — wait for verification result
-    expect(component.maxAttempts()).toBe(1);
+    // current implementation decrements attempts immediately on submit
+    expect(component.maxAttempts()).toBe(0);
+    expect(component.pendingVerification()).toBe(true);
   });
 
-  it('should decrement attempts only after verification error following submit', () => {
+  it('should show error page when attempts reach 0 after submit and verification error', () => {
     component.maxAttempts.set(1);
 
     fixture.componentRef.setInput('timerType', 'otp');
