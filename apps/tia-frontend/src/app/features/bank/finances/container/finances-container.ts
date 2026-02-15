@@ -66,6 +66,10 @@ export class FinancesContainer implements OnInit {
       });
   }
 
+  ngOnDestroy(): void {
+    this.store.resetStore();
+  }
+
   public onUpdateData(): void {
     this.fetchData(true);
   }

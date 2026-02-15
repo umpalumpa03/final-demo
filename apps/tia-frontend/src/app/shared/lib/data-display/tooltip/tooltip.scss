@@ -1,87 +1,38 @@
 @use '../../../styles/mixins' as *;
 @use '../../../styles/palette' as *;
 
-.tooltip {
-  position: relative;
+.tooltip-trigger {
   display: inline-flex;
   align-items: center;
   width: 100%;
   min-width: 100%;
+}
 
-  &__trigger {
-    display: inline-flex;
-    align-items: center;
-    width: 100%;
-    min-width: 100%;
+.tooltip-overlay-content {
+  pointer-events: none;
+  padding: 0.6rem 1rem;
+  border-radius: 0.8rem;
+  background-color: $blue-700;
+  color: $white;
+  @include font-arimo(500, 1.2rem, 1.6rem);
+  white-space: nowrap;
+  box-shadow: 0 0.6rem 1.2rem rgba($black, 0.15);
+  z-index: 10000;
+
+  @media (max-width: 1700px) {
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    max-width: min(25rem, calc(100vw - 2rem));
+    width: max-content;
   }
 
-  &__content {
-    position: absolute;
-    z-index: 9999;
-    padding: 0.6rem 1rem;
-    border-radius: 0.8rem;
-    background-color: $blue-700;
-    color: $white;
-    @include font-arimo(500, 1.2rem, 1.6rem);
-    white-space: nowrap;
-    box-shadow: 0 0.6rem 1.2rem rgba($black, 0.15);
-
-    @media (max-width: 1700px) {
-      white-space: normal;
-      overflow-wrap: break-word;
-      word-break: break-word;
-      max-width: min(25rem, calc(100vw - 2rem));
-      width: max-content;
-    }
-
-    @media (max-width: 500px) {
-      @include font-arimo(500, 1rem, 1rem);
-    }
-
-    @media (max-width: 500px) {
-      max-width: 20rem;
-      @include font-arimo(500, 0.8rem, 1rem);
-    }
+  @media (max-width: 500px) {
+    @include font-arimo(500, 1rem, 1rem);
   }
 
-  &__content--top {
-    bottom: calc(100% + 0.8rem);
-    left: 50%;
-    transform: translateX(-50%);
-
-    @media (max-width: 1700px) {
-      left: auto;
-      right: 0;
-      transform: none;
-    }
-  }
-
-  &__content--bottom {
-    top: calc(100% + 0.8rem);
-    left: 50%;
-    transform: translateX(-50%);
-
-    @media (max-width: 1700px) {
-      left: auto;
-      right: 0;
-      transform: none;
-    }
-  }
-
-  &__content--left {
-    right: calc(100% + 0.8rem);
-    top: 50%;
-    transform: translateY(-50%);
-  }
-
-  &__content--right {
-    left: calc(100% + 0.8rem);
-    top: 50%;
-    transform: translateY(-50%);
-
-    @media (max-width: 1700px) {
-      left: auto;
-      right: calc(100% + 0.8rem);
-    }
+  @media (max-width: 500px) {
+    max-width: 20rem;
+    @include font-arimo(500, 0.8rem, 1rem);
   }
 }

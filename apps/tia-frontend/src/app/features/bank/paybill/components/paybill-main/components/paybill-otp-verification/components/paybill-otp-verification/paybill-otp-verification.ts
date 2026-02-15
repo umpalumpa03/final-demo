@@ -17,6 +17,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { otpConfiguration } from '../../config/otp.config';
 import { OtpVerification } from '@tia/core/otp-verification/container/otp-verification';
 import { OtpResendTypes } from '@tia/core/otp-verification/config/otp.config';
+import { Skeleton } from "@tia/shared/lib/feedback/skeleton/skeleton";
 
 @Component({
   selector: 'app-paybill-otp-verification',
@@ -26,7 +27,8 @@ import { OtpResendTypes } from '@tia/core/otp-verification/config/otp.config';
     PaymentSummary,
     TranslatePipe,
     OtpVerification,
-  ],
+    Skeleton
+],
   templateUrl: './paybill-otp-verification.html',
   styleUrl: './paybill-otp-verification.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

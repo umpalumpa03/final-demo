@@ -3,9 +3,18 @@
   padding="0rem 0 2.4rem 2.4rem"
   minHeight="65rem"
   justifyContent="space-between"
+  class="basic-card"
 >
   <header class="category-header">
     <div class="category-header__icon-box">
+      @if (isLoading()) {
+      <app-skeleton
+        variant="rectangle"
+        width="100%"
+        height="100%"
+        borderRadius="1.6rem"
+      />
+      } @else {
       <div
         class="category-header__icon-background"
         [style.background-color]="iconBgColor()"
@@ -16,15 +25,23 @@
           alt="Service Icon"
         />
       </div>
+      }
     </div>
 
     <div class="category-header__text">
+      @if (isLoading()) {
+      <div class="skeleton-text-group">
+        <app-skeleton variant="text" width="16rem" height="2.4rem" />
+        <app-skeleton variant="text" width="12rem" height="1.6rem" />
+      </div>
+      } @else {
       <h2 class="category-header__title">
         {{ 'paybill.main.otp.title' | translate }}
       </h2>
       <p class="category-header__subtitle">
         {{ 'paybill.main.otp.subtitle' | translate }}
       </p>
+      }
     </div>
   </header>
 
@@ -55,8 +72,8 @@
         (isVerifyCalled)="onVerify($event)"
         (isResendCalled)="onResend()"
         (onBackOut)="onCancel()"
-        redirectUrl="/bank/paybill/pay"   
-        redirectText="Pay Bills Page"     
+        redirectUrl="/bank/paybill/pay"
+        redirectText="Pay Bills Page"
         [isButtonLoading]="true"
         [otpResendType]="otpResendType"
       />

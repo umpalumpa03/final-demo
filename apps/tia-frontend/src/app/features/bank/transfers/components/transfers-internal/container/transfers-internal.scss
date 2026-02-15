@@ -8,7 +8,7 @@
   max-height: calc(-26.4rem + 100vh);
   overflow-y: auto;
   background: $white;
-  border: 0.188rem solid $blue-400;
+  border: 0.188rem solid var(--color-primary);
   border-radius: 0.8rem;
   padding: 2.4rem;
   gap: 1.6rem;

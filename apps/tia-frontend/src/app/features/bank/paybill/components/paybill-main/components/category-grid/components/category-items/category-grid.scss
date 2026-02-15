@@ -1,0 +1,38 @@
+@use '../../../../../../../../../shared/styles/mixins' as *;
+@use '../../../../../../../../../shared/styles/palette' as *;
+
+.paybill-grid {
+  width: 100%;
+  @include display-flex(column);
+  gap: 2.4rem;
+
+  @media (max-width: 480px) {
+    gap: 1.6rem;
+  }
+
+  &__container {
+    width: 100%;
+  }
+
+  &__skeleton-wrapper,
+  &__card-wrapper {
+    width: 100%;
+  }
+
+  &__empty-state {
+    width: 100%;
+    padding: 4.8rem 0;
+    @include flex-center;
+    border-radius: 2.4rem;
+    border: 0.1rem solid var(--color-gray-200);
+
+    @media (max-width: 480px) {
+      padding: 3.2rem 1.6rem;
+      border-radius: 1.6rem;
+    }
+
+    @media (max-width: 340px) {
+      padding: 2.4rem 1.2rem;
+    }
+  }
+}

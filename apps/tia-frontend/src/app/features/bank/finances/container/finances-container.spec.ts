@@ -1,7 +1,7 @@
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinancesContainer } from './finances-container';
 import { FinancesStore } from '../store/finances.store';
-import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { NO_ERRORS_SCHEMA, Component, signal, Input, Output, EventEmitter } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FinancesView } from '../components/finances-view/container/finances-view';
@@ -40,6 +40,7 @@ describe('FinancesContainer', () => {
 
   const storeMock = {
     loadAllData: vi.fn(),
+    resetStore: vi.fn(),
     loading: signal(false),
     error: signal(null),
     summaryCards: signal([]),
@@ -81,6 +82,12 @@ describe('FinancesContainer', () => {
     fixture.detectChanges(); 
     expect(component).toBeTruthy();
     expect(storeMock.loadAllData).toHaveBeenCalled();
+  });
+
+  it('should call resetStore when component is destroyed', () => {
+    fixture.detectChanges();
+    fixture.destroy();
+    expect(storeMock.resetStore).toHaveBeenCalled();
   });
 
   it('should handle filter change to month and reset form', () => {
@@ -130,7 +137,6 @@ describe('FinancesContainer', () => {
       force: false
     });
   });
-
 
   it('should return form control via getControl', () => {
     const control = component.getControl('fromDate');

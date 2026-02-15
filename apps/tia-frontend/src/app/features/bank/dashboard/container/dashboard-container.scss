@@ -32,12 +32,7 @@
     padding-bottom: 2rem;
     min-height: 10rem;
 
-    @media (max-width: 768px) {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1.6rem;
-    }
-
-    @media (max-width: 480px) {
+    @media (max-width: 850px) {
       grid-template-columns: 1fr;
     }
   }

@@ -1,17 +1,18 @@
-<div class="tooltip" (mouseenter)="open()" (mouseleave)="close()">
-  <div class="tooltip__trigger">
-    <ng-content></ng-content>
-  </div>
-
-  @if (isOpen() && !disabled()) {
-  <div
-    class="tooltip__content"
-    [class.tooltip__content--top]="placement() === 'top'"
-    [class.tooltip__content--bottom]="placement() === 'bottom'"
-    [class.tooltip__content--left]="placement() === 'left'"
-    [class.tooltip__content--right]="placement() === 'right'"
-  >
-    {{ content() }}
-  </div>
-  }
+<div
+  class="tooltip-trigger"
+  cdkOverlayOrigin
+  #trigger="cdkOverlayOrigin"
+  (mouseenter)="open()"
+  (mouseleave)="close()"
+>
+  <ng-content></ng-content>
 </div>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="trigger"
+  [cdkConnectedOverlayOpen]="isOpen() && !disabled()"
+  [cdkConnectedOverlayPositions]="positionStrategy()"
+>
+  <div class="tooltip-overlay-content">{{ content() }}</div>
+</ng-template>

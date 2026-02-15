@@ -30,16 +30,16 @@
     | translate}}
   </h3>
   <div class="equal-distribution__container__input">
-    <label for="">$</label>
+    <label for="">₾</label>
     <lib-text-input
       [config]="{prefixIcon: '', placeholder: 'paybill.templates.modals.confitmPayment.paymentDistribution.equalDistribution.placeholder' | translate}"
       [formControl]="amountControl"
-      (keydown)="preventNegative($event)"
+      (keydown)="preventNegativeInput($event)"
     />
   </div>
   @if (distributedAmount() && !amountControl.invalid) {
   <span
-    >{{ distributedAmount() | currency }}
+    >{{ distributedAmount() | currency:'GEL':'symbol' }}
     {{'paybill.templates.modals.confitmPayment.paymentDistribution.equalDistribution.instruction'
     | translate}}</span
   >

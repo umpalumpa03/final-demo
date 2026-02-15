@@ -7,6 +7,7 @@ import { selectActiveTheme } from 'apps/tia-frontend/src/app/store/theme/theme.s
 import { COLOR_SWITCH_DATA } from './config/color-switch-data';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { provideRouter } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('LibraryHeader', () => {
   let fixture: ComponentFixture<LibraryHeader>;
@@ -15,7 +16,7 @@ describe('LibraryHeader', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [LibraryHeader],
+      imports: [LibraryHeader, TranslateModule.forRoot()],
       providers: [
         provideRouter([]),
         provideMockStore({
