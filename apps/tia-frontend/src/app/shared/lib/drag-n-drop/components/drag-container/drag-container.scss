@@ -3,7 +3,7 @@
 
 .drag-container {
   @include display-flex(column);
-  border: 0.18rem solid $blue-400;
+  border: 0.18rem solid var(--color-primary);
   background-color: $white;
   width: 100%;
   max-width: 123.2rem;

@@ -49,7 +49,9 @@
       "verification_missing_title": "თქვენი დადასტურება ვერ მოხერხდა",
       "payment_missing_title": "გადახდის მონაცემები ვერ მოიძებნა",
       "missing_data_message": "გადახდის დეტალები ვერ მოიძებნა. გთხოვთ, თავიდან დაიწყოთ პროცესი.",
-      "back_to_categories": "კატეგორიებზე დაბრუნება"
+      "back_to_categories": "კატეგორიებზე დაბრუნება",
+      "not-available": "შეცდომა",
+      "not-available-subtitle": "ასეთი პარამეტრებით პროვაიდერები ვერ მოიძებნა"
     },
     "form": {
       "subtitle": "შეიყვანეთ დეტალები",
@@ -59,15 +61,15 @@
       "verified_title": "აბონენტი ნაპოვნია",
       "amount_label": "გადასახდელი თანხა",
       "amount_placeholder": "0.00",
-      "amount_helper": "შეიყვანეთ თანხა 0.01-დან 9999-მდე",
-      "amount_range_error": "თანხა უნდა იყოს 0.01-სა და 9999-ს შორის",
+      "amount_helper": "შეიყვანეთ თანხა 1-დან 9999-მდე",
+      "amount_range_error": "თანხა უნდა იყოს 1-სა და 9999-ს შორის",
       "helper_text": "დავალიანება: {{amount}}. შეგიძლიათ დააკორექტიროთ.",
       "continue_btn": "გადახდაზე გადასვლა",
       "verify_btn": "შემოწმება",
       "check_button": "შემოწმება",
       "pay_button": "გადახდა",
       "template": "შაბლონის შენახვა",
-      "required_field_error": "გთხოვთ შეავსოთ აუცილებელი ველები!"
+      "required_field_error": "გთხოვთ გადაამოწმოთ ინფორმაცია"
     },
     "confirm": {
       "title": "დადასტურება",

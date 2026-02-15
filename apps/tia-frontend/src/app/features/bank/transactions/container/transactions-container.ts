@@ -21,7 +21,7 @@ import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
 import { ActivatedRoute, Router } from '@angular/router';
 import { mapQueryParamsToFilter } from '../utils/transactions-filters.utils';
-
+import { HeaderBanner } from '@tia/shared/ui/header-banner/header-banner';
 @Component({
   selector: 'app-transactions-container',
   imports: [
@@ -36,6 +36,7 @@ import { mapQueryParamsToFilter } from '../utils/transactions-filters.utils';
     TranslateModule,
     ButtonComponent,
     ErrorStates,
+    HeaderBanner,
   ],
   providers: [
     TransactionsFacadeService,
