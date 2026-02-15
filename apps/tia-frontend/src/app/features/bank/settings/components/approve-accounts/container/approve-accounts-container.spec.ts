@@ -7,6 +7,7 @@ import { BankAccount } from '../../../shared/models/approve-models/accounts-mode
 import { AccountPermissionsStore } from '../store/approve-accounts.store';
 import { ApproveAccountsConfig } from '../config/approve-accounts.config';
 import { ReactiveFormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('ApproveAccountsContainer', () => {
   let component: ApproveAccountsContainer;
@@ -49,7 +50,11 @@ describe('ApproveAccountsContainer', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [ApproveAccountsContainer, ReactiveFormsModule],
+      imports: [
+        ApproveAccountsContainer,
+        ReactiveFormsModule,
+        TranslateModule.forRoot(),
+      ],
       schemas: [NO_ERRORS_SCHEMA],
     })
       .overrideComponent(ApproveAccountsContainer, {
