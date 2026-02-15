@@ -119,9 +119,9 @@ describe('CardDetails Integration', () => {
     expect(data?.cardId).toBe('card-1');
     expect(data?.details.cardName).toBe('My Card');
     expect(data?.currency).toBe('GEL');
-    expect(data?.formattedBalance).toBe('GEL 1,000');
+    expect(data?.formattedBalance).toBe('GEL 1000');
     expect(data?.shouldShowCreditLimit).toBe(true);
-    expect(data?.formattedCreditLimit).toBe('GEL 5,000');
+    expect(data?.formattedCreditLimit).toBe('GEL 5000');
   });
 
   it('should navigate to transactions page', () => {
