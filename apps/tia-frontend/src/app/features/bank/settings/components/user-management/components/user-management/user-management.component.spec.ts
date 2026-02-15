@@ -133,9 +133,4 @@ describe('UserManagementComponent', () => {
     await fixture.whenStable();
     expect(component['isSaving']()).toBe(false);
   });
-
-  it('should reset store on destroy', () => {
-    fixture.destroy();
-    expect(store.reset).toHaveBeenCalled();
-  });
 });

@@ -16,11 +16,13 @@ import {
   TextInputType,
 } from '../models/input.model';
 import { INPUT_ICONS } from '../config/text-input.icons';
+import { DatePicker } from './date-picker/date-picker';
 
 @Component({
   selector: 'lib-text-input',
   templateUrl: './text-input.html',
   styleUrls: ['./text-input.scss'],
+  imports: [DatePicker],
   host: {
     '[class]': 'containerClasses()',
   },
@@ -30,7 +32,20 @@ export class TextInput extends BaseInput {
   private readonly translate = inject(TranslateService);
 
   protected readonly showPasswordVisibility = signal<boolean>(false);
+  protected readonly isDatePickerOpen = signal<boolean>(false);
   protected readonly icons = INPUT_ICONS;
+
+  protected getDateValue(): string | number | null {
+    const val = this.value();
+    if (typeof val === 'string' || typeof val === 'number') {
+      return val;
+    }
+    return null;
+  }
+
+  protected readonly isDateType = computed<boolean>(
+    () => this.type() === 'date',
+  );
 
   protected readonly uniqueId =
     this.validationService.generateUniqueId('text-input');
@@ -90,6 +105,13 @@ export class TextInput extends BaseInput {
   protected readonly getDisplayValue = computed<InputFieldValue>(() => {
     if (this.inputType() === 'file') return '';
     const val = this.value();
+
+    if (this.isDateType() && typeof val === 'string' && val) {
+      const parts = val.split('-');
+      if (parts.length === 3) {
+        return `${parts[2]}/${parts[1]}/${parts[0]}`;
+      }
+    }
     return val ?? '';
   });
 
@@ -106,9 +128,129 @@ export class TextInput extends BaseInput {
   });
 
   protected override handleInput(event: Event): void {
-    super.handleInput(event);
+    if (this.isDateType()) {
+      this.handleDateMask(event);
+    } else {
+      super.handleInput(event);
+    }
 
+    if (this.isDateType()) {
+      this.validateDateInput();
+    }
+  }
+
+  protected toggleDatePicker(): void {
+    if (!this.isDisabled() && !this.isReadonly()) {
+      this.isDatePickerOpen.update((v) => !v);
+    }
+  }
+
+  protected handleDateSelected(dateStr: string): void {
+    this.value.set(dateStr);
+    this.onChange(dateStr);
+    this.valueChange.emit(dateStr);
+    this.isDatePickerOpen.set(false);
     this.validateDateInput();
+  }
+
+  protected closeDatePicker(): void {
+    this.isDatePickerOpen.set(false);
+  }
+
+  private handleDateMask(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const originalValue = input.value;
+    let cursorPosition = input.selectionStart || 0;
+
+    let cleaned = originalValue.replace(/[^0-9/]/g, '');
+
+    const hasSlashes = cleaned.includes('/');
+    let formattedDate = '';
+
+    if (hasSlashes) {
+      const parts = cleaned.split('/');
+
+      let day = parts[0]?.substring(0, 2) || '';
+      if (day.length === 2 && Number(day) > 31) {
+        day = '31';
+      }
+
+      let month = parts[1]?.substring(0, 2) || '';
+      if (month.length === 2 && Number(month) > 12) {
+        month = '12';
+      }
+
+      const year = parts[2]?.substring(0, 4) || '';
+
+      formattedDate = day;
+      if (parts.length > 1 || day.length === 2) {
+        formattedDate += '/' + month;
+      }
+      if (parts.length > 2 || month.length === 2) {
+        formattedDate += '/' + year;
+      }
+    } else {
+      const digits = cleaned.replace(/\D/g, '');
+
+      let d = digits.slice(0, 2);
+      let m = '';
+      let y = '';
+
+      if (d.length === 2 && Number(d) > 31) d = '31';
+
+      if (digits.length > 2) {
+        m = digits.slice(2, 4);
+        if (m.length === 2 && Number(m) > 12) m = '12';
+      }
+
+      if (digits.length > 4) {
+        y = digits.slice(4, 8);
+      }
+
+      formattedDate = d;
+      if (digits.length > 2) {
+        formattedDate += '/' + m;
+      }
+      if (digits.length > 4) {
+        formattedDate += '/' + y;
+      }
+    }
+
+    input.value = formattedDate;
+
+    if (
+      originalValue.length < formattedDate.length &&
+      cursorPosition === originalValue.length
+    ) {
+      cursorPosition = formattedDate.length;
+    }
+    input.setSelectionRange(cursorPosition, cursorPosition);
+
+    this.updateDateModel(formattedDate);
+  }
+
+  private updateDateModel(formattedStr: string): void {
+    if (formattedStr.length === 10) {
+      const [day, month, year] = formattedStr.split('/');
+
+      if (day.length === 2 && month.length === 2 && year.length === 4) {
+        const isoDate = `${year}-${month}-${day}`;
+        const d = new Date(isoDate);
+
+        if (!isNaN(d.getTime())) {
+          this.value.set(isoDate);
+          this.onChange(isoDate);
+          this.valueChange.emit(isoDate);
+          return;
+        }
+      }
+    }
+
+    if (formattedStr === '') {
+      this.value.set(null);
+      this.onChange(null);
+      this.valueChange.emit(null);
+    }
   }
 
   private validateDateInput(): void {

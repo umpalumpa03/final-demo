@@ -3,4 +3,6 @@ export interface TextInputTypeConfig {
   placeholder?: string;
   autocomplete?: string;
   inputmode?: string;
+  min?: string;
+  max?: string;
 }

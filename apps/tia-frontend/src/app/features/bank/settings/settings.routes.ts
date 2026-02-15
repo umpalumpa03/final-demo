@@ -5,9 +5,7 @@ export const settingsRoutes: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('./container/settings-container').then(
-        (c) => c.SettingsContainer,
-      ),
+      import('./container/settings-container').then((c) => c.SettingsContainer),
     children: [
       {
         path: '',
@@ -18,9 +16,9 @@ export const settingsRoutes: Routes = [
         path: 'appearance',
         canDeactivate: [unsavedChangesGuard],
         loadComponent: () =>
-          import(
-            './components/appearance/container/appearance-container'
-          ).then((c) => c.AppearanceContainer),
+          import('./components/appearance/container/appearance-container').then(
+            (c) => c.AppearanceContainer,
+          ),
       },
       {
         path: 'language',
@@ -43,7 +41,7 @@ export const settingsRoutes: Routes = [
             (c) => c.AccountsContainer,
           ),
       },
-  
+
       {
         path: 'security',
         loadComponent: () =>
@@ -53,10 +51,10 @@ export const settingsRoutes: Routes = [
       },
       {
         path: 'user-management',
-        loadComponent: () =>
-          import(
-            './components/user-management/container/user-management-container'
-          ).then((c) => c.UserManagementContainer),
+        loadChildren: () =>
+          import('./components/user-management/user-management.routes').then(
+            (m) => m.userManagementRoutes,
+          ),
       },
       {
         path: 'approve-accounts',
@@ -79,7 +77,6 @@ export const settingsRoutes: Routes = [
             './components/loan-management/container/loan-management-container'
           ).then((c) => c.LoanManagementContainer),
       },
- 
     ],
   },
 ];
