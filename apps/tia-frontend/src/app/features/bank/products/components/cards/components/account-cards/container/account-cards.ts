@@ -7,13 +7,19 @@ import {
 import { Store } from '@ngrx/store';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { map, combineLatest, take, tap } from 'rxjs';
-import { loadAccountCardsPage, setCurrentCardIndex } from '../../../../../../../../store/products/cards/cards.actions';
+import { map, combineLatest, take, tap, filter, startWith } from 'rxjs';
 import {
+  loadAccountCardsPage,
+  loadCardAccounts,
+  setCurrentCardIndex,
+} from '../../../../../../../../store/products/cards/cards.actions';
+import {
+  selectAccountsLoaded,
   selectAllAccounts,
   selectCardDetailsByAccountId,
   selectCardDetailsError,
   selectCardDetailsLoading,
+  selectLoadedCardDetailsIds,
 } from '../../../../../../../../store/products/cards/cards.selectors';
 import {
   AccountData,
@@ -25,6 +31,7 @@ import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states'
 import { AccountHeader } from '../components/account-header/account-header';
 import { CardGridItem } from '../components/card-grid-item/card-grid-item';
 import { TranslatePipe } from '@ngx-translate/core';
+import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 
 @Component({
   selector: 'app-account-cards',
@@ -32,12 +39,12 @@ import { TranslatePipe } from '@ngx-translate/core';
   styleUrls: ['./account-cards.scss'],
   imports: [
     CommonModule,
-    Skeleton,
     ButtonComponent,
     ErrorStates,
     AccountHeader,
     CardGridItem,
     TranslatePipe,
+    RouteLoader,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -66,57 +73,94 @@ export class AccountCards implements OnInit {
       return { account, cards };
     }),
   );
+  private readonly accountsLoaded$ = this.store.select(selectAccountsLoaded);
+  private readonly loadedCardDetailsIds$ = this.store.select(
+    selectLoadedCardDetailsIds,
+  );
+  protected readonly viewState$ = combineLatest([
+    this.accountsLoaded$,
+    this.accountData$,
+    this.cardDetailsError$,
+    this.loadedCardDetailsIds$,
+  ]).pipe(
+    map(([accountsLoaded, accountData, error, loadedIds]): ViewState => {
+      if (error) return 'error';
+      if (!accountsLoaded) return 'loading';
+      if (!accountData) return 'loading';
 
-protected readonly viewState$ = combineLatest([
-  this.accountData$,
-  this.cardDetailsLoading$,
-  this.cardDetailsError$,
-]).pipe(
-  map(([accountData, loading, error]): ViewState => {
-    if (!accountData) return 'no-account';
-    if (error) return 'error';   
-    if (loading) return 'loading'; 
-    return 'success';
-  })
-);
+      const allCardsLoaded = accountData.account.cardIds.every((id) =>
+        loadedIds.includes(id),
+      );
+      const hasCards = accountData.cards.length > 0;
 
+      if (!allCardsLoaded || !hasCards) return 'loading';
 
-protected readonly cardsLabel$ = this.accountData$.pipe(
-  map((data) => {
-    if (!data) return { count: '0', key: 'my-products.card.account-cards.account-header.cardCountPlural' };
-    const count = data.account.cardIds.length;
-    return {
-      count: `${count}`,
-      key: count === 1 
-        ? 'my-products.card.account-cards.account-header.cardCount' 
-        : 'my-products.card.account-cards.account-header.cardCountPlural'
-    };
-  }),
-);
-ngOnInit(): void {
-  this.store.dispatch(loadAccountCardsPage({ accountId: this.accountId }));
-}
+      return 'success';
+    }),
+    startWith('loading' as ViewState),
+  );
 
+  protected readonly cardsLabel$ = this.accountData$.pipe(
+    map((data) => {
+      if (!data)
+        return {
+          count: '0',
+          key: 'my-products.card.account-cards.account-header.cardCountPlural',
+        };
+      const count = data.account.cardIds.length;
+      return {
+        count: `${count}`,
+        key:
+          count === 1
+            ? 'my-products.card.account-cards.account-header.cardCount'
+            : 'my-products.card.account-cards.account-header.cardCountPlural',
+      };
+    }),
+  );
+
+  ngOnInit(): void {
+    this.store.dispatch(loadCardAccounts({}));
+
+    this.store
+      .select(selectAccountsLoaded)
+      .pipe(
+        filter((loaded) => loaded === true),
+        take(1),
+        tap(() => {
+          this.store.dispatch(
+            loadAccountCardsPage({ accountId: this.accountId }),
+          );
+        }),
+      )
+      .subscribe();
+  }
 
   public handleCardClick(cardId: string): void {
-  this.accountData$.pipe(
-    take(1),
-    tap(data => {
-      if (data) {
-        const index = data.account.cardIds.indexOf(cardId);
-        this.store.dispatch(setCurrentCardIndex({ cardIndex: index, accountId: this.accountId }));
-      }
-    })
-  ).subscribe();
-  
-  this.router.navigate(['/bank/products/cards/details', cardId]);
-}
+    this.accountData$
+      .pipe(
+        take(1),
+        tap((data) => {
+          if (data) {
+            const index = data.account.cardIds.indexOf(cardId);
+            this.store.dispatch(
+              setCurrentCardIndex({
+                cardIndex: index,
+                accountId: this.accountId,
+              }),
+            );
+          }
+        }),
+      )
+      .subscribe();
+
+    this.router.navigate(['/bank/products/cards/details', cardId]);
+  }
 
   public handleBackClick(): void {
     this.router.navigate(['/bank/products/cards/list']);
   }
 
- public handleRetry(): void {
-  this.store.dispatch(loadAccountCardsPage({ accountId: this.accountId }));
-}
+  public handleRetry(): void {
+    this.store.dispatch(loadAccountCardsPage({ accountId: this.accountId }));
+  }
 }

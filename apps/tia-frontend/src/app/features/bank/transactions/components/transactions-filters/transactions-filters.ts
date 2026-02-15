@@ -1,30 +1,20 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
   inject,
   input,
   output,
+  effect,
 } from '@angular/core';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { SelectOption } from '@tia/shared/lib/forms/models/input.model';
-import { debounceTime, distinctUntilChanged, filter, map, tap } from 'rxjs';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
 import { ITransactionFilter } from '@tia/shared/models/transactions/transactions.models';
-import { Currency } from '@tia/shared/models/transactions/base.models';
-import { FilterConfig } from '../../models/transactions-filters.models';
-import { getTransactionFiltersConfig } from '../../config/transactions-filters-data';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
-import {
-  getActiveFilters,
-  mapFormIntoTransactionFilter,
-} from '../../utils/transactions-filters.utils';
 import { TranslateModule, TranslatePipe } from '@ngx-translate/core';
-import { TransactionsViewModelService } from '../../services/transactions-view-model.service';
 import { TransactionsActionsService } from '../../services/transactions-actions.service';
-import { maxDateValidator } from '@tia/shared/lib/forms/input-field/date-picker/date-validator/date.validator';
+import { TransactionsPresenterService } from '../../services/transactions-presenter.service';
 
 @Component({
   selector: 'app-transactions-filters',
@@ -36,80 +26,35 @@ import { maxDateValidator } from '@tia/shared/lib/forms/input-field/date-picker/
     TranslatePipe,
     TranslateModule,
   ],
+  providers: [TransactionsPresenterService],
   templateUrl: './transactions-filters.html',
   styleUrl: './transactions-filters.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TransactionsFilters {
-  private readonly fb = inject(FormBuilder);
-  public readonly vm = inject(TransactionsViewModelService);
   public readonly actions = inject(TransactionsActionsService);
+  public readonly presenter = inject(TransactionsPresenterService);
 
   public readonly filterChange = output<ITransactionFilter>();
+
   public readonly categoryOptions = input.required<SelectOption[]>();
   public readonly accountOptions = input<SelectOption[]>([]);
   public readonly currencyOptions = input<SelectOption[]>([]);
-
-  public readonly filtersConfig = computed<FilterConfig[]>(() =>
-    getTransactionFiltersConfig(
-      this.categoryOptions(),
-      this.accountOptions(),
-      this.currencyOptions(),
-    ),
-  );
-
-  protected readonly today = new Date().toISOString().split('T')[0];
-
-  public readonly filterForm = this.fb.group({
-    searchCriteria: ['', Validators.maxLength(25)],
-    category: [null as string | null],
-    amountFrom: [null as number | null],
-    amountTo: [null as number | null],
-    accountIban: [null as string | null],
-    currency: [null as Currency | null],
-    dateFrom: [null as string | null, [maxDateValidator(this.today)]],
-    dateTo: [null as string | null, [maxDateValidator(this.today)]],
-  });
-
-  private readonly formValues = toSignal(
-    this.filterForm.valueChanges.pipe(
-      debounceTime(400),
-      filter(() => this.filterForm.valid),
-    ),
-    {
-      initialValue: this.filterForm.value,
-    },
-  );
-
-  public readonly activeFilters = computed(() =>
-    getActiveFilters(this.formValues(), this.filtersConfig()),
-  );
-
-  public readonly hasActiveFilter = computed(
-    () => this.activeFilters().length > 0,
+  public readonly initialFilters = input<Partial<ITransactionFilter> | null>(
+    null,
   );
 
   constructor() {
-    this.filterForm.valueChanges
-      .pipe(
-        debounceTime(400),
-        distinctUntilChanged(
-          (prev, curr) => JSON.stringify(prev) === JSON.stringify(curr),
-        ),
-        filter(() => this.filterForm.valid),
-        map(mapFormIntoTransactionFilter),
-        tap((filters) => {
-          this.filterChange.emit(filters);
-        }),
-        takeUntilDestroyed(),
-      )
-      .subscribe();
-  }
+    effect(() => this.presenter.categoryOptions.set(this.categoryOptions()));
+    effect(() => this.presenter.accountOptions.set(this.accountOptions()));
+    effect(() => this.presenter.currencyOptions.set(this.currencyOptions()));
+    effect(() => this.presenter.initialFilters.set(this.initialFilters()));
 
-  public resetFilters(): void {
-    this.filterForm.reset();
-  }
-  public removeFilter(controlName: string): void {
-    this.filterForm.get(controlName)?.reset();
+    effect(() => {
+      const filters = this.presenter.filtersChanged();
+      if (filters) {
+        this.filterChange.emit(filters);
+      }
+    });
   }
 }
