@@ -1,11 +1,4 @@
 <div class="pending-approvals">
-  @if (isLoading()) {
-    <div class="pending-approvals__loading">
-      <app-spinner size="large"></app-spinner>
-      <p class="pending-approvals__loading-text">{{ 'settings.loan-management.table.loading' | translate }}</p>
-    </div>
-  }
-
   @if (showError()) {
     <div class="pending-approvals__error">
       <app-error-states

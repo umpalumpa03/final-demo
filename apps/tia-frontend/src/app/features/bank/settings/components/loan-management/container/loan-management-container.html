@@ -4,13 +4,32 @@
     <p class="loan-header__subtitle">{{ config().subtitle }}</p>
   </div>
   <div class="loan-management-container">
-    <app-pending-approvals-table
-      [approvals]="store.pendingApprovals()"
-      [isLoading]="store.loading()"
-      [error]="store.error()"
-      (rowClick)="onRowClick($event)"
-      (reload)="onReload()"
-    ></app-pending-approvals-table>
+    @if (store.loading() && !store.hasInitialLoad()) {
+      <div class="loan-management-container__skeletons">
+        @for (item of [1, 2, 3, 4]; track item) {
+          <app-basic-card minHeight="13rem" padding="2.4rem" maxWidth="100%" flexDirection="row" gap="0">
+            <div class="skeleton-card">
+              <app-skeleton variant="circle" width="5rem" height="5rem"></app-skeleton>
+              <div class="skeleton-card__content">
+                <app-skeleton width="50%" height="1.8rem"></app-skeleton>
+                <app-skeleton width="35%" height="1.4rem"></app-skeleton>
+                <div class="skeleton-card__details">
+                  <app-skeleton width="6rem" height="1.4rem"></app-skeleton>
+                  <app-skeleton width="8rem" height="1.4rem"></app-skeleton>
+                </div>
+              </div>
+            </div>
+          </app-basic-card>
+        }
+      </div>
+    } @else {
+      <app-pending-approvals-table
+        [approvals]="store.pendingApprovals()"
+        [error]="store.error()"
+        (rowClick)="onRowClick($event)"
+        (reload)="onReload()"
+      ></app-pending-approvals-table>
+    }
   </div>
 </div>
 <app-loan-case-drawer
