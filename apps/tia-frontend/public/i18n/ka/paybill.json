@@ -67,7 +67,7 @@
       "check_button": "შემოწმება",
       "pay_button": "გადახდა",
       "template": "შაბლონის შენახვა",
-      "required_field_error": "გთხოვთ შეავსოთ აუცილებელი ველები!"
+      "required_field_error": "გთხოვთ გადაამოწმოთ ინფორმაცია"
     },
     "confirm": {
       "title": "დადასტურება",

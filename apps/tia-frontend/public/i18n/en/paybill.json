@@ -68,7 +68,7 @@
       "check_button": "Check",
       "pay_button": "Pay",
       "template": "Save Template",
-      "required_field_error": "Please fill required field!"
+      "required_field_error": "Please recheck the information"
     },
     "confirm": {
       "title": "Confirm Payment",

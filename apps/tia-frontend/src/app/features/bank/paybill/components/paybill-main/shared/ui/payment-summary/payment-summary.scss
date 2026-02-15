@@ -7,6 +7,15 @@
   width: 100%;
   border-radius: 1.2rem;
   gap: 2.4rem;
+
+  @media (max-width: 480px) {
+    padding: 2rem 1.6rem;
+    gap: 2rem;
+  }
+
+  @media (max-width: 340px) {
+    padding: 1.6rem 1.2rem;
+  }
 }
 
 .summary-header {
@@ -17,6 +26,11 @@
     @include display-flex(row);
     align-items: center;
     gap: 1.6rem;
+    width: 100%;
+
+    @media (max-width: 360px) {
+      gap: 1.2rem;
+    }
   }
 
   &__icon-container {
@@ -25,28 +39,59 @@
     border-radius: 1.4rem;
     @include flex-center();
     flex-shrink: 0;
+
+    @media (max-width: 480px) {
+      width: 5.2rem;
+      height: 5.2rem;
+      border-radius: 1rem;
+    }
+
+    @media (max-width: 340px) {
+      width: 4.8rem;
+      height: 4.8rem;
+    }
   }
 
   &__icon {
     width: 3.2rem;
     height: 3.2rem;
     object-fit: contain;
+
+    @media (max-width: 480px) {
+      width: 2.4rem;
+      height: 2.4rem;
+    }
   }
 
   &__text {
     @include display-flex(column);
     gap: 0.4rem;
+    min-width: 0;
   }
 
   &__title {
-    @include font-inter(700, 1.8rem, 2.8rem);
+    @include font-inter(700, 1.8rem, 2.4rem);
     margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    @media (max-width: 480px) {
+      font-size: 1.6rem;
+    }
   }
 
   &__subtitle {
     @include font-inter(400, 1.4rem, 2rem);
     color: $gray-600;
     margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    @media (max-width: 480px) {
+      font-size: 1.3rem;
+    }
   }
 }
 
@@ -56,32 +101,63 @@
 }
 
 .summary-row {
-  @include flex-center(row, space-between, center);
+  @include display-flex(row);
+  justify-content: space-between;
+  align-items: flex-start;
   width: 100%;
+  gap: 1.2rem;
 
   &__label {
     @include font-inter(400, 1.6rem, 2.4rem);
     color: $gray-700;
+    flex: 1;
+    word-break: break-word;
+
+    @media (max-width: 480px) {
+      font-size: 1.4rem;
+    }
   }
 
   &__value {
     @include font-inter(600, 1.6rem, 2.4rem);
     color: var(--color-fg);
+    text-align: right;
+    max-width: 60%;
+    word-break: break-word;
+
+    @media (max-width: 480px) {
+      font-size: 1.4rem;
+    }
   }
 
   &--total {
     margin-top: 0.8rem;
     padding-top: 1.6rem;
     border-top: 0.0625rem solid $blue-200;
+    align-items: center;
 
     .summary-row__label {
       @include font-inter(400, 1.8rem, 2.8rem);
       color: $gray-700;
+
+      @media (max-width: 480px) {
+        font-size: 1.6rem;
+      }
     }
 
     .summary-row__value {
       @include font-inter(700, 2.4rem, 3.2rem);
       color: $blue-800;
+
+      @media (max-width: 480px) {
+        font-size: 2rem;
+        line-height: 2.8rem;
+      }
+
+      @media (max-width: 340px) {
+        font-size: 1.8rem;
+        line-height: 2.4rem;
+      }
     }
   }
 }
