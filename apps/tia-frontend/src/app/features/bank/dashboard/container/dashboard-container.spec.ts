@@ -147,7 +147,7 @@ describe('DashboardContainer', () => {
         loadExchangeRates({ baseCurrency: 'USD' }),
       );
       expect(mockStore.dispatch).toHaveBeenCalledWith(
-        AccountsActions.loadAccounts({}),
+        AccountsActions.loadAccounts({ enrichWithTransactions: true }),
       );
     });
   });

@@ -6,11 +6,13 @@ import {
   inject,
   OnInit,
   signal,
+  untracked,
 } from '@angular/core';
 import {
   selectAccounts,
   selectError,
   selectIsLoading,
+  selectSelectedAccount,
 } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { TransferStore } from 'apps/tia-frontend/src/app/features/bank/transfers/store/transfers.store';
 import { Store } from '@ngrx/store';
@@ -77,6 +79,11 @@ export class InternalFromAccount implements OnInit {
     initialValue: null,
   });
 
+  public readonly preSelectedAccount = toSignal(
+    this.store.select(selectSelectedAccount),
+    { initialValue: null },
+  );
+
   public readonly transferError = computed(() => this.transferStore.error());
 
   public readonly hasRepeatError = computed(() => {
@@ -109,10 +116,36 @@ export class InternalFromAccount implements OnInit {
     });
 
     effect(() => {
+      const preSelected = this.preSelectedAccount();
+      const currentSender = this.selectedFromAccount();
+
+      if (!preSelected || currentSender) return;
+
+      untracked(() => {
+        if (this.isAccountDisabled(preSelected)) {
+          this.store.dispatch(AccountsActions.selectAccount({ account: null }));
+          return;
+        }
+
+        this.transferStore.setSenderAccount(preSelected);
+        this.store.dispatch(AccountsActions.selectAccount({ account: null }));
+      });
+    });
+
+    effect(() => {
       const accs = this.accounts();
-      if (accs?.length) {
-        this.transferInternalService.restoreInternalSelection(accs);
-      }
+      const currentSender = this.selectedFromAccount();
+      const preSelected = this.preSelectedAccount();
+
+      if (currentSender || preSelected || !accs.length) return;
+
+      untracked(() => {
+        const favoriteAccount = accs.find((acc) => acc.isFavorite);
+
+        if (favoriteAccount && !this.isAccountDisabled(favoriteAccount)) {
+          this.transferStore.setSenderAccount(favoriteAccount);
+        }
+      });
     });
   }
 

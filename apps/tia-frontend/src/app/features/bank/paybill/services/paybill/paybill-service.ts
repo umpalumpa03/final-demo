@@ -12,6 +12,7 @@ import {
 } from '../../components/paybill-main/shared/models/paybill.model';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../../../environments/environment';
+import { Templates } from '../../components/paybill-templates/models/paybill-templates.model';
 
 @Injectable({
   providedIn: 'root',
@@ -69,8 +70,8 @@ export class PaybillService {
     serviceId: string,
     identification: PaybillIdentification,
     nickname: string,
-  ): Observable<{ message: string }> {
-    return this.http.post<{ message: string }>(`${this.baseUrl}/templates`, {
+  ): Observable<Templates> {
+    return this.http.post<Templates>(`${this.baseUrl}/templates`, {
       serviceId,
       identification,
       nickname,
