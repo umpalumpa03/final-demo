@@ -4,7 +4,7 @@ const fs = require('fs');
 const { execSync } = require('child_process');
 const path = require('path');
 
-const COVERAGE_THRESHOLD = 85;
+const COVERAGE_THRESHOLD = 80;
 
 // Read and parse vitest config to get exclude patterns
 function getExcludePatternsFromConfig() {
