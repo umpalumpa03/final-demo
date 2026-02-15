@@ -6,7 +6,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { By } from '@angular/platform-browser';
 import { patchState } from '@ngrx/signals';
-import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { ApproveCardsState } from '../shared/state/approve-cards.state';
 import { ApproveCardsStore } from '../store/approve-cards.store';
 import { provideMockStore } from '@ngrx/store/testing';
@@ -23,7 +22,7 @@ describe('Permissions Logic Integration', () => {
         TranslateModule.forRoot(), 
       ],
       providers: [
-        provideNoopAnimations(),
+         { provide: 'BrowserAnimations', useValue: {} },
         provideHttpClient(), 
         provideHttpClientTesting(),
         provideMockStore({}),

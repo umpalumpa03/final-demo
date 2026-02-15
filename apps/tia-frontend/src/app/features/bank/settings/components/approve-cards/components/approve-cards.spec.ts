@@ -7,7 +7,6 @@ import { signal } from '@angular/core';
 import { ApproveCardsState } from '../shared/state/approve-cards.state';
 import { TranslateModule } from '@ngx-translate/core';
 import { provideMockStore } from '@ngrx/store/testing';
-import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 describe('ApproveCards', () => {
   let component: ApproveCards;
@@ -60,7 +59,7 @@ describe('ApproveCards', () => {
       providers: [
         FormBuilder,
         provideMockStore({}),
-        provideNoopAnimations(),
+        { provide: 'BrowserAnimations', useValue: {} },
         { provide: ApproveCardsStore, useValue: storeMock },
         { provide: ApproveCardsState, useValue: stateMock }
       ]

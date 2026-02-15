@@ -5,7 +5,6 @@ import { ApproveCardsContainer } from '../container/approve-cards-container';
 import { TranslateModule } from '@ngx-translate/core';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { By } from '@angular/platform-browser';
-import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { ApproveCardsState } from '../shared/state/approve-cards.state';
 import { ApproveCardsStore } from '../store/approve-cards.store';
 import { provideMockStore } from '@ngrx/store/testing';
@@ -22,7 +21,7 @@ describe('Modals and Overlays Integration', () => {
         TranslateModule.forRoot(), 
       ],
       providers: [
-        provideNoopAnimations(),
+         { provide: 'BrowserAnimations', useValue: {} },
         provideHttpClient(), 
         provideHttpClientTesting(),
         provideMockStore({}),
