@@ -157,7 +157,7 @@ export const TemplatesPageActions = createActionGroup({
       identification: Record<string, string>;
       nickname: string;
     }>(),
-    'Check Bill for Template Failure': props<{
+    'Check Bill For Template Failure': props<{
       error: string;
     }>(),
 

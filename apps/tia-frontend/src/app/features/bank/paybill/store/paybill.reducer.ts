@@ -491,4 +491,9 @@ export const paybillReducer = createReducer(
     loading: false,
     isFormValid: isValid,
   })),
+   on(TemplatesPageActions.checkBillForTemplateFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    message: error,
+  })),
 );
