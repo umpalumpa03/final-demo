@@ -118,7 +118,7 @@ protected readonly alertService = inject(AlertService);
 
 
   ngOnInit(): void {
-  this.store.dispatch(loadCardAccounts({ forceRefresh: true }));
+  this.store.dispatch(loadCardAccounts({ forceRefresh: false }));
 }
 
 

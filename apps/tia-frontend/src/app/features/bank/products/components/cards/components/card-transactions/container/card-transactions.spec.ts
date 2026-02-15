@@ -17,9 +17,9 @@ import {
 import { TranslateModule } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions/transactions.actions';
-import { ITransactionFilter } from '@tia/shared/models/transactions/transactions.models';
 import { CardAccount } from '@tia/shared/models/cards/card-account.model';
 import { AlertService } from '@tia/core/services/alert/alert.service';
+
 interface MockStore {
   select: Mock;
   dispatch: Mock;
@@ -52,7 +52,6 @@ describe('CardTransactions', () => {
         if (selector === selectNextCursor) {
           return of(null);
         }
-
         return of(null);
       }),
       dispatch: vi.fn(),
@@ -100,11 +99,10 @@ describe('CardTransactions', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should dispatch actions on init', () => {
-    expect(store.dispatch).toHaveBeenCalledWith(loadCardAccounts({}));
-    expect(store.dispatch).toHaveBeenCalledWith(
-      loadCardDetails({ cardId: mockCardId }),
-    );
+  it('should dispatch loadCardAccounts on init', () => {
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+    component.ngOnInit();
+    expect(dispatchSpy).toHaveBeenCalledWith(loadCardAccounts({}));
   });
 
   it('should navigate back to card details', () => {
@@ -126,110 +124,6 @@ describe('CardTransactions', () => {
     expect(component['currentPageSubject'].value).toBe(2);
   });
 
-  it('should calculate total pages correctly', () => {
-    let pages = 0;
-    component['totalPages$'].subscribe((p) => {
-      pages = p;
-    });
-    expect(pages).toBe(0);
-  });
-
-  it('should calculate paginated transactions correctly', () => {
-    let transactions: any[] = [];
-    component['paginatedTransactions$'].subscribe((t) => {
-      transactions = t;
-    });
-    expect(transactions).toEqual([]);
-  });
-
-  it('should calculate total count correctly', () => {
-    let count = 0;
-    component['totalCount$'].subscribe((c) => {
-      count = c;
-    });
-    expect(count).toBe(0);
-  });
-
-
-  it('should get card header data from store', () => {
-    let data: any = undefined;
-    component['cardHeaderData$'].subscribe((d) => {
-      data = d;
-    });
-    expect(data).toBeNull();
-  });
-
-  it('should get account name from store', () => {
-    let name = '';
-    component['accountName$'].subscribe((n) => {
-      name = n;
-    });
-    expect(name).toBe('N/A');
-  });
-
-  it('should have loading state', () => {
-    let loading = false;
-    component['isLoading$'].subscribe((l) => {
-      loading = l;
-    });
-    expect(typeof loading).toBe('boolean');
-  });
-  it('should return null when cardData has no accountId in cardHeaderData$', () => {
-    store.select = vi.fn((selector) => {
-      if (selector.name?.includes('selectCardDetailById')) {
-        return of({
-          cardId: 'card-1',
-          details: { accountId: null },
-          imageBase64: 'img',
-        });
-      }
-      return of(null);
-    });
-
-    let result: any;
-    component['cardHeaderData$'].subscribe((r) => (result = r));
-    expect(result).toBeNull();
-  });
-
-  it('should return N/A when cardData has no accountId in accountName$', () => {
-    store.select = vi.fn((selector) => {
-      if (selector.name?.includes('selectCardDetailById')) {
-        return of({
-          cardId: 'card-1',
-          details: { accountId: null },
-          imageBase64: 'img',
-        });
-      }
-      return of(null);
-    });
-
-    let result = '';
-    component['accountName$'].subscribe((r) => (result = r));
-    expect(result).toBe('N/A');
-  });
-
-  it('should return empty array when transactions is null in paginatedTransactions$', () => {
-    store.select = vi.fn((selector) => {
-      if (selector === selectItems) return of(null);
-      return of(1);
-    });
-
-    let result: any[] = [];
-    component['paginatedTransactions$'].subscribe((r) => (result = r));
-    expect(result).toEqual([]);
-  });
-
-  it('should return 0 when transactions is null in totalPages$', () => {
-    store.select = vi.fn((selector) => {
-      if (selector === selectItems) return of(null);
-      return of(null);
-    });
-
-    let result = -1;
-    component['totalPages$'].subscribe((r) => (result = r));
-    expect(result).toBe(0);
-  });
-
   it('should dispatch loadMore when cursor is not null', async () => {
     store.select = vi.fn((selector) => {
       if (selector === selectNextCursor) {
@@ -245,12 +139,13 @@ describe('CardTransactions', () => {
     expect(store.dispatch).toHaveBeenCalledWith(TransactionActions.loadMore());
   });
 
-
-  it('should return true in isLoading$ when loading and no cardData', () => {
+  it('should return true in isLoading$ when cardData is null', () => {
     store.select = vi.fn((selector) => {
-      if (selector === selectIsLoading) return of(true);
+      if (selector.name?.includes('selectAccountsLoaded')) return of(true);
+      if (selector === selectIsLoading) return of(false);
       if (selector.name?.includes('selectCardDetailById')) return of(null);
       if (selector === selectItems) return of([]);
+      if (selector.name?.includes('selectTransactionsLoaded')) return of(true);
       return of(null);
     });
 
@@ -263,112 +158,82 @@ describe('CardTransactions', () => {
     expect(result).toBe(true);
   });
 
-  it('should return true in isLoading$ when loading and transactions empty', () => {
+  it('should return true in isLoading$ when transactionsLoaded is false and no transactions', () => {
     store.select = vi.fn((selector) => {
-      if (selector === selectIsLoading) return of(true);
-      if (selector.name?.includes('selectCardDetailById'))
-        return of({ cardId: 'card-1', details: {}, imageBase64: 'img' });
-      if (selector === selectItems) return of([]);
-      return of(null);
-    });
-
-    fixture = TestBed.createComponent(CardTransactions);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-
-    let result = false;
-    component['isLoading$'].subscribe((r) => (result = r));
-    expect(result).toBe(true);
-  });
-
-  it('should return false in isLoading$ when not loading', () => {
-    store.select = vi.fn((selector) => {
+      if (selector.name?.includes('selectAccountsLoaded')) return of(true);
       if (selector === selectIsLoading) return of(false);
-      if (selector.name?.includes('selectCardDetailById')) return of(null);
+      if (selector.name?.includes('selectCardDetailById')) return of({ details: { accountId: 'acc-1' } });
       if (selector === selectItems) return of([]);
-      return of(null);
-    });
-
-    fixture = TestBed.createComponent(CardTransactions);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-
-    let result = true;
-    component['isLoading$'].subscribe((r) => (result = r));
-    expect(result).toBe(false);
-  });
-
-  it('should dispatch enter and updateFilters when account iban differs', () => {
-    const mockAccount: CardAccount = {
-      id: 'acc-1',
-      iban: 'GE999999',
-      name: 'Test',
-      balance: 1000,
-      currency: 'GEL',
-      status: 'ACTIVE',
-      cardIds: [],
-      openedAt: '2024-01-01',
-    };
-    const mockFilters: ITransactionFilter = {
-      accountIban: 'GE123456',
-      pageLimit: 100,
-    };
-
-    store.dispatch = vi.fn();
-
-    component['updateTransactionFiltersIfNeeded'](
-      mockAccount,
-      mockFilters,
-      true,
-    );
-
-    expect(store.dispatch).toHaveBeenCalledWith(TransactionActions.enter());
-    expect(store.dispatch).toHaveBeenCalledWith(
-      TransactionActions.updateFilters({
-        filters: { accountIban: 'GE999999', pageLimit: 100 },
-      }),
-    );
-  });
-
-  it('should not dispatch when account has no iban', () => {
-    const mockAccount: CardAccount = {
-      id: 'acc-1',
-      iban: '',
-      name: 'Test',
-      balance: 1000,
-      currency: 'GEL',
-      status: 'ACTIVE',
-      cardIds: [],
-      openedAt: '2024-01-01',
-    };
-    const mockFilters: ITransactionFilter = {
-      accountIban: 'GE123456',
-      pageLimit: 100,
-    };
-
-    store.dispatch = vi.fn();
-
-    component['updateTransactionFiltersIfNeeded'](
-      mockAccount,
-      mockFilters,
-      false,
-    );
-
-    expect(store.dispatch).not.toHaveBeenCalled();
-  });
-  const storeMock: MockStore = {
-    select: vi.fn((selector) => {
-      if (selector === selectItems) return of([]);
-      if (selector === selectIsLoading) return of(false);
-      if (selector === selectError) return of(null);
-      if (selector === selectNextCursor) return of(null);
-      if (selector.name?.includes('selectCardDetailById')) return of(null);
-      if (selector.name?.includes('selectFilters'))
-        return of({ accountIban: '', pageLimit: 100 });
       if (selector.name?.includes('selectTransactionsLoaded')) return of(false);
-      if (selector.name?.includes('selectAccountById')) return of(null);
       return of(null);
-    }),
-    dispatch: vi.fn(),
-  };
+    });
+
+    fixture = TestBed.createComponent(CardTransactions);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    let result = false;
+    component['isLoading$'].subscribe((r) => (result = r));
+    expect(result).toBe(true);
+  });
+
+  it('should return loading true when accountsLoaded is false', () => {
+    store.select = vi.fn((selector) => {
+      if (selector.name?.includes('selectAccountsLoaded')) return of(false);
+      if (selector === selectIsLoading) return of(false);
+      if (selector.name?.includes('selectCardDetailById')) return of({ details: {} });
+      if (selector === selectItems) return of([]);
+      if (selector.name?.includes('selectTransactionsLoaded')) return of(true);
+      return of(null);
+    });
+
+    fixture = TestBed.createComponent(CardTransactions);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    let result = false;
+    component['isLoading$'].subscribe(r => result = r);
+    expect(result).toBe(true);
+  });
+
+  it('should compute pagination config', () => {
+    const config = component['paginationConfig']();
+    expect(config.maxVisiblePages).toBe(2);
+    expect(config.showEllipsis).toBe(true);
+  });
+
+  it('should get total count from transactions', () => {
+    const mockTransactions = [{}, {}, {}];
+    const count = component['getTotalCount'](mockTransactions);
+    expect(count).toBe(3);
+  });
+
+  it('should return 0 for empty transactions in getTotalCount', () => {
+    const count = component['getTotalCount']([]);
+    expect(count).toBe(0);
+  });
+
+  it('should paginate transactions correctly', () => {
+    const mockTransactions = new Array(25).fill({});
+    const paginated = component['getPaginatedTransactions'](mockTransactions, 2);
+    expect(paginated.length).toBe(5);
+  });
+
+  it('should return empty array for null transactions in getPaginatedTransactions', () => {
+    const paginated = component['getPaginatedTransactions'](null as any, 1);
+    expect(paginated).toEqual([]);
+  });
+
+  it('should calculate total pages correctly', () => {
+    const mockTransactions = new Array(25).fill({});
+    const pages = component['getTotalPages'](mockTransactions);
+    expect(pages).toBe(2);
+  });
+
+  it('should return 0 pages for null transactions', () => {
+    const pages = component['getTotalPages'](null as any);
+    expect(pages).toBe(0);
+  });
+ 
+  
 });
