@@ -9,12 +9,12 @@ import { AccountNotification } from './model/accounts-state.model';
 export const AccountsActions = createActionGroup({
   source: 'Accounts',
   events: {
-    'Load Accounts': props<{ forceRefresh?: boolean }>(), //pass empty object when initial load and no update needed, checks from cashed data and when updating for example from transfers, pass forcerefresh true
-    'Load Accounts Success': props<{ accounts: Account[] }>(),
+    'Load Accounts': props<{ forceRefresh?: boolean; enrichWithTransactions?: boolean }>(), //pass empty object when initial load and no update needed, checks from cashed data and when updating for example from transfers, pass forcerefresh true
+    'Load Accounts Success': props<{ accounts: Account[]; enrichWithTransactions?: boolean }>(),
     'Load Accounts Failure': props<{ error: string }>(),
 
-    'Load Active Accounts': props<{ forceRefresh?: boolean }>(),
-    'Load Active Accounts Success': props<{ accounts: Account[] }>(),
+    'Load Active Accounts': props<{ forceRefresh?: boolean; enrichWithTransactions?: boolean }>(),
+    'Load Active Accounts Success': props<{ accounts: Account[]; enrichWithTransactions?: boolean }>(),
     'Load Active Accounts Failure': props<{ error: string }>(),
 
     'Fetch More Accounts': emptyProps(),

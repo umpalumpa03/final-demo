@@ -71,7 +71,9 @@ describe('WidgetAccounts', () => {
   it('should dispatch loadAccounts on retryLoad', () => {
     const dispatchSpy = vi.spyOn(store, 'dispatch');
     component.retryLoad();
-    expect(dispatchSpy).toHaveBeenCalledWith(AccountsActions.loadAccounts({}));
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      AccountsActions.loadAccounts({ enrichWithTransactions: true }),
+    );
   });
 
   it('should return 0 from getAnimatedBalance when balance not set', () => {
