@@ -186,7 +186,11 @@
     "permissionsModal": {
       "modalTitle": "ანგარიშის უფლებების შეცვლა",
       "modalSubtitle": "დააყენეთ უფლებები ამ ანგარიშის მოთხოვნისთვის",
-      "title": "ანგარიშის უფლებები"
+      "title": "ანგარიშის უფლებები",
+      "saveAction": "შენახვა",
+      "cancelAction": "გაუქმება",
+      "of": "დან",
+      "enabledSuffix": "უფლება გააქტიურებულია"
     },
     "confirmDialog": {
       "title": "ცვლილებების გაუქმება?",
