@@ -186,6 +186,9 @@ export class PaybillTemplates implements OnInit {
   // Form Submit Handler
   public onFormSubmit(type: ModalSubmitType): void {
     const form = this.activeForm();
+
+    form!.markAllAsTouched();
+
     if (form?.valid && this.isFormSubmitType(type)) {
       this.formSubmit.emit({ type, values: form.value });
     }

@@ -10,11 +10,14 @@
     ></lib-select>
   </div>
   } @else {
-  <lib-text-input
-    [formControlName]="field.controlName"
-    [type]="field.type"
-    [config]="{ label: field.label | translate, placeholder: field.placeholder | translate }"
-  />
+  <div class="modal__dynamic-dropdown">
+    <lib-text-input
+      class="modal__dynamic-input"
+      [formControlName]="field.controlName"
+      [type]="field.type"
+      [config]="{ label: field.label | translate, placeholder: field.placeholder | translate }"
+    />
+  </div>
   } } @if (isCategorySelected()) { @for (item of childProviderOptions(); track
   $index) {
   <div class="modal__dynamic-dropdown">
