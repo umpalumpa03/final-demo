@@ -100,7 +100,7 @@ export class Accounts implements OnInit {
 
   public ngOnInit(): void {
     this.store.dispatch(
-      AccountsActions.loadActiveAccounts({ forceRefresh: true }),
+      AccountsActions.loadActiveAccounts({ forceRefresh: false }),
     );
     this.store.dispatch(AccountsActions.loadCurrencies());
 
