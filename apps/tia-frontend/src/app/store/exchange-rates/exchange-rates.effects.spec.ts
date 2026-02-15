@@ -6,11 +6,14 @@ import { ExchangeRatesEffects } from './exchange-rates.effects';
 import { ExchangeRatesService } from '@tia/shared/services/exchange-rates/exchange-rates.api.service';
 import { loadExchangeRates, loadExchangeRatesSuccess, loadExchangeRatesFailure } from './exchange-rates.actions';
 import { ExchangeRateInterface } from './models/exchange-rates.models';
+import { provideMockStore, MockStore } from '@ngrx/store/testing';
+import { selectExchangeRates, selectLastUpdated } from './exchange-rates.selectors';
 
 describe('ExchangeRatesEffects', () => {
   let actions$: Observable<any>;
   let effects: ExchangeRatesEffects;
   let service: { loadExchangeRates: ReturnType<typeof vi.fn> };
+  let store: MockStore;
 
   const mockRates: ExchangeRateInterface[] = [{
     code: 'EUR',
@@ -33,11 +36,18 @@ describe('ExchangeRatesEffects', () => {
       providers: [
         ExchangeRatesEffects,
         provideMockActions(() => actions$),
-        { provide: ExchangeRatesService, useValue: service }
+        { provide: ExchangeRatesService, useValue: service },
+        provideMockStore({
+          selectors: [
+            { selector: selectExchangeRates, value: [] },
+            { selector: selectLastUpdated, value: null }
+          ]
+        })
       ]
     });
 
     effects = TestBed.inject(ExchangeRatesEffects);
+    store = TestBed.inject(MockStore);
   });
 
   it('should return loadExchangeRatesSuccess on success', async () => {
