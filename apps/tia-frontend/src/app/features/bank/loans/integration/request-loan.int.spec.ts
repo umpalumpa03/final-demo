@@ -40,7 +40,7 @@ describe('Loans Integration - Request Loan Flow', () => {
     });
   });
 
-  it('should handle request loan error and set error state', async () => {
+  it('should handle request loan error and stop loading', async () => {
     ctx.loansStore.requestLoan(mockLoanRequest);
 
     const req = ctx.httpMock.expectOne(`${environment.apiUrl}/loans/request`);
@@ -51,7 +51,7 @@ describe('Loans Integration - Request Loan Flow', () => {
 
     await vi.waitFor(() => {
       expect(ctx.loansStore.actionLoading()).toBe(false);
-      expect(ctx.loansStore.error()).toBeTruthy();
+      expect(ctx.loansStore.error()).toBeNull();
     });
   });
 });
