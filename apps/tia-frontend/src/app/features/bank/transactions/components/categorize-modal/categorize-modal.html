@@ -55,7 +55,7 @@
     </div>
 
     <div class="categorize-form__actions">
-      <app-button [variant]="'outline'" (click)="onCancel()">
+      <app-button [variant]="'outline'" (click)="onCancel()" [fullWidth]="true">
         {{ 'transactions.categorize_modal.buttons.cancel' | translate }}
       </app-button>
       <app-tooltip

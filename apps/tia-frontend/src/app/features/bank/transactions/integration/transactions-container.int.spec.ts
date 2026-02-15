@@ -6,17 +6,34 @@ import { TransactionsFacadeService } from '../services/transactions-facade.servi
 import { TransactionsViewModelService } from '../services/transactions-view-model.service';
 import { TransactionsActionsService } from '../services/transactions-actions.service';
 import { createTransactionsMocks } from './transactions.test-helpers';
+import { ActivatedRoute, Router } from '@angular/router';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('TransactionsContainer Integration Tests', () => {
   let component: TransactionsContainer;
   let fixture: ComponentFixture<TransactionsContainer>;
   let mocks: ReturnType<typeof createTransactionsMocks>;
 
+  const mockRouter = {
+    navigate: vi.fn(),
+  };
+
+  const mockActivatedRoute = {
+    snapshot: {
+      queryParams: {},
+    },
+  };
+
   beforeEach(async () => {
     mocks = createTransactionsMocks();
 
     await TestBed.configureTestingModule({
       imports: [TransactionsContainer, TranslateModule.forRoot()],
+      providers: [
+        { provide: Router, useValue: mockRouter },
+        { provide: ActivatedRoute, useValue: mockActivatedRoute },
+      ],
+      schemas: [NO_ERRORS_SCHEMA],
     })
       .overrideComponent(TransactionsContainer, {
         set: {
@@ -36,26 +53,23 @@ describe('TransactionsContainer Integration Tests', () => {
   });
 
   afterEach(() => {
-    fixture.destroy();
+    vi.clearAllTimers();
+    vi.useRealTimers();
   });
 
   it('should call initializePage on ngOnInit', () => {
     expect(mocks.facade.initializePage).toHaveBeenCalled();
   });
 
-  it('should delegate updateFilters to facade when filters change', async () => {
-    vi.useFakeTimers();
+  it('should delegate updateFilters to facade and update URL when filters change', async () => {
     const mockFilters = { searchCriteria: 'TBC' };
 
     component.onFiltersChange(mockFilters);
 
-    vi.advanceTimersByTime(400);
-
     expect(mocks.facade.updateFilters).toHaveBeenCalledWith(mockFilters);
-
-    vi.runOnlyPendingTimers();
-    vi.useRealTimers();
+    expect(mockRouter.navigate).toHaveBeenCalled();
   });
+
   it('should delegate "categorize" action to actions service', () => {
     const mockTrx = { id: 'trx_1', description: 'Gas' } as any;
     mocks.facade.items.set([mockTrx]);

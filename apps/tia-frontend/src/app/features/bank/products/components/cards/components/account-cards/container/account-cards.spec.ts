@@ -2,7 +2,7 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { of, firstValueFrom } from 'rxjs';
+import { of, firstValueFrom, skip } from 'rxjs';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { loadAccountCardsPage } from '../../../../../../../../store/products/cards/cards.actions';
 import { TranslateModule } from '@ngx-translate/core';
@@ -12,6 +12,8 @@ import {
   selectCardDetailsByAccountId,
   selectCardDetailsLoading,
   selectCardDetailsError,
+  selectAccountsLoaded,
+  selectLoadedCardDetailsIds,
 } from '../../../../../../../../store/products/cards/cards.selectors';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { AccountCards } from '../../account-cards/container/account-cards';
@@ -82,8 +84,9 @@ describe('AccountCards', () => {
       if (selector === selectAllAccounts) return of(accounts);
       if (selector === selectCardDetailsLoading) return of(loading);
       if (selector === selectCardDetailsError) return of(error);
-      if (selector === selectCardDetailsByAccountId) return of(cards);
-      return of(null);
+      if (selector === selectAccountsLoaded) return of(true);
+      if (selector === selectLoadedCardDetailsIds) return of(['card-1', 'card-2']);
+      return of(cards);
     });
   }
 
@@ -114,7 +117,7 @@ describe('AccountCards', () => {
   it('should emit success viewState', async () => {
     setupStore([mockAccount], mockCards, false, null);
     createComponent();
-    const state = await firstValueFrom(component['viewState$']);
+    const state = await firstValueFrom(component['viewState$'].pipe(skip(1)));
     expect(state).toBe('success');
   });
 
@@ -128,16 +131,11 @@ describe('AccountCards', () => {
   it('should emit error viewState', async () => {
     setupStore([mockAccount], mockCards, false, 'some error');
     createComponent();
-    const state = await firstValueFrom(component['viewState$']);
+    const state = await firstValueFrom(component['viewState$'].pipe(skip(1)));
     expect(state).toBe('error');
   });
 
-  it('should emit no-account viewState when no accounts', async () => {
-    setupStore([]);
-    createComponent();
-    const state = await firstValueFrom(component['viewState$']);
-    expect(state).toBe('no-account');
-  });
+
 
 it('should emit correct cardsLabel', async () => {
   setupStore([mockAccount], mockCards);

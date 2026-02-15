@@ -1,3 +1,4 @@
+
 <div class="card-transactions">
   @if (isLoading$ | async) {
   <div class="card-transactions__loading">
@@ -6,8 +7,8 @@
   } @else if (error$ | async; as errorMsg) {
   <app-error-states
     variant="failed"
-[header]="'my-products.card.card-transactions.failedToLoadTransactions' | translate"
-[buttonMessage]="'my-products.card.card-transactions.retry' | translate"
+    [header]="'my-products.card.card-transactions.failedToLoadTransactions' | translate"
+    [buttonMessage]="'my-products.card.card-transactions.retry' | translate"
     (buttonClick)="handleRetry()"
   />
   } @else {
@@ -28,7 +29,7 @@
       [cardName]="headerData.cardName"
       [maskedNumber]="headerData.maskedNumber"
       [linkedAccountName]="(accountName$ | async) || 'N/A'"
-      [totalTransactions]="(totalCount$ | async) || 0"
+      [totalTransactions]="getTotalCount((transactions$ | async) || [])"
     />
   </app-basic-card>
   } }
@@ -40,15 +41,15 @@
     </div>
    
     <app-transaction-list
-      [transactions]="(paginatedTransactions$ | async) || []"
-       [uncategorizedText]="(uncategorizedText$ | async) || 'Uncategorized'"
-       [locale]="(currentLocale$ | async) || 'en-US'"
+      [transactions]="getPaginatedTransactions((transactions$ | async) || [], (currentPage$ | async) ?? 1)"
+      [uncategorizedText]="(uncategorizedText$ | async) || 'Uncategorized'"
+      [locale]="(currentLocale$ | async) || 'en-US'"
     />
 
-    @if ((totalPages$ | async) ?? 0 > 1) {
+    @if (getTotalPages((transactions$ | async) || []) > 1) {
     <app-pagination
       [currentPage]="(currentPage$ | async) ?? 1"
-      [totalPages]="(totalPages$ | async) ?? 1"
+      [totalPages]="getTotalPages((transactions$ | async) || [])"
       (pageChange)="handlePageChange($event)"
       [config]="paginationConfig()"
     />
