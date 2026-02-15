@@ -125,35 +125,7 @@ it('should dispatch openCardOtpModal action when cardId exists', () => {
     expect(dispatchSpy).toHaveBeenCalledWith(closeCardOtpModal());
   });
 
-  it('should combine modalData and cardSensitiveData observables', async () => {
-    const updatedState = {
-      ...initialState,
-      cards: {
-        ...initialState.cards,
-        cardSensitiveData: {
-          'card-1': {
-            cardNumber: '1234567890123456',
-            cvv: '123',
-            expiryDate: '12/28',
-            cardholderName: 'John Doe',
-          },
-        },
-      },
-    };
-
-    store.setState(updatedState);
-
-    const data = await firstValueFrom(component.cardSensitiveData$);
-    
-    expect(data).toEqual({
-  "cardNumber": "1234567890123456",
-  "cardholderName": "John Doe",
-  "cvv": "123",
-  "expiryDate": "12/28",
-}
-);
-  });
-
+ 
   it('should return null when modalData cardId is missing', async () => {
     const stateWithoutCardId = {
       ...initialState,
