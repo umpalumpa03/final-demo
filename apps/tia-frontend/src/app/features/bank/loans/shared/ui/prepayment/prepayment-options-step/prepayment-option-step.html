@@ -33,11 +33,13 @@
             </app-button>
         </div>
 
-        <div>
+        <div class="prepayment-step__tooltip-wrapper" [attr.data-tooltip]="form.invalid ? cfg.buttonTooltip() : null">
+
             <app-button [icon]="isLoading() ? null : './calculate.svg'" [fullWidth]="true"
                 [isDisabled]="form.invalid || isLoading()" [isLoading]="isLoading()" (click)="onCalculate()">
                 {{ 'loans.prepayment_wizard.step_setup.button' | translate }}
             </app-button>
+
         </div>
     </footer>
 </div>
