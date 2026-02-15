@@ -44,8 +44,8 @@
       @empty {
         <app-error-states
           variant="not-found"
-          header="No Transactions Found"
-          message="We couldn't find any transaction to display."
+          [header]="'my-finances.finances.empty.notransaction' | translate"
+          [message]="'my-finances.finances.empty.nomessage' | translate"
           [showButton]="false"
           [border]="false"
         />
