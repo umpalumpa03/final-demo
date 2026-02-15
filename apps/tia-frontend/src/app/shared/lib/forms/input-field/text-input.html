@@ -30,7 +30,7 @@
         [placeholder]="isDateType() ? 'dd/mm/yyyy' : mergedConfig().placeholder" [disabled]="isDisabled()"
         [readOnly]="isReadonly()" [min]="mergedConfig().min" [max]="mergedConfig().max" [name]="cfg.name || ''"
         [autocomplete]="mergedConfig().autocomplete || 'off'" [class]="fieldClasses()" (input)="handleInput($event)"
-        (blur)="handleBlur($event)" (focus)="handleFocus($event)" (keydown)="checkCapsLock($event)"
+        (blur)="handleBlur($event)" (focus)="handleFocus($event)" (keydown)="handleKeydown($event)"
         (keyup)="checkCapsLock($event)" [attr.maxlength]="isDateType() ? 10 : null" />
 
     @if (isPasswordType()) {

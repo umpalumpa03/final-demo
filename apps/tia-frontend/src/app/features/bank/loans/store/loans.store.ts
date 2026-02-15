@@ -9,7 +9,6 @@ import {
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { pipe, switchMap, tap, map, catchError, EMPTY, delay } from 'rxjs';
-import { HttpErrorResponse } from '@angular/common/http';
 import { selectAccounts } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { toTitleCase } from '../shared/utils/titlecase.util';
 import { LoansService } from '../shared/services/loans.service';
