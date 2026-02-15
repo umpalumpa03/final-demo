@@ -88,6 +88,7 @@
   }
 </app-ui-modal>
 
+@if(isOtpModalOpen()) {
 <app-ui-modal [isOpen]="isOtpModalOpen()" (closed)="onOtpClose()">
   <app-otp-verification
     type="otp"
@@ -95,13 +96,12 @@
     [isBtnRowDirection]="true"
     redirectText="Paybills Template"
     [inputOtpConfig]="otpConfig"
-    (isResendCalled)="resendOtp($event)"
     (onBackOut)="onOtpClose()"
     (isVerifyCalled)="onOtpVerify($event)"
     [isButtonLoading]="true"
   ></app-otp-verification>
 </app-ui-modal>
-
+} @if(succesModalHidden()) {
 <app-success-modal
   [title]="'paybill.templates.success.title' | translate"
   [description]="'paybill.templates.success.subText' | translate"
@@ -110,3 +110,4 @@
   (closed)="onSuccessDone()"
   (done)="onSuccessDone()"
 ></app-success-modal>
+}
