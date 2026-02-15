@@ -10,7 +10,7 @@ import {
   selectChallengeId,
   selectIsFormValid,
 } from '../../../store/paybill.selectors';
-import { mockTemplates, createStore } from './integration-test.setup';
+import { mockTemplates, createStore } from './payment.test-helpers';
 
 describe('Integration: Payment Flow', () => {
   let store: ReturnType<typeof createStore>;

@@ -7,7 +7,7 @@ import {
   selectSelectedTemplates,
 } from '../../../store/paybill.selectors';
 import { Templates } from '../models/paybill-templates.model';
-import { mockTemplates, createStore } from './integration-test.setup';
+import { mockTemplates, createStore } from './payment.test-helpers';
 
 describe('Integration: Template CRUD', () => {
   let store: ReturnType<typeof createStore>;

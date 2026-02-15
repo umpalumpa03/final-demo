@@ -9,7 +9,7 @@ import {
   mockTemplates,
   mockGroups,
   createStore,
-} from './integration-test.setup';
+} from './payment.test-helpers';
 
 describe('Integration: Move Template Between Groups', () => {
   let store: ReturnType<typeof createStore>;

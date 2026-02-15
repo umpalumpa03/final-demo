@@ -7,7 +7,7 @@ import {
 import {
   mockTemplates,
   createStore,
-} from './integration-test.setup';
+} from './payment.test-helpers';
 
 describe('Integration: Derived Selectors', () => {
   let store: ReturnType<typeof createStore>;
