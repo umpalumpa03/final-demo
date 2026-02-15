@@ -61,7 +61,7 @@ export class DashboardService {
 
   public readonly gridColumns = computed(() => {
     const itemCount = this.myItems().length;
-    const isVertical = this.breakpointService.isTablet() || itemCount < 3;
+    const isVertical = this.breakpointService.isLTablet() || itemCount < 3;
     return isVertical
       ? { default: 1, md: 1, sm: 1 }
       : { default: 2, md: 2, sm: 1 };
@@ -69,7 +69,7 @@ export class DashboardService {
 
   public readonly dynamicColspans = computed(() => {
     const items = this.myItems();
-    const isVertical = this.breakpointService.isTablet() || items.length < 3;
+    const isVertical = this.breakpointService.isLTablet() || items.length < 3;
     return items.map((_, index) => (isVertical ? 1 : index === 0 ? 2 : 1));
   });
 

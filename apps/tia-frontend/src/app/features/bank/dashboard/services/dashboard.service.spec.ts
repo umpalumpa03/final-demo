@@ -53,6 +53,7 @@ describe('DashboardService', () => {
     const mockBreakpoint = {
       isTablet: signal(false),
       isXsMobile: signal(false),
+      isLTablet: signal(false),
     };
 
     TestBed.configureTestingModule({
@@ -202,14 +203,14 @@ describe('DashboardService', () => {
 
   describe('Responsive Layout Signals', () => {
     it('dynamicColspans: should return [2, 1, 1] when NOT tablet and 3+ items exist', () => {
-      (service as any).breakpointService.isTablet.set(false);
+      (service as any).breakpointService.isLTablet.set(false);
       service.myItems.set([{ id: '1' }, { id: '2' }, { id: '3' }] as any);
 
       expect(service.dynamicColspans()).toEqual([2, 1, 1]);
     });
 
     it('dynamicColspans: should return [1, 1] when < 3 items exist', () => {
-      (service as any).breakpointService.isTablet.set(false);
+      (service as any).breakpointService.isLTablet.set(false);
       service.myItems.set([{ id: '1' }, { id: '2' }] as any);
 
       expect(service.dynamicColspans()).toEqual([1, 1]);
