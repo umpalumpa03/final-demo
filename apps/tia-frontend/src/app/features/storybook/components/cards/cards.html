@@ -4,8 +4,9 @@
   </div>
 
   <section class="cards-section">
-    <h2 class="cards-section__title"> {{'storybook.cards.basicCard' | translate }}
-</h2>
+    <h2 class="cards-section__title">
+      {{'storybook.cards.basicCard' | translate }}
+    </h2>
     <div class="cards-section__grid">
       @for (card of basicCards(); track card.id) {
       <app-basic-card
@@ -28,11 +29,17 @@
         [borderColor]="card.borderColor ?? ''"
         [gap]="card.gap"
         [backgroundColor]="card.backgroundColor"
+        [hasTransition]="card.hasTransition ?? false"
+        [customTransition]="card.customTransition ?? 'all 0.3s ease'"
       >
         @if (card.hasFooter) {
         <div class="card-footer" card-footer>
-          <app-button size="default" variant="outline">{{'storybook.cards.cancelBtn' | translate }}</app-button>
-          <app-button size="default" variant="default">{{'storybook.cards.submitBtn' | translate }}</app-button>
+          <app-button size="default" variant="outline"
+            >{{'storybook.cards.cancelBtn' | translate }}</app-button
+          >
+          <app-button size="default" variant="default"
+            >{{'storybook.cards.submitBtn' | translate }}</app-button
+          >
         </div>
         }
       </app-basic-card>
@@ -41,8 +48,9 @@
   </section>
 
   <section class="cards-section">
-    <h2 class="cards-section__title"> {{'storybook.cards.StatisticsCards' | translate }}
-</h2>
+    <h2 class="cards-section__title">
+      {{'storybook.cards.StatisticsCards' | translate }}
+    </h2>
     <div class="cards-section__grid cards-section__grid--stats">
       @for (card of statisticsCards(); track card.id) {
       <app-statistic-card
@@ -55,13 +63,16 @@
         [height]="card.height"
         [minWidth]="card.minWidth"
         [maxWidth]="card.maxWidth"
+        [hasTransition]="card.hasTransition ?? false"
+        [customTransition]="card.customTransition ?? 'all 0.3s ease'"
       />
       }
     </div>
   </section>
   <section class="cards-section">
-    <h2 class="cards-section__title"> {{'storybook.cards.categoryCards' | translate }}
-</h2>
+    <h2 class="cards-section__title">
+      {{'storybook.cards.categoryCards' | translate }}
+    </h2>
     <div class="cards-section__grid cards-section__grid--category">
       @for (card of categoryCards(); track card.id) {
       <app-category-card

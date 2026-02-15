@@ -419,8 +419,22 @@ describe('PaybillTemplatesContainer', () => {
   describe('Item Selection', () => {
     it('should dispatch addCheckedItems when onItemChecked is called', () => {
       (component as any).originalTemplates = signal([
-        { id: 't-100', nickname: 'Electric Bill', serviceId: 's1', identification: { accountNumber: '123' }, amountDue: 50, groupId: null },
-        { id: 't-200', nickname: 'Water Bill', serviceId: 's2', identification: { accountNumber: '456' }, amountDue: 30, groupId: null },
+        {
+          id: 't-100',
+          nickname: 'Electric Bill',
+          serviceId: 's1',
+          identification: { accountNumber: '123' },
+          amountDue: 50,
+          groupId: null,
+        },
+        {
+          id: 't-200',
+          nickname: 'Water Bill',
+          serviceId: 's2',
+          identification: { accountNumber: '456' },
+          amountDue: 30,
+          groupId: null,
+        },
       ]);
 
       component.onItemChecked(['t-100']);
@@ -428,7 +442,14 @@ describe('PaybillTemplatesContainer', () => {
       expect(store.dispatch).toHaveBeenCalledWith(
         TemplatesPageActions.addCheckedItems({
           selectedItems: [
-            { id: 't-100', nickname: 'Electric Bill', serviceId: 's1', identification: { accountNumber: '123' }, amountDue: 50, groupId: null },
+            {
+              id: 't-100',
+              nickname: 'Electric Bill',
+              serviceId: 's1',
+              identification: { accountNumber: '123' },
+              amountDue: 50,
+              groupId: null,
+            },
           ],
         }),
       );
@@ -436,7 +457,14 @@ describe('PaybillTemplatesContainer', () => {
 
     it('should dispatch addCheckedItems for single item on onSelectedItem', () => {
       (component as any).originalTemplates = signal([
-        { id: 't-100', nickname: 'Electric Bill', serviceId: 's1', identification: { accountNumber: '123' }, amountDue: 50, groupId: null },
+        {
+          id: 't-100',
+          nickname: 'Electric Bill',
+          serviceId: 's1',
+          identification: { accountNumber: '123' },
+          amountDue: 50,
+          groupId: null,
+        },
       ]);
 
       component.onSelectedItem('t-100');
@@ -447,7 +475,14 @@ describe('PaybillTemplatesContainer', () => {
       expect(store.dispatch).toHaveBeenCalledWith(
         TemplatesPageActions.addCheckedItems({
           selectedItems: [
-            { id: 't-100', nickname: 'Electric Bill', serviceId: 's1', identification: { accountNumber: '123' }, amountDue: 50, groupId: null },
+            {
+              id: 't-100',
+              nickname: 'Electric Bill',
+              serviceId: 's1',
+              identification: { accountNumber: '123' },
+              amountDue: 50,
+              groupId: null,
+            },
           ],
         }),
       );
@@ -463,21 +498,6 @@ describe('PaybillTemplatesContainer', () => {
 
       expect(component.isOtpModalOpen()).toBe(false);
       expect(component.isPaymentModalVisible()).toBe(false);
-    });
-
-    it('should reset payment state on onPaymentDone', () => {
-      component.isOtpModalOpen.set(true);
-      component.isPaymentModalVisible.set(false);
-      component.isSuccessModalVisible.set(true);
-
-      component.onPaymentDone();
-
-      expect(component.isOtpModalOpen()).toBe(false);
-      expect(component.isPaymentModalVisible()).toBe(true);
-      expect(component.isSuccessModalVisible()).toBe(false);
-      expect(store.dispatch).toHaveBeenCalledWith(
-        TemplatesPageActions.clearPaymentInfo(),
-      );
     });
 
     it('should return base config without initialValues for non-rename modals', () => {

@@ -11,12 +11,13 @@ import { Store } from '@ngrx/store';
 import { selectUserInfo } from '../../../store/user-info/user-info.selectors'; 
 import { ButtonComponent } from '../../../shared/lib/primitives/button/button';
 import { BIRTHDAY_EMOJIS } from '../config/birthday.config';
-import confetti from 'canvas-confetti'; 
+import confetti from 'canvas-confetti';
+import {TranslatePipe, TranslateModule} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-birthday-modal',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, ButtonComponent],
+  imports: [CommonModule, ButtonComponent,TranslatePipe, TranslateModule],
   templateUrl: './birthday-modal.html',
   styleUrl: './birthday-modal.scss',
 })

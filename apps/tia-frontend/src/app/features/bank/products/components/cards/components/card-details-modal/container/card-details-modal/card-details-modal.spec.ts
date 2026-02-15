@@ -11,7 +11,7 @@ import { provideRouter } from '@angular/router';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
-import { selectCardDetailsModalData, selectCardSensitiveData } from 'apps/tia-frontend/src/app/store/products/cards/cards.selectors';
+import { selectCardDetailsModalData } from 'apps/tia-frontend/src/app/store/products/cards/cards.selectors';
 
 describe('CardDetailsModal', () => {
   let component: CardDetailsModal;
@@ -124,26 +124,25 @@ it('should dispatch openCardOtpModal action when cardId exists', () => {
     expect(dispatchSpy).toHaveBeenCalledWith(closeCardOtpModal());
   });
 
-it('should combine modalData and cardSensitiveData observables', async () => {
-  store.overrideSelector(selectCardDetailsModalData, mockModalData);
-  store.overrideSelector(selectCardSensitiveData, {
-    'card-1': {
-      cardNumber: '1234567890123456',
-      cvv: '123',
-      expiryDate: '12/28',
-      cardholderName: 'John Doe',
-    },
-  });
-  store.refreshState();
+ 
+  it('should return null when modalData cardId is missing', async () => {
+    const stateWithoutCardId = {
+      ...initialState,
+      cards: {
+        ...initialState.cards,
+        cardDetails: {},
+        cardImages: {},
+      },
+    };
 
-  const data = await firstValueFrom(component.cardSensitiveData$);
-  
-  expect(data).toEqual({
-    "cardNumber": "1234567890123456",
-    "cardholderName": "John Doe",
-    "cvv": "123",
-    "expiryDate": "12/28",
-  });
-});
+    store.setState(stateWithoutCardId);
 
+    const data = await firstValueFrom(component.cardSensitiveData$);
+    expect(data).toBeNull();
+  });
+
+  it('should return null when sensitiveData for cardId does not exist', async () => {
+    const data = await firstValueFrom(component.cardSensitiveData$);
+    expect(data).toBeNull();
+  });
 });
