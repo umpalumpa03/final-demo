@@ -18,7 +18,10 @@
     "any": "Any",
     "title": "Filters",
     "subtitle": "Apply filters to refine your transaction list",
-    "show_filters": "Show Filters"
+    "show_filters": "Show Filters",
+    "errors": {
+      "max_date": "Date cannot be later than {{date}}"
+    }
   },
   "table": {
     "headers": {

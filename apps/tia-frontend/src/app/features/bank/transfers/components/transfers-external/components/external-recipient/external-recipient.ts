@@ -23,7 +23,7 @@ import {
 } from '@angular/forms';
 import { InputConfig } from '@tia/shared/lib/forms/models/input.model';
 import { recipientValidator } from '../../validators/transfer-validator';
-import { TransferValidationService } from '../../services/transfer-validation.service';
+import { TransferValidationService } from '../../../../services/transfer-validation.service';
 import {
   getErrorMessage,
   getSuccessMessage,

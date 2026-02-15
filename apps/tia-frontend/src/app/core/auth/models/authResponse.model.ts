@@ -55,10 +55,6 @@ export interface phoneOtpError {
   remainingAttempts?: number;
 }
 
-export interface OtpResponse {
-  message: string;
-}
-
 export interface ILogoutResponse {
   success: boolean;
 }

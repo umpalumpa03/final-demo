@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { FormControl } from '@angular/forms';
 import { recipientValidator } from './transfer-validator';
-import { TransferValidationService } from '../services/transfer-validation.service';
+import { TransferValidationService } from '../../../services/transfer-validation.service';
 
 describe('recipientValidator', () => {
   let mockValidationService: any;

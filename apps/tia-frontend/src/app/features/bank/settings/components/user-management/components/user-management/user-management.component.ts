@@ -20,11 +20,17 @@ import { usePagination } from '../../shared/services/pagination.service';
 import { UserModalService } from '../../shared/services/user-modal.service';
 import { UserEditModal } from '../../shared/ui/user-edit-modal/user-edit-modal';
 import { IUpdateUserRequest } from '../../shared/models/users.model';
-import { debounceTime, distinctUntilChanged, Subject, tap } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, Subject, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UserSearchService } from '../../shared/services/user-search.service';
 import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
 import { TranslatePipe } from '@ngx-translate/core';
+import {
+  FormControl,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 
 @Component({
   selector: 'app-user-management',
@@ -38,13 +44,15 @@ import { TranslatePipe } from '@ngx-translate/core';
     UserEditModal,
     ErrorStates,
     TranslatePipe,
+    FormsModule,
+    ReactiveFormsModule,
   ],
   templateUrl: './user-management.component.html',
   styleUrl: './user-management.component.scss',
-  providers: [UserManagementState, UserManagementStore, UserModalService],
+  providers: [UserManagementState, UserModalService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UserManagementComponent implements OnInit, OnDestroy {
+export class UserManagementComponent implements OnInit {
   protected readonly userState = inject(UserManagementState);
   protected readonly store = inject(UserManagementStore);
   protected readonly modalService = inject(UserModalService);
@@ -57,6 +65,15 @@ export class UserManagementComponent implements OnInit, OnDestroy {
       this.store.users,
       this.searchQuery,
     );
+
+  public readonly searchControl = new FormControl('', {
+    nonNullable: true,
+    validators: [
+      Validators.minLength(3),
+      Validators.pattern(/^[a-zA-Z0-9 ]*$/),
+      Validators.maxLength(100),
+    ],
+  });
 
   protected readonly isSaving = signal(false);
 
@@ -90,6 +107,9 @@ export class UserManagementComponent implements OnInit, OnDestroy {
         debounceTime(300),
         distinctUntilChanged(),
         takeUntilDestroyed(),
+        filter(
+          () => this.searchControl.valid || this.searchControl.value === '',
+        ),
         tap((query) => {
           this.searchQuery.set(query);
           this.pagination.setPage(1);
@@ -99,11 +119,11 @@ export class UserManagementComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.store.loadUsers();
+    this.store.loadUsers({});
   }
 
   public loadData(): void {
-    this.store.loadUsers();
+    this.store.loadUsers({ force: true });
   }
 
   public onSearch(query: InputFieldValue): void {
@@ -156,9 +176,5 @@ export class UserManagementComponent implements OnInit, OnDestroy {
   public onCloseModal(): void {
     this.modalService.close();
     this.store.clearSelectedUser();
-  }
-
-  ngOnDestroy() {
-    this.store.reset();
   }
 }

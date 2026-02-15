@@ -1,4 +1,5 @@
 import { Account } from '../../../../shared/models/accounts/accounts.model';
+import { ITransactions } from '@tia/shared/models/transactions/transactions.models';
 
 export interface AccountNotification {
   id?: string;
@@ -19,6 +20,9 @@ export interface AccountsState {
   isCreateModalOpen: boolean;
   isUpdatingFriendlyName: boolean;
   updateFriendlyNameError: string | null;
+  lastTransactions: Record<string, ITransactions | null>;
+  isLoadingLastTransactions: boolean;
+  lastTransactionsError: string | null;
   notifications: AccountNotification[];
 }
 
@@ -35,5 +39,8 @@ export const initialAccountsState: AccountsState = {
   isCreateModalOpen: false,
   isUpdatingFriendlyName: false,
   updateFriendlyNameError: null,
+  lastTransactions: {},
+  isLoadingLastTransactions: false,
+  lastTransactionsError: null,
   notifications: [],
 };

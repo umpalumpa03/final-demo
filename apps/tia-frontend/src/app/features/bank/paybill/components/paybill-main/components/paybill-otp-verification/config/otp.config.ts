@@ -3,5 +3,5 @@ export const otpConfiguration = {
   subText: 'paybill.main.otp.subtitle',
   submitBtnName: 'paybill.main.otp.verify_btn',
   backLinkText: 'paybill.main.otp.cancel_btn',
-  iconUrl: 'images/svg/auth/secured.svg',
+  iconUrl: 'images/svg/auth/secured-blue.svg',
 } as const;

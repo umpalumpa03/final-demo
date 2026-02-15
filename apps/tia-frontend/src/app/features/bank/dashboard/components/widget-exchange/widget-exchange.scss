@@ -5,6 +5,8 @@
   @include display-flex(column);
   gap: 1.6rem;
   padding: 1rem;
+  height: 100%;
+  flex: 1;
 
   &__title {
     @include font-inter(600, 2rem, 2.8rem);
@@ -13,21 +15,16 @@
   }
 }
 
-.loader-wrapper{
-  height: 33rem;
-}
-
 .exchange-rate-card {
-  @include display-flex(row);
-  justify-content: space-between;
-  align-items: center;
+  @include flex-center(row, space-between, center);
   padding: 1.6rem;
   background-color: $gray-25;
   border-radius: 1.2rem;
+  flex: 1;
+  min-height: 8rem;
 
   &__info {
-    @include display-flex(row);
-    align-items: center;
+    @include flex-center(row, flex-start, center);
     gap: 1.2rem;
   }
 
@@ -36,9 +33,7 @@
     height: 4.8rem;
     border-radius: 50%;
     background-color: $blue-royal-secondary;
-    @include display-flex(row);
-    align-items: center;
-    justify-content: center;
+    @include flex-center(row, center, center);
     @include font-inter(600, 2rem, 2.4rem);
     color: $blue-800;
   }
@@ -55,8 +50,7 @@
 
   &__change {
     @include font-inter(500, 1.4rem, 2rem);
-    @include display-flex(row);
-    align-items: center;
+    @include flex-center(row, flex-start, center);
     gap: 0.4rem;
 
     &--positive {

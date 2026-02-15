@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { RecipientType } from '../../../models/transfers.state.model';
+import { RecipientType } from '../models/transfers.state.model';
 
 @Injectable({ providedIn: 'root' })
 export class TransferValidationService {

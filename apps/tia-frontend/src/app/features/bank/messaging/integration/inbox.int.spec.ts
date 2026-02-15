@@ -100,9 +100,6 @@ describe('Messaging Integration - Load Inbox Flow', () => {
       pagination: { hasNextPage: false, nextCursor: null },
     });
 
-    const importantReq2 = ctx.httpMock.expectOne(
-      `${environment.apiUrl}/mails/importants/unread`
-    );
-    importantReq2.flush({ count: 0 });
+    ctx.httpMock.expectNone(`${environment.apiUrl}/mails/importants/unread`);
   });
 });

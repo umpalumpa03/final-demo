@@ -1,0 +1,80 @@
+@if (isOpen()) {
+<div class="date-picker" (click)="$event.stopPropagation()">
+    <div class="date-picker__header">
+        @if (currentView() === 'calendar') {
+        <button type="button" class="date-picker__nav-btn" (click)="previousMonth()">
+            <img src="./images/svg/library-input/chevron-left-icon.svg" class="date-picker__nav-icon">
+        </button>
+        } @else {
+        <div></div> }
+
+        <div class="date-picker__title">
+            <button type="button" class="date-picker__title-btn" (click)="switchToMonths()">
+                {{ months[currentMonth().getMonth()] }}
+            </button>
+            <button type="button" class="date-picker__title-btn" (click)="switchToYears()">
+                {{ currentMonth().getFullYear() }}
+            </button>
+        </div>
+
+        @if (currentView() === 'calendar') {
+        <button type="button" class="date-picker__nav-btn" (click)="nextMonth()">
+            <img src="./images/svg/library-input/chevron-right-icon.svg" class="date-picker__nav-icon">
+        </button>
+        } @else {
+        <div></div> }
+    </div>
+
+    @if (currentView() === 'calendar') {
+    <div class="date-picker__weekdays">
+        @for (day of weekDays; track day) {
+        <div class="date-picker__weekday">{{ day }}</div>
+        }
+    </div>
+    <div class="date-picker__grid">
+        @for (day of calendarDays(); track $index) {
+        <button type="button" class="date-picker__day" [class.date-picker__day--other-month]="!day.isCurrentMonth"
+            [class.date-picker__day--today]="day.isToday" [class.date-picker__day--selected]="day.isSelected"
+            [class.date-picker__day--disabled]="day.isDisabled" [disabled]="day.isDisabled" (click)="selectDate(day)">
+            {{ day.day }}
+        </button>
+        }
+    </div>
+    }
+
+    @if (currentView() === 'months') {
+    <div class="date-picker__selection-grid">
+        @for (month of months; track $index) {
+        <button type="button" class="date-picker__selection-item"
+            [class.date-picker__selection-item--active]="$index === currentMonth().getMonth()"
+            (click)="selectMonth($index)">
+            {{ month.substring(0, 3) }}
+        </button>
+        }
+    </div>
+    }
+
+    @if (currentView() === 'years') {
+    <div class="date-picker__selection-grid">
+        @for (year of yearList(); track year) {
+        <button type="button" class="date-picker__selection-item"
+            [class.date-picker__selection-item--active]="year === currentMonth().getFullYear()"
+            [class.date-picker__selection-item--disabled]="isYearDisabled(year)" [disabled]="isYearDisabled(year)"
+            (click)="selectYear(year)">
+            {{ year }}
+        </button>
+        }
+    </div>
+    }
+
+    <div class="date-picker__footer">
+        <button type="button" class="date-picker__action-btn date-picker__action-btn--secondary"
+            (click)="selectToday()">
+            Today
+        </button>
+        <button type="button" class="date-picker__action-btn date-picker__action-btn--primary" (click)="close()">
+            Close
+        </button>
+    </div>
+</div>
+}

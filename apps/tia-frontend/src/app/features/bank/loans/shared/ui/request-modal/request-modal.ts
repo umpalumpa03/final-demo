@@ -12,7 +12,10 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { NUMBER_REGEX } from '../../config/loan-request.config';
+import {
+  NUMBER_REGEX,
+  TEXT_ONLY_REGEX,
+} from '../../config/loan-request.config';
 import { IDropdownOption, ILoanRequest } from '../../models/loan-request.model';
 import { selectAccounts } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 
@@ -74,7 +77,7 @@ export class RequestModal implements OnInit {
   public readonly form = this.fb.group({
     loanAmount: [
       null as number | null,
-      [Validators.required, Validators.min(100)],
+      [Validators.required, Validators.min(100), Validators.max(1000000)],
     ],
     amountToReceiveAccountId: ['', Validators.required],
     months: [null as number | null, Validators.required],
@@ -82,17 +85,58 @@ export class RequestModal implements OnInit {
     firstPaymentDate: ['', Validators.required],
     contact: this.fb.group({
       address: this.fb.group({
-        street: ['', Validators.required],
-        city: ['', Validators.required],
-        region: ['', Validators.required],
+        street: [
+          '',
+          [
+            Validators.required,
+            Validators.minLength(3),
+            Validators.maxLength(100),
+          ],
+        ],
+        city: [
+          '',
+          [
+            Validators.required,
+            Validators.pattern(TEXT_ONLY_REGEX),
+            Validators.maxLength(50),
+          ],
+        ],
+        region: [
+          '',
+          [
+            Validators.required,
+            Validators.pattern(TEXT_ONLY_REGEX),
+            Validators.maxLength(50),
+          ],
+        ],
         postalCode: [
           '',
-          [Validators.required, Validators.pattern(NUMBER_REGEX)],
+          [
+            Validators.required,
+            Validators.pattern(NUMBER_REGEX),
+            Validators.minLength(4),
+            Validators.maxLength(10),
+          ],
         ],
       }),
       contactPerson: this.fb.group({
-        name: ['', Validators.required],
-        relationship: ['', Validators.required],
+        name: [
+          '',
+          [
+            Validators.required,
+            Validators.minLength(2),
+            Validators.maxLength(100),
+            Validators.pattern(TEXT_ONLY_REGEX),
+          ],
+        ],
+        relationship: [
+          '',
+          [
+            Validators.required,
+            Validators.maxLength(30),
+            Validators.pattern(TEXT_ONLY_REGEX),
+          ],
+        ],
         phone: [
           '',
           [
@@ -102,7 +146,10 @@ export class RequestModal implements OnInit {
             Validators.maxLength(9),
           ],
         ],
-        email: ['', [Validators.required, Validators.email]],
+        email: [
+          '',
+          [Validators.required, Validators.email, Validators.maxLength(100)],
+        ],
       }),
     }),
   });

@@ -15,6 +15,9 @@ export const {
   selectIsCreateModalOpen,
   selectIsUpdatingFriendlyName,
   selectUpdateFriendlyNameError,
+  selectLastTransactions,
+  selectIsLoadingLastTransactions,
+  selectLastTransactionsError,
   selectNotifications,
 } = accountsFeature;
 

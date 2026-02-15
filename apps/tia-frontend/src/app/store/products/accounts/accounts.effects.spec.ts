@@ -13,6 +13,7 @@ import {
   AccountType,
 } from '../../../shared/models/accounts/accounts.model';
 import { AccountsApiService } from '../../../shared/services/accounts/accounts.api.service';
+import { TransactionApiService } from '../../../shared/services/transactions-service/transactions.api.service';
 import { AlertService } from '../../../core/services/alert/alert.service';
 
 describe('AccountsEffects', () => {
@@ -40,7 +41,7 @@ describe('AccountsEffects', () => {
   };
 
   beforeEach(() => {
-    const serviceMock = {
+    const accountsServiceMock = {
       getAccounts: vi.fn(),
       getActiveAccounts: vi.fn(),
       createAccount: vi.fn(),
@@ -57,6 +58,9 @@ describe('AccountsEffects', () => {
       error: vi.fn(),
       success: vi.fn(),
     };
+    const transactionServiceMock = {
+      getTransactions: vi.fn(),
+    };
 
     TestBed.configureTestingModule({
       providers: [
@@ -65,7 +69,8 @@ describe('AccountsEffects', () => {
         provideMockStore({
           selectors: [{ selector: selectAccounts, value: [] }],
         }),
-        { provide: AccountsApiService, useValue: serviceMock },
+        { provide: AccountsApiService, useValue: accountsServiceMock },
+        { provide: TransactionApiService, useValue: transactionServiceMock },
         { provide: TranslateService, useValue: translateMock },
         { provide: AlertService, useValue: alertServiceMock },
       ],
@@ -179,16 +184,40 @@ describe('AccountsEffects', () => {
       );
     });
 
-    it('should return createAccountFailure on error', () => {
-      const request = {
-        friendlyName: 'New',
-        type: AccountType.saving,
-        currency: 'USD',
-      };
+    it('should return createAccountFailure on error with message', () => {
+      vi.spyOn(service, 'createAccount').mockReturnValue(
+        throwError(() => new Error('Create failed')),
+      );
+      actions$ = of(
+        AccountsActions.createAccount({
+          request: {
+            friendlyName: 'New',
+            type: AccountType.saving,
+            currency: 'USD',
+          },
+        }),
+      );
+
+      let result: Action | undefined;
+      effects.createAccount$.subscribe((action) => (result = action));
+      expect(result).toEqual(
+        AccountsActions.createAccountFailure({ error: 'Create failed' }),
+      );
+    });
+
+    it('should return createAccountFailure with fallback message when error has no message', () => {
       vi.spyOn(service, 'createAccount').mockReturnValue(
         throwError(() => ({})),
       );
-      actions$ = of(AccountsActions.createAccount({ request }));
+      actions$ = of(
+        AccountsActions.createAccount({
+          request: {
+            friendlyName: 'New',
+            type: AccountType.saving,
+            currency: 'USD',
+          },
+        }),
+      );
 
       let result: Action | undefined;
       effects.createAccount$.subscribe((action) => (result = action));
@@ -222,6 +251,26 @@ describe('AccountsEffects', () => {
 
     it('should return updateFriendlyNameFailure on error', () => {
       vi.spyOn(service, 'updateFriendlyName').mockReturnValue(
+        throwError(() => new Error('Update failed')),
+      );
+      actions$ = of(
+        AccountsActions.updateFriendlyName({
+          accountId: '1',
+          friendlyName: 'Updated',
+        }),
+      );
+
+      let result: Action | undefined;
+      effects.updateFriendlyName$.subscribe((action) => (result = action));
+      expect(result).toEqual(
+        AccountsActions.updateFriendlyNameFailure({
+          error: 'Update failed',
+        }),
+      );
+    });
+
+    it('should return updateFriendlyNameFailure with fallback when error has no message', () => {
+      vi.spyOn(service, 'updateFriendlyName').mockReturnValue(
         throwError(() => ({})),
       );
       actions$ = of(
@@ -236,6 +285,106 @@ describe('AccountsEffects', () => {
       expect(result).toEqual(
         AccountsActions.updateFriendlyNameFailure({
           error: 'Failed to update friendly name',
+        }),
+      );
+    });
+  });
+
+  describe('enrichAccountsWithLastTransactions$', () => {
+    let transactionService: TransactionApiService;
+
+    beforeEach(() => {
+      transactionService = TestBed.inject(TransactionApiService);
+    });
+
+    it('should return enrichAccountsSuccess with empty object when accounts array is empty', () => {
+      actions$ = of(AccountsActions.loadAccountsSuccess({ accounts: [] }));
+
+      let result: Action | undefined;
+      effects.enrichAccountsWithLastTransactions$.subscribe(
+        (action) => (result = action),
+      );
+      expect(result).toEqual(
+        AccountsActions.enrichAccountsSuccess({ lastTransactions: {} }),
+      );
+      expect(transactionService.getTransactions).not.toHaveBeenCalled();
+    });
+
+    it('should return enrichAccountsSuccess with lastTransactions when loadAccountsSuccess has accounts', () => {
+      const mockTx = {
+        id: 'tx1',
+        amount: 100,
+        createdAt: '2026-01-01',
+        creditAccountNumber: mockAccount.iban,
+        debitAccountNumber: 'OTHER',
+        transactionType: 'credit' as const,
+      };
+      vi.spyOn(transactionService, 'getTransactions').mockReturnValue(
+        of({ items: [mockTx], total: 1 } as any),
+      );
+      actions$ = of(
+        AccountsActions.loadAccountsSuccess({ accounts: [mockAccount] }),
+      );
+
+      let result: Action | undefined;
+      effects.enrichAccountsWithLastTransactions$.subscribe(
+        (action) => (result = action),
+      );
+      expect(transactionService.getTransactions).toHaveBeenCalledWith({
+        accountIban: mockAccount.iban,
+        pageLimit: 1,
+      });
+      expect(result).toEqual(
+        AccountsActions.enrichAccountsSuccess({
+          lastTransactions: { [mockAccount.iban]: mockTx },
+        }),
+      );
+    });
+
+    it('should return enrichAccountsSuccess when one account request fails (null for that iban)', () => {
+      vi.spyOn(transactionService, 'getTransactions')
+        .mockReturnValueOnce(of({ items: [], total: 0 } as any))
+        .mockReturnValueOnce(throwError(() => new Error('tx failed')));
+      const account2 = {
+        ...mockAccount,
+        id: '2',
+        iban: 'GE99XX0000000000000002',
+      };
+      actions$ = of(
+        AccountsActions.loadAccountsSuccess({
+          accounts: [mockAccount, account2],
+        }),
+      );
+
+      let result: Action | undefined;
+      effects.enrichAccountsWithLastTransactions$.subscribe(
+        (action) => (result = action),
+      );
+      expect(result).toEqual(
+        AccountsActions.enrichAccountsSuccess({
+          lastTransactions: {
+            [mockAccount.iban]: null,
+            [account2.iban]: null,
+          },
+        }),
+      );
+    });
+
+    it('should run on loadActiveAccountsSuccess', () => {
+      vi.spyOn(transactionService, 'getTransactions').mockReturnValue(
+        of({ items: [], total: 0 } as any),
+      );
+      actions$ = of(
+        AccountsActions.loadActiveAccountsSuccess({ accounts: [mockAccount] }),
+      );
+
+      let result: Action | undefined;
+      effects.enrichAccountsWithLastTransactions$.subscribe(
+        (action) => (result = action),
+      );
+      expect(result).toEqual(
+        AccountsActions.enrichAccountsSuccess({
+          lastTransactions: { [mockAccount.iban]: null },
         }),
       );
     });

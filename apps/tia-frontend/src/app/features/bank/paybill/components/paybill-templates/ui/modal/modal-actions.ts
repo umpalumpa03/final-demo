@@ -22,4 +22,13 @@ export class ModalActions {
   public isLoading = input<boolean>(false);
   public cancel = output<void>();
   public submit = output<void>();
+  public isDisabled = input<boolean>(false);
+
+  public submitHandler(): void {
+    if (this.isDisabled()) {
+      return;
+    }
+
+    this.submit.emit();
+  }
 }

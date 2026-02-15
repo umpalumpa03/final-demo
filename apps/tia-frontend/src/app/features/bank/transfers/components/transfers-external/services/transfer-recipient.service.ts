@@ -10,7 +10,7 @@ import { filter, skip, take, tap } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { Account } from '@tia/shared/models/accounts/accounts.model';
 import { TransferStore } from '../../../store/transfers.store';
-import { TransferValidationService } from './transfer-validation.service';
+import { TransferValidationService } from '../../../services/transfer-validation.service';
 import {
   RecipientAccount,
   RecipientType,

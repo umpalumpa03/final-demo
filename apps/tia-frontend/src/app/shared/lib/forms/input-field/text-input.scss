@@ -14,16 +14,6 @@ $field-height: 3.6rem;
     gap: 0.6rem;
     @include font-inter(500, 1.4rem, 1);
     color: var(--color-fg);
-
-    &-icon {
-      width: 1.6rem;
-      height: 1.6rem;
-
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: center;
-      flex-shrink: 0;
-    }
   }
 
   &__required-star {
@@ -55,6 +45,20 @@ $field-height: 3.6rem;
     &--readonly {
       cursor: not-allowed;
     }
+
+    .text-input__hidden-date {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+      opacity: 0;
+      padding: 0;
+      margin: 0;
+      border: none;
+      pointer-events: none;
+      visibility: hidden;
+    }
   }
 
   &__caps-indicator {
@@ -82,7 +86,8 @@ $field-height: 3.6rem;
     background-repeat: no-repeat;
     background-size: contain;
 
-    filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(7498%) hue-rotate(326deg) brightness(101%) contrast(101%);
+    filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(7498%) hue-rotate(326deg) brightness(101%)
+      contrast(101%);
   }
 
   &__icon {
@@ -95,11 +100,18 @@ $field-height: 3.6rem;
     transition: color 0.2s ease;
 
     &-svg {
-      width: 1.8rem;
-      height: 1.8rem;
-      object-fit: cover;
+      width: 2rem;
+      height: 2rem;
+      background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
+      flex-shrink: 0;
+
+      &--calendar {
+        background-color: currentColor;
+        mask-image: url("/images/svg/library-input/calendar-icon.svg");
+        -webkit-mask-image: url("/images/svg/library-input/calendar-icon.svg");
+      }
     }
 
     &--prefix {
@@ -206,7 +218,6 @@ $field-height: 3.6rem;
     }
 
     &[type="number"] {
-
       &::-webkit-outer-spin-button,
       &::-webkit-inner-spin-button {
         -webkit-appearance: none;

@@ -11,6 +11,7 @@ import { Checkboxes } from "@tia/shared/lib/forms/checkboxes/checkboxes";
 import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
 import { Store } from '@ngrx/store';
 import { userInfoFeature } from 'apps/tia-frontend/src/app/store/user-info/user-info.reducer';
+import { selectCurrentUserEmail } from 'apps/tia-frontend/src/app/store/user-info/user-info.selectors';
 import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -32,6 +33,7 @@ export class Compose {
   public readonly roleStore = inject(Store);
   private readonly breakpointService = inject(BreakpointService);
   public readonly isExtraSmall = this.breakpointService.isExtraSmall;
+  private readonly currentUserEmail = this.roleStore.selectSignal(selectCurrentUserEmail);
 
   public readonly filteredSearchResultsCc = computed(() => {
     const selectedEmails = [
@@ -40,7 +42,7 @@ export class Compose {
     ].filter(Boolean);
 
     return this.store.searchResults().filter(
-      user => !selectedEmails.includes(user.email)
+      user => !selectedEmails.includes(user.email) && user.email !== this.currentUserEmail()
     );
   });
 
@@ -48,7 +50,7 @@ export class Compose {
     const selectedEmails = this.ccEmails().filter(Boolean);
 
     return this.store.searchResults().filter(
-      user => !selectedEmails.includes(user.email)
+      user => !selectedEmails.includes(user.email) && user.email !== this.currentUserEmail()
     );
   });
 
