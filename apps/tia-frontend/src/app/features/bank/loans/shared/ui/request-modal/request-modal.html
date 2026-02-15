@@ -1,5 +1,5 @@
 @let cfg = loanState;
-<app-ui-modal [isOpen]="isOpen()" (closed)="close.emit()">
+<app-ui-modal [isOpen]="isOpen()" [hasScroll]="true" (closed)="close.emit()">
     <div class="loan-modal" [formGroup]="form">
 
         <header class="loan-modal__header">
@@ -90,12 +90,16 @@
             </div>
 
             <footer class="loan-modal__footer">
-                <app-button [variant]="'outline'" (click)="close.emit()">
-                    {{ 'loans.buttons.cancel' | translate }}
-                </app-button>
-                <app-button [isDisabled]="form.invalid" (click)="onSave()">
-                    {{ 'loans.request.actions.submit' | translate }}
-                </app-button>
+                <div>
+                    <app-button [variant]="'outline'" [fullWidth]="true" (click)="close.emit()">
+                        {{ 'loans.buttons.cancel' | translate }}
+                    </app-button>
+                </div>
+                <div>
+                    <app-button [isDisabled]="form.invalid" [fullWidth]="true" (click)="onSave()">
+                        {{ 'loans.request.actions.submit' | translate }}
+                    </app-button>
+                </div>
             </footer>
         </main>
     </div>

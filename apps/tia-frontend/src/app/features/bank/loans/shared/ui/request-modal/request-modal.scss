@@ -1,6 +1,5 @@
 @use "../../../../../../shared/styles/palette" as *;
 @use "../../../../../../shared/styles/mixins" as *;
-@use "../../../../../../shared/styles/themes" as *;
 
 .loan-modal {
     @include display-flex(column);
@@ -42,14 +41,9 @@
     &__body {
         overflow-y: auto;
         @include display-flex(column);
+        padding-right: 2.48rem;
         gap: 2.4rem;
-
-        scrollbar-width: none;
-        &::-webkit-scrollbar {
-            display: none;
-        }
-
-        -ms-overflow-style: none;
+        @include custom-scrollbar;
     }
 
     &__section {
@@ -120,8 +114,13 @@
 
     &__footer {
         @include flex-center($justify: flex-end, $align: flex-start);
-        flex-wrap: wrap-reverse;
-        padding: 1.6rem;
         gap: 1.2rem;
+
+        @media (max-width: 550px) {
+            flex-direction: column-reverse;
+            > div {
+                width: 100%;
+            }
+        }
     }
 }
