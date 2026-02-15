@@ -50,7 +50,9 @@
       "verification_missing_title": "Verification Data Missing",
       "payment_missing_title": "Payment Data Missing",
       "missing_data_message": "We couldn't find your payment details. Please restart the payment process.",
-      "back_to_categories": "Back to Categories"
+      "back_to_categories": "Back to Categories",
+      "not-available": "Not Available",
+      "not-available-subtitle": "Such categories were not found!"
     },
     "form": {
       "subtitle": "Enter your bill details",

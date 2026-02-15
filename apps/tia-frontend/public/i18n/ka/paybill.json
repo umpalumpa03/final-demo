@@ -49,7 +49,9 @@
       "verification_missing_title": "თქვენი დადასტურება ვერ მოხერხდა",
       "payment_missing_title": "გადახდის მონაცემები ვერ მოიძებნა",
       "missing_data_message": "გადახდის დეტალები ვერ მოიძებნა. გთხოვთ, თავიდან დაიწყოთ პროცესი.",
-      "back_to_categories": "კატეგორიებზე დაბრუნება"
+      "back_to_categories": "კატეგორიებზე დაბრუნება",
+      "not-available": "შეცდომა",
+      "not-available-subtitle": "ასეთი პარამეტრებით კატეგორიები ვერ მოიძებნა"
     },
     "form": {
       "subtitle": "შეიყვანეთ დეტალები",
