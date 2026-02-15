@@ -137,7 +137,7 @@ export const TemplatesPageActions = createActionGroup({
       nickname: string;
     }>(),
     'Create Template Success': props<{
-      payload: any;
+      payload: Templates;
       message: string;
     }>(),
     'Create Template Failure': props<{ error: string }>(),

@@ -58,13 +58,15 @@ export class PaybillMainFacade {
         const fields = untracked(() => this.paymentFields());
 
         if (!fields || fields.length === 0) {
-          untracked(() => {
-            this.store.dispatch(
-              PaybillActions.loadPaymentDetails({
-                serviceId: provider.id,
-              }),
-            );
-          });
+          if (!this.router.url.includes('templates')) {
+            untracked(() => {
+              this.store.dispatch(
+                PaybillActions.loadPaymentDetails({
+                  serviceId: provider.id,
+                }),
+              );
+            });
+          }
         }
       }
     });
