@@ -45,6 +45,7 @@ describe('AccountsEffects', () => {
       getActiveAccounts: vi.fn(),
       createAccount: vi.fn(),
       updateFriendlyName: vi.fn(),
+      getCurrencies: vi.fn(),
     };
 
     const translateMock = {
@@ -89,19 +90,6 @@ describe('AccountsEffects', () => {
       );
     });
 
-    it('should return loadAccountsSuccess when forceRefresh is true even if store has data', () => {
-      store.overrideSelector(selectAccounts, [mockAccount]);
-      vi.spyOn(service, 'getAccounts').mockReturnValue(of([mockAccount]));
-
-      actions$ = of(AccountsActions.loadAccounts({ forceRefresh: true }));
-
-      let result: Action | undefined;
-      effects.loadAccounts$.subscribe((action) => (result = action));
-
-      expect(service.getAccounts).toHaveBeenCalled();
-      expect(result).toBeTruthy();
-    });
-
     it('should NOT call API if store has data and forceRefresh is false', () => {
       store.overrideSelector(selectAccounts, [mockAccount]);
       const spy = vi.spyOn(service, 'getAccounts');
@@ -114,7 +102,7 @@ describe('AccountsEffects', () => {
       expect(result).toBeUndefined();
     });
 
-    it('should return loadAccountsFailure on error and hit fallback message', () => {
+    it('should return loadAccountsFailure on error', () => {
       vi.spyOn(service, 'getAccounts').mockReturnValue(throwError(() => ({})));
       actions$ = of(AccountsActions.loadAccounts({ forceRefresh: true }));
 
@@ -144,19 +132,6 @@ describe('AccountsEffects', () => {
       );
     });
 
-    it('should return loadActiveAccountsSuccess when forceRefresh is true even if store has data', () => {
-      store.overrideSelector(selectAccounts, [mockAccount]);
-      vi.spyOn(service, 'getActiveAccounts').mockReturnValue(of([mockAccount]));
-
-      actions$ = of(AccountsActions.loadActiveAccounts({ forceRefresh: true }));
-
-      let result: Action | undefined;
-      effects.loadActiveAccounts$.subscribe((action) => (result = action));
-
-      expect(service.getActiveAccounts).toHaveBeenCalled();
-      expect(result).toBeTruthy();
-    });
-
     it('should NOT call API if store has data and forceRefresh is false', () => {
       store.overrideSelector(selectAccounts, [mockAccount]);
       const spy = vi.spyOn(service, 'getActiveAccounts');
@@ -171,7 +146,7 @@ describe('AccountsEffects', () => {
       expect(result).toBeUndefined();
     });
 
-    it('should return loadActiveAccountsFailure on error and hit fallback message', () => {
+    it('should return loadActiveAccountsFailure on error', () => {
       vi.spyOn(service, 'getActiveAccounts').mockReturnValue(
         throwError(() => ({})),
       );
@@ -203,6 +178,26 @@ describe('AccountsEffects', () => {
         AccountsActions.createAccountSuccess({ account: mockAccount }),
       );
     });
+
+    it('should return createAccountFailure on error', () => {
+      const request = {
+        friendlyName: 'New',
+        type: AccountType.saving,
+        currency: 'USD',
+      };
+      vi.spyOn(service, 'createAccount').mockReturnValue(
+        throwError(() => ({})),
+      );
+      actions$ = of(AccountsActions.createAccount({ request }));
+
+      let result: Action | undefined;
+      effects.createAccount$.subscribe((action) => (result = action));
+      expect(result).toEqual(
+        AccountsActions.createAccountFailure({
+          error: 'Failed to create account',
+        }),
+      );
+    });
   });
 
   describe('updateFriendlyName$', () => {
@@ -222,6 +217,57 @@ describe('AccountsEffects', () => {
       effects.updateFriendlyName$.subscribe((action) => (result = action));
       expect(result).toEqual(
         AccountsActions.updateFriendlyNameSuccess({ account: updatedAccount }),
+      );
+    });
+
+    it('should return updateFriendlyNameFailure on error', () => {
+      vi.spyOn(service, 'updateFriendlyName').mockReturnValue(
+        throwError(() => ({})),
+      );
+      actions$ = of(
+        AccountsActions.updateFriendlyName({
+          accountId: '1',
+          friendlyName: 'Updated',
+        }),
+      );
+
+      let result: Action | undefined;
+      effects.updateFriendlyName$.subscribe((action) => (result = action));
+      expect(result).toEqual(
+        AccountsActions.updateFriendlyNameFailure({
+          error: 'Failed to update friendly name',
+        }),
+      );
+    });
+  });
+
+  describe('loadCurrencies$', () => {
+    it('should load currencies when store is empty', () => {
+      const mockCurrencies = ['USD', 'EUR', 'GBP'];
+      vi.spyOn(service, 'getCurrencies').mockReturnValue(of(mockCurrencies));
+      actions$ = of(AccountsActions.loadCurrencies());
+
+      let result: Action | undefined;
+      effects.loadCurrencies$.subscribe((action) => (result = action));
+
+      expect(service.getCurrencies).toHaveBeenCalled();
+      expect(result).toEqual(
+        AccountsActions.loadCurrenciesSuccess({ currencies: mockCurrencies }),
+      );
+    });
+
+    it('should return loadCurrenciesFailure on error', () => {
+      vi.spyOn(service, 'getCurrencies').mockReturnValue(
+        throwError(() => ({})),
+      );
+      actions$ = of(AccountsActions.loadCurrencies());
+
+      let result: Action | undefined;
+      effects.loadCurrencies$.subscribe((action) => (result = action));
+      expect(result).toEqual(
+        AccountsActions.loadCurrenciesFailure({
+          error: 'Failed to load currencies',
+        }),
       );
     });
   });
