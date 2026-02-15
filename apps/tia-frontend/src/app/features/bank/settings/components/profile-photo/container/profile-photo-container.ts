@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, computed, effect, inject, signal } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
-import { TranslatePipe } from '@ngx-translate/core';
 import { ProfilePhotoComponent } from '../components/profile-photo/profile-photo.component';
 import { UserInfoComponent } from '../components/user-info/user-info.component';
 import { ProfilePhotoActions } from '../store/profile-photo/profile-photo.actions';
-import { OtpModal } from '../../../../../../shared/lib/overlay/ui-otp-modal/otp-modal';
+import { UiModal } from '../../../../../../shared/lib/overlay/ui-modal/ui-modal';
+import { personalInfoOtpConfig } from '../config/otp.config';
 import {
   selectDefaultAvatars,
   selectDefaultAvatarsLoading,
@@ -34,10 +34,11 @@ import {
   selectPhoneUpdateError,
   selectPhoneUpdateResendCount,
 } from '../../../../../../store/personal-info/personal-info.selectors';
+import { OtpVerification } from '@tia/core/otp-verification/container/otp-verification';
 
 @Component({
   selector: 'app-profile-photo-container',
-  imports: [ProfilePhotoComponent, UserInfoComponent, OtpModal, TranslatePipe],
+  imports: [ProfilePhotoComponent, UserInfoComponent, OtpVerification, UiModal],
   templateUrl: './profile-photo-container.html',
   styleUrl: './profile-photo-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -68,6 +69,8 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
   public readonly phoneUpdateLoading = this.store.selectSignal(selectPhoneUpdateLoading);
   public readonly phoneUpdateError = this.store.selectSignal(selectPhoneUpdateError);
   public readonly phoneUpdateResendCount = this.store.selectSignal(selectPhoneUpdateResendCount);
+
+  public readonly otpConfig = personalInfoOtpConfig;
 
   public readonly editedPId = signal<string>('');
   public readonly isEditing = signal<boolean>(false);
@@ -573,28 +576,28 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
     }
   }
 
-  public onVerifyOtp(code: string): void {
-    const challengeId = this.phoneUpdateChallengeId();
-    if (challengeId) {
-      this.store.dispatch(
-        PersonalInfoActions.verifyPhoneUpdate({ challengeId, code })
-      );
-    }
+  public onVerifyOtp(otp: string): void {
+      const challengeId = this.phoneUpdateChallengeId();
+      if (challengeId) {
+        this.store.dispatch(
+          PersonalInfoActions.verifyPhoneUpdate({ challengeId, code: otp })
+        );
+      }
   }
 
   public onResendOtp(): void {
-    const challengeId = this.phoneUpdateChallengeId();
-    const resendCount = this.phoneUpdateResendCount();
-    if (challengeId && resendCount < 3) {
-      this.store.dispatch(
-        PersonalInfoActions.resendPhoneOTP({ challengeId })
-      );
-    } else if (resendCount >= 3) {
-      this.alertService.error(
-        this.translate.instant('settings.profile-photo.maxResendReached'),
-        { variant: 'dismissible', title: 'Oops!' },
-      );
-    }
+      const challengeId = this.phoneUpdateChallengeId();
+      const resendCount = this.phoneUpdateResendCount();
+      if (challengeId && resendCount < 3) {
+        this.store.dispatch(
+          PersonalInfoActions.resendPhoneOTP({ challengeId })
+        );
+      } else if (resendCount >= 3) {
+        this.alertService.error(
+          this.translate.instant('settings.profile-photo.maxResendReached'),
+          { variant: 'dismissible', title: 'Oops!' },
+        );
+      }
   }
 
   public onImageLoadError(): void {

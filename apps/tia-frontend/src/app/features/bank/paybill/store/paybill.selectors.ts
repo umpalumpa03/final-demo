@@ -212,3 +212,8 @@ export const selectFormPayload = createSelector(
   selectPaybillState,
   (state) => state.paymentsForm,
 );
+
+export const selectIsFormValid = createSelector(
+  selectPaybillState,
+  (state) => state.isFormValid,
+);

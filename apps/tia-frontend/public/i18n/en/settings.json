@@ -143,10 +143,22 @@
       "close": "Close"
     },
     "edit": {
-      "title": "User Details",
-      "desc": "Edit user information.",
+      "title": "Edit User",
+      "desc": "Modify user information",
       "cancel": "Cancel",
-      "save": "Save Changes"
+      "save": "Save Changes",
+      "firstName": "First Name",
+      "firstNamePlaceholder": "Enter first name",
+      "lastName": "Last Name",
+      "lastNamePlaceholder": "Enter last name",
+      "role": "Role",
+      "rolePlaceholder": "Choose a role...",
+      "pId": "Personal ID",
+      "pIdPlaceholder": "Please input personal ID...",
+      "roles": {
+        "consumer": "Consumer",
+        "support": "Support"
+      }
     },
     "delete": {
       "title": "Delete User",
@@ -217,6 +229,11 @@
     "alertMessages": {
       "successDesc": "Card status updated successfully!",
       "errorDesc": "Failed to update card status."
+    },
+    "modal": {
+      "title": "Modify Card Permissions",
+      "subtitle": "Configure permissions for this Card request",
+      "permissionsTitle": "Card permissions"
     }
   },
   "loan-management": {

@@ -10,6 +10,7 @@ import { HeaderCtaAction, ModalType } from '../models/paybill-templates.model';
 import { signal } from '@angular/core';
 import { Observable, ReplaySubject } from 'rxjs';
 import { provideMockActions } from '@ngrx/effects/testing';
+import { initialPaybillState } from '../../../store/paybill.state';
 
 describe('PaybillTemplatesContainer', () => {
   let component: PaybillTemplatesContainer;
@@ -20,7 +21,10 @@ describe('PaybillTemplatesContainer', () => {
     actions$ = new ReplaySubject(1);
     await TestBed.configureTestingModule({
       imports: [PaybillTemplatesContainer, TranslateModule.forRoot()],
-      providers: [provideMockStore(), provideMockActions(() => actions$)],
+      providers: [
+        provideMockStore({ initialState: { paybill: initialPaybillState } }),
+        provideMockActions(() => actions$),
+      ],
     }).compileComponents();
 
     store = TestBed.inject(MockStore);
@@ -152,7 +156,6 @@ describe('PaybillTemplatesContainer', () => {
 
   it('should clear payment details and reset form if level is lower than current', () => {
     component.currentLevel.set(2);
-    // Mock the form control
     component.createTemplateForm.get('category')?.setValue('ELECTRIC');
 
     component.onParentProviderSelect({ providerId: 'p-1', index: 1 });
@@ -160,7 +163,6 @@ describe('PaybillTemplatesContainer', () => {
     expect(store.dispatch).toHaveBeenCalledWith(
       TemplatesPageActions.clearPaymentDetails(),
     );
-    // Checking if selectProvider was still called
     expect(store.dispatch).toHaveBeenCalledWith(
       TemplatesPageActions.selectProvider({ providerId: 'p-1', level: 1 }),
     );
@@ -339,7 +341,6 @@ describe('PaybillTemplatesContainer', () => {
     component.isModalOpen.set(true);
     const toggleSpy = vi.spyOn(component, 'handleModalToggle');
 
-    // Trigger the success listener via the mocked actions stream
     (actions$ as ReplaySubject<any>).next(
       TemplatesPageActions.renameTemplateSuccess(mockSuccessProps),
     );
@@ -351,5 +352,166 @@ describe('PaybillTemplatesContainer', () => {
     component.handleHeaderAction(HeaderCtaAction.Pay);
     expect(component.modalType()).toBe(ModalType.ConfirmPayment);
     expect(component.isModalOpen()).toBe(true);
+  });
+
+  it('should not dispatch rename-template if selectedId is empty', () => {
+    component.selectedId.set('');
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+    dispatchSpy.mockClear();
+
+    component.handleFormSubmit({
+      type: 'rename-template',
+      values: { name: 'Test' },
+    });
+
+    expect(dispatchSpy).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: expect.stringContaining('renameTemplate'),
+      }),
+    );
+  });
+
+  it('should not dispatch rename-group if selectedId is empty', () => {
+    component.selectedId.set('');
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+    dispatchSpy.mockClear();
+
+    component.handleFormSubmit({
+      type: 'rename-group',
+      values: { name: 'Test' },
+    });
+
+    expect(dispatchSpy).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: expect.stringContaining('renameTemplateGroup'),
+      }),
+    );
+  });
+
+  it('should not dispatch deleteTemplate if selectedId is empty', () => {
+    component.selectedId.set('');
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+    dispatchSpy.mockClear();
+
+    component.deleteTemplate();
+
+    expect(dispatchSpy).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: expect.stringContaining('deleteTemplate'),
+      }),
+    );
+  });
+
+  it('should not dispatch deleteGroup if selectedId is empty', () => {
+    component.selectedId.set('');
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+    dispatchSpy.mockClear();
+
+    component.deleteGroup();
+
+    expect(dispatchSpy).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: expect.stringContaining('deleteTemplateGroup'),
+      }),
+    );
+  });
+
+  describe('Item Selection', () => {
+    it('should dispatch addCheckedItems when onItemChecked is called', () => {
+      (component as any).originalTemplates = signal([
+        {
+          id: 't-100',
+          nickname: 'Electric Bill',
+          serviceId: 's1',
+          identification: { accountNumber: '123' },
+          amountDue: 50,
+          groupId: null,
+        },
+        {
+          id: 't-200',
+          nickname: 'Water Bill',
+          serviceId: 's2',
+          identification: { accountNumber: '456' },
+          amountDue: 30,
+          groupId: null,
+        },
+      ]);
+
+      component.onItemChecked(['t-100']);
+
+      expect(store.dispatch).toHaveBeenCalledWith(
+        TemplatesPageActions.addCheckedItems({
+          selectedItems: [
+            {
+              id: 't-100',
+              nickname: 'Electric Bill',
+              serviceId: 's1',
+              identification: { accountNumber: '123' },
+              amountDue: 50,
+              groupId: null,
+            },
+          ],
+        }),
+      );
+    });
+
+    it('should dispatch addCheckedItems for single item on onSelectedItem', () => {
+      (component as any).originalTemplates = signal([
+        {
+          id: 't-100',
+          nickname: 'Electric Bill',
+          serviceId: 's1',
+          identification: { accountNumber: '123' },
+          amountDue: 50,
+          groupId: null,
+        },
+      ]);
+
+      component.onSelectedItem('t-100');
+
+      expect(store.dispatch).toHaveBeenCalledWith(
+        TemplatesPageActions.clearPaymentInfo(),
+      );
+      expect(store.dispatch).toHaveBeenCalledWith(
+        TemplatesPageActions.addCheckedItems({
+          selectedItems: [
+            {
+              id: 't-100',
+              nickname: 'Electric Bill',
+              serviceId: 's1',
+              identification: { accountNumber: '123' },
+              amountDue: 50,
+              groupId: null,
+            },
+          ],
+        }),
+      );
+    });
+  });
+
+  describe('OTP and Payment', () => {
+    it('should set OTP modal state on onOtpClose', () => {
+      component.isOtpModalOpen.set(true);
+      component.isPaymentModalVisible.set(true);
+
+      component.onOtpClose(false);
+
+      expect(component.isOtpModalOpen()).toBe(false);
+      expect(component.isPaymentModalVisible()).toBe(false);
+    });
+
+    it('should return base config without initialValues for non-rename modals', () => {
+      component.modalType.set(ModalType.DeleteTemplate);
+      const config = component.currentModalConfig();
+      expect(config).toBeTruthy();
+      expect(config?.initialValues).toBeUndefined();
+    });
+
+    it('should return merged config with initialValues for RenameGroup', () => {
+      component.modalType.set(ModalType.RenameGroup);
+      component.selectedItemName.set('My Group');
+      const config = component.currentModalConfig();
+      expect(config?.initialValues).toEqual({ currentName: 'My Group' });
+    });
   });
 });

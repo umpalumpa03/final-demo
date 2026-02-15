@@ -46,15 +46,18 @@
   (startTour)="onStartTour()"
 ></app-user-info>
 
-<app-otp-modal
-  [isOpen]="isOtpModalOpen()"
-  [title]="'settings.profile-photo.verifyPhoneUpdate' | translate"
-  [description]="'settings.profile-photo.otpDescription' | translate"
-  [verifyOtpTitle]="'settings.profile-photo.verify' | translate"
-  [isLoading]="phoneUpdateLoading()"
-  [hasResend]="phoneUpdateResendCount() < 3"
-  [resendText]="'settings.profile-photo.didntReceiveCode' | translate"
-  (closed)="onOtpModalClosed()"
-  (verify)="onVerifyOtp($event)"
-  (resend)="onResendOtp()"
-></app-otp-modal>
+@if (isOtpModalOpen()) {
+<app-ui-modal [isOpen]="isOtpModalOpen()" (closed)="onOtpModalClosed()">
+  <app-otp-verification
+    type="otp"
+    timerType="otp"
+    [inputOtpConfig]="otpConfig"
+    [errorMessage]="phoneUpdateError()"
+    [isButtonLoading]="phoneUpdateLoading()"
+    [onErrorRedirect]="false"
+    (isVerifyCalled)="onVerifyOtp($event)"
+    (isResendCalled)="onResendOtp()"
+    (onBackOut)="onOtpModalClosed()"
+  ></app-otp-verification>
+</app-ui-modal>
+}

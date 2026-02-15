@@ -67,6 +67,8 @@
           formControlName="amount"
           [config]="paybillConfig().amount"
           [state]="isLoading() ? 'disabled' : 'default'"
+          (input)="onAmountInput($event)"
+          (paste)="onAmountInput($event)"
         />
 
         @if(verifiedDetails()?.amountDue){

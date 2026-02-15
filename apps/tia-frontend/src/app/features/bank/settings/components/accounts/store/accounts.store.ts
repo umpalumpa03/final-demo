@@ -16,6 +16,7 @@ import { Store } from '@ngrx/store';
 import { AccountsActions } from '../../../../../../store/products/accounts/accounts.actions';
 import { TranslateService } from '@ngx-translate/core';
 import { AlertService } from '@tia/core/services/alert/alert.service';
+import { showAlert } from '../../../../../../shared/utils/alerts/alert.helper';
 
 export const AccountsStore = signalStore(
   { providedIn: 'root' },
@@ -25,18 +26,6 @@ export const AccountsStore = signalStore(
     const globalStore = inject(Store);
     const translate = inject(TranslateService);
     const alertService = inject(AlertService);
-
-    function showAlert(
-      type: 'success' | 'error',
-      messageKey: string,
-      title: string,
-    ) {
-      const fn = type === 'success' ? alertService.success : alertService.error;
-      fn.call(alertService, translate.instant(messageKey), {
-        variant: 'dismissible',
-        title,
-      });
-    }
 
     return {
       resetStore(): void {
@@ -112,8 +101,11 @@ export const AccountsStore = signalStore(
                   patchState(store, {
                     accounts,
                     favoriteLoadingIds: currentIds,
+                    loaded: false,
                   });
                   showAlert(
+                    alertService,
+                    translate,
                     'success',
                     'settings.accounts.storeAlerts.favSuccess',
                     'Success!',
@@ -127,6 +119,8 @@ export const AccountsStore = signalStore(
                     favoriteLoadingIds: currentIds,
                   });
                   showAlert(
+                    alertService,
+                    translate,
                     'error',
                     'settings.accounts.storeAlerts.favFailed',
                     'Oops!',
@@ -175,8 +169,11 @@ export const AccountsStore = signalStore(
                   patchState(store, {
                     accounts,
                     visibilityLoadingIds: currentIds,
+                    loaded: false,
                   });
                   showAlert(
+                    alertService,
+                    translate,
                     'success',
                     'settings.accounts.storeAlerts.visibilitySuccess',
                     'Success!',
@@ -190,6 +187,8 @@ export const AccountsStore = signalStore(
                     visibilityLoadingIds: currentIds,
                   });
                   showAlert(
+                    alertService,
+                    translate,
                     'error',
                     'settings.accounts.storeAlerts.visibilityFailed',
                     'Oops!',
@@ -238,8 +237,11 @@ export const AccountsStore = signalStore(
                   patchState(store, {
                     accounts,
                     changeNameLoadingIds: currentIds,
+                    loaded: false,
                   });
                   showAlert(
+                    alertService,
+                    translate,
                     'success',
                     'settings.accounts.storeAlerts.nameSuccess',
                     'Success!',
@@ -253,6 +255,8 @@ export const AccountsStore = signalStore(
                     changeNameLoadingIds: currentIds,
                   });
                   showAlert(
+                    alertService,
+                    translate,
                     'error',
                     'settings.accounts.storeAlerts.nameFailed',
                     'Oops!',

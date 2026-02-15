@@ -109,8 +109,66 @@ export const accountsFeature = createFeature({
       isUpdatingFriendlyName: false,
       updateFriendlyNameError: error,
     })),
+    on(AccountsActions.loadCurrencies, (state) => ({
+      ...state,
+      isLoadingCurrencies: true,
+    })),
+    on(AccountsActions.loadCurrenciesSuccess, (state, { currencies }) => ({
+      ...state,
+      currencies,
+      isLoadingCurrencies: false,
+    })),
+    on(AccountsActions.loadCurrenciesFailure, (state, { error }) => ({
+      ...state,
+      isLoadingCurrencies: false,
+      error,
+    })),
+    on(
+      AccountsActions.addNotification,
+      (state, { notificationType, message }) => ({
+        ...state,
+        notifications: [
+          ...state.notifications,
+          { id: Date.now().toString(), notificationType, message },
+        ],
+      }),
+    ),
+    on(AccountsActions.dismissNotification, (state, { id }) => ({
+      ...state,
+      notifications: state.notifications.filter((n) => n.id !== id),
+    })),
+    on(
+      AccountsActions.clearAllNotifications,
+      AccountsActions.loadActiveAccounts,
+      (state) => ({
+        ...state,
+        notifications: [],
+      }),
+    ),
     on(UserInfoActions.loadUser, () => initialAccountsState),
     on(AccountsActions.clearAccountsStore, () => initialAccountsState),
+
+    on(AccountsActions.enrichAccountsWithLastTransactions, (state) => ({
+      ...state,
+      isLoadingLastTransactions: true,
+      lastTransactionsError: null,
+    })),
+
+    on(
+      AccountsActions.enrichAccountsSuccess,
+      (state, { lastTransactions }) => ({
+        ...state,
+        lastTransactions,
+        isLoadingLastTransactions: false,
+        lastTransactionsError: null,
+      }),
+    ),
+
+    on(AccountsActions.enrichAccountsFailure, (state, { error }) => ({
+      ...state,
+      isLoadingLastTransactions: false,
+      lastTransactionsError: error,
+    })),
   ),
 });
 
@@ -120,6 +178,8 @@ export const {
   selectAccountsState,
   selectAccounts,
   selectSelectedAccountId,
+  selectCurrencies,
+  selectIsLoadingCurrencies,
   selectIsLoading,
   selectIsFetching,
   selectError,
@@ -128,4 +188,8 @@ export const {
   selectIsCreateModalOpen,
   selectIsUpdatingFriendlyName,
   selectUpdateFriendlyNameError,
+  selectLastTransactions,
+  selectIsLoadingLastTransactions,
+  selectLastTransactionsError,
+  selectNotifications,
 } = accountsFeature;

@@ -11,12 +11,14 @@ import {
   selectVerifiedDetails,
 } from '../../store/paybill.selectors';
 import { Store } from '@ngrx/store';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PaybillDynamicForm {
   private readonly store = inject(Store);
+  private readonly translate = inject(TranslateService);
 
   public syncFormControls(
     form: FormGroup,
@@ -58,7 +60,7 @@ export class PaybillDynamicForm {
       required: field.required,
       min: field.minLength,
       max: field.maxLength,
-      errorMessage: 'Please fill required fields!',
+      errorMessage: this.translate.instant('paybill.main.form.required_field_error'),
     };
   }
 
@@ -71,7 +73,7 @@ export class PaybillDynamicForm {
     const validators = isVerified
       ? [
           Validators.required,
-          Validators.min(10),
+          Validators.min(1),
           Validators.max(9999),
           Validators.pattern(amountPattern),
         ]

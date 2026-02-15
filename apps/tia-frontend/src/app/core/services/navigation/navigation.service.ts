@@ -1,13 +1,23 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import {
+  Event as RouterEvent,
+  GuardsCheckEnd,
   NavigationCancel,
   NavigationEnd,
   NavigationError,
-  NavigationStart,
   Router,
 } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { filter, map, pairwise, startWith } from 'rxjs';
+import {
+  distinctUntilChanged,
+  filter,
+  map,
+  merge,
+  shareReplay,
+  startWith,
+  tap,
+  of,
+} from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -15,28 +25,49 @@ import { filter, map, pairwise, startWith } from 'rxjs';
 export class NavigationService {
   private readonly router = inject(Router);
   public readonly isFeatureLoading = this.isChangingAtSegment(1);
+  private readonly suppressNext = signal(false);
+
+  public suppressNextLoader(): void {
+    this.suppressNext.set(true);
+  }
 
   public isChangingAtSegment(index: number) {
-    return toSignal(
-      this.router.events.pipe(
-        filter(
-          (e) =>
-            e instanceof NavigationStart ||
-            e instanceof NavigationEnd ||
-            e instanceof NavigationCancel ||
-            e instanceof NavigationError,
-        ),
-        startWith(null),
-        pairwise(),
-        map(([prev, curr]) => {
-          if (curr instanceof NavigationStart) {
-            const currentSeg = this.getSegmentAt(this.router.url, index);
-            const targetSeg = this.getSegmentAt(curr.url, index);
-            return currentSeg !== targetSeg;
-          }
-          return false;
-        }),
+    const navEvents$ = this.router.events.pipe(shareReplay(1));
+
+    const start$ = navEvents$.pipe(
+      filter(
+        (e: RouterEvent): e is GuardsCheckEnd => e instanceof GuardsCheckEnd,
       ),
+      map((e) => {
+        if (!e.shouldActivate) {
+          return false;
+        }
+
+        if (this.suppressNext()) {
+          this.suppressNext.set(false);
+          return false;
+        }
+
+        const currentSeg = this.getSegmentAt(this.router.url, index);
+        const targetSeg = this.getSegmentAt(e.urlAfterRedirects, index);
+        return currentSeg !== targetSeg;
+      }),
+      filter(Boolean),
+      map(() => true),
+    );
+
+    const stop$ = navEvents$.pipe(
+      filter(
+        (e: RouterEvent) =>
+          e instanceof NavigationEnd ||
+          e instanceof NavigationCancel ||
+          e instanceof NavigationError,
+      ),
+      map(() => false),
+    );
+
+    return toSignal(
+      merge(start$, stop$).pipe(startWith(false), distinctUntilChanged()),
       { initialValue: false },
     );
   }

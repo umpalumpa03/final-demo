@@ -35,10 +35,10 @@ describe('UserManagementStore', () => {
 
   it('should load users once if already loaded', () => {
     service.getAllUsers.mockReturnValue(of(mockUsers));
-    store.loadUsers();
+    store.loadUsers({});
     expect(store.users()).toEqual(mockUsers);
     service.getAllUsers.mockClear();
-    store.loadUsers();
+    store.loadUsers({});
     expect(service.getAllUsers).not.toHaveBeenCalled();
   });
 
@@ -63,7 +63,7 @@ describe('UserManagementStore', () => {
 
   it('should update user and clear cache', () => {
     service.getAllUsers.mockReturnValue(of(mockUsers));
-    store.loadUsers();
+    store.loadUsers({});
     const updated = { ...mockUsers[0], firstName: 'Edited' };
     service.updateUser.mockReturnValue(of(updated));
     store.updateUser({ id: '1', data: {} as any });
@@ -81,7 +81,7 @@ describe('UserManagementStore', () => {
 
   it('should delete user and clear cache', () => {
     service.getAllUsers.mockReturnValue(of(mockUsers));
-    store.loadUsers();
+    store.loadUsers({});
     service.deleteUser.mockReturnValue(of(null));
     store.deleteUser('1');
     expect(store.users().length).toBe(0);
@@ -99,7 +99,7 @@ describe('UserManagementStore', () => {
     service.getAllUsers.mockReturnValue(
       of([{ ...mockUsers[0], isBlocked: false }]),
     );
-    store.loadUsers();
+    store.loadUsers({});
     const blocked = { ...mockUsers[0], isBlocked: true };
     service.blockUser.mockReturnValue(of(blocked));
     store.toggleBlockStatus({ id: '1', isBlocked: true });
@@ -108,7 +108,7 @@ describe('UserManagementStore', () => {
 
   it('should update selected user on block toggle', () => {
     service.getAllUsers.mockReturnValue(of(mockUsers));
-    store.loadUsers();
+    store.loadUsers({});
     service.getUserById.mockReturnValue(of(mockUsers[0]));
     store.loadUserDetails('1');
     const blocked = { ...mockUsers[0], isBlocked: true };
@@ -135,7 +135,7 @@ describe('UserManagementStore', () => {
 
   it('should reset store', () => {
     service.getAllUsers.mockReturnValue(of(mockUsers));
-    store.loadUsers();
+    store.loadUsers({});
     store.reset();
     expect(store.users().length).toBe(0);
   });

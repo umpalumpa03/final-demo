@@ -23,6 +23,7 @@ import { environment } from '../../../../../../../environments/environment';
 import { AlertService } from '@tia/core/services/alert/alert.service';
 import { Router } from '@angular/router';
 import { Routes } from '../../../../../../core/auth/models/tokens.model';
+import { IVerified } from '../../../../../../core/auth/models/otp-verification.models';
 
 describe('ProfilePhotoContainer', () => {
   let component: ProfilePhotoContainer;
@@ -537,10 +538,47 @@ describe('ProfilePhotoContainer', () => {
     );
   });
 
+  it('should dispatch verifyPhoneUpdate when called', () => {
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+    store.overrideSelector(selectPhoneUpdateChallengeId, 'challenge-123');
+    store.refreshState();
+
+    component.onVerifyOtp('123456');
+
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      PersonalInfoActions.verifyPhoneUpdate({ challengeId: 'challenge-123', code: '123456' })
+    );
+  });
+
+  it('should dispatch verifyPhoneUpdate when otp is provided', () => {
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+    store.overrideSelector(selectPhoneUpdateChallengeId, 'challenge-123');
+    store.refreshState();
+
+    component.onVerifyOtp('123456');
+
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      PersonalInfoActions.verifyPhoneUpdate({ challengeId: 'challenge-123', code: '123456' })
+    );
+  });
+
   it('should handle onResendOtp', () => {
     const dispatchSpy = vi.spyOn(store, 'dispatch');
     const translate = TestBed.inject(TranslateService);
     vi.spyOn(translate, 'instant').mockReturnValue('Max resend reached');
+    store.overrideSelector(selectPhoneUpdateChallengeId, 'challenge-123');
+    store.overrideSelector(selectPhoneUpdateResendCount, 2);
+    store.refreshState();
+
+    component.onResendOtp(true);
+
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      PersonalInfoActions.resendPhoneOTP({ challengeId: 'challenge-123' })
+    );
+  });
+
+  it('should dispatch resendPhoneOTP when called', () => {
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
     store.overrideSelector(selectPhoneUpdateChallengeId, 'challenge-123');
     store.overrideSelector(selectPhoneUpdateResendCount, 2);
     store.refreshState();
@@ -559,7 +597,7 @@ describe('ProfilePhotoContainer', () => {
     store.overrideSelector(selectPhoneUpdateResendCount, 3);
     store.refreshState();
 
-    component.onResendOtp();
+    component.onResendOtp(true);
 
     expect(mockAlertService.error).toHaveBeenCalledWith(
       'Max resend reached',

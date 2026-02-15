@@ -33,6 +33,7 @@ import { ProfilePhotoApiService } from '@tia/shared/services/profile-photo/profi
 import { AlertService } from '@tia/core/services/alert/alert.service';
 
 export const UserManagementStore = signalStore(
+  { providedIn: 'root' },
   withState(initialState),
 
   withComputed((store) => ({
@@ -91,10 +92,14 @@ export const UserManagementStore = signalStore(
     return {
       _triggerAutoHide,
 
-      loadUsers: rxMethod<void>(
+      loadUsers: rxMethod<{ force?: boolean }>(
         pipe(
-          filter(() => store.users().length === 0 && !store.loading()),
-          tap(() => patchState(store, { loading: true, error: null })),
+          tap(({ force }) => {
+            if (!force && store.users().length > 0) return;
+
+            patchState(store, { loading: true, error: null });
+          }),
+          filter(({ force }) => force === true || store.users().length === 0),
           switchMap(() =>
             service.getAllUsers().pipe(
               tap((users) => patchState(store, { users, loading: false })),

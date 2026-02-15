@@ -36,6 +36,10 @@
       "senderError": {
         "header": "Failed to Load Your Accounts",
         "message": "Your accounts could not be loaded. Please try again."
+      },
+      "swap": {
+        "noRecipientSelected": "Please select a recipient account to swap",
+        "noPermission": "Selected account doesn't have permission to transfer funds"
       }
     },
     "amount": {
@@ -73,8 +77,8 @@
       "ownPhoneError": "You cannot transfer to your own phone number",
       "recipientNotFound": "Recipient not found. Please check the phone number or IBAN and try again.",
       "errors": {
-        "invalidFormat": "Invalid format. Enter IBAN or phone (+995...)",
-        "invalidPhone": "Invalid phone number format. Use +995XXXXXXXXX",
+        "invalidFormat": "Invalid format. Please enter a valid IBAN or phone number",
+        "invalidPhone": "Invalid format. Please enter digits only (minimum 8 symbol)",
         "invalidIban": "Invalid IBAN format (15-34 characters, starts with country code)"
       },
       "success": {

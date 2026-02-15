@@ -14,7 +14,7 @@ import { TransferRecipientService } from '../services/transfer-recipient.service
 import { TransferAccountSelectionService } from '../services/transfer-account-selection.service';
 import { TransferAmountService } from '../services/transfer-amount.service';
 import { TransferExecutionService } from '../services/transfer-execution.service';
-import { TransferValidationService } from '../services/transfer-validation.service';
+import { TransferValidationService } from '../../../services/transfer-validation.service';
 import { TransferUtilsService } from '../../../services/transfer-utils.service';
 import { AlertService } from 'apps/tia-frontend/src/app/core/services/alert/alert.service';
 import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';

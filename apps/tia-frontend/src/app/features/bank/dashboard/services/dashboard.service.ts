@@ -4,7 +4,6 @@ import {
   signal,
   computed,
   effect,
-  untracked,
 } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { debounceTime, Subject, tap } from 'rxjs';
@@ -26,7 +25,6 @@ export class DashboardService {
   public readonly myItems = signal<IWidgetItem[]>([]);
   public readonly widgetCatalog = signal(catalog);
 
-  public readonly accountsHidden = signal(false);
 
   public readonly visibleItems = computed(() =>
     this.myItems().filter((item) => {
@@ -51,15 +49,6 @@ export class DashboardService {
       }
     );
 
-    effect(() => {
-      const items = this.myItems();
-      const accountsWidget = items.find((w) => w.type === 'accounts');
-      if (accountsWidget) {
-        untracked(() =>
-          this.accountsHidden.set(accountsWidget.isHidden || false),
-        );
-      }
-    });
 
     this.updateStream$
       .pipe(
@@ -72,7 +61,7 @@ export class DashboardService {
 
   public readonly gridColumns = computed(() => {
     const itemCount = this.myItems().length;
-    const isVertical = this.breakpointService.isTablet() || itemCount < 3;
+    const isVertical = this.breakpointService.isLTablet() || itemCount < 3;
     return isVertical
       ? { default: 1, md: 1, sm: 1 }
       : { default: 2, md: 2, sm: 1 };
@@ -80,18 +69,22 @@ export class DashboardService {
 
   public readonly dynamicColspans = computed(() => {
     const items = this.myItems();
-    const isVertical = this.breakpointService.isTablet() || items.length < 3;
+    const isVertical = this.breakpointService.isLTablet() || items.length < 3;
     return items.map((_, index) => (isVertical ? 1 : index === 0 ? 2 : 1));
   });
 
   public readonly processedItems = computed(() => {
-    return this.myItems().map((item) => {
+    const items = this.myItems();
+    const accountsWidget = items.find((w) => w.type === 'accounts');
+    const accountsHidden = accountsWidget?.isHidden || false;
+
+    return items.map((item) => {
       const isAccount = item.type === 'accounts';
 
       const visualHiddenStatus = isAccount ? false : item.isHidden;
 
       const visualEyeStatus = isAccount
-        ? !this.accountsHidden()
+        ? !accountsHidden
         : !item.isHidden;
 
       return {

@@ -7,6 +7,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { EMPTY, of, throwError } from 'rxjs';
 import { signal } from '@angular/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+vi.mock('apps/tia-frontend/src/environments/environment', () => ({ environment: { apiUrl: 'https://tia.up.railway.app' } }));
 
 describe('PhoneVerification Component', () => {
   let component: PhoneVerification;
@@ -65,12 +66,7 @@ describe('PhoneVerification Component', () => {
   });
 
   it('should send phone verification code and navigate when isCalled is true', () => {
-    const event = {
-      isCalled: true,
-      otp: '+995555123456',
-    };
-
-    component.submit(event);
+    component.submit('+995555123456');
 
     expect(authServiceMock.sendPhoneVerificationCode).toHaveBeenCalledWith(
       '+995555123456',
@@ -83,10 +79,7 @@ describe('PhoneVerification Component', () => {
     authServiceMock.sendPhoneVerificationCode.mockReturnValue(
       EMPTY
     );
-
-    const event = { isCalled: true, otp: '+995555123456' };
-
-    component.submit(event);
+    component.submit('+995555123456');
 
     expect(authServiceMock.sendPhoneVerificationCode).toHaveBeenCalledWith(
       '+995555123456',
@@ -104,8 +97,7 @@ describe('PhoneVerification Component', () => {
       })(),
     );
 
-    // This should not throw and should schedule clearing the otpError
-    component.submit({ isCalled: true, otp: '123' });
+    component.submit('123');
 
     vi.advanceTimersByTime(5000);
 

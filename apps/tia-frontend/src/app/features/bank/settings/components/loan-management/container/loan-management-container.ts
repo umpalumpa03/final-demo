@@ -11,10 +11,12 @@ import { LoanManagementStore } from '../store/loan-management.store';
 import { PendingApprovalsTable } from '../components/pending-approvals-table/pending-approvals-table';
 import { LoanCaseDrawer } from '../components/loan-case-drawer/loan-case-drawer';
 import { useLoanManagementConfig } from '../shared/config/loan-management.config';
+import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
+import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
 
 @Component({
   selector: 'app-loan-management-container',
-  imports: [PendingApprovalsTable, LoanCaseDrawer],
+  imports: [PendingApprovalsTable, LoanCaseDrawer, Skeleton, BasicCard],
   templateUrl: './loan-management-container.html',
   styleUrl: './loan-management-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

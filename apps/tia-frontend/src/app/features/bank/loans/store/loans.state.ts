@@ -32,7 +32,7 @@ export const loansInitialState: ILoansState = {
 export enum ErrorKeys {
   REQUEST_LOAN = 'loans.store-errors.request_loan',
   LOAD_LOANS = 'loans.store-errors.load_loans',
-  LOAD_DETAILS = 'store-errors.load_details',
+  LOAD_DETAILS = 'loans.store-errors.load_details',
   RENAME = 'loans.store-errors.rename',
   MONTHS = 'loans.store-errors.months',
   PURPOSES = 'loans.store-errors.purposes',
@@ -48,4 +48,5 @@ export enum SuccessKeys {
   PAYMENT_COMPLETE = 'loans.store-success.payment_complete',
   OTP_SENT = 'loans.store-success.otp_sent',
   REQUEST = 'loans.store-success.request',
+  RENAME = 'loans.store-success.rename',
 }

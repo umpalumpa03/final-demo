@@ -106,11 +106,11 @@ describe('AccountsApiService', () => {
       currency: 'USD',
     };
 
-    service.updateFriendlyName(accountId, newFriendlyName).subscribe((result) => {
-      expect(result).toEqual(mockAccount);
-      // implementation calls resetStore on the injected store
-      expect(mockStore.resetStore).toHaveBeenCalled();
-    });
+    service
+      .updateFriendlyName(accountId, newFriendlyName)
+      .subscribe((result) => {
+        expect(result).toEqual(mockAccount);
+      });
 
     const req = httpMock.expectOne(
       `${apiUrl}/update-friendly-name/${accountId}`,

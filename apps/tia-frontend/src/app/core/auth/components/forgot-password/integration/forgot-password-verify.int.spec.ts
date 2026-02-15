@@ -12,8 +12,7 @@ import { ForgotPasswordVerify } from '../forgot-password-verify/forgot-password-
 import { AuthService } from '../../../services/auth.service';
 import { TokenService } from '../../../services/token.service';
 import { MonitorInactivity } from '../../../services/monitor-inacticity.service';
-import { environment } from '../../../../../../environments/environment';
-import { IVerified } from '../../../models/otp-verification.models';
+import { environment } from "../../../../../../environments/environment";
 import { ForgotPasswordVerifyResponse } from '../../../models/authResponse.model';
 
 describe('ForgotPasswordVerify Component Integration', () => {
@@ -33,6 +32,7 @@ describe('ForgotPasswordVerify Component Integration', () => {
   };
 
   beforeEach(async () => {
+    TestBed.resetTestingModule();
     await TestBed.configureTestingModule({
       imports: [ForgotPasswordVerify],
       providers: [
@@ -56,6 +56,8 @@ describe('ForgotPasswordVerify Component Integration', () => {
   });
 
   afterEach(() => {
+    const pendingRequests = httpMock.match(() => true);
+    pendingRequests.forEach(req => req.flush({}));
     httpMock.verify();
     localStorage.clear();
   });
@@ -86,8 +88,7 @@ describe('ForgotPasswordVerify Component Integration', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
     createComponent();
 
-    const verifyEvent: IVerified = { isCalled: true, otp: '123456' };
-    component.verifyResetOtp(verifyEvent);
+    component.verifyResetOtp('123456');
 
     const req = httpMock.expectOne(`${baseUrl}/forgot-password/verify`);
     expect(req.request.method).toBe('POST');
@@ -109,8 +110,7 @@ describe('ForgotPasswordVerify Component Integration', () => {
     authService.setChellangeId('challenge-123');
     createComponent();
 
-    const verifyEvent: IVerified = { isCalled: true, otp: '000000' };
-    component.verifyResetOtp(verifyEvent);
+    component.verifyResetOtp('000000');
 
     const req = httpMock.expectOne(`${baseUrl}/forgot-password/verify`);
     req.flush(
@@ -121,14 +121,15 @@ describe('ForgotPasswordVerify Component Integration', () => {
     expect(component.errorMessage()).toBe('Invalid verification code');
   });
 
-  it('should not verify when isCalled is false', () => {
+  it('should verify OTP when called', () => {
     authService.setChellangeId('challenge-123');
     createComponent();
 
-    const verifyEvent: IVerified = { isCalled: false, otp: null };
-    component.verifyResetOtp(verifyEvent);
+    component.verifyResetOtp('123456');
 
-    httpMock.expectNone(`${baseUrl}/forgot-password/verify`);
+    const req = httpMock.expectOne(`${baseUrl}/forgot-password/verify`);
+    expect(req.request.method).toBe('POST');
+    req.flush({});
   });
 
   it('should clear error message on input change', () => {
@@ -155,19 +156,21 @@ describe('ForgotPasswordVerify Component Integration', () => {
     authService.setChellangeId('challenge-123');
     createComponent();
 
-    component.resendOtp(true);
+    component.resendOtp();
 
     const req = httpMock.expectOne(`${baseUrl}/mfa/otp-resend`);
     expect(req.request.method).toBe('POST');
     req.flush({ success: true });
   });
 
-  it('should not resend OTP when isCalled is false', () => {
+  it('should resend OTP when called', () => {
     authService.setChellangeId('challenge-123');
     createComponent();
 
-    component.resendOtp(false);
-    httpMock.expectNone(`${baseUrl}/mfa/otp-resend`);
+    component.resendOtp();
+    const req = httpMock.expectOne(`${baseUrl}/mfa/otp-resend`);
+    expect(req.request.method).toBe('POST');
+    req.flush({});
   });
 
   it('should clear tokens and navigate on backout', () => {

@@ -1,4 +1,4 @@
-import { IOtpVerificationConfig } from "apps/tia-frontend/src/app/core/auth/models/otp-verification.models";
+import { IOtpVerificationConfig } from "@tia/core/otp-verification/models/otp-verification.models";
 
 export const CARD_OTP_MODAL_CONFIG: IOtpVerificationConfig = {
   iconUrl: '/images/svg/auth/secured-blue.svg',

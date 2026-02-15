@@ -10,13 +10,16 @@ import { filter, skip, take, tap } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { Account } from '@tia/shared/models/accounts/accounts.model';
 import { TransferStore } from '../../../store/transfers.store';
-import { TransferValidationService } from './transfer-validation.service';
+import { TransferValidationService } from '../../../services/transfer-validation.service';
 import {
   RecipientAccount,
   RecipientType,
 } from '../../../models/transfers.state.model';
 import { selectPhoneNumber } from 'apps/tia-frontend/src/app/store/personal-info/personal-info.selectors';
-import { DisabledReason } from '../models/transfer.external.model';
+import {
+  DisabledReason,
+  TransferUtilsService,
+} from '../../../services/transfer-utils.service';
 import { PersonalInfoActions } from 'apps/tia-frontend/src/app/store/personal-info/pesronal-info.actions';
 
 @Injectable()
@@ -27,6 +30,7 @@ export class TransferRecipientService {
   private readonly validationService = inject(TransferValidationService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly store = inject(Store);
+  private readonly utilsService = inject(TransferUtilsService);
 
   private readonly recipientInfo$ = toObservable(
     this.transferStore.recipientInfo,
@@ -119,8 +123,10 @@ export class TransferRecipientService {
     account: RecipientAccount,
     selectedSenderAccount: Account | null,
   ): boolean {
-    const senderCurrency = selectedSenderAccount?.currency;
-    return senderCurrency ? account.currency !== senderCurrency : false;
+    return this.utilsService.isRecipientAccountDisabled(
+      account,
+      selectedSenderAccount,
+    );
   }
 
   public getDisabledReason(
@@ -128,19 +134,11 @@ export class TransferRecipientService {
     selectedRecipientAccount: RecipientAccount | null,
     isExternalIban: boolean,
   ): DisabledReason {
-    const { permission, currency } = account;
-
-    if (permission === 2 && currency !== 'GEL') return 'PERMISSION_DENIED';
-    if (permission === 4 && currency === 'GEL') return 'PERMISSION_DENIED';
-    if (permission !== 2 && permission !== 4) return 'PERMISSION_DENIED';
-
-    if (!isExternalIban && selectedRecipientAccount) {
-      if (account.currency !== selectedRecipientAccount.currency) {
-        return 'CURRENCY_MISMATCH';
-      }
-    }
-
-    return null;
+    return this.utilsService.getDisabledReason(
+      account,
+      selectedRecipientAccount,
+      isExternalIban,
+    );
   }
 
   public isSenderAccountDisabled(
@@ -148,12 +146,10 @@ export class TransferRecipientService {
     selectedRecipientAccount: RecipientAccount | null,
     isExternalIban: boolean,
   ): boolean {
-    return (
-      this.getDisabledReason(
-        account,
-        selectedRecipientAccount,
-        isExternalIban,
-      ) !== null
+    return this.utilsService.isSenderAccountDisabled(
+      account,
+      selectedRecipientAccount,
+      isExternalIban,
     );
   }
 }

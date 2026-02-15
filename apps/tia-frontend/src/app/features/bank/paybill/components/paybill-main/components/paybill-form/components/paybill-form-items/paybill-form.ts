@@ -27,7 +27,7 @@ import { translateConfig } from '@tia/shared/utils/translate-config/config-trans
 import { PaybillDynamicField } from '../../../../../../services/paybill-dynamic-form/models/dynamic-form.model';
 import { DynamicInputs } from '../../../../../shared/dynamic-inputs/dynamic-inputs';
 import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
-import { Tooltip } from "@tia/shared/lib/data-display/tooltip/tooltip";
+import { Tooltip } from '@tia/shared/lib/data-display/tooltip/tooltip';
 
 @Component({
   selector: 'app-paybill-form',
@@ -41,16 +41,14 @@ import { Tooltip } from "@tia/shared/lib/data-display/tooltip/tooltip";
     TranslatePipe,
     DynamicInputs,
     Skeleton,
-    Tooltip
-],
+    Tooltip,
+  ],
   templateUrl: './paybill-form.html',
   styleUrl: './paybill-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaybillForm {
   protected readonly translate = inject(TranslateService);
-
-  // inputs from smart parent
 
   public readonly paybillForm = input.required<FormGroup>();
   public readonly provider = input<PaybillProvider | null>(null);
@@ -61,12 +59,8 @@ export class PaybillForm {
   public readonly iconBgPath = input<string>();
   public readonly saveTemplate = output<string>();
 
-  // output buton events
-
   public readonly verify = output<PaybillFormVerifyEvent>();
   public readonly pay = output<PaybillFormProceedEvent>();
-
-  // computed dynamic signal data
 
   public readonly isVerified = computed(() => !!this.verifiedDetails()?.valid);
 
@@ -91,6 +85,33 @@ export class PaybillForm {
   public onSaveTemplate(): void {
     const defaultNickname = this.provider()?.name || '';
     this.saveTemplate.emit(defaultNickname);
+  }
+
+  public onAmountInput(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    let value = inputElement.value;
+
+    value = value.replace(/[^0-9.]/g, '');
+
+    if (value.length > 1 && value.startsWith('0') && value[1] !== '.') {
+      value = value.replace(/^0+/, '');
+      if (value === '') value = '0';
+    }
+
+    const parts = value.split('.');
+    if (parts.length > 2) {
+      value = parts[0] + '.' + parts.slice(1).join('');
+    }
+
+    if (parts[1] && parts[1].length > 2) {
+      value = parts[0] + '.' + parts[1].substring(0, 2);
+    }
+
+    const control = this.paybillForm().get('amount');
+    if (control) {
+      control.setValue(value, { emitEvent: true });
+      inputElement.value = value;
+    }
   }
 
   public onSubmit(): void {

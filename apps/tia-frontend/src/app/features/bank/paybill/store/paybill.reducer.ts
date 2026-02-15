@@ -472,9 +472,28 @@ export const paybillReducer = createReducer(
       selectedSenderAccountId,
     }),
   ),
+  on(TemplatesPageActions.payManyBills, (state) => ({
+    ...state,
+    loading: true,
+  })),
   on(TemplatesPageActions.payManyBillsSuccess, (state, { response }) => ({
     ...state,
     loading: false,
     challengeId: response.verify?.challengeId ?? null,
+  })),
+  on(TemplatesPageActions.payManyBillsFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    message: error,
+  })),
+  on(TemplatesPageActions.setFormValid, (state, { isValid }) => ({
+    ...state,
+    loading: false,
+    isFormValid: isValid,
+  })),
+   on(TemplatesPageActions.checkBillForTemplateFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    message: error,
   })),
 );

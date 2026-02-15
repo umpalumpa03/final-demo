@@ -6,6 +6,7 @@
   max-width: 120rem;
   margin: 0 auto;
   padding: 0 1.6rem;
+  overflow-x: hidden;
 
   @media (max-width: 340px) {
     padding: 0 1rem;
@@ -34,10 +35,14 @@
     border-radius: 1.2rem;
     overflow: hidden;
     padding: 1.6rem;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 
     &__body {
       @include flex-center(row, flex-start, center);
       gap: 1.6rem;
+      min-width: 0;
     }
 
     &__icon {
@@ -58,6 +63,7 @@
       gap: 0.2rem;
       flex: 1;
       min-width: 0;
+      overflow: hidden;
     }
 
     &__name {
@@ -66,17 +72,29 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      @include flex-center(row, flex-start, center);
+      gap: 0.6rem;
+    }
+
+    &__star {
+      width: 1.4rem;
+      height: 1.4rem;
+      flex-shrink: 0;
     }
 
     &__details {
       @include flex-center(row, flex-start, center);
       gap: 1.2rem;
+      min-width: 0;
     }
 
     &__iban {
       @include font-inter(400, 1.3rem, 2rem);
       color: $gray-600;
       letter-spacing: 0.05rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     @media (max-width: 480px) {
@@ -123,13 +141,20 @@
   &__recipient-accounts,
   &__sender-accounts {
     margin-bottom: 3.2rem;
-    &__header{
+    width: 100%;
+    overflow-x: hidden;
+
+    &__header {
       @include flex-center(row, space-between, center);
       margin-bottom: 2rem;
+
+      @media (max-width: 480px) {
+        @include display-flex(column);
+        align-items: flex-start;
+        gap: 1.2rem;
+      }
     }
   }
-
-
 
   &__recipient-accounts-title,
   &__sender-accounts__header-title {
@@ -141,10 +166,14 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(42rem, 1fr));
     gap: 2rem;
+    width: 100%;
+    max-width: 100%;
 
-    @media (max-width: 480px) {
+    @media (max-width: 540px) {
       grid-template-columns: 1fr;
       gap: 1.6rem;
+      display: flex;
+      flex-direction: column;
     }
 
     @media (max-width: 340px) {

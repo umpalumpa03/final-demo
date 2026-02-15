@@ -137,7 +137,7 @@ export const TemplatesPageActions = createActionGroup({
       nickname: string;
     }>(),
     'Create Template Success': props<{
-      payload: any;
+      payload: Templates;
       message: string;
     }>(),
     'Create Template Failure': props<{ error: string }>(),
@@ -157,7 +157,7 @@ export const TemplatesPageActions = createActionGroup({
       identification: Record<string, string>;
       nickname: string;
     }>(),
-    'Check Bill for Template Failure': props<{
+    'Check Bill For Template Failure': props<{
       error: string;
     }>(),
 
@@ -173,5 +173,6 @@ export const TemplatesPageActions = createActionGroup({
     'Pay Many Bills': props<{ payments: BillPaymentRequest[] }>(),
     'Pay Many Bills Success': props<{ response: ProceedPaymentResponse }>(),
     'Pay Many Bills Failure': props<{ error: string }>(),
+    'Set Form Valid': props<{ isValid: boolean }>(),
   },
 });

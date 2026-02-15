@@ -93,10 +93,9 @@ export class PaybillTemplatesService {
   public payManyBills(
     payload: BillPaymentRequest[],
   ): Observable<ProceedPaymentResponse> {
-    return this.http.patch<ProceedPaymentResponse>(
-      `${this.baseUrl}/pay-many/`,
-      payload,
-    );
+    return this.http.post<ProceedPaymentResponse>(`${this.baseUrl}/pay-many`, {
+      payments: payload,
+    });
   }
 
   // Filter Logic

@@ -25,6 +25,7 @@ import { Router } from '@angular/router';
 import { OtpModal } from '@tia/shared/lib/overlay/ui-otp-modal/otp-modal';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { Tooltip } from '@tia/shared/lib/data-display/tooltip/tooltip';
+import { TransferSummaryComponent } from '../../../../ui/transfer-summary/transfer-summary';
 
 @Component({
   selector: 'app-internal-amount',
@@ -38,6 +39,7 @@ import { Tooltip } from '@tia/shared/lib/data-display/tooltip/tooltip';
     SuccessModal,
     RouteLoader,
     Tooltip,
+    TransferSummaryComponent,
   ],
   templateUrl: './internal-amount.html',
   styleUrl: './internal-amount.scss',
@@ -202,6 +204,15 @@ export class InternalAmount implements OnInit {
   }
 
   public ngOnInit(): void {
+    const initialAmount = this.transferStore.amount();
+    if (initialAmount && initialAmount > 0) {
+      this.transferInternalService.handleAmountInput(initialAmount);
+
+      if (this.isConversionMode() && this.conversionRate()) {
+        this.updateDestinationAmount(initialAmount);
+      }
+    }
+
     this.amountInput.valueChanges
       .pipe(
         takeUntilDestroyed(this.destroyRef),

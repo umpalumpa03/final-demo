@@ -16,6 +16,7 @@ export interface Templates {
   };
   amountDue: number;
   groupId: null | string;
+  message?:string;
 }
 
 export interface BillPaymentRequest {

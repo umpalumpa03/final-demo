@@ -4,11 +4,16 @@ import { TransferInternalService } from '../../services/transfer.internal.servic
 import { TransferStore } from '../../../../store/transfers.store';
 import { BreakpointService } from '../../../../../../../core/services/breakpoints/breakpoint.service';
 import { Store } from '@ngrx/store';
-import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { signal } from '@angular/core';
 import { of } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { AccountsActions } from '../../../../../../../store/products/accounts/accounts.actions';
+import {
+  selectAccounts,
+  selectError,
+  selectIsLoading,
+} from '../../../../../../../store/products/accounts/accounts.selectors';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -17,35 +22,35 @@ describe('InternalToAccount', () => {
   let fixture: ComponentFixture<InternalToAccount>;
   let mockStore: any;
   let mockTransferStore: any;
-  let mockLocation: any;
   let mockRouter: any;
   let mockBreakpointService: any;
   let mockTransferInternalService: any;
+  let accountsSubject: BehaviorSubject<typeof mockAccounts>;
 
   const mockAccounts = [
-    { id: 'acc1', name: 'Account 1', balance: 1000 },
-    { id: 'acc2', name: 'Account 2', balance: 2000 },
+    { id: 'acc1', name: 'Account 1', balance: 1000, isFavorite: false },
+    { id: 'acc2', name: 'Account 2', balance: 2000, isFavorite: true },
   ];
 
   beforeEach(async () => {
+    accountsSubject = new BehaviorSubject(mockAccounts);
     mockStore = {
-      select: vi
-        .fn()
-        .mockReturnValueOnce(of(mockAccounts))
-        .mockReturnValueOnce(of(false))
-        .mockReturnValueOnce(of(null)),
+      select: vi.fn((selector: unknown) => {
+        if (selector === selectAccounts) return accountsSubject.asObservable();
+        if (selector === selectIsLoading) return of(false);
+        if (selector === selectError) return of(null);
+        return of(null);
+      }),
       dispatch: vi.fn(),
     };
 
     mockTransferStore = {
       receiverOwnAccount: signal(null),
       senderAccount: signal(null),
+      error: signal(''),
       setSenderAccount: vi.fn(),
       setReceiverOwnAccount: vi.fn(),
-    };
-
-    mockLocation = {
-      back: vi.fn(),
+      setError: vi.fn(),
     };
 
     mockRouter = {
@@ -66,7 +71,6 @@ describe('InternalToAccount', () => {
       providers: [
         { provide: Store, useValue: mockStore },
         { provide: TransferStore, useValue: mockTransferStore },
-        { provide: Location, useValue: mockLocation },
         { provide: Router, useValue: mockRouter },
         { provide: BreakpointService, useValue: mockBreakpointService },
         {
@@ -116,9 +120,11 @@ describe('InternalToAccount', () => {
   });
 
   describe('onGoBack', () => {
-    it('should call location.back()', () => {
+    it('should navigate to from-account page', () => {
       component.onGoBack();
-      expect(mockLocation.back).toHaveBeenCalled();
+      expect(mockRouter.navigate).toHaveBeenCalledWith([
+        '/bank/transfers/internal/from-account',
+      ]);
     });
   });
 
@@ -209,6 +215,8 @@ describe('InternalToAccount', () => {
     });
 
     it('should not swap when recipient is not selected', () => {
+      // Only one account so transferableAccounts is empty and auto-select effect does not run
+      accountsSubject.next([mockAccounts[0]]);
       mockTransferStore.senderAccount.set(mockAccounts[0]);
       mockTransferStore.receiverOwnAccount.set(null);
       fixture.detectChanges();

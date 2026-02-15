@@ -1,0 +1,52 @@
+<section class="transfer-summary">
+  <div class="transfer-summary__grid">
+    <div class="transfer-summary__item transfer-summary__item--from">
+      <span class="transfer-summary__label"> {{ fromLabel() }} </span>
+      <div class="transfer-summary__content">
+        <div class="transfer-summary__icon">
+          <img src="images/svg/transfers/cardicon.svg" alt="account" />
+        </div>
+        <div class="transfer-summary__details">
+          <p class="transfer-summary__name">
+            @if (senderAccount()?.isFavorite) {
+              <img src="images/svg/transfers/star.svg" alt="favorite" class="transfer-summary__star" />
+            }
+            {{ senderAccount()?.friendlyName || '' }}
+          </p>
+          <p class="transfer-summary__sub">
+            {{ senderAccount()?.currency || '' }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="transfer-summary__divider">
+      <div class="transfer-summary__transfer-circle">
+        <img src="images/svg/transfers/transfer.svg" alt="transfer" />
+      </div>
+    </div>
+
+    <div class="transfer-summary__item transfer-summary__item--to">
+      <div class="transfer-summary__to-wrapper">
+        <span class="transfer-summary__label"> {{ toLabel() }} </span>
+        <div class="transfer-summary__content">
+          <div class="transfer-summary__initials">
+            {{ recipientInitials() }}
+          </div>
+          <div class="transfer-summary__details">
+            <p class="transfer-summary__name">
+              @if (recipientAccount()?.isFavorite) {
+                <img src="images/svg/transfers/star.svg" alt="favorite" class="transfer-summary__star" />
+              }
+              {{ recipientName() || recipientAccount()?.friendlyName ||
+              recipientAccount()?.name || '' }}
+            </p>
+            <p class="transfer-summary__sub">
+              {{ recipientAccount()?.currency || '' }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

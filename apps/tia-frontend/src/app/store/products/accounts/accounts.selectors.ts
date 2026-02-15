@@ -5,6 +5,8 @@ import { AccountType } from '../../../shared/models/accounts/accounts.model';
 export const {
   selectAccounts,
   selectSelectedAccountId,
+  selectCurrencies,
+  selectIsLoadingCurrencies,
   selectIsLoading,
   selectIsFetching,
   selectError,
@@ -13,6 +15,10 @@ export const {
   selectIsCreateModalOpen,
   selectIsUpdatingFriendlyName,
   selectUpdateFriendlyNameError,
+  selectLastTransactions,
+  selectIsLoadingLastTransactions,
+  selectLastTransactionsError,
+  selectNotifications,
 } = accountsFeature;
 
 export const selectCurrentAccounts = createSelector(
