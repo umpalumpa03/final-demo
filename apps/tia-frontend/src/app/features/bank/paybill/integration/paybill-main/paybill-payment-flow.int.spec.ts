@@ -63,7 +63,10 @@ describe('Integration: Paybill Payment Flow', () => {
       resetToDashboard: vi.fn(),
     };
 
-    const mockStore = { dispatch: vi.fn() };
+    const mockStore = {
+      dispatch: vi.fn(),
+      selectSignal: vi.fn().mockReturnValue(signal('acc-456')),
+    };
 
     await TestBed.configureTestingModule({
       imports: [
