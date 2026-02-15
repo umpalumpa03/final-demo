@@ -63,6 +63,11 @@
         "label": "Description (optional)",
         "placeholder": "Add a note for this transfer"
       }
+    },
+    "stepper": {
+      "fromAccount": "From Account",
+      "toAccount": "To Account",
+      "amount": "Amount"
     }
   },
   "external": {
