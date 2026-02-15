@@ -9,7 +9,7 @@ import { Store } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
 import { AlertService } from '@tia/core/services/alert/alert.service';
 import { AuthService } from './auth.service';
-import { firstValueFrom, of } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { TokenService } from './token.service';
 import { environment } from '../../../../environments/environment';
 import { Routes } from '../models/tokens.model';
@@ -21,6 +21,7 @@ describe('AuthService', () => {
   let router: Router;
   let tokenService: TokenService;
   let store: Store;
+  let alertService: AlertService;
   const baseUrl = `${environment.apiUrl}/auth`;
 
   beforeEach(() => {
@@ -46,11 +47,6 @@ describe('AuthService', () => {
 
     const storeMock = {
       dispatch: vi.fn(),
-      selectSignal: vi.fn(() => () => []),
-    };
-
-    const clearStoreMock = {
-      resetAllStore: vi.fn(),
     };
 
     TestBed.configureTestingModule({
@@ -63,18 +59,17 @@ describe('AuthService', () => {
         { provide: TranslateService, useValue: { instant: (k: any) => k } },
         {
           provide: AlertService,
-          useValue: { success: vi.fn(), error: vi.fn() },
+          useValue: { success: vi.fn(), error: vi.fn(), warning: vi.fn() },
         },
       ],
     });
-
-    (TestBed as any).clearStoreMock = clearStoreMock;
 
     service = TestBed.inject(AuthService);
     httpMock = TestBed.inject(HttpTestingController);
     router = TestBed.inject(Router);
     tokenService = TestBed.inject(TokenService);
     store = TestBed.inject(Store);
+    alertService = TestBed.inject(AlertService as any);
   });
 
   afterEach(() => {
@@ -152,7 +147,7 @@ describe('AuthService', () => {
       const promise = new Promise<void>((resolve) => {
         service.loginPostRequest(loginData).subscribe({
           error: () => {
-            expect(service.errorMessage()).toBe(true);
+            expect((alertService as any).error).toHaveBeenCalled();
             resolve();
           },
         });
@@ -222,17 +217,21 @@ describe('AuthService', () => {
     it('should logout successfully', async () => {
       const mockResponse = { success: true };
 
-      const logoutPromise = firstValueFrom(service.logout());
+      const promise = new Promise<void>((resolve) => {
+        service.logout().subscribe({
+          next: (res) => {
+            expect(res.success).toBe(true);
+            expect(tokenService.clearAuthToken).toHaveBeenCalled();
+            expect(router.navigate).toHaveBeenCalledWith([Routes.SIGN_IN]);
+            resolve();
+          },
+        });
+      });
 
       const req = httpMock.expectOne(`${baseUrl}/logout`);
       expect(req.request.method).toBe('POST');
       req.flush(mockResponse);
-
-      const res = await logoutPromise;
-
-      expect(res.success).toBe(true);
-      expect(tokenService.clearAuthToken).toHaveBeenCalled();
-      expect(router.navigate).toHaveBeenCalledWith([Routes.SIGN_IN]);
+      await promise;
     });
   });
 
@@ -525,30 +524,6 @@ describe('AuthService', () => {
         });
       });
 
-      await promise;
-    });
-  });
-
-  describe('resendVerificationCode', () => {
-    it('should resend verification code successfully', async () => {
-      service.setChellangeId('challenge-123');
-      const mockResponse = { message: 'Verification code resent' };
-
-      const promise = new Promise<void>((resolve) => {
-        service.resendVerificationCode().subscribe({
-          next: (res) => {
-            expect(res.message).toBe('Verification code resent');
-            resolve();
-          },
-        });
-      });
-
-      const req = httpMock.expectOne(`${baseUrl}/mfa/otp-resend`);
-      expect(req.request.body).toEqual({ challengeId: 'challenge-123' });
-      expect(req.request.headers.get('Authorization')).toBe(
-        'Bearer test-access-token',
-      );
-      req.flush(mockResponse);
       await promise;
     });
   });

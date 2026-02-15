@@ -1,8 +1,11 @@
 @let accounts = store.accounts();
 
-<app-settings-body
+<app-basic-card
+  width="100%"
+  maxWidth="100%"
+  height="fit-content"
   [title]="'settings.accounts.title' | translate"
-  [subTitle]="isXsMobile()? '': 'settings.accounts.subtitle' | translate"
+  [subtitle]="isXsMobile()? '': 'settings.accounts.subtitle' | translate"
 >
   <app-scroll-area
     height="calc(100vh - 46.4rem)"
@@ -70,7 +73,7 @@
       }
     }
   </app-scroll-area>
-</app-settings-body>
+</app-basic-card>
 
 <app-change-name
   [isOpen]="changeNameOpen()"

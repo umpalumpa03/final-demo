@@ -1,3 +1,5 @@
+vi.mock('apps/tia-frontend/src/environments/environment', () => ({ environment: { apiUrl: 'https://tia.up.railway.app' } }));
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { LoansContainer } from './loans-container';
 import { provideRouter } from '@angular/router';

@@ -4,16 +4,17 @@ import {
   DestroyRef,
   inject,
 } from '@angular/core';
-import { OtpVerification } from '../../../shared/otp-verification/otp-verification';
 import { AuthService } from '../../../services/auth.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { IMfaVerifyRequest } from '../../../models/authRequest.models';
-import { IVerified } from '../../../models/otp-verification.models';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TokenService } from '../../../services/token.service';
 import { Router } from '@angular/router';
 import { Routes } from '../../../models/tokens.model';
 import { otpVerificationConfig } from '../../../config/otp-verification.config';
+import { OtpVerification } from '@tia/core/otp-verification/container/otp-verification';
+import { OtpVerificationService } from '@tia/core/otp-verification/services/otp-verification.service';
+import { OtpResendTypes } from '@tia/core/otp-verification/config/otp.config';
 
 @Component({
   selector: 'app-verify-signin',
@@ -22,29 +23,29 @@ import { otpVerificationConfig } from '../../../config/otp-verification.config';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VerifySignin {
+  private otpService = inject(OtpVerificationService);
   private authService = inject(AuthService);
   private tokenService = inject(TokenService);
   private router = inject(Router);
   public otpError = this.authService.otpError;
   private destroyRef = inject(DestroyRef);
+  public otpResendType = OtpResendTypes.AUTH;
   public otpConfig = otpVerificationConfig['sign-in'];
 
-  public verifyOtp(event: IVerified): void {
-    if (event.isCalled) {
-      this.authService
-        .verifyMfa({
-          code: event.otp,
-          challengeId: this.authService.getChallengeId(),
-        } as IMfaVerifyRequest)
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe();
-    }
+  public verifyOtp(otp: string): void {
+    this.authService
+      .verifyMfa({
+        code: otp,
+        challengeId: this.authService.getChallengeId(),
+      } as IMfaVerifyRequest)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe();
   }
 
-  public resendOtp(isCalled: boolean): void {
-    if (isCalled) {
-      this.authService.resendVerificationCode().subscribe();
-    }
+  public resendOtp(): void {
+    this.otpService
+      .resendVerificationCode(this.authService.getChallengeId())
+      .subscribe();
   }
 
   public clearedBackout(): void {

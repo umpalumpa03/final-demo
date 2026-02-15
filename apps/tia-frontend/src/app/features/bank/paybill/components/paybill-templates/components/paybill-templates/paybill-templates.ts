@@ -37,14 +37,13 @@ import { distinctUntilChanged, tap } from 'rxjs';
 import { InputFieldValue } from '@tia/shared/lib/forms/models/input.model';
 import { PaybillDynamicField } from '../../../../services/paybill-dynamic-form/models/dynamic-form.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { OtpVerification } from '@tia/core/auth/shared/otp-verification/otp-verification';
 import { SuccessModal } from '@tia/shared/lib/overlay/ui-success-modal/ui-success-modal';
 import { payBillOtpConfig } from '../../configs/otp.config';
+import { OtpVerification } from '@tia/core/otp-verification/container/otp-verification';
 import { DeleteConfirmModal } from '../modals/delete-confirm-modal/delete-confirm-modal';
 import { ConfirmPaymentModal } from '../modals/confirm-payment-modal/confirm-payment-modal';
 import { CreateTemplateModal } from '../modals/create-template-modal/create-template-modal';
 import { TemplatesHeader } from '../../ui/templates-header/templates-header';
-import { IVerified } from '@tia/core/auth/models/otp-verification.models';
 
 @Component({
   selector: 'app-paybill-templates',
@@ -288,9 +287,9 @@ export class PaybillTemplates implements OnInit {
     this.paymentDone.emit();
   }
 
-  public verifyOtp = output<IVerified>();
+  public verifyOtp = output<string>();
 
-  public onOtpVerify(event: IVerified): void {
-    this.verifyOtp.emit(event);
+  public onOtpVerify(otp: string): void {
+    this.verifyOtp.emit(otp);
   }
 }

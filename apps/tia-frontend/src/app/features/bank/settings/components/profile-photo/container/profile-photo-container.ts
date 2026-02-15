@@ -4,10 +4,8 @@ import { Router } from '@angular/router';
 import { ProfilePhotoComponent } from '../components/profile-photo/profile-photo.component';
 import { UserInfoComponent } from '../components/user-info/user-info.component';
 import { ProfilePhotoActions } from '../store/profile-photo/profile-photo.actions';
-import { OtpVerification } from '../../../../../../core/auth/shared/otp-verification/otp-verification';
 import { UiModal } from '../../../../../../shared/lib/overlay/ui-modal/ui-modal';
 import { personalInfoOtpConfig } from '../config/otp.config';
-import { IVerified } from '../../../../../../core/auth/models/otp-verification.models';
 import {
   selectDefaultAvatars,
   selectDefaultAvatarsLoading,
@@ -36,6 +34,7 @@ import {
   selectPhoneUpdateError,
   selectPhoneUpdateResendCount,
 } from '../../../../../../store/personal-info/personal-info.selectors';
+import { OtpVerification } from '@tia/core/otp-verification/container/otp-verification';
 
 @Component({
   selector: 'app-profile-photo-container',
@@ -577,19 +576,16 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
     }
   }
 
-  public onVerifyOtp(event: IVerified): void {
-    if (event.isCalled && event.otp) {
+  public onVerifyOtp(otp: string): void {
       const challengeId = this.phoneUpdateChallengeId();
       if (challengeId) {
         this.store.dispatch(
-          PersonalInfoActions.verifyPhoneUpdate({ challengeId, code: event.otp })
+          PersonalInfoActions.verifyPhoneUpdate({ challengeId, code: otp })
         );
       }
-    }
   }
 
-  public onResendOtp(isCalled: boolean): void {
-    if (isCalled) {
+  public onResendOtp(): void {
       const challengeId = this.phoneUpdateChallengeId();
       const resendCount = this.phoneUpdateResendCount();
       if (challengeId && resendCount < 3) {
@@ -602,7 +598,6 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
           { variant: 'dismissible', title: 'Oops!' },
         );
       }
-    }
   }
 
   public onImageLoadError(): void {

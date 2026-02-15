@@ -1,4 +1,4 @@
-import { IOtpVerificationConfig } from '../../../../../../core/auth/models/otp-verification.models';
+import { IOtpVerificationConfig } from "@tia/core/otp-verification/models/otp-verification.models";
 
 export const personalInfoOtpConfig: IOtpVerificationConfig = {
   title: 'settings.profile-photo.verifyPhoneUpdate',

@@ -310,7 +310,6 @@ export class TreeContainer extends DragBase {
 
   public isItemChecked(itemId: string): boolean {
     const result = this.checkedItemIds().has(itemId);
-    console.log('isItemChecked:', itemId, result);
     return result;
   }
 

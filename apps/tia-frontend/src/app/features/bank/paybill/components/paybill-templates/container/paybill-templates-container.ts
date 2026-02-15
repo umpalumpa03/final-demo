@@ -68,7 +68,6 @@ import { paybillSearchConfig } from '../configs/search.config';
 import { PaybillTemplatesService } from '../services/paybill-templates-service';
 import { TreeItem } from '@tia/shared/lib/drag-n-drop/model/drag.model';
 import { TranslatePipe } from '@ngx-translate/core';
-import { IVerified } from '@tia/core/auth/models/otp-verification.models';
 
 @Component({
   selector: 'app-paybill-templates-container',
@@ -542,7 +541,7 @@ export class PaybillTemplatesContainer implements OnInit {
     this.resetTree.set(true);
   }
 
-  public onVerifyOtp(otp: IVerified): void {
+  public onVerifyOtp(otp: string): void {
     const challengeId = this.store.selectSignal(selectChallengeId);
 
     this.actions$
@@ -555,7 +554,7 @@ export class PaybillTemplatesContainer implements OnInit {
     if (challengeId()) {
       this.store.dispatch(
         PaybillActions.confirmPayment({
-          payload: { challengeId: challengeId()!, code: otp.otp! },
+          payload: { challengeId: challengeId()!, code: otp! },
         }),
       );
     }
