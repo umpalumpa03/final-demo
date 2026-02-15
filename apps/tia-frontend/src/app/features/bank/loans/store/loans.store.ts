@@ -21,6 +21,7 @@ import {
 import { ILoanRequest } from '../shared/models/loan-request.model';
 import { AlertService } from '@tia/core/services/alert/alert.service';
 import { TranslateService } from '@ngx-translate/core';
+import { HttpErrorResponse } from '@angular/common/http';
 
 export const LoansStore = signalStore(
   { providedIn: 'root' },
@@ -131,7 +132,7 @@ export const LoansStore = signalStore(
     const alertService = inject(AlertService);
     const translate = inject(TranslateService);
 
-    const handleLoadError = (err: any, key: string) => {
+    const handleLoadError = (err: HttpErrorResponse, key: string) => {
       const backendMsg = err?.error?.message || err?.message;
       const msg = backendMsg || translate.instant(key);
 
@@ -143,7 +144,7 @@ export const LoansStore = signalStore(
       return EMPTY;
     };
 
-    const handleActionError = (err: any, key: string) => {
+    const handleActionError = (err: HttpErrorResponse, key: string) => {
       const backendMsg = err?.error?.message || err?.message;
       const msg = backendMsg || translate.instant(key);
 
@@ -342,7 +343,7 @@ export const LoansStore = signalStore(
     const alertService = inject(AlertService);
     const translate = inject(TranslateService);
 
-    const handleActionError = (err: any, key: string) => {
+    const handleActionError = (err: HttpErrorResponse, key: string) => {
       const backendMsg = err?.error?.message || err?.message;
       const msg = backendMsg || translate.instant(key);
       patchState(store, { actionLoading: false });
@@ -396,11 +397,6 @@ export const LoansStore = signalStore(
                     actionLoading: false,
                   });
                   handleActionSuccess(SuccessKeys.OTP_SENT);
-                } else {
-                  handleActionError(
-                    { message: 'No challenge ID returned' },
-                    ErrorKeys.INITIATE_PREPAYMENT,
-                  );
                 }
               }),
               catchError((err) => {

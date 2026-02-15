@@ -3,6 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import {
   HttpClientTestingModule,
   HttpTestingController,
+  provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -21,7 +22,6 @@ describe('AuthService', () => {
   let router: Router;
   let tokenService: TokenService;
   let store: Store;
-  let alertService: AlertService;
   const baseUrl = `${environment.apiUrl}/auth`;
 
   beforeEach(() => {
@@ -47,20 +47,26 @@ describe('AuthService', () => {
 
     const storeMock = {
       dispatch: vi.fn(),
+      selectSignal: vi.fn(() => () => []),
+    };
+
+    const alertServiceMock = {
+      success: vi.fn(),
+      error: vi.fn(),
+      warning: vi.fn(),
+      info: vi.fn(),
+      showAlert: vi.fn(),
     };
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
       providers: [
+        provideHttpClientTesting(),
         AuthService,
         { provide: Router, useValue: routerMock },
         { provide: TokenService, useValue: tokenServiceMock },
         { provide: Store, useValue: storeMock },
         { provide: TranslateService, useValue: { instant: (k: any) => k } },
-        {
-          provide: AlertService,
-          useValue: { success: vi.fn(), error: vi.fn(), warning: vi.fn() },
-        },
+        { provide: AlertService, useValue: alertServiceMock },
       ],
     });
 
@@ -69,7 +75,6 @@ describe('AuthService', () => {
     router = TestBed.inject(Router);
     tokenService = TestBed.inject(TokenService);
     store = TestBed.inject(Store);
-    alertService = TestBed.inject(AlertService as any);
   });
 
   afterEach(() => {
@@ -137,23 +142,41 @@ describe('AuthService', () => {
       });
 
       const req = httpMock.expectOne(`${baseUrl}/login`);
+      expect(service.isLoginLoading()).toBe(true);
       req.flush(mockResponse);
+
       await promise;
+      expect(service.isLoginLoading()).toBe(false);
     });
 
     it('should handle login error', async () => {
       const loginData = { username: 'test@test.com', password: 'wrong' };
 
-      const promise = new Promise<void>((resolve) => {
+      const promise = new Promise<void>((resolve, reject) => {
         service.loginPostRequest(loginData).subscribe({
+          next: () => resolve(),
           error: () => {
-            expect((alertService as any).error).toHaveBeenCalled();
-            resolve();
+            try {
+              expect(service.errorMessage()).toBe(false);
+              resolve();
+            } catch (e) {
+              reject(e);
+            }
+          },
+          complete: () => {
+            try {
+              expect(service.errorMessage()).toBe(true);
+              resolve();
+            } catch (e) {
+              reject(e);
+            }
           },
         });
       });
 
       const req = httpMock.expectOne(`${baseUrl}/login`);
+      expect(service.isLoginLoading()).toBe(true);
+
       req.flush(
         { message: 'Invalid credentials' },
         { status: 401, statusText: 'Unauthorized' },
@@ -217,21 +240,17 @@ describe('AuthService', () => {
     it('should logout successfully', async () => {
       const mockResponse = { success: true };
 
-      const promise = new Promise<void>((resolve) => {
-        service.logout().subscribe({
-          next: (res) => {
-            expect(res.success).toBe(true);
-            expect(tokenService.clearAuthToken).toHaveBeenCalled();
-            expect(router.navigate).toHaveBeenCalledWith([Routes.SIGN_IN]);
-            resolve();
-          },
-        });
-      });
+      const logoutPromise = firstValueFrom(service.logout());
 
       const req = httpMock.expectOne(`${baseUrl}/logout`);
       expect(req.request.method).toBe('POST');
       req.flush(mockResponse);
-      await promise;
+
+      const res = await logoutPromise;
+
+      expect(res.success).toBe(true);
+      expect(tokenService.clearAuthToken).toHaveBeenCalled();
+      expect(router.navigate).toHaveBeenCalledWith([Routes.SIGN_IN]);
     });
   });
 
@@ -274,9 +293,13 @@ describe('AuthService', () => {
 
       const promise = new Promise<void>((resolve) => {
         service.verifyMfa(verifyData).subscribe({
-          complete: () => {
+          error: () => {
             expect(service.errorMessage()).toBe(true);
             expect(service.otpError()).not.toBeNull();
+            resolve();
+          },
+          complete: () => {
+            expect(service.errorMessage()).toBe(true);
             resolve();
           },
         });

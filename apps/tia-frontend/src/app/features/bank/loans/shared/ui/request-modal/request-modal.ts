@@ -77,11 +77,7 @@ export class RequestModal implements OnInit {
   public readonly form = this.fb.group({
     loanAmount: [
       null as number | null,
-      [
-        Validators.required,
-        Validators.min(100),
-        Validators.max(1000000), // Max 1 Million (UX safety)
-      ],
+      [Validators.required, Validators.min(100), Validators.max(1000000)],
     ],
     amountToReceiveAccountId: ['', Validators.required],
     months: [null as number | null, Validators.required],
