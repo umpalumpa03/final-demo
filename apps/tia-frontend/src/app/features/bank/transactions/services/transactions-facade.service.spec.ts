@@ -11,6 +11,7 @@ import {
   selectTotalTransactions,
   selectCategoryOptions,
   selectCategoryOptionsForModal,
+  selectError,
 } from 'apps/tia-frontend/src/app/store/transactions/transactions.selector';
 import { selectAccounts } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.reducer';
 import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions/transactions.actions';
@@ -28,6 +29,9 @@ describe('TransactionsFacadeService', () => {
     items: [],
     isLoading: false,
     filters: { pageLimit: 20 },
+    total: 0,
+    error: null,
+    categories: [],
   };
 
   beforeEach(() => {
@@ -44,6 +48,7 @@ describe('TransactionsFacadeService', () => {
             { selector: selectCategoryOptions, value: [] },
             { selector: selectCategoryOptionsForModal, value: [] },
             { selector: selectAccounts, value: [] },
+            { selector: selectError, value: null },
           ],
         }),
         { provide: AccountsApiService, useValue: mockAccountsService },
@@ -60,7 +65,7 @@ describe('TransactionsFacadeService', () => {
 
   it('should dispatch updateFilters', () => {
     const spy = vi.spyOn(store, 'dispatch');
-    const filters = { searchCriteria: 'test' };
+    const filters = { searchCriteria: 'test' } as any;
 
     service.updateFilters(filters);
 
@@ -103,23 +108,31 @@ describe('TransactionsFacadeService', () => {
     );
   });
 
+  describe('initializePage', () => {
+    it('should dispatch updateFilters when pure filters change', () => {
+      const spy = vi.spyOn(store, 'dispatch');
+      const incomingFilters = { searchCriteria: 'new' };
 
-  it('should dispatch updateFilters inside initializePage if reset is needed', () => {
-    store.overrideSelector(selectFilters, { pageLimit: 50 });
-    store.refreshState();
+      service.initializePage(incomingFilters);
 
-    const spy = vi.spyOn(store, 'dispatch');
+      expect(spy).toHaveBeenCalledWith(TransactionActions.enter());
+      expect(spy).toHaveBeenCalledWith(AccountsActions.loadAccounts({}));
+      expect(spy).toHaveBeenCalledWith(
+        TransactionActions.updateFilters({
+          filters: { ...incomingFilters, pageLimit: 20 },
+        }),
+      );
+    });
 
-    service.initializePage();
+    it('should dispatch loadTransactions when pure filters are identical', () => {
+      const spy = vi.spyOn(store, 'dispatch');
 
-    expect(spy).toHaveBeenCalledWith(TransactionActions.enter());
-    expect(spy).toHaveBeenCalledWith(AccountsActions.loadAccounts({}));
-    expect(spy).toHaveBeenCalledWith(
-      TransactionActions.updateFilters({
-        filters: { pageLimit: 20, pageCursor: undefined },
-      }),
-    );
+      service.initializePage();
+
+      expect(spy).toHaveBeenCalledWith(TransactionActions.loadTransactions({}));
+    });
   });
+
   it('should dispatch loadMore if conditions are met', () => {
     store.overrideSelector(selectItems, new Array(20).fill({ id: 1 }));
     store.overrideSelector(selectIsLoading, false);
@@ -130,5 +143,15 @@ describe('TransactionsFacadeService', () => {
     service.loadMore();
 
     expect(spy).toHaveBeenCalledWith(TransactionActions.loadMore());
+  });
+
+  it('should dispatch loadTransactions with forceRefresh on retryLoad', () => {
+    const spy = vi.spyOn(store, 'dispatch');
+
+    service.retryLoad();
+
+    expect(spy).toHaveBeenCalledWith(
+      TransactionActions.loadTransactions({ forceRefresh: true }),
+    );
   });
 });
