@@ -1,18 +1,16 @@
 <header class="header">
   <div class="container">
     <div class="container__heading">
-        <a class="sidebar__header" routerLink="/bank/dashboard">
-          <img
-            src="images/png/dashboard/banners/tia_logo.png"
-            alt="TIA Logo"
-            class="sidebar__header-logo"
-          />
-        </a>
+      <a class="sidebar__header" routerLink="/bank/dashboard">
+        <img
+          src="images/png/dashboard/banners/tia_logo.png"
+          alt="TIA Logo"
+          class="sidebar__header-logo"
+        />
+      </a>
       <div class="container__heading-info">
-        <h1>Component Library</h1>
-        <p>
-          A comprehensive showcase of all components with their various states
-        </p>
+        <h1>{{headerConfig.title | translate}}</h1>
+        <p>{{headerConfig.subtitle | translate}}</p>
       </div>
     </div>
     <div class="container__color-switch">
