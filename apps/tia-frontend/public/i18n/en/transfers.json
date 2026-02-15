@@ -37,6 +37,9 @@
         "header": "Failed to Load Your Accounts",
         "message": "Your accounts could not be loaded. Please try again."
       },
+      "accountsError": {
+        "retry": "Retry"
+      },
       "swap": {
         "noRecipientSelected": "Please select a recipient account to swap",
         "noPermission": "Selected account doesn't have permission to transfer funds"

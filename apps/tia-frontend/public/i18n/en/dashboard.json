@@ -11,16 +11,39 @@
     "transactions": {
       "loadMore": "Load More",
       "title": "Recent Transactions",
-      "subtitle": "Your latest account activity"
+      "subtitle": "Your latest account activity",
+      "error": {
+        "header": "Failed to Load",
+        "message": "Could not load transactions",
+        "retry": "Retry"
+      },
+      "empty": {
+        "header": "No Transactions",
+        "message": "There are no transactions available"
+      }
     },
     "accounts": {
       "title": "Accounts",
-      "subtitle": "Your account balances and activity"
+      "subtitle": "Your account balances and activity",
+      "error": {
+        "header": "Failed to Load",
+        "message": "Could not load accounts",
+        "retry": "Retry"
+      },
+      "empty": {
+        "header": "Empty",
+        "message": "Could not find any accounts"
+      }
     },
     "exchange": {
       "title": "Exchange Rates",
       "subtitle": "Live currency exchange rates",
-      "refresh": "Refresh"
+      "refresh": "Refresh",
+      "error": {
+        "header": "Failed to Load",
+        "message": "Could not load exchange rates",
+        "retry": "Retry"
+      }
     }
   },
   "banners": {

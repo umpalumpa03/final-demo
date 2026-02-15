@@ -60,9 +60,9 @@
     <div class="widget-error">
       <app-error-states
         variant="failed"
-        header="Failed to load"
-        message="Could not load accounts"
-        buttonMessage="Retry"
+        [header]="'dashboard.widgets.accounts.error.header' | translate"
+        [message]="'dashboard.widgets.accounts.error.message' | translate"
+        [buttonMessage]="'dashboard.widgets.accounts.error.retry' | translate"
         (buttonClick)="retryLoad()"
         [border]="false"
       >
@@ -72,8 +72,8 @@
     <div class="widget-error">
       <app-error-states
         variant="not-found"
-        header="Empty"
-        message="Could not find any accounts"
+        [header]="'dashboard.widgets.accounts.empty.header' | translate"
+        [message]="'dashboard.widgets.accounts.empty.message' | translate"
         [showButton]="false"
         [border]="false"
       >

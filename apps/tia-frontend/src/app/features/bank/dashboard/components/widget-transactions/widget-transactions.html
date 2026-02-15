@@ -9,9 +9,9 @@
     <div class="widget-error">
       <app-error-states
         variant="failed"
-        header="Failed to load"
-        message="Could not load transactions"
-        buttonMessage="Retry"
+        [header]="'dashboard.widgets.transactions.error.header' | translate"
+        [message]="'dashboard.widgets.transactions.error.message' | translate"
+        [buttonMessage]="'dashboard.widgets.transactions.error.retry' | translate"
         (buttonClick)="retryLoad()"
         [border]="false"
       >
@@ -21,8 +21,8 @@
     <div class="widget-error">
       <app-error-states
         variant="not-found"
-        header="No transactions"
-        message="There are no transactions available"
+        [header]="'dashboard.widgets.transactions.empty.header' | translate"
+        [message]="'dashboard.widgets.transactions.empty.message' | translate"
         [showButton]="false"
         [border]="false"
       >
