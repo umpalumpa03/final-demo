@@ -70,7 +70,13 @@ export class UserEditModal {
 
   public onSave(): void {
     if (this.form.valid) {
-      this.save.emit(this.form.getRawValue() as IUpdateUserRequest);
+      const { pId, ...otherFields } = this.form.getRawValue();
+      const payload = {
+        ...otherFields,
+        ...(pId ? { pId } : {}),
+      } as IUpdateUserRequest;
+
+      this.save.emit(payload);
     }
   }
 }

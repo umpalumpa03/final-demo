@@ -1,4 +1,6 @@
-vi.mock('apps/tia-frontend/src/environments/environment', () => ({ environment: { apiUrl: 'https://tia.up.railway.app' } }));
+vi.mock('apps/tia-frontend/src/environments/environment', () => ({
+  environment: { apiUrl: 'https://tia.up.railway.app' },
+}));
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { LoansContainer } from './loans-container';
@@ -66,7 +68,7 @@ describe('LoansContainer', () => {
 
   it('should initialize data loading on init', () => {
     expect(globalStore.dispatch).toHaveBeenCalledWith(
-      AccountsActions.loadAccounts({}),
+      AccountsActions.loadActiveAccounts({}),
     );
   });
 });
