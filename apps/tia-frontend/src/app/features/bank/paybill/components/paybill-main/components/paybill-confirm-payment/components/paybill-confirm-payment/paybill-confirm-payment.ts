@@ -29,7 +29,8 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import { Store } from '@ngrx/store';
 import { CurrencySymbolPipe } from 'apps/tia-frontend/src/app/features/bank/dashboard/pipes/currency-symbols.pipe';
-import { Skeleton } from "@tia/shared/lib/feedback/skeleton/skeleton";
+import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
+import { selectSelectedAccountId } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.reducer';
 
 @Component({
   selector: 'app-paybill-confirm-payment',
@@ -41,8 +42,8 @@ import { Skeleton } from "@tia/shared/lib/feedback/skeleton/skeleton";
     CurrencyPipe,
     TranslatePipe,
     CurrencySymbolPipe,
-    Skeleton
-],
+    Skeleton,
+  ],
   templateUrl: './paybill-confirm-payment.html',
   styleUrl: './paybill-confirm-payment.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -71,12 +72,28 @@ export class PaybillConfirmPayment implements OnInit {
 
   protected readonly selectConfig = paymentOptionPaybill;
   protected readonly ui = CONFIRM_PAYMENT_UI;
+  private readonly globalSelectedId = this.store.selectSignal(
+    selectSelectedAccountId,
+  );
 
   constructor() {
     effect(() => {
       const accounts = this.currentAccounts();
+      const globalAccount = this.globalSelectedId();
 
       if (accounts && accounts.length > 0 && !this.selectedAccountId()) {
+        const storeAccount = accounts.find(
+          (acc) => acc.value === globalAccount?.id,
+        );
+
+        if (storeAccount) {
+          untracked(() => {
+            this.selectedAccountId.set(storeAccount.value);
+            this.handleAccountChange(storeAccount.value);
+          });
+          return;
+        }
+
         const favoriteAccount = accounts.find((acc) => acc.isFavorite);
 
         if (favoriteAccount) {
@@ -84,7 +101,12 @@ export class PaybillConfirmPayment implements OnInit {
             this.selectedAccountId.set(favoriteAccount.value);
             this.handleAccountChange(favoriteAccount.value);
           });
+          return;
         }
+
+        untracked(() => {
+          this.selectedAccountId.set(null);
+        });
       }
     });
   }
