@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService, TranslateDirective } from '@ngx-translate/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { TransferStore } from '../../../../store/transfers.store';
 import { TransferAmountService } from '../../services/transfer-amount.service';
@@ -45,7 +45,8 @@ import { TransferSummaryComponent } from '../../../../ui/transfer-summary/transf
     UiModal,
     OtpVerification,
     TransferSummaryComponent,
-  ],
+    TranslateDirective
+],
   providers: [],
   templateUrl: './external-amount.html',
   styleUrl: './external-amount.scss',

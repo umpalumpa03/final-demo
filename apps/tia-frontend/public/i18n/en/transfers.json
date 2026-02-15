@@ -1,5 +1,6 @@
 {
   "title": "Transfers",
+  "page": "Transfers Page",
   "description": "Send money between accounts or to other recipients",
   "types": {
     "internal": "Between Own Accounts",
