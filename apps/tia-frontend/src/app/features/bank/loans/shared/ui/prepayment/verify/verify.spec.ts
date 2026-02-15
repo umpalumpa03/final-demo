@@ -55,9 +55,8 @@ describe('Verify', () => {
 
   it('should emit verify on valid otp event', () => {
     const spy = vi.spyOn(component.verify, 'emit');
-    const mockEvent = { otp: '1234', isCalled: true };
 
-    component.onVerify(mockEvent);
+    component.onVerify('1234');
 
     expect(spy).toHaveBeenCalledWith('1234');
   });

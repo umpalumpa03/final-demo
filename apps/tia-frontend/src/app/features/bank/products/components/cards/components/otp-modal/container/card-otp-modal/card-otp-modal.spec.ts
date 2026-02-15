@@ -74,5 +74,4 @@ describe('CardOtpModal', () => {
       requestCardOtp({ cardId: 'card-1' }),
     );
   });
-  
 });

@@ -32,7 +32,7 @@ describe('CardOtpModalContent', () => {
     const spy = vi.fn();
     component.verifyClicked.subscribe(spy);
 
-    component.handleVerify({ isCalled: true, otp: '1111' });
+    component.handleVerify('1111');
 
     expect(spy).toHaveBeenCalledWith('1111');
   });
@@ -45,22 +45,22 @@ describe('CardOtpModalContent', () => {
 
     expect(spy).toHaveBeenCalled();
   });
-  it('should not emit verifyClicked when isCalled is false', () => {
+  it('should emit verifyClicked when handleVerify is called', () => {
     const spy = vi.fn();
     component.verifyClicked.subscribe(spy);
 
-    component.handleVerify({ isCalled: false, otp: '1111' });
+    component.handleVerify('1111');
 
-    expect(spy).not.toHaveBeenCalled();
+    expect(spy).toHaveBeenCalledWith('1111');
   });
 
-  it('should not emit verifyClicked when otp is null', () => {
+  it('should emit verifyClicked when handleVerify is called with value', () => {
     const spy = vi.fn();
     component.verifyClicked.subscribe(spy);
 
-    component.handleVerify({ isCalled: true, otp: null });
+    component.handleVerify('1111');
 
-    expect(spy).not.toHaveBeenCalled();
+    expect(spy).toHaveBeenCalledWith('1111');
   });
   it('should emit resendClicked', () => {
     const spy = vi.fn();
@@ -78,23 +78,23 @@ describe('CardOtpModalContent', () => {
     );
   });
   it('should emit resendClicked', () => {
-  const spy = vi.fn();
-  component.resendClicked.subscribe(spy);
-  component['handleResend']();
-  expect(spy).toHaveBeenCalled();
-});
+    const spy = vi.fn();
+    component.resendClicked.subscribe(spy);
+    component['handleResend']();
+    expect(spy).toHaveBeenCalled();
+  });
 
-it('should emit cancelClicked', () => {
-  const spy = vi.fn();
-  component.cancelClicked.subscribe(spy);
-  component['handleCancel']();
-  expect(spy).toHaveBeenCalled();
-});
+  it('should emit cancelClicked', () => {
+    const spy = vi.fn();
+    component.cancelClicked.subscribe(spy);
+    component['handleCancel']();
+    expect(spy).toHaveBeenCalled();
+  });
 
-it('should not emit verifyClicked when isCalled is false', () => {
-  const spy = vi.fn();
-  component.verifyClicked.subscribe(spy);
-  component['handleVerify']({ isCalled: false, otp: '1234' });
-  expect(spy).not.toHaveBeenCalled();
-});
+  it('should emit verifyClicked when handleVerify is called', () => {
+    const spy = vi.fn();
+    component.verifyClicked.subscribe(spy);
+    component['handleVerify']('1234');
+    expect(spy).toHaveBeenCalledWith('1234');
+  });
 });

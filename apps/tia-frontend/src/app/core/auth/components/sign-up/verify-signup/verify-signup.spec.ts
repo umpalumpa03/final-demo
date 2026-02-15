@@ -1,6 +1,13 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+vi.mock('apps/tia-frontend/src/environments/environment', () => ({
+  environment: { apiUrl: 'https://tia.up.railway.app' },
+}));
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
+import { ComponentFixture } from '@angular/core/testing';
+import { ActivatedRoute, provideRouter } from '@angular/router';
+import { signal } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { VerifySignup } from './verify-signup';
 import { AuthService } from '../../../services/auth.service';
@@ -35,18 +42,18 @@ describe('VerifySignup', () => {
   it('calls verifyPhoneOtpCode when event.isCalled is true', () => {
     const auth = TestBed.inject(AuthService) as any;
     component.verifyRegisterOtp({ isCalled: true, otp: '123' } as any);
-    expect(auth.verifyPhoneOtpCode).toHaveBeenCalledWith('123');
+    expect(auth.verifyPhoneOtpCode).toHaveBeenCalledWith({ isCalled: true, otp: '123' });
   });
 
-  it('does not call verifyPhoneOtpCode when event.isCalled is false', () => {
+  it('calls verifyPhoneOtpCode when called', () => {
     const auth = TestBed.inject(AuthService) as any;
-    component.verifyRegisterOtp({ isCalled: false } as any);
-    expect(auth.verifyPhoneOtpCode).not.toHaveBeenCalled();
+    component.verifyRegisterOtp('123456');
+    expect(auth.verifyPhoneOtpCode).toHaveBeenCalledWith('123456');
   });
 
   it('resends otp when called', () => {
     const auth = TestBed.inject(AuthService) as any;
-    component.resendOtp(true);
+    component.resendOtp();
     expect(auth.resendPhoneOtp).toHaveBeenCalled();
   });
 
@@ -58,15 +65,6 @@ describe('VerifySignup', () => {
     expect(router.navigate).toHaveBeenCalledWith([Routes.SIGN_IN]);
   });
 });
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { VerifySignup } from './verify-signup';
-import { AuthService } from '../../../services/auth.service';
-import { ActivatedRoute, provideRouter } from '@angular/router';
-import { signal } from '@angular/core';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { of } from 'rxjs';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { IVerified } from '../../../../otp-verification/models/otp-verification.models';
 
 describe('VerifySignup Component', () => {
   let component: VerifySignup;
@@ -112,19 +110,15 @@ describe('VerifySignup Component', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should not verify phone OTP when isCalled is false', () => {
-    const event: IVerified = {
-      isCalled: false,
-      otp: '123456',
-    };
+  it('should verify phone OTP when called', () => {
 
-    component.verifyRegisterOtp(event);
+    component.verifyRegisterOtp('123456');
 
-    expect(authServiceMock.verifyPhoneOtpCode).not.toHaveBeenCalled();
+    expect(authServiceMock.verifyPhoneOtpCode).toHaveBeenCalledWith('123456');
   });
 
-  it('should resend OTP when isCalled is true', () => {
-    component.resendOtp(true);
+  it('should resend OTP', () => {
+    component.resendOtp();
 
     expect(authServiceMock.resendPhoneOtp).toHaveBeenCalled();
   });

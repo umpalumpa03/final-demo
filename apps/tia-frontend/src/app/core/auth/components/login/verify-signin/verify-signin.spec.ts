@@ -6,8 +6,9 @@ import { signal } from '@angular/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { IVerified } from '../../../../otp-verification/models/otp-verification.models';
-import { IMfaVerifyRequest } from '../../../models/authRequest.models';
+vi.mock('apps/tia-frontend/src/environments/environment', () => ({ environment: { apiUrl: 'https://tia.up.railway.app' } }));
+import { OtpVerificationService } from '@tia/core/otp-verification/services/otp-verification.service';
+import { IMfaVerifyRequest } from '@tia/core/auth/models/authRequest.models';
 
 describe('VerifySignin Component', () => {
   let component: VerifySignin;
@@ -19,6 +20,11 @@ describe('VerifySignin Component', () => {
     otpError: ReturnType<typeof signal>;
   };
 
+  let otpServiceMock: {
+    resendVerificationCode: ReturnType<typeof vi.fn>;
+    getOtpConfig: ReturnType<typeof vi.fn>;
+  };
+
   beforeEach(async () => {
     authServiceMock = {
       getChallengeId: vi.fn().mockReturnValue('challenge-123'),
@@ -27,11 +33,27 @@ describe('VerifySignin Component', () => {
       otpError: signal(null),
     };
 
+    otpServiceMock = {
+      resendVerificationCode: vi.fn().mockReturnValue(of({})),
+      getOtpConfig: vi.fn().mockReturnValue(
+        of({
+          otp: {
+            maxResendAttempts: 3,
+            maxVerifyAttempts: 3,
+            expirationMinutes: 5,
+            resendTimeoutMs: 1000,
+            enabledOtpResends: ['', 'AUTH'],
+          },
+        }),
+      ),
+    };
+
     await TestBed.configureTestingModule({
       imports: [VerifySignin, TranslateModule.forRoot()],
       providers: [
         provideRouter([]),
         { provide: AuthService, useValue: authServiceMock },
+        { provide: OtpVerificationService, useValue: otpServiceMock },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -54,42 +76,34 @@ describe('VerifySignin Component', () => {
   });
 
   it('should verify MFA with correct payload when isCalled is true', () => {
-    const event: IVerified = {
-      isCalled: true,
-      otp: '123456',
-    };
 
     const expectedPayload: IMfaVerifyRequest = {
       code: '123456',
       challengeId: 'challenge-123',
     };
 
-    component.verifyOtp(event);
+    component.verifyOtp('123456');
 
     expect(authServiceMock.getChallengeId).toHaveBeenCalled();
-    expect(authServiceMock.verifyMfa).toHaveBeenCalledWith(expectedPayload);
+    expect(authServiceMock.verifyMfa).toHaveBeenCalledWith({ challengeId: 'challenge-123', code: '123456' });
   });
 
-  it('should not verify MFA when isCalled is false', () => {
-    const event: IVerified = {
-      isCalled: false,
-      otp: '123456',
-    };
+  it('should verify MFA when called', () => {
+    component.verifyOtp('123456');
 
-    component.verifyOtp(event);
-
-    expect(authServiceMock.verifyMfa).not.toHaveBeenCalled();
+    expect(authServiceMock.getChallengeId).toHaveBeenCalled();
+    expect(authServiceMock.verifyMfa).toHaveBeenCalledWith({ challengeId: 'challenge-123', code: '123456' });
   });
 
-  it('should resend verification code when isCalled is true', () => {
-    component.resendOtp(true);
+  it('should resend verification code', () => {
+    component.resendOtp();
 
-    expect(authServiceMock.resendVerificationCode).toHaveBeenCalled();
+    expect(otpServiceMock.resendVerificationCode).toHaveBeenCalled();
   });
 
-  it('should not resend verification code when isCalled is false', () => {
-    component.resendOtp(false);
+  it('should resend verification code', () => {
+    component.resendOtp();
 
-    expect(authServiceMock.resendVerificationCode).not.toHaveBeenCalled();
+    expect(otpServiceMock.resendVerificationCode).toHaveBeenCalled();
   });
 });

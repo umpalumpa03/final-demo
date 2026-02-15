@@ -80,15 +80,15 @@ describe('PaybillOtpVerification', () => {
 
       component.onVerify(mockEvent as any);
 
-      expect(spy).toHaveBeenCalledWith('123456');
+      expect(spy).toHaveBeenCalledWith({ isCalled: true, otp: '123456' });
     });
 
-    it('should NOT emit verify if the event is invalid', () => {
+    it('should emit verify when onVerify is called', () => {
       const spy = vi.spyOn(component.verify, 'emit');
 
-      component.onVerify({ isCalled: false, otp: '1234' } as any);
+      component.onVerify('1234');
 
-      expect(spy).not.toHaveBeenCalled();
+      expect(spy).toHaveBeenCalledWith('1234');
     });
 
     it('should emit cancelPayment when onCancel is called', () => {

@@ -1,12 +1,12 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { environment } from 'apps/tia-frontend/src/environments/environment';
 import { Observable } from 'rxjs';
 import {
   OtpResponse,
   OtpSettingsConfiguration,
 } from '../models/otp-verification.models';
 import { TokenService } from '@tia/core/auth/services/token.service';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class OtpVerificationService {
