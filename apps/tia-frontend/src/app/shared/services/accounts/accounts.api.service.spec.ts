@@ -5,7 +5,7 @@ import {
 } from '@angular/common/http/testing';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { AccountsApiService } from './accounts.api.service';
-import { AccountsStore } from '../../../features/bank/settings/components/accounts/strore/accounts.store';
+import { AccountsStore } from '../../../features/bank/settings/components/accounts/store/accounts.store';
 import { environment } from '../../../../environments/environment';
 import {
   AccountType,
@@ -23,6 +23,7 @@ describe('AccountsApiService', () => {
     mockStore = {
       invalidate: vi.fn(),
       loadAccounts: vi.fn(),
+      resetStore: vi.fn(),
     };
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
@@ -107,8 +108,8 @@ describe('AccountsApiService', () => {
 
     service.updateFriendlyName(accountId, newFriendlyName).subscribe((result) => {
       expect(result).toEqual(mockAccount);
-      expect(mockStore.invalidate).toHaveBeenCalled();
-      expect(mockStore.loadAccounts).toHaveBeenCalled();
+      // implementation calls resetStore on the injected store
+      expect(mockStore.resetStore).toHaveBeenCalled();
     });
 
     const req = httpMock.expectOne(

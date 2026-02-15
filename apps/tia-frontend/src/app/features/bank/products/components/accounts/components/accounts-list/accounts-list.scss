@@ -148,22 +148,15 @@
     &__section {
       &-grid {
         app-account-card {
-          flex: 0 0 calc((100% - 5rem) / 2);
+          flex: 0 0 calc((100% - 4rem) / 2);
           min-width: 0;
-          max-width: calc((100% - 5rem) / 2);
+          max-width: calc((100% - 4rem) / 2);
         }
       }
     }
 
     &__skel-card {
-      flex: 0 0 calc((100% - 8rem) / 2);
-    }
-
-    &__carousel {
-      &-button {
-        width: 2.5rem;
-        height: 2.5rem;
-      }
+      flex: 0 0 calc((100% - 4rem) / 2);
     }
   }
 
@@ -172,12 +165,13 @@
       flex-direction: column;
       align-items: flex-start;
     }
+
     &__section {
       &-grid {
         app-account-card {
-          flex: 0 0 calc(100% - 3.6rem);
-          min-width: 0;
-          max-width: 96%;
+          flex: 0 0 100%;
+          min-width: 100%;
+          max-width: 100%;
         }
       }
     }
@@ -185,36 +179,17 @@
     &__skel-card {
       flex: 0 0 100%;
     }
-
-    &__carousel {
-      &-button {
-        width: 2rem;
-        height: 2rem;
-      }
-
-      &-arrow {
-        font-size: 1rem;
-      }
-    }
   }
 
   @media (max-width: 425px) {
     &__section {
       &-grid {
         gap: 2.2rem;
-        app-account-card {
-          flex: 0 0 calc(100% - 1rem);
-          min-width: 0;
-          max-width: 94%;
-        }
       }
+
       &-header {
         margin: 2rem 9rem 2rem 2rem;
       }
-    }
-
-    &__skel-card {
-      flex: 0 0 calc(100% - 2rem);
     }
 
     &__carousel {

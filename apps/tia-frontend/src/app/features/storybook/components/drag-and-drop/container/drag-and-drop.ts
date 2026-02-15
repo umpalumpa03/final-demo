@@ -32,6 +32,8 @@ import { DragContainer } from '@tia/shared/lib/drag-n-drop/components/drag-conta
 import { DragItemDirective } from '@tia/shared/lib/drag-n-drop/directives/drag-item.directive';
 import { TreeContainer } from '@tia/shared/lib/drag-n-drop/components/tree-container/tree-container';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
+import { computed } from '@angular/core';
 
 @Component({
   selector: 'app-drag-and-drop-container',
@@ -52,6 +54,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 })
 export class DragAndDropContainer implements OnInit {
   private translate = inject(TranslateService);
+  private breakpointService = inject(BreakpointService);
 
   public items: DraggableItemType[] = [...items(this.translate)];
   public listItems: DraggableItemType[] = [...items(this.translate)];
@@ -63,6 +66,12 @@ export class DragAndDropContainer implements OnInit {
   ]);
   public treeItems = signal<TreeItem[]>([...treeItems(this.translate)]);
   public canDelete = true;
+
+  public isMobile = this.breakpointService.isMobile;
+
+  public colspans = computed(() => {
+    return this.isMobile() ? [1, 1, 1, 1] : [2, 1, 1, 2];
+  });
 
   ngOnInit() {
     this.translate.onLangChange.subscribe(() => {

@@ -4,7 +4,7 @@
   class="create-card-form"
 >
   <div class="create-card-form__field">
-    <lib-text-input formControlName="cardName" [type]="'text'"></lib-text-input>
+    <lib-text-input formControlName="cardName" [type]="'text'"  [config]="formConfigs().cardName"></lib-text-input>
   </div>
 
   <div class="create-card-form__field-group">
@@ -27,6 +27,7 @@
     <lib-select
       formControlName="accountId"
       [options]="accountOptions()"
+       [config]="formConfigs().accountId"
     ></lib-select>
   </div>
 

@@ -36,11 +36,15 @@ export class UserInfoEffects {
               localStorage.setItem('theme', user.theme);
             }
             if (user.language) {
+              const languageCode = user.language === 'georgian' ? 'ka' : 'en';
               if (user.language === 'georgian') {
                 localStorage.setItem('language', 'ka');
               } else {
                 localStorage.setItem('language', 'en');
               }
+              this.store.dispatch(
+                UserInfoActions.loadUserLanguage({ language: languageCode }),
+              );
             }
           }),
           map((user) => UserInfoActions.loadUserSuccess({ user })),

@@ -43,11 +43,6 @@ describe('AppearanceContainer', () => {
     component = fixture.componentInstance;
   });
 
-  it('should cover ngOnInit and theme mapping', () => {
-    fixture.detectChanges();
-    expect(component.availableThemes()![0]).toHaveProperty('subtitle');
-  });
-
   it('should cover onClick and setActiveColor', () => {
     const dispatchSpy = vi.spyOn((component as any).store, 'dispatch');
     component.onClick('dark');
@@ -66,12 +61,6 @@ describe('AppearanceContainer', () => {
   it('should cover getThemeColor DOM logic', () => {
     const color = component.getThemeColor('dark', '--test');
     expect(typeof color).toBe('string');
-  });
-
-  it('should cover onSubmit', () => {
-    component.onSubmit();
-    expect(appearanceService.updateUserTheme).toHaveBeenCalled();
-    expect((component as any).isSubmitted()).toBe(true);
   });
 
   describe('canDeactivate line coverage', () => {

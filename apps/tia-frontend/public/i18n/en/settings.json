@@ -124,15 +124,22 @@
       "edit": "Edit",
       "delete": "Delete",
       "block": "Block",
-      "unblock": "Unblock"
+      "unblock": "Unblock",
+      "retry": "Retry"
     },
     "details": {
       "title": "User Details",
       "desc": "View detailed information about the user.",
+      "username": "Username",
+      "email": "Email",
+      "personal_id": "Personal ID",
+      "phone": "Phone Number",
+      "role": "Role",
+      "status": "Status",
+      "created": "Created At",
+      "phone_verified": "Phone Verified At",
       "blocked": "Blocked",
       "active": "Active",
-      "username": "Username",
-      "created": "Created At",
       "close": "Close"
     },
     "edit": {
@@ -146,6 +153,23 @@
       "desc": "Are you sure you want to delete this user? This action cannot be undone.",
       "cancel": "Cancel",
       "delete": "Delete"
+    },
+    "alerts": {
+      "error": {
+        "load_error": "Failed to load users",
+        "details_error": "Failed to load user details",
+        "delete_error": "Failed to delete user",
+        "update_error": "Failed to update user",
+        "block_error": "Failed to change user block status",
+        "network_error": "Check internet connection or try again later",
+        "title": "Error occured"
+      },
+      "success": {
+        "delete_success": "User deleted successfully",
+        "update_success": "User updated successfully",
+        "block_success": "User blocked successfully",
+        "unblock_success": "User unblocked successfully"
+      }
     }
   },
   "approve-accounts": {
@@ -193,6 +217,11 @@
     "alertMessages": {
       "successDesc": "Card status updated successfully!",
       "errorDesc": "Failed to update card status."
+    },
+    "modal": {
+      "title": "Modify Card Permissions",
+      "subtitle": "Configure permissions for this Card request",
+      "permissionsTitle": "Card permissions"
     }
   },
   "loan-management": {

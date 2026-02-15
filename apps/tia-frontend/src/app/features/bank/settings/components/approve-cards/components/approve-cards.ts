@@ -20,7 +20,6 @@ import { FormBuilder, FormControl, FormRecord } from '@angular/forms';
 import { CardPermission, PendingCard } from '../../../shared/models/approve-models/cards-models/approve-cards.model';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { ScrollArea } from '@tia/shared/lib/layout/components/scroll-area/container/scroll-area';
-import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
 import { ApproveCardsState } from '../shared/state/approve-cards.state';
 import { IAccountsPermissions } from '../../../shared/models/approve-models/accounts-models/account-permissions.models';
 
@@ -29,13 +28,11 @@ import { IAccountsPermissions } from '../../../shared/models/approve-models/acco
   imports: [
     CardsApproveElement,
     Skeleton,
-    Spinner,
     ErrorStates,
     PermissionsModal,
     UiModal,
     ButtonComponent,
     ScrollArea,
-    AlertTypesWithIcons,
   ],
   templateUrl: './approve-cards.html',
   providers: [],

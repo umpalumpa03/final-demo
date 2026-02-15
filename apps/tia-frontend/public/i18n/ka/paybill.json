@@ -98,9 +98,17 @@
         "account": "აბონენტი:",
         "amount": "თანხა:",
         "unknown_service": "უცნობი სერვისი"
-      }
+      },
+      "verify_success": "ერთჯერადი კოდის ვერიფიკაცია წარმატებით მოხდა"
     },
-    "navigate": "უკან დაბრუნება"
+    "errors": {
+      "insufficient_balance": "ბალანსი არ არის საკმარისი",
+      "invalid_account": "აბონენტის ნომერი არასწორია",
+      "default_error": "დაფიქსირდა შეცდომა, სცადეთ მოგვიანებით",
+      "invalid_code": "კოდი არასწორია"
+    },
+    "navigate": "უკან დაბრუნება",
+    "search-placeholder": "ძიება..."
   },
 
   "templates": {
@@ -183,6 +191,16 @@
           "label": "აირჩიე ანგარიში"
         }
       }
+    },
+    "notifications": {
+      "delete_success": "შაბლონი წარმატებით წაიშალა",
+      "rename_success": "შაბლონის სახელი წარმატებით შეიცვალა",
+      "group_delete_success": "ჯგუფი წარმატებით წაიშალა",
+      "group_create_success": "ჯგუფი წარმატებით შეიქმნა",
+      "group_rename_success": "ჯგუფის სახელი წარმატებით შეიცვალა",
+      "move_success": "შაბლონი წარმატებით გადაადგილდა",
+      "create_success": "შაბლონი წარმატებით შეიქმნა",
+      "bulk_pay_success": "მრავალი გადახდა წარმატებით შესრულდა"
     }
   }
 }

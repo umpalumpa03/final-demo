@@ -9,10 +9,11 @@ import { COLOR_SWITCH_DATA } from './config/color-switch-data';
 import { Store } from '@ngrx/store';
 import { selectActiveTheme } from 'apps/tia-frontend/src/app/store/theme/theme.selectors';
 import { ThemeActions } from 'apps/tia-frontend/src/app/store/theme/theme.actions';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-library-header',
-  imports: [ColorSwitch],
+  imports: [ColorSwitch, RouterLink],
   templateUrl: './library-header.html',
   styleUrl: './library-header.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

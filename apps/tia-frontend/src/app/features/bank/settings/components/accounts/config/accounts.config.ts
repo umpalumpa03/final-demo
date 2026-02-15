@@ -2,7 +2,7 @@ export const ERROR_STATE = {
   maxWidth: '86rem',
   error: {
     message: 'settings.accounts.errorMessage',
-    button: 'settings.accounts.errorBtn'
+    button: 'settings.accounts.errorBtn',
   },
   warning: {
     variant: 'not-found',
@@ -12,7 +12,7 @@ export const ERROR_STATE = {
   },
 } as const;
 
-export const ACCOUNT_ACTIONS= {
+export const ACCOUNT_ACTIONS = {
   basic: {
     maxWidth: '100%',
     minHeight: '11.4rem',
@@ -21,6 +21,7 @@ export const ACCOUNT_ACTIONS= {
     alignItems: 'center',
     gap: '0',
     flexDirection: 'row',
+    mobilePadding: '1.2rem',
   },
   nameBtn: {
     variant: 'outline',

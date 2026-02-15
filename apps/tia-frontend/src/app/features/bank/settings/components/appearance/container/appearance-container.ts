@@ -8,15 +8,12 @@ import {
 } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Store } from '@ngrx/store';
-import { catchError, map, Observable, of, Subject, tap } from 'rxjs';
+import { catchError, Observable, of, Subject, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { SettingsBody } from '../../../shared/ui/settings-body/settings-body';
-import { themesConfig } from '../config/appearance.config';
 import { selectActiveTheme } from 'apps/tia-frontend/src/app/store/theme/theme.selectors';
 import { ThemeActions } from 'apps/tia-frontend/src/app/store/theme/theme.actions';
 import { AppearanceService } from '../services/appearance-api.service';
-import { TAvailableThemes } from '../models/appearance.model';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
 import { selectUserTheme } from 'apps/tia-frontend/src/app/store/user-info/user-info.selectors';
@@ -26,16 +23,13 @@ import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 import { TranslateService } from '@ngx-translate/core';
 import { BreakpointService } from '@tia/core/services/breakpoints/breakpoint.service';
 import { AlertService } from '@tia/core/services/alert/alert.service';
+import { AppearanceStore } from '../store/appearance.store';
+import { NavigationService } from 'apps/tia-frontend/src/app/core/services/navigation/navigation.service';
+import { BasicCard } from "@tia/shared/lib/cards/basic-card/basic-card";
 
 @Component({
   selector: 'app-appearance-container',
-  imports: [
-    SettingsBody,
-    TranslatePipe,
-    ButtonComponent,
-    Skeleton,
-    UiModal,
-  ],
+  imports: [TranslatePipe, ButtonComponent, Skeleton, UiModal, BasicCard],
   providers: [AppearanceService],
   templateUrl: './appearance-container.html',
   styleUrl: './appearance-container.scss',
@@ -43,11 +37,17 @@ import { AlertService } from '@tia/core/services/alert/alert.service';
 })
 export class AppearanceContainer implements OnInit, CanComponentDeactivate {
   private readonly store = inject(Store);
-  private readonly appearanceService = inject(AppearanceService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly translate = inject(TranslateService);
   private readonly breakpointService = inject(BreakpointService);
   private readonly alertService = inject(AlertService);
+  private readonly appearanceStore = inject(AppearanceStore);
+  private readonly navigationService = inject(NavigationService);
+
+  public readonly isFetching = this.appearanceStore.isRefreshing;
+  public readonly isLoading = this.appearanceStore.isLoading;
+  public readonly hasLoaded = this.appearanceStore.hasLoaded;
+  public readonly availableThemes = this.appearanceStore.themes;
 
   public readonly isMobile = this.breakpointService.isMobile;
 
@@ -68,14 +68,12 @@ export class AppearanceContainer implements OnInit, CanComponentDeactivate {
     if (savedTheme) {
       this.setActiveColor(savedTheme);
     }
+    this.navigationService.suppressNextLoader();
     this.leaveDecision$.next(true);
     this.isModalOpen.set(false);
   }
 
   private activeTheme = this.store.selectSignal(selectActiveTheme);
-  public availableThemes = signal<TAvailableThemes | null>(null);
-
-  public isLoading = this.appearanceService.isLoading;
 
   private isSubmitted = signal(false);
 
@@ -83,21 +81,8 @@ export class AppearanceContainer implements OnInit, CanComponentDeactivate {
 
   public ngOnInit(): void {
     this.isSubmitted.set(false);
-    this.appearanceService
-      .getAvailableThemes()
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        map((themes) => {
-          return [...themes].map((theme, index) => ({
-            ...theme,
-            subtitle: themesConfig[index].subtitle,
-          }));
-        }),
-        tap((themes) => {
-          this.availableThemes.set(themes);
-        }),
-      )
-      .subscribe();
+
+    this.appearanceStore.fetchThemes({});
   }
 
   public isCurrentTheme(theme: string) {
@@ -126,8 +111,8 @@ export class AppearanceContainer implements OnInit, CanComponentDeactivate {
   }
 
   public onSubmit(): void {
-    this.appearanceService
-      .updateUserTheme(this.activeTheme())
+    this.appearanceStore
+      .updateTheme(this.activeTheme())
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         tap(() => {
@@ -158,6 +143,7 @@ export class AppearanceContainer implements OnInit, CanComponentDeactivate {
     const savedTheme = this.userTheme();
 
     if (savedTheme && currentTheme !== savedTheme) {
+      this.navigationService.suppressNextLoader();
       this.isModalOpen.set(true);
       return this.leaveDecision$.asObservable();
     }

@@ -7,7 +7,12 @@
     &__list {
         @include flex-center();
         gap: 0.4rem;
+
         overflow-x: auto;
+
+        &--overflow-hidden {
+            overflow-x: hidden;
+        }
     }
 
     &__item {
@@ -28,6 +33,18 @@
         padding: 1.2rem;
         gap: 1rem;
         @include flex-center();
+
+        &--previous,
+        &--next {
+            img {
+                height: 1.6rem;
+                min-width: 1.6rem;
+                min-height: 1.6rem;
+                width: auto;
+                object-fit: contain;
+                flex-shrink: 0;
+            }
+        }
     }
 
     &__link--page {
