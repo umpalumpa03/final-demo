@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { signal } from '@angular/core';
 import {
@@ -36,7 +35,6 @@ describe('Integration: Paybill Main Container', () => {
       imports: [
         PaybillMain,
         ReactiveFormsModule,
-        NoopAnimationsModule,
 
         TranslateModule.forRoot({
           loader: { provide: TranslateLoader, useClass: TranslateFakeLoader },
