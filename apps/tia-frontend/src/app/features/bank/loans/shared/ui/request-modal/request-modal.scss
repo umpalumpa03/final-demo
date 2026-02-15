@@ -74,6 +74,10 @@
         grid-template-columns: repeat(2, 1fr);
         gap: 1.6rem;
 
+        .select {
+            max-width: 23.72rem;
+        }
+
         @media (max-width: 480px) {
             grid-template-columns: 1fr;
         }
@@ -114,6 +118,7 @@
 
     &__footer {
         @include flex-center($justify: flex-end, $align: flex-start);
+        flex-wrap: wrap;
         padding: 1.6rem;
         gap: 1.2rem;
     }

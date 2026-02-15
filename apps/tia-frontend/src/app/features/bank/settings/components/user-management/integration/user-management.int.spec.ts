@@ -79,6 +79,7 @@ describe('User Management Integration', () => {
       firstName: 'Johnny',
       lastName: 'Doe',
       role: 'SUPPORT',
+      pId: '12345678912',
       isBlocked: false,
     };
 
