@@ -5,7 +5,6 @@ import { Router } from '@angular/router';
 import { DashboardContainer } from './dashboard-container';
 import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions/transactions.actions';
 import {
-  clearExchangeRates,
   loadExchangeRates,
 } from 'apps/tia-frontend/src/app/store/exchange-rates/exchange-rates.actions';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
@@ -182,9 +181,8 @@ describe('DashboardContainer', () => {
     it('onWidgetRefresh: should dispatch exchange rate refresh actions', () => {
       component.onWidgetRefresh();
 
-      expect(mockStore.dispatch).toHaveBeenCalledWith(clearExchangeRates());
       expect(mockStore.dispatch).toHaveBeenCalledWith(
-        loadExchangeRates({ baseCurrency: 'USD' }),
+        loadExchangeRates({ baseCurrency: 'USD', forceRefresh: true }),
       );
     });
 
