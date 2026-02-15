@@ -24,6 +24,7 @@ import { AlertService } from '@tia/core/services/alert/alert.service';
 import { TranslateService } from '@ngx-translate/core';
 
 export const LoansStore = signalStore(
+  { providedIn: 'root' },
   withState(loansInitialState),
   withComputed((store) => {
     const globalStore = inject(Store);
