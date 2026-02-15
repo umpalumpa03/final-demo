@@ -55,6 +55,7 @@ describe('InternalToAccount', () => {
 
     mockRouter = {
       navigate: vi.fn(),
+      events: of(),
     };
 
     mockBreakpointService = {

@@ -3,7 +3,8 @@
     [fullWidth]="true"
     variant="outline"
     type="button"
-    (click)="cancel.emit()"
+    (click)="cancelHandler()"
+    [isDisabled]="isLoading()"
   >
     {{ 'paybill.templates.cancelButton' | translate}}
   </app-button>

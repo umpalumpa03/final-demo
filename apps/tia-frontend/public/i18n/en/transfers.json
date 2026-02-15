@@ -63,7 +63,17 @@
       "description": {
         "label": "Description (optional)",
         "placeholder": "Add a note for this transfer"
+      },
+      "success": {
+        "title": "Transfer Successful!",
+        "message": "Your transfer has been completed successfully",
+        "button": "Done"
       }
+    },
+    "stepper": {
+      "fromAccount": "From Account",
+      "toAccount": "To Account",
+      "amount": "Amount"
     }
   },
   "external": {

@@ -19,6 +19,11 @@ export const selectError = createSelector(
   (state) => state.error,
 );
 
+export const selectLastUpdated = createSelector(
+  selectExchangeRatesSelector,
+  (state) => state.lastUpdated,
+);
+
 export const selectRateByCode = (code: string) =>
   createSelector(
     selectExchangeRates,
