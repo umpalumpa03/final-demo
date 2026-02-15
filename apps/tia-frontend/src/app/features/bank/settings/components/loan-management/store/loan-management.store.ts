@@ -46,6 +46,11 @@ export const LoanManagementStore = signalStore(
       if (!selectedId) return null;
       return store.loanDetailsCache()[selectedId] ?? null;
     }),
+    sortedPendingApprovals: computed(() =>
+      [...store.pendingApprovals()].sort(
+        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      )
+    ),
     hasPendingApprovals: computed(() => store.pendingApprovals().length > 0),
     pendingCount: computed(() => store.pendingApprovals().length),
     shouldLoadInitialData: computed(() => 
