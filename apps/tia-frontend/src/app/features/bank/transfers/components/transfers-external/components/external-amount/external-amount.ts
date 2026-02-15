@@ -92,6 +92,7 @@ export class ExternalAmount implements OnInit {
 
   public readonly descriptionInput = this.fb.control(
     this.transferStore.description() || '',
+    [Validators.maxLength(50)],
   );
 
   public readonly currency = computed(
@@ -135,10 +136,19 @@ export class ExternalAmount implements OnInit {
     initialValue: this.amountInput.status,
   });
 
+  private readonly descriptionStatus = toSignal(
+    this.descriptionInput.statusChanges,
+    {
+      initialValue: this.descriptionInput.status,
+    },
+  );
+
   public readonly isTransferDisabled = computed(() => {
     const isInvalid = this.amountStatus() !== 'VALID';
+    const isDescriptionInvalid = this.descriptionStatus() === 'INVALID';
     return (
       isInvalid ||
+      isDescriptionInvalid ||
       this.isLoading() ||
       this.transferStore.hasInsufficientBalance()
     );

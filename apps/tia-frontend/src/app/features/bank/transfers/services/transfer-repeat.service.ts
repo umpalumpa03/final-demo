@@ -5,7 +5,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { catchError, of, tap, take, switchMap, map } from 'rxjs';
 import { TransferStore } from '../store/transfers.store';
 import { TransfersApiService } from './transfersApi.service';
-import { TransferValidationService } from '../components/transfers-external/services/transfer-validation.service';
+import { TransferValidationService } from './transfer-validation.service';
 import { TransferUtilsService } from './transfer-utils.service';
 import { selectAccounts } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { ITransactions } from 'apps/tia-frontend/src/app/shared/models/transactions/transactions.models';
