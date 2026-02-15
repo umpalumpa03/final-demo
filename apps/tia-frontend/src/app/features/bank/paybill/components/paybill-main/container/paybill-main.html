@@ -1,7 +1,8 @@
 <div class="paybill-main">
   <div class="paybill-main__nav-container">
-    @if(!facade.isRootProviderView()){
-    <app-back-navigation />
+    @if(!facade.isCategoriesPage() && (!facade.isRootProviderView() ||
+    facade.isProviderListVisible())){
+    <app-back-navigation (back)="onBackNavigated()" />
     }
   </div>
   @if (facade.showSearch()) {

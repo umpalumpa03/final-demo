@@ -16,6 +16,7 @@ import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { paybillSearchConfig } from '../../../config/paybill.config';
 import { BackNavigation } from '../shared/ui/back-navigation/back-navigation';
 import { TranslateService } from '@ngx-translate/core';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-paybill-main',
@@ -28,6 +29,7 @@ export class PaybillMain implements OnInit, OnDestroy {
   public readonly facade = inject(PaybillMainFacade);
   private readonly destroyRef = inject(DestroyRef);
   private readonly translate = inject(TranslateService);
+  private readonly store = inject(Store);
   public readonly searchControl = new FormControl('');
 
   public ngOnInit(): void {
@@ -42,6 +44,10 @@ export class PaybillMain implements OnInit, OnDestroy {
         tap((val) => this.facade.setSearchQuery(val || '')),
       )
       .subscribe();
+  }
+
+  public onBackNavigated(): void {
+    this.facade.resetPaymentForm();
   }
 
   public ngOnDestroy(): void {
