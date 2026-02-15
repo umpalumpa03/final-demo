@@ -47,25 +47,39 @@ export class TransactionsFacadeService {
     },
   );
 
-  public initializePage(): void {
+  private getCleanFilters(
+    filters: Partial<ITransactionFilter>,
+  ): Partial<ITransactionFilter> {
+    const { pageLimit, pageCursor, ...pureFilters } = filters;
+
+    return Object.fromEntries(
+      Object.entries(pureFilters)
+        .filter(
+          ([_, value]) => value !== undefined && value !== null && value !== '',
+        )
+        .map(([key, value]) => [key, value?.toString()]),
+    );
+  }
+
+  public initializePage(initialFilters?: Partial<ITransactionFilter>): void {
     this.store.dispatch(TransactionActions.enter());
     this.store.dispatch(AccountsActions.loadAccounts({}));
 
-    const currentFilters = this.filters();
-    const needsReset =
-      currentFilters.pageLimit !== 20 || !!currentFilters.pageCursor;
+    const current = this.getCleanFilters(this.filters());
+    const incoming = this.getCleanFilters(initialFilters ?? {});
 
-    if (needsReset) {
+    const isDifferent = JSON.stringify(current) !== JSON.stringify(incoming);
+
+    if (isDifferent) {
       this.store.dispatch(
         TransactionActions.updateFilters({
-          filters: { pageLimit: 20, pageCursor: undefined },
+          filters: { ...initialFilters, pageLimit: 20 },
         }),
       );
     } else {
       this.store.dispatch(TransactionActions.loadTransactions({}));
     }
   }
-
   public updateFilters(filters: ITransactionFilter): void {
     this.store.dispatch(TransactionActions.updateFilters({ filters }));
   }

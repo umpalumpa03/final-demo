@@ -123,6 +123,7 @@ export class TransferExecutionService {
     }
 
     this.transferStore.setLoading(true);
+    this.transferStore.setError('');
 
     this.transfersApi
       .verifyTransfer({

@@ -113,7 +113,7 @@
 ></app-success-modal>
 
 @if(requiresOtp()) {
-  <app-ui-modal [isOpen]="requiresOtp()" (closed)="onOtpClose()">
+<app-ui-modal [isOpen]="requiresOtp()" (closed)="onOtpClose()">
   @if(isLoading() && !noAttemptsLeft()) {
   <div class="external-amount__otp-loader">
     <app-route-loader variant="pulsing"></app-route-loader>
@@ -133,9 +133,7 @@
     redirectText="Transfers Page"
   ></app-otp-verification>
 </app-ui-modal>
-}
-
-@if(isLoading() && !requiresOtp()) {
+} @if(isLoading() && !requiresOtp()) {
 <div class="external-amount__loader-overlay">
   <app-route-loader variant="pulsing"></app-route-loader>
 </div>

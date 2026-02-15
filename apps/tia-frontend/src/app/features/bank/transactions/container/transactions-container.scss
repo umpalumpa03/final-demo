@@ -1,5 +1,6 @@
 @use '../../../../shared/styles/palette' as *;
 @use '../../../../shared/styles/mixins' as *;
+@use '../../../../shared/styles/themes' as *;
 .scrollbar {
   @include custom-scrollbar;
 }
@@ -17,7 +18,7 @@
 
 .transactions-table-wrapper {
   background-color: $white;
-  border: 0.16rem solid $blue-400;
+  border: 0.16rem solid var(--color-primary);
   border-radius: 1.4rem;
   box-shadow:
     0 0.1rem 0.3rem 0 rgba(0, 0, 0, 0.1),
@@ -25,15 +26,15 @@
   padding: 2.4rem;
   @include display-flex(column);
   gap: 2.4rem;
-  height: calc(100vh - 49.8rem);
-
-  @media (max-width: 480px) {
-    height: calc(100vh - 40.6rem);
-  }
+  height: 75rem;
+  position: relative;
 
   &__heading {
     @include flex-center(row, space-between, center);
-
+    position: sticky;
+    left: 0;
+    z-index: 10;
+    width: 100%;
     @media (max-width: 480px) {
       @include flex-center(column, center, flex-start);
       gap: 1rem;

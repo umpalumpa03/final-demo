@@ -19,6 +19,10 @@ export class FinancesService {
 
   private cache = new Map<string, FullFinancialData>();
 
+  public clearCache(): void {
+    this.cache.clear();
+  }
+
 
   private getParams(from: string, to?: string): HttpParams {
     let params = new HttpParams().set('value', from);

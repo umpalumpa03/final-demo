@@ -2,7 +2,6 @@
 @use '../../../../../../../../../shared/styles/palette' as *;
 
 .success-layout {
-  @include display-flex(column);
   @include flex-center(column, center, center);
   width: 100%;
 }
@@ -13,6 +12,13 @@
   margin-top: 4.8rem;
   margin-bottom: 4rem;
   padding-right: 2.4rem;
+  width: 100%;
+
+  @media (max-width: 480px) {
+    margin-top: 3.2rem;
+    margin-bottom: 3.2rem;
+    padding-right: 1.6rem;
+  }
 
   &__icon-container {
     width: 8rem;
@@ -25,6 +31,13 @@
     background-size: 4.8rem;
     background-image: url('/images/svg/paybill/checkmark.svg');
     box-shadow: 0 0.8rem 2.4rem rgba($green-400, 0.2);
+
+    @media (max-width: 480px) {
+      width: 6.4rem;
+      height: 6.4rem;
+      background-size: 3.6rem;
+      margin-bottom: 1.6rem;
+    }
   }
 
   &__title {
@@ -32,6 +45,15 @@
     color: var(--color-fg);
     text-align: center;
     margin: 0 0 0.8rem 0;
+
+    @media (max-width: 480px) {
+      font-size: 2.4rem;
+      line-height: 3.2rem;
+    }
+
+    @media (max-width: 340px) {
+      font-size: 2.2rem;
+    }
   }
 
   &__description {
@@ -40,6 +62,12 @@
     text-align: center;
     max-width: 32rem;
     margin: 0;
+
+    @media (max-width: 480px) {
+      font-size: 1.4rem;
+      line-height: 2.2rem;
+      padding: 0 1.6rem;
+    }
   }
 }
 
@@ -48,6 +76,10 @@
   padding-right: 2.4rem;
   width: 100%;
   flex: 1;
+
+  @media (max-width: 480px) {
+    padding-right: 1.6rem;
+  }
 
   &__summary {
     margin-bottom: 3.2rem;
@@ -58,6 +90,22 @@
     gap: 1.6rem;
     margin-top: auto;
     padding-top: 3.2rem;
+    width: 100%;
+
+    @media (max-width: 600px) {
+      flex-direction: column;
+
+      .btn-primary,
+      .btn-secondary {
+        width: 100%;
+        flex: none;
+      }
+    }
+
+    @media (max-width: 450px) {
+      padding-top: 2.4rem;
+      gap: 1.2rem;
+    }
 
     .btn-secondary {
       flex: 1;

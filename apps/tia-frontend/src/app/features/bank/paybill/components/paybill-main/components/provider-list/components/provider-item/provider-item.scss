@@ -13,26 +13,10 @@
   transition: all 0.2s ease-in-out;
   margin-bottom: 0.8rem;
 
-  &--level-1 {
-    width: calc(100% - 3.2rem);
-    margin-left: 3.2rem;
+  @media (max-width: 480px) {
     height: 6.4rem;
-    background: transparent;
-    border-bottom: 0.1rem solid $gray-500;
-    border-radius: 0;
-
-    &:hover {
-      background: $gray-50;
-    }
-  }
-
-  &--level-2 {
-    width: calc(100% - 6.4rem);
-    margin-left: 6.4rem;
-    height: 5.6rem;
-    background: transparent;
-    border-bottom: 0.1rem solid $gray-500;
-    border-radius: 0;
+    padding: 0 1.2rem;
+    margin-bottom: 0.6rem;
   }
 
   &--skeleton {
@@ -40,9 +24,15 @@
     background: $gray-25;
     border-color: transparent;
     pointer-events: none;
+    @include flex-center($align: center, $justify: space-between);
 
     .provider-item__content {
       gap: 1.6rem;
+      @include flex-center($align: center);
+
+      @media (max-width: 480px) {
+        gap: 1.2rem;
+      }
     }
   }
 
@@ -59,6 +49,11 @@
   &__content {
     @include flex-center($align: center);
     gap: 1.6rem;
+    min-width: 0;
+
+    @media (max-width: 480px) {
+      gap: 1.2rem;
+    }
   }
 
   &__indicator {
@@ -67,8 +62,7 @@
     border-radius: 50%;
     flex-shrink: 0;
 
-    &--child {
-      background-color: $gray-200;
+    @media (max-width: 480px) {
       width: 0.6rem;
       height: 0.6rem;
     }
@@ -78,9 +72,12 @@
     @include font-inter(400, 1.6rem, 2.4rem);
     color: var(--color-fg);
     margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 
-    &--main {
-      @include font-inter(600, 1.6rem, 2.4rem);
+    @media (max-width: 480px) {
+      font-size: 1.4rem;
     }
   }
 
@@ -91,5 +88,11 @@
     mask: url('/images/svg/paybill/right.svg') no-repeat center;
     mask-size: contain;
     transition: all 0.2s ease-in-out;
+    flex-shrink: 0;
+
+    @media (max-width: 480px) {
+      width: 2rem;
+      height: 2rem;
+    }
   }
 }

@@ -12,16 +12,16 @@
   <span class="button__spinner"></span>
   }
 
-  <span class="button__content">
-      @if (icon()) {
-      <div class="button__icon" [class.button__icon--loading]="isLoading()"
-      [style.--icon-w]="iconWidth()" 
+  <span class="button__content" [style.white-space]="whiteSpace()">
+    @if (icon()) {
+    <div
+      class="button__icon"
+      [class.button__icon--loading]="isLoading()"
+      [style.--icon-w]="iconWidth()"
       [style.--icon-h]="iconHeight()"
-      >
-        <img [src]="'/images/svg/button-icons/' + icon()" 
-              alt="icon"
-        >
-      </div>
+    >
+      <img [src]="'/images/svg/button-icons/' + icon()" alt="icon" />
+    </div>
     }
     <ng-content></ng-content>
   </span>

@@ -4,12 +4,17 @@
     [subtitle]="'transactions.subtitle' | translate"
   ></app-library-title>
 
+  <app-header-banner
+    imagePath="images/png/transactions/transactions_banner.png"
+  ></app-header-banner>
+
   <div class="transaction-filters-wrapper">
     <app-transactions-filters
       [categoryOptions]="facade.categoryOptions()"
       [accountOptions]="vm.accountOptions()"
       [currencyOptions]="vm.currencyOptions()"
-      (filterChange)="facade.updateFilters($event)"
+      [initialFilters]="facade.filters()"
+      (filterChange)="onFiltersChange($event)"
     ></app-transactions-filters>
   </div>
 
@@ -36,7 +41,7 @@
     </div>
     <div class="scroll-area-width-stretcher">
       <app-scroll-area
-        [height]="'calc(calc(100vh - 49.8rem) - 12rem)'"
+        [height]="'63rem'"
         [hideBorder]="true"
         (scrollBottom)="facade.loadMore()"
         [scrollbar]="'hidden'"

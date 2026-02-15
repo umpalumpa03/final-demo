@@ -1,19 +1,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TransactionsFilters } from './transactions-filters';
-import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { NO_ERRORS_SCHEMA, signal } from '@angular/core';
-import { TransactionsViewModelService } from '../../services/transactions-view-model.service';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { TranslateModule } from '@ngx-translate/core';
+import { signal, NO_ERRORS_SCHEMA } from '@angular/core';
 import { TransactionsActionsService } from '../../services/transactions-actions.service';
+import { ReactiveFormsModule } from '@angular/forms';
 
 describe('TransactionsFilters', () => {
   let component: TransactionsFilters;
   let fixture: ComponentFixture<TransactionsFilters>;
-
-  const mockViewModel = {
-    accountOptions: signal([]),
-    currencyOptions: signal([]),
-  };
 
   const mockActionsService = {
     isFiltersOpen: signal(false),
@@ -21,15 +16,16 @@ describe('TransactionsFilters', () => {
   };
 
   beforeEach(async () => {
+    vi.useFakeTimers();
+
     await TestBed.configureTestingModule({
       imports: [
         TransactionsFilters,
         TranslateModule.forRoot(),
+        ReactiveFormsModule,
       ],
       providers: [
-        { provide: TransactionsViewModelService, useValue: mockViewModel },
         { provide: TransactionsActionsService, useValue: mockActionsService },
-        TranslateService,
       ],
       schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
@@ -40,49 +36,33 @@ describe('TransactionsFilters', () => {
     fixture.componentRef.setInput('categoryOptions', []);
     fixture.componentRef.setInput('accountOptions', []);
     fixture.componentRef.setInput('currencyOptions', []);
+    fixture.componentRef.setInput('initialFilters', null);
 
     fixture.detectChanges();
   });
 
-  afterEach(() => {
-    vi.clearAllTimers();
-    vi.useRealTimers(); 
-  });
+  afterEach(() => {});
 
   it('should create', () => {
     expect(component).toBeTruthy();
+    expect(component.presenter).toBeTruthy();
   });
 
-  it('should format form values and emit after debounce', () => {
-    vi.useFakeTimers();
+  const categories = [{ label: 'Food', value: '1' }];
+
+  it('should emit filterChange when presenter signals change', () => {
     const emitSpy = vi.spyOn(component.filterChange, 'emit');
+    const mockFilter = { searchCriteria: 'test' } as any;
 
+    component.presenter.filtersChanged.set(mockFilter);
 
-    component.filterForm.patchValue({
-      searchCriteria: 'Test Search',
-      accountIban: 'GE123',
-    });
+    fixture.detectChanges();
 
-    vi.advanceTimersByTime(450);
-
-    expect(emitSpy).toHaveBeenCalled();
+    expect(emitSpy).toHaveBeenCalledWith(mockFilter);
   });
 
-  it('should clear all filters on resetFilters call', () => {
-    component.filterForm.patchValue({ searchCriteria: 'Test' });
-    component.resetFilters();
-    expect(component.filterForm.getRawValue().searchCriteria).toBeNull();
-  });
-
-  it('should remove specific filter on removeFilter call', () => {
-    component.filterForm.patchValue({
-      searchCriteria: 'Test',
-      currency: 'USD' as any,
-    });
-
-    component.removeFilter('searchCriteria');
-
-    expect(component.filterForm.getRawValue().searchCriteria).toBeNull();
-    expect(component.filterForm.getRawValue().currency).toBe('USD');
+  it('should interact with presenter form', () => {
+    component.presenter.filterForm.patchValue({ searchCriteria: 'UI Test' });
+    expect(component.presenter.filterForm.value.searchCriteria).toBe('UI Test');
   });
 });
