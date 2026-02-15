@@ -173,6 +173,12 @@ export class AuthService {
           this.store.dispatch(UserInfoActions.logout());
           this.injector.get(ClearSignalStoreService).resetAllStore();
           this.router.navigate([Routes.SIGN_IN]);
+          showAlert(
+            this.alertService,
+            this.translate,
+            'warning',
+            'auth.alert-errors.logourWarn',
+          );
         }
       }),
     );
@@ -192,6 +198,12 @@ export class AuthService {
             this.store.dispatch(UserInfoActions.loadUser());
             this.startInactivityMonitoring();
             this.router.navigate([Routes.DASHBOARD]);
+            showAlert(
+              this.alertService,
+              this.translate,
+              'success',
+              'auth.alert-errors.loginSuccess',
+            );
           }
         }),
         catchError((err) => {
