@@ -132,5 +132,42 @@ describe('trendline.utils', () => {
       sortAccountsByRecentActivity(list);
       expect(list).toEqual(copy);
     });
+
+    it('should keep order when neither has trendline and neither has lastTransaction', () => {
+      const a: AccountWithTrendline = {
+        ...mockAccount,
+        id: 'a',
+        lastTransaction: null,
+        trendline: null,
+      };
+      const b: AccountWithTrendline = {
+        ...mockAccount,
+        id: 'b',
+        lastTransaction: null,
+        trendline: null,
+      };
+      const result = sortAccountsByRecentActivity([a, b]);
+      expect(result).toHaveLength(2);
+      expect(result[0].id).toBe('a');
+      expect(result[1].id).toBe('b');
+    });
+
+    it('should preserve order when only one has lastTransaction (no date comparison)', () => {
+      const withTx: AccountWithTrendline = {
+        ...mockAccount,
+        id: 'with',
+        lastTransaction: { createdAt: new Date().toISOString() } as any,
+        trendline: null,
+      };
+      const withoutTx: AccountWithTrendline = {
+        ...mockAccount,
+        id: 'without',
+        lastTransaction: null,
+        trendline: null,
+      };
+      const result = sortAccountsByRecentActivity([withoutTx, withTx]);
+      expect(result).toHaveLength(2);
+      expect(result.map((r) => r.id)).toEqual(['without', 'with']);
+    });
   });
 });

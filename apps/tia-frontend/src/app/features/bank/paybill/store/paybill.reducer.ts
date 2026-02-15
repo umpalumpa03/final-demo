@@ -480,6 +480,7 @@ export const paybillReducer = createReducer(
     ...state,
     loading: false,
     challengeId: response.verify?.challengeId ?? null,
+    selectedItems: [],
   })),
   on(TemplatesPageActions.payManyBillsFailure, (state, { error }) => ({
     ...state,
@@ -490,5 +491,10 @@ export const paybillReducer = createReducer(
     ...state,
     loading: false,
     isFormValid: isValid,
+  })),
+  on(TemplatesPageActions.checkBillForTemplateFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    message: error,
   })),
 );

@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TransferService } from './transfer.service';
-import { PERMISSION_ROUTE_MAP } from '../config/accounts.config';
+import { PERMISSION_ROUTE_MAP } from '../../shared/config/accounts.config';
 
 describe('TransferService', () => {
   let service: TransferService;

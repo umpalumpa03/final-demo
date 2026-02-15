@@ -11,7 +11,10 @@ export function createGroupForm(fb: FormBuilder) {
 
 export function createTemplateForm(fb: FormBuilder) {
   return fb.nonNullable.group({
-    name: ['', [Validators.required, Validators.minLength(2)]],
+    name: [
+      '',
+      [Validators.required, Validators.minLength(2), Validators.maxLength(50)],
+    ],
     category: ['', Validators.required],
   });
 }

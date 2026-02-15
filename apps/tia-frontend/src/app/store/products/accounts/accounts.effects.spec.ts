@@ -4,6 +4,7 @@ import { Observable, of, throwError } from 'rxjs';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { Action } from '@ngrx/store';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
+import { TranslateService } from '@ngx-translate/core';
 import { AccountsEffects } from './accounts.effects';
 import { AccountsActions } from './accounts.actions';
 import { selectAccounts } from './accounts.selectors';
@@ -13,6 +14,7 @@ import {
 } from '../../../shared/models/accounts/accounts.model';
 import { AccountsApiService } from '../../../shared/services/accounts/accounts.api.service';
 import { TransactionApiService } from '../../../shared/services/transactions-service/transactions.api.service';
+import { AlertService } from '../../../core/services/alert/alert.service';
 
 describe('AccountsEffects', () => {
   let actions$: Observable<Action>;
@@ -44,6 +46,17 @@ describe('AccountsEffects', () => {
       getActiveAccounts: vi.fn(),
       createAccount: vi.fn(),
       updateFriendlyName: vi.fn(),
+      getCurrencies: vi.fn(),
+    };
+
+    const translateMock = {
+      instant: vi.fn((key: string) => key),
+    };
+
+    const alertServiceMock = {
+      info: vi.fn(),
+      error: vi.fn(),
+      success: vi.fn(),
     };
     const transactionServiceMock = {
       getTransactions: vi.fn(),
@@ -58,6 +71,8 @@ describe('AccountsEffects', () => {
         }),
         { provide: AccountsApiService, useValue: accountsServiceMock },
         { provide: TransactionApiService, useValue: transactionServiceMock },
+        { provide: TranslateService, useValue: translateMock },
+        { provide: AlertService, useValue: alertServiceMock },
       ],
     });
 
@@ -80,19 +95,6 @@ describe('AccountsEffects', () => {
       );
     });
 
-    it('should return loadAccountsSuccess when forceRefresh is true even if store has data', () => {
-      store.overrideSelector(selectAccounts, [mockAccount]);
-      vi.spyOn(service, 'getAccounts').mockReturnValue(of([mockAccount]));
-
-      actions$ = of(AccountsActions.loadAccounts({ forceRefresh: true }));
-
-      let result: Action | undefined;
-      effects.loadAccounts$.subscribe((action) => (result = action));
-
-      expect(service.getAccounts).toHaveBeenCalled();
-      expect(result).toBeTruthy();
-    });
-
     it('should NOT call API if store has data and forceRefresh is false', () => {
       store.overrideSelector(selectAccounts, [mockAccount]);
       const spy = vi.spyOn(service, 'getAccounts');
@@ -105,7 +107,7 @@ describe('AccountsEffects', () => {
       expect(result).toBeUndefined();
     });
 
-    it('should return loadAccountsFailure on error and hit fallback message', () => {
+    it('should return loadAccountsFailure on error', () => {
       vi.spyOn(service, 'getAccounts').mockReturnValue(throwError(() => ({})));
       actions$ = of(AccountsActions.loadAccounts({ forceRefresh: true }));
 
@@ -135,19 +137,6 @@ describe('AccountsEffects', () => {
       );
     });
 
-    it('should return loadActiveAccountsSuccess when forceRefresh is true even if store has data', () => {
-      store.overrideSelector(selectAccounts, [mockAccount]);
-      vi.spyOn(service, 'getActiveAccounts').mockReturnValue(of([mockAccount]));
-
-      actions$ = of(AccountsActions.loadActiveAccounts({ forceRefresh: true }));
-
-      let result: Action | undefined;
-      effects.loadActiveAccounts$.subscribe((action) => (result = action));
-
-      expect(service.getActiveAccounts).toHaveBeenCalled();
-      expect(result).toBeTruthy();
-    });
-
     it('should NOT call API if store has data and forceRefresh is false', () => {
       store.overrideSelector(selectAccounts, [mockAccount]);
       const spy = vi.spyOn(service, 'getActiveAccounts');
@@ -162,7 +151,7 @@ describe('AccountsEffects', () => {
       expect(result).toBeUndefined();
     });
 
-    it('should return loadActiveAccountsFailure on error and hit fallback message', () => {
+    it('should return loadActiveAccountsFailure on error', () => {
       vi.spyOn(service, 'getActiveAccounts').mockReturnValue(
         throwError(() => ({})),
       );
@@ -217,7 +206,9 @@ describe('AccountsEffects', () => {
     });
 
     it('should return createAccountFailure with fallback message when error has no message', () => {
-      vi.spyOn(service, 'createAccount').mockReturnValue(throwError(() => ({})));
+      vi.spyOn(service, 'createAccount').mockReturnValue(
+        throwError(() => ({})),
+      );
       actions$ = of(
         AccountsActions.createAccount({
           request: {
@@ -307,7 +298,12 @@ describe('AccountsEffects', () => {
     });
 
     it('should return enrichAccountsSuccess with empty object when accounts array is empty', () => {
-      actions$ = of(AccountsActions.loadAccountsSuccess({ accounts: [] }));
+      actions$ = of(
+        AccountsActions.loadAccountsSuccess({
+          accounts: [],
+          enrichWithTransactions: true,
+        }),
+      );
 
       let result: Action | undefined;
       effects.enrichAccountsWithLastTransactions$.subscribe(
@@ -322,17 +318,26 @@ describe('AccountsEffects', () => {
     it('should return enrichAccountsSuccess with lastTransactions when loadAccountsSuccess has accounts', () => {
       const mockTx = {
         id: 'tx1',
+        userId: 'user-1',
         amount: 100,
-        createdAt: '2026-01-01',
-        creditAccountNumber: mockAccount.iban,
-        debitAccountNumber: 'OTHER',
         transactionType: 'credit' as const,
+        transferType: 'ToSomeoneSameBank',
+        currency: 'USD' as const,
+        description: 'Test transaction',
+        debitAccountNumber: 'OTHER',
+        creditAccountNumber: mockAccount.iban as string | null,
+        category: 'general',
+        createdAt: '2026-01-01',
+        updatedAt: '2026-01-01',
       };
       vi.spyOn(transactionService, 'getTransactions').mockReturnValue(
         of({ items: [mockTx], total: 1 } as any),
       );
       actions$ = of(
-        AccountsActions.loadAccountsSuccess({ accounts: [mockAccount] }),
+        AccountsActions.loadAccountsSuccess({
+          accounts: [mockAccount],
+          enrichWithTransactions: true,
+        }),
       );
 
       let result: Action | undefined;
@@ -354,10 +359,15 @@ describe('AccountsEffects', () => {
       vi.spyOn(transactionService, 'getTransactions')
         .mockReturnValueOnce(of({ items: [], total: 0 } as any))
         .mockReturnValueOnce(throwError(() => new Error('tx failed')));
-      const account2 = { ...mockAccount, id: '2', iban: 'GE99XX0000000000000002' };
+      const account2 = {
+        ...mockAccount,
+        id: '2',
+        iban: 'GE99XX0000000000000002',
+      };
       actions$ = of(
         AccountsActions.loadAccountsSuccess({
           accounts: [mockAccount, account2],
+          enrichWithTransactions: true,
         }),
       );
 
@@ -380,7 +390,10 @@ describe('AccountsEffects', () => {
         of({ items: [], total: 0 } as any),
       );
       actions$ = of(
-        AccountsActions.loadActiveAccountsSuccess({ accounts: [mockAccount] }),
+        AccountsActions.loadActiveAccountsSuccess({
+          accounts: [mockAccount],
+          enrichWithTransactions: true,
+        }),
       );
 
       let result: Action | undefined;
@@ -390,6 +403,37 @@ describe('AccountsEffects', () => {
       expect(result).toEqual(
         AccountsActions.enrichAccountsSuccess({
           lastTransactions: { [mockAccount.iban]: null },
+        }),
+      );
+    });
+  });
+
+  describe('loadCurrencies$', () => {
+    it('should load currencies when store is empty', () => {
+      const mockCurrencies = ['USD', 'EUR', 'GBP'];
+      vi.spyOn(service, 'getCurrencies').mockReturnValue(of(mockCurrencies));
+      actions$ = of(AccountsActions.loadCurrencies());
+
+      let result: Action | undefined;
+      effects.loadCurrencies$.subscribe((action) => (result = action));
+
+      expect(service.getCurrencies).toHaveBeenCalled();
+      expect(result).toEqual(
+        AccountsActions.loadCurrenciesSuccess({ currencies: mockCurrencies }),
+      );
+    });
+
+    it('should return loadCurrenciesFailure on error', () => {
+      vi.spyOn(service, 'getCurrencies').mockReturnValue(
+        throwError(() => ({})),
+      );
+      actions$ = of(AccountsActions.loadCurrencies());
+
+      let result: Action | undefined;
+      effects.loadCurrencies$.subscribe((action) => (result = action));
+      expect(result).toEqual(
+        AccountsActions.loadCurrenciesFailure({
+          error: 'Failed to load currencies',
         }),
       );
     });

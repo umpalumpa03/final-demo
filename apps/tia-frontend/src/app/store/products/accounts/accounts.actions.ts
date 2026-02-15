@@ -4,16 +4,17 @@ import {
   CreateAccountRequest,
 } from '../../../shared/models/accounts/accounts.model';
 import { ITransactions } from '@tia/shared/models/transactions/transactions.models';
+import { AccountNotification } from './model/accounts-state.model';
 
 export const AccountsActions = createActionGroup({
   source: 'Accounts',
   events: {
-    'Load Accounts': props<{ forceRefresh?: boolean }>(), //pass empty object when initial load and no update needed, checks from cashed data and when updating for example from transfers, pass forcerefresh true
-    'Load Accounts Success': props<{ accounts: Account[] }>(),
+    'Load Accounts': props<{ forceRefresh?: boolean; enrichWithTransactions?: boolean }>(), //pass empty object when initial load and no update needed, checks from cashed data and when updating for example from transfers, pass forcerefresh true
+    'Load Accounts Success': props<{ accounts: Account[]; enrichWithTransactions?: boolean }>(),
     'Load Accounts Failure': props<{ error: string }>(),
 
-    'Load Active Accounts': props<{ forceRefresh?: boolean }>(),
-    'Load Active Accounts Success': props<{ accounts: Account[] }>(),
+    'Load Active Accounts': props<{ forceRefresh?: boolean; enrichWithTransactions?: boolean }>(),
+    'Load Active Accounts Success': props<{ accounts: Account[]; enrichWithTransactions?: boolean }>(),
     'Load Active Accounts Failure': props<{ error: string }>(),
 
     'Fetch More Accounts': emptyProps(),
@@ -33,12 +34,22 @@ export const AccountsActions = createActionGroup({
     'Update Friendly Name Success': props<{ account: Account }>(),
     'Update Friendly Name Failure': props<{ error: string }>(),
 
+    'Load Currencies': emptyProps(),
+    'Load Currencies Success': props<{ currencies: string[] }>(),
+    'Load Currencies Failure': props<{ error: string }>(),
+
+    'Add Notification': props<AccountNotification>(),
+    'Dismiss Notification': props<{ id: string }>(),
+    'Clear All Notifications': emptyProps(),
+
     'Open Create Modal': emptyProps(),
     'Close Create Modal': emptyProps(),
     'Clear Accounts Store': emptyProps(),
 
     'Enrich Accounts With Last Transactions': emptyProps(),
-    'Enrich Accounts Success': props<{ lastTransactions: Record<string, ITransactions | null> }>(),
+    'Enrich Accounts Success': props<{
+      lastTransactions: Record<string, ITransactions | null>;
+    }>(),
     'Enrich Accounts Failure': props<{ error: string }>(),
   },
 });

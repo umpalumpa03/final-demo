@@ -47,15 +47,11 @@ describe('CreateAccountComponent', () => {
     expect(component).toBeTruthy();
     const closeSpy = vi.spyOn(component.closeModal, 'emit');
     const submitSpy = vi.spyOn(component.submitForm, 'emit');
-    const backdropSpy = vi.spyOn(component.backdropClick, 'emit');
-    const mockEvent = new MouseEvent('click');
 
     component.handleClose();
     expect(closeSpy).toHaveBeenCalled();
     component.handleSubmit();
     expect(submitSpy).toHaveBeenCalled();
-    component.handleBackdropClick(mockEvent);
-    expect(backdropSpy).toHaveBeenCalledWith(mockEvent);
   });
 
   it('should compute and update options', () => {

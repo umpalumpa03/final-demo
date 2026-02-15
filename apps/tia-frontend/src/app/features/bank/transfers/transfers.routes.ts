@@ -9,6 +9,9 @@ import { TransferAmountService } from './components/transfers-external/services/
 import { TransferExecutionService } from './components/transfers-external/services/transfer-execution.service';
 import { internalAccountsSelectedGuard } from 'apps/tia-frontend/src/app/features/bank/transfers/components/transfers-internal/guards/accounts-selected.guard';
 import { TransferRepeatService } from './services/transfer-repeat.service';
+import {
+  fromAccountSelectedGuard
+} from 'apps/tia-frontend/src/app/features/bank/transfers/components/transfers-internal/guards/from-account-selected.guard';
 export const transfersRoutes: Routes = [
   {
     path: '',
@@ -56,6 +59,7 @@ export const transfersRoutes: Routes = [
               import(
                 './components/transfers-internal/components/internal-to-account/internal-to-account'
               ).then((c) => c.InternalToAccount),
+            canActivate: [fromAccountSelectedGuard],
           },
           {
             path: 'amount',

@@ -49,7 +49,6 @@ export class CreateAccountComponent implements OnInit {
 
   public closeModal = output<void>();
   public submitForm = output<void>();
-  public backdropClick = output<MouseEvent>();
 
   private readonly translate = inject(TranslateService);
 
@@ -68,12 +67,15 @@ export class CreateAccountComponent implements OnInit {
     })),
   );
 
-  public currencyOptions = computed<SelectOption[]>(() =>
-    this.currencies().map((currency) => ({
-      label: currency,
-      value: currency,
-    })),
-  );
+  public currencyOptions = computed<SelectOption[]>(() => {
+    const currencies = this.currencies();
+    return currencies
+      ? currencies.map((currency) => ({
+          label: currency,
+          value: currency,
+        }))
+      : [];
+  });
 
   public handleClose(): void {
     this.closeModal.emit();
@@ -81,9 +83,5 @@ export class CreateAccountComponent implements OnInit {
 
   public handleSubmit(): void {
     this.submitForm.emit();
-  }
-
-  public handleBackdropClick(event: MouseEvent): void {
-    this.backdropClick.emit(event);
   }
 }

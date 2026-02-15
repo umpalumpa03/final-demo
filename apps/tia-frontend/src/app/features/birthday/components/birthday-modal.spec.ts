@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import { selectUserInfo } from '../../../store/user-info/user-info.selectors';
 import { BirthdayModalComponent } from './birthday-modal';
+import { TranslateModule } from '@ngx-translate/core';
 import {
   describe,
   it,
@@ -14,7 +15,7 @@ import {
 
 vi.mock('canvas-confetti', () => {
   const fn = vi.fn();
-  fn.reset = vi.fn();
+  (fn as any).reset = vi.fn();
   return { default: fn };
 });
 
@@ -66,7 +67,10 @@ describe('BirthdayModalComponent', () => {
     vi.setSystemTime(START_DATE);
 
     await TestBed.configureTestingModule({
-      imports: [BirthdayModalComponent],
+      imports: [
+        BirthdayModalComponent, 
+        TranslateModule.forRoot()
+      ],
       providers: [
         provideMockStore({
           selectors: [
@@ -128,5 +132,27 @@ describe('BirthdayModalComponent', () => {
       (e) => e.name === 'header' || e.name === 'buttonHearth',
     );
     expect(hasInvalid).toBe(false);
+  });
+
+
+  it('should display translation keys in the template', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('.birthday-content__message')).toBeTruthy();
+    expect(compiled.querySelector('.birthday-content__note')).toBeTruthy();
+  });
+
+  it('should verify userName is correctly derived for the title', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    const titleElement = compiled.querySelector('.birthday-content__title');
+    
+    expect(titleElement).toBeTruthy();
+    expect(component.userName()).toBe('John Doe');
+  });
+
+  it('should render the dismiss button with translation key', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    const button = compiled.querySelector('app-button');
+    expect(button).toBeTruthy();
+    expect(button?.textContent).toBeDefined();
   });
 });

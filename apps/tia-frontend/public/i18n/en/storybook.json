@@ -913,7 +913,48 @@
       }
     }
   },
-  "feedback": {},
+  "feedback": {
+    "title": "Feedback Components",
+    "subtitle": "Loading states and skeleton loaders",
+    "sections": {
+      "loadingCards": {
+        "title": "Loading Cards",
+        "loadingContent": "Loading content..."
+      },
+      "skeletonLoaders": {
+        "title": "Skeleton Loaders",
+        "text": "Text Skeleton:",
+        "list": "List Skeleton:",
+        "card": "Card Skeleton:",
+        "image": "Image Skeleton:"
+      },
+      "routeLoader": {
+        "title": "Route Loader",
+        "topBar": "Top Bar Loader:",
+        "fullPage": "Full Page Loader:",
+        "loadingPage": "Loading page content...",
+        "pulsing": "Pulsing Loader:"
+      },
+      "errorStates": {
+        "title": "Error States",
+        "connectionError": {
+          "title": "Connection Error",
+          "message": "Unable to connect to the server. Please check your internet connection.",
+          "retry": "Retry Connection"
+        },
+        "loadingFailed": {
+          "title": "Loading Failed",
+          "message": "Failed to load the requested content. Please try again.",
+          "retry": "Retry"
+        },
+        "noData": {
+          "title": "No Data Found",
+          "message": "We couldn't find any data to display.",
+          "goBack": "Go Back"
+        }
+      }
+    }
+  },
   "data-display": {
     "title": "Data Display",
     "subtitle": "Avatars, aspect ratios, tooltips, and hover cards",
