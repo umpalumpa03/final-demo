@@ -8,6 +8,9 @@
         </div>
         <div class="transfer-summary__details">
           <p class="transfer-summary__name">
+            @if (senderAccount()?.isFavorite) {
+              <img src="images/svg/transfers/star.svg" alt="favorite" class="transfer-summary__star" />
+            }
             {{ senderAccount()?.friendlyName || '' }}
           </p>
           <p class="transfer-summary__sub">
@@ -32,6 +35,9 @@
           </div>
           <div class="transfer-summary__details">
             <p class="transfer-summary__name">
+              @if (recipientAccount()?.isFavorite) {
+                <img src="images/svg/transfers/star.svg" alt="favorite" class="transfer-summary__star" />
+              }
               {{ recipientName() || recipientAccount()?.friendlyName ||
               recipientAccount()?.name || '' }}
             </p>
