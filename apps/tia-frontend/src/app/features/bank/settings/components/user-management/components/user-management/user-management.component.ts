@@ -5,7 +5,6 @@ import {
   inject,
   signal,
   OnInit,
-  OnDestroy,
 } from '@angular/core';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { InputFieldValue } from '@tia/shared/lib/forms/models/input.model';

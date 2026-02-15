@@ -25,7 +25,6 @@ import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 import { PrepaymentContainer } from '../shared/ui/prepayment/prepayment-container/prepayment-container';
 import { LoanDashboardState } from '../shared/state/loan-dashboard.state';
 import { Badges } from '@tia/shared/lib/primitives/badges/badges';
-import { selectSelectedAccount } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 
 @Component({
   selector: 'app-loans-container',
@@ -86,7 +85,7 @@ export class LoansContainer implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.globalStore.dispatch(AccountsActions.loadAccounts({}));
+    this.globalStore.dispatch(AccountsActions.loadActiveAccounts({}));
 
     this.route.queryParams
       .pipe(
