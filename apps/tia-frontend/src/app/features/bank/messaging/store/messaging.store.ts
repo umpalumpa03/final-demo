@@ -128,8 +128,9 @@ export const MessagingStore = signalStore(
                                 { hasNextPage: store.pagination()?.hasNextPage ?? false, nextCursor: store.pagination()?.nextCursor ?? null },
                         });
                     }),
-                    switchMap((type) =>
-                        messagingService.getInbox(type, store.limit(), store?.pagination?.()?.nextCursor ?? null).pipe(
+                    switchMap((type) => {
+                        const cursor = store?.pagination?.()?.nextCursor ?? null;
+                        return messagingService.getInbox(type, store.limit(), cursor).pipe(
                             tap((response) => {
                                 const existingMails = store.mails();
                                 const existingIds = new Set(existingMails.map(m => m.id));
@@ -141,17 +142,18 @@ export const MessagingStore = signalStore(
                                     isLoading: false,
                                     error: null,
                                 });
-                                inboxService.fetchInboxCount();
-                                store.getUnreadImportantCount();
+                                if (!cursor) {
+                                    inboxService.fetchInboxCount();
+                                    store.getUnreadImportantCount();
+                                }
                             }),
                             catchError(() => {
                                 patchState(store, { isLoading: false, error: translate.instant('messaging.storeErrors.loadMails') });
                                 alertService.error(translate.instant('messaging.storeErrors.loadMails'), { variant: 'dismissible', title: 'Oops!' });
                                 return of(null);
                             }),
-                        ),
-
-                    ),
+                        );
+                    }),
                 ),
             ),
 
