@@ -5,10 +5,7 @@
   (scrollBottom)="onScrollBottom()"
   [isLoading]="(isLoading$ | async) ?? false"
 >
-  @if ((isLoading$ | async) && (isEmpty$ | async)) {
-    <app-route-loader variant="pulsing" [fillContainer]="true">
-    </app-route-loader>
-  } @else if (error$ | async) {
+  @if (error$ | async) {
     <div class="widget-error">
       <app-error-states
         variant="failed"
@@ -20,7 +17,7 @@
       >
       </app-error-states>
     </div>
-  } @else if (isEmpty$ | async) {
+  } @else if ((isEmpty$ | async) && (isLoading$ | async) === false) {
     <div class="widget-error">
       <app-error-states
         variant="not-found"
@@ -31,6 +28,9 @@
       >
       </app-error-states>
     </div>
+  } @else if ((isLoading$ | async) && (isEmpty$ | async)) {
+    <app-route-loader variant="pulsing" [fillContainer]="true">
+    </app-route-loader>
   } @else {
     <div class="transaction">
 

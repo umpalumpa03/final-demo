@@ -1,6 +1,12 @@
 @use '../../../../../shared/styles/mixins' as *;
 @use '../../../../../shared/styles/palette' as *;
 
+.widget-error {
+  @include flex-center();
+  height: 100%;
+  min-height: 30rem;
+}
+
 .accounts {
   @include display-flex(column);
   gap: 1.6rem;
