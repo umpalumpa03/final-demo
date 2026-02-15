@@ -27,14 +27,13 @@
     (transfer)="handleTransfer($event)"
     (retry)="handleRetry()"
     (renameAccount)="handleRenameAccount($event)"
-    (renameSuccess)="handleRenameSuccess()"
   />
 
   <app-create-account
     [isOpen]="isCreateModalOpen() || false"
     [accountForm]="accountForm()"
     [accountTypes]="accountTypeValues"
-    [currencies]="(currencyValues | async) ?? []"
+    [currencies]="currencies()"
     [isCreating]="isCreatingAccount()"
     (closeModal)="handleCloseModal()"
     (submitForm)="handleCreateAccount(accountForm().value)"

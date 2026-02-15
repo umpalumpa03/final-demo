@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { PERMISSION_ROUTE_MAP } from '../config/accounts.config';
+import { PERMISSION_ROUTE_MAP } from '../../shared/config/accounts.config';
 
 @Injectable({
   providedIn: 'root',
