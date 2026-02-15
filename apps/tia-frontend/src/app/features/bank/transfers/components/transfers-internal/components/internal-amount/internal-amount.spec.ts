@@ -103,6 +103,19 @@ class TooltipMock {
 @Component({ selector: 'app-otp-modal', standalone: true, template: '' })
 class OtpModalMock {}
 
+@Component({
+  selector: 'app-transfer-summary',
+  standalone: true,
+  template: '',
+})
+class TransferSummaryMock {
+  @Input() senderAccount?: unknown;
+  @Input() recipientAccount?: unknown;
+  @Input() recipientInitials?: string;
+  @Input() fromLabel?: string;
+  @Input() toLabel?: string;
+}
+
 describe('InternalAmount', () => {
   let component: InternalAmount;
   let fixture: ComponentFixture<InternalAmount>;
@@ -171,6 +184,7 @@ describe('InternalAmount', () => {
             RouteLoaderMock,
             TooltipMock,
             OtpModalMock,
+            TransferSummaryMock,
           ],
         },
       })

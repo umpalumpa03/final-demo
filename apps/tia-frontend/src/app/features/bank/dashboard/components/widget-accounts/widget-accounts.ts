@@ -49,7 +49,7 @@ export class WidgetAccounts extends BaseWidget {
   public balancesHidden = input<boolean>(false);
 
   public retryLoad(): void {
-    this.store.dispatch(AccountsActions.loadAccounts({}));
+    this.store.dispatch(AccountsActions.loadAccounts({ enrichWithTransactions: true }));
   }
 
   public accounts$ = this.store.select(selectDashboardAccountsWithTrendline);

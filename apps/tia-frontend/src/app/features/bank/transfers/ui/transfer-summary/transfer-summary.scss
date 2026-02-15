@@ -82,6 +82,14 @@
     color: var(--color-fg);
     word-break: break-word;
     hyphens: auto;
+    @include flex-center(row, flex-start, center);
+    gap: 0.6rem;
+  }
+
+  &__star {
+    width: 1.4rem;
+    height: 1.4rem;
+    flex-shrink: 0;
   }
 
   &__sub {

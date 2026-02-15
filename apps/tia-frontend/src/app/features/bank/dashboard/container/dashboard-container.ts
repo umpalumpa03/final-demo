@@ -171,6 +171,6 @@ export class DashboardContainer implements OnInit {
     }
     this.store.dispatch(TransactionActions.enter());
     this.store.dispatch(loadExchangeRates({ baseCurrency: 'USD' }));
-    this.store.dispatch(AccountsActions.loadAccounts({}));
+    this.store.dispatch(AccountsActions.loadAccounts({ enrichWithTransactions: true }));
   }
 }
