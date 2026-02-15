@@ -1,7 +1,7 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { ExternalRecipient } from './external-recipient';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { TransferValidationService } from '../../services/transfer-validation.service';
+import { TransferValidationService } from '../../../../services/transfer-validation.service';
 import { TransferStore } from '../../../../store/transfers.store';
 import { TransferRecipientService } from '../../services/transfer-recipient.service';
 import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
@@ -83,7 +83,7 @@ describe('ExternalRecipient', () => {
     TestBed.flushEffects();
 
     expect(mockAlertService.error).toHaveBeenCalled();
-    expect(component.recipientInput.value).toBe(null); 
+    expect(component.recipientInput.value).toBe(null);
     expect(mockStore.setError).toHaveBeenCalledWith('');
   });
 
@@ -117,7 +117,7 @@ describe('ExternalRecipient', () => {
   it('should clear messages and reset icon when input is empty', () => {
     fixture.detectChanges();
     component.recipientInput.setValue('GE123');
-    component.recipientInput.setValue(''); 
+    component.recipientInput.setValue('');
 
     const config = component.recipientInputConfig();
     expect(config.successMessage).toBeUndefined();
