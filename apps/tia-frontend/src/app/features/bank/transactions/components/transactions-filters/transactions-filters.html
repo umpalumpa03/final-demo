@@ -9,40 +9,62 @@
       </p>
     </div>
     @if(hasActiveFilter()){
-    <app-button [type]="'reset'" [variant]="'outline'" [icon]="'x-icon.svg'" (click)="resetFilters()">
+    <app-button
+      [type]="'reset'"
+      [variant]="'outline'"
+      [icon]="'x-icon.svg'"
+      (click)="resetFilters()"
+    >
       {{ 'transactions.filters.reset_all' | translate }}
     </app-button>
     }
   </div>
 
   <div class="transactions-filters__mobile-toggle">
-    <app-button [variant]="'outline'" [icon]="actions.isFiltersOpen() ? 'dropup-icon.svg' : 'dropdown-icon.svg'"
-      (click)="actions.toggleFilters()" [fullWidth]="true">
+    <app-button
+      [variant]="'outline'"
+      [icon]="actions.isFiltersOpen() ? 'dropup-icon.svg' : 'dropdown-icon.svg'"
+      (click)="actions.toggleFilters()"
+      [fullWidth]="true"
+    >
       {{ 'transactions.filters.show_filters' | translate }}
     </app-button>
   </div>
 
-  <form [formGroup]="filterForm" class="transactions-filters__form" [class.is-open]="actions.isFiltersOpen()">
+  <form
+    [formGroup]="filterForm"
+    class="transactions-filters__form"
+    [class.is-open]="actions.isFiltersOpen()"
+  >
     @for (field of filtersConfig(); track field.controlName) {
 
     <div class="transactions-filters__form__input-wrapper">
       @if (field.type === 'select') {
 
-      <lib-select [formControlName]="field.controlName" [options]="field.options || []" [config]="{
+      <lib-select
+        [formControlName]="field.controlName"
+        [options]="field.options || []"
+        [config]="{
              label: (field.uiConfig.label | translate),
              placeholder: (field.uiConfig.placeholder | translate),
-          }" [height]="'3.6rem'">
+          }"
+        [height]="'3.6rem'"
+      >
       </lib-select>
 
       } @else {
 
-      <lib-text-input [formControlName]="field.controlName" [type]="field.inputType || 'text'" [config]="{
+      <lib-text-input
+        [formControlName]="field.controlName"
+        [type]="field.inputType || 'text'"
+        [config]="{
              label: (field.uiConfig.label | translate),
              max: field.uiConfig.max,
            errorMessage: field.inputType === 'date' 
         ? ('transactions.filters.errors.max_date' | translate: { date: today }) 
         : (field.uiConfig.errorMessage | translate)
-    }">
+    }"
+      >
       </lib-text-input>
       }
     </div>
@@ -52,8 +74,14 @@
   @if (activeFilters().length > 0) {
   <div class="transactions-filters__active-filters">
     @for (filter of activeFilters(); track filter.key) {
-    <app-button [variant]="'outline'" [icon]="'x-icon.svg'" (click)="removeFilter(filter.key)">
-      {{ filter.label | translate }} : {{ filter.value }}
+    <app-button
+      [variant]="'outline'"
+      [icon]="'x-icon.svg'"
+      (click)="removeFilter(filter.key)"
+    >
+      <span class="filter-text">
+        {{ filter.label | translate }} : {{ filter.value }}
+      </span>
     </app-button>
     }
   </div>

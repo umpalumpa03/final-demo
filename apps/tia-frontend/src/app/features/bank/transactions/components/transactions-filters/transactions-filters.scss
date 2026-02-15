@@ -59,14 +59,23 @@
     &__input-wrapper {
       width: calc((100% - (1.6rem * 3)) / 4);
       @media (max-width: 800px) {
-        width: calc((100% - (0.4rem * 1)) / 2);
+        width: calc((100% - (1.6rem * 1)) / 2);
       }
       @media (max-width: 550px) {
         width: 100%;
       }
     }
-    @media (max-width: 800px) {
-      gap: 0.4rem;
+  }
+  .filter-text {
+    display: block;
+    max-width: 30rem;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    @media (max-width: 480px) {
+      max-width: 15rem;
     }
   }
 }
