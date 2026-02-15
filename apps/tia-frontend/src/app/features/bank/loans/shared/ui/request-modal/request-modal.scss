@@ -74,16 +74,14 @@
         grid-template-columns: repeat(2, 1fr);
         gap: 1.6rem;
 
-        .select {
-            max-width: 23.72rem;
+        > div {
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
         }
 
-        @media (max-width: 480px) {
+        @media (max-width: 550px) {
             grid-template-columns: 1fr;
-
-            .select {
-                max-width: 48rem;
-            }
         }
 
         &--full-width {
@@ -122,7 +120,7 @@
 
     &__footer {
         @include flex-center($justify: flex-end, $align: flex-start);
-        flex-wrap: wrap;
+        flex-wrap: wrap-reverse;
         padding: 1.6rem;
         gap: 1.2rem;
     }
