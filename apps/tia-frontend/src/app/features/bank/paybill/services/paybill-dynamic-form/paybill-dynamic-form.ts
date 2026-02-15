@@ -73,7 +73,7 @@ export class PaybillDynamicForm {
     const validators = isVerified
       ? [
           Validators.required,
-          Validators.min(10),
+          Validators.min(1),
           Validators.max(9999),
           Validators.pattern(amountPattern),
         ]
