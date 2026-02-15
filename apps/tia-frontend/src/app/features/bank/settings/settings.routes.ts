@@ -68,11 +68,10 @@ export const settingsRoutes: Routes = [
       },
       {
         path: 'approve-cards',
-        canActivate: [supportRoleGuard],
-        loadComponent: () =>
+        loadChildren: () =>
           import(
-            './components/approve-cards/container/approve-cards-container'
-          ).then((c) => c.ApproveCardsContainer),
+            './components/approve-cards/approve-cards.routes'
+          ).then((m) => m.approveCards),
       },
       {
         path: 'loan-management',
