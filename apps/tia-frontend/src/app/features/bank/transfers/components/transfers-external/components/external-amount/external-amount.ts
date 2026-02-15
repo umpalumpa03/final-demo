@@ -30,6 +30,7 @@ import { AlertService } from 'apps/tia-frontend/src/app/core/services/alert/aler
 import { OtpVerification } from '@tia/core/otp-verification/container/otp-verification';
 import { OtpVerificationService } from '@tia/core/otp-verification/services/otp-verification.service';
 import { TransferSummaryComponent } from '../../../../ui/transfer-summary/transfer-summary';
+import { OtpResendTypes } from '@tia/core/otp-verification/config/otp.config';
 
 @Component({
   selector: 'app-external-amount',
@@ -81,6 +82,7 @@ export class ExternalAmount implements OnInit {
   public readonly requiresOtp = this.transferStore.requiresOtp;
   public readonly errorFromState = this.transferStore.error;
   public readonly otpConfig = transferOtpConfig['extrenal'];
+  public readonly otpResendType = OtpResendTypes.TRANSFERS;
 
   public readonly isExternalIban = computed(
     () => this.transferStore.recipientType() === 'iban-different-bank',
