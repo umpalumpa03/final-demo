@@ -40,6 +40,7 @@
           [formControl]="amountInput"
           [config]="sourceAmountConfig()"
           type="number"
+          [state]="hasInsufficientBalance() ? 'error' : 'default'"
         />
         @if (hasInsufficientBalance() && (amountInput.value ||
         destinationAmountInput.value)) {
@@ -54,6 +55,7 @@
           [formControl]="destinationAmountInput"
           [config]="destinationAmountConfig()"
           type="number"
+          [state]="hasInsufficientBalance() ? 'error' : 'default'"
         />
       </div>
       } @else {
@@ -63,6 +65,7 @@
             [formControl]="amountInput"
             [config]="amountConfig()"
             type="number"
+            [state]="hasInsufficientBalance() ? 'error' : 'default'"
           />
         </div>
         @if (hasInsufficientBalance() && amountInput.value) {
@@ -134,30 +137,15 @@
 </main>
 
 <app-success-modal
-  [title]="'transfers.confirmation.title' | translate"
-  [description]="'transfers.confirmation.success' | translate"
-  [buttonText]="'common.buttons.close' | translate"
   [isOpen]="successfulTransfer()"
-  (closed)="onSuccessDone()"
+  [title]="'transfers.internal.amount.success.title' | translate"
+  [description]="'transfers.internal.amount.success.message' | translate"
+  [buttonText]="'transfers.internal.amount.success.button' | translate"
   (done)="onSuccessDone()"
 ></app-success-modal>
 
-@if (showSuccess()) {
-<div class="internal-amount__success-toast">
-  <app-alert-types-with-icons
-    [alertType]="'success'"
-    [alertMessage]="currentToastMessage() | translate"
-  />
-</div>
-} @if (isLoading() && !requiresOtp()) {
+@if (isLoading() && !requiresOtp()) {
 <div class="internal-amount__loader-overlay">
   <app-route-loader variant="pulsing"></app-route-loader>
-</div>
-} @if (showError() && errorFromState()) {
-<div class="internal-amount__error-toast">
-  <app-alert-types-with-icons
-    [alertType]="'error'"
-    [alertMessage]="'transfers.internal.amount.transferError' | translate"
-  ></app-alert-types-with-icons>
 </div>
 }

@@ -19,6 +19,7 @@ export const ExchangeRateReducer = createReducer(
     ExchangeRates,
     loading: false,
     error: false,
+    lastUpdated: Date.now(),
   })),
 
   on(loadExchangeRatesFailure, state => ({
