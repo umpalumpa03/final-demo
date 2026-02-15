@@ -131,13 +131,6 @@ export class InternalFromAccount implements OnInit {
         this.store.dispatch(AccountsActions.selectAccount({ account: null }));
       });
     });
-
-    effect(() => {
-      const accs = this.accounts();
-      if (accs?.length) {
-        this.transferInternalService.restoreInternalSelection(accs);
-      }
-    });
   }
 
   ngOnInit() {

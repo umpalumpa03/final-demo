@@ -285,7 +285,6 @@ export class InternalAmount implements OnInit {
   }
 
   public onSuccessDone(): void {
-    this.transferInternalService.clearInternalSelection();
     this.transferStore.reset();
     this.router.navigate(['/bank/dashboard']);
   }

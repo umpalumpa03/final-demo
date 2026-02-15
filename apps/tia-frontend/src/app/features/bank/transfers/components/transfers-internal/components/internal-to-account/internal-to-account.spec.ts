@@ -4,7 +4,6 @@ import { TransferInternalService } from '../../services/transfer.internal.servic
 import { TransferStore } from '../../../../store/transfers.store';
 import { BreakpointService } from '../../../../../../../core/services/breakpoints/breakpoint.service';
 import { Store } from '@ngrx/store';
-import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { signal } from '@angular/core';
 import { of } from 'rxjs';
@@ -17,7 +16,6 @@ describe('InternalToAccount', () => {
   let fixture: ComponentFixture<InternalToAccount>;
   let mockStore: any;
   let mockTransferStore: any;
-  let mockLocation: any;
   let mockRouter: any;
   let mockBreakpointService: any;
   let mockTransferInternalService: any;
@@ -40,12 +38,10 @@ describe('InternalToAccount', () => {
     mockTransferStore = {
       receiverOwnAccount: signal(null),
       senderAccount: signal(null),
+      error: signal(''),
       setSenderAccount: vi.fn(),
       setReceiverOwnAccount: vi.fn(),
-    };
-
-    mockLocation = {
-      back: vi.fn(),
+      setError: vi.fn(),
     };
 
     mockRouter = {
@@ -66,7 +62,6 @@ describe('InternalToAccount', () => {
       providers: [
         { provide: Store, useValue: mockStore },
         { provide: TransferStore, useValue: mockTransferStore },
-        { provide: Location, useValue: mockLocation },
         { provide: Router, useValue: mockRouter },
         { provide: BreakpointService, useValue: mockBreakpointService },
         {
@@ -116,9 +111,11 @@ describe('InternalToAccount', () => {
   });
 
   describe('onGoBack', () => {
-    it('should call location.back()', () => {
+    it('should navigate to from-account page', () => {
       component.onGoBack();
-      expect(mockLocation.back).toHaveBeenCalled();
+      expect(mockRouter.navigate).toHaveBeenCalledWith([
+        '/bank/transfers/internal/from-account',
+      ]);
     });
   });
 

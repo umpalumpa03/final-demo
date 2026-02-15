@@ -20,7 +20,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import { AccountData } from 'apps/tia-frontend/src/app/features/bank/transfers/models/transfers.state.model';
 import { Account } from '@tia/shared/models/accounts/accounts.model';
-import { Location } from '@angular/common';
 import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
@@ -47,7 +46,6 @@ import { Badges } from '@tia/shared/lib/primitives/badges/badges';
 export class InternalToAccount {
   private readonly transferStore = inject(TransferStore);
   private readonly store = inject(Store);
-  private readonly location = inject(Location);
   private readonly breakpointService = inject(BreakpointService);
   private readonly router = inject(Router);
   private readonly transferInternalService = inject(TransferInternalService);
@@ -66,12 +64,25 @@ export class InternalToAccount {
   });
 
   public readonly showSuccess = signal(false);
+  public readonly showError = signal(false);
+
   public readonly selectedToAccount = computed(() =>
     this.transferStore.receiverOwnAccount(),
   );
   public readonly selectedFromAccount = computed(() =>
     this.transferStore.senderAccount(),
   );
+
+  public readonly transferError = computed(() => this.transferStore.error());
+
+  public readonly hasRepeatError = computed(() => {
+    const error = this.transferError();
+    return (
+      error === 'transfers.repeat.senderNotFound' ||
+      error === 'transfers.repeat.senderNoPermission' ||
+      error === 'transfers.repeat.recipientAccountNotFound'
+    );
+  });
 
   public readonly isContinueDisabled = computed(() => {
     return !this.selectedToAccount();
@@ -85,9 +96,13 @@ export class InternalToAccount {
 
   constructor() {
     effect(() => {
-      const accs = this.accounts();
-      if (accs?.length) {
-        this.transferInternalService.restoreInternalSelection(accs);
+      const error = this.transferError();
+      if (error && this.hasRepeatError()) {
+        this.showError.set(true);
+        setTimeout(() => {
+          this.showError.set(false);
+          this.transferStore.setError('');
+        }, 5000);
       }
     });
   }
@@ -108,7 +123,7 @@ export class InternalToAccount {
   }
 
   public onGoBack(): void {
-    this.location.back();
+    this.router.navigate(['/bank/transfers/internal/from-account']);
   }
 
   public onContinue() {
