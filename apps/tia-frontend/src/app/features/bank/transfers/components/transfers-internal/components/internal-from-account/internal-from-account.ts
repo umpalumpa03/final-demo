@@ -6,11 +6,13 @@ import {
   inject,
   OnInit,
   signal,
+  untracked,
 } from '@angular/core';
 import {
   selectAccounts,
   selectError,
   selectIsLoading,
+  selectSelectedAccount,
 } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { TransferStore } from 'apps/tia-frontend/src/app/features/bank/transfers/store/transfers.store';
 import { Store } from '@ngrx/store';
@@ -77,6 +79,11 @@ export class InternalFromAccount implements OnInit {
     initialValue: null,
   });
 
+  public readonly preSelectedAccount = toSignal(
+    this.store.select(selectSelectedAccount),
+    { initialValue: null },
+  );
+
   public readonly transferError = computed(() => this.transferStore.error());
 
   public readonly hasRepeatError = computed(() => {
@@ -106,6 +113,23 @@ export class InternalFromAccount implements OnInit {
           this.transferStore.setError('');
         }, 5000);
       }
+    });
+
+    effect(() => {
+      const preSelected = this.preSelectedAccount();
+      const currentSender = this.selectedFromAccount();
+
+      if (!preSelected || currentSender) return;
+
+      untracked(() => {
+        if (this.isAccountDisabled(preSelected)) {
+          this.store.dispatch(AccountsActions.selectAccount({ account: null }));
+          return;
+        }
+
+        this.transferStore.setSenderAccount(preSelected);
+        this.store.dispatch(AccountsActions.selectAccount({ account: null }));
+      });
     });
 
     effect(() => {
