@@ -1,88 +1,113 @@
 <div class="showcase">
   <div class="showcase__title">
     <app-library-title
-      title="Feedback Components"
-      subtitle="Loading states and skeleton loaders"
+      [title]="'storybook.feedback.title' | translate"
+      [subtitle]="'storybook.feedback.subtitle' | translate"
     />
   </div>
-  <app-showcase-card title="Loading Cards">
+
+  <app-showcase-card
+    [title]="'storybook.feedback.sections.loadingCards.title' | translate"
+  >
     <div class="showcase__cards">
       <div class="showcase__card">
         <div class="loader">
           <app-spinner size="4rem" />
-          <p class="loader__text">Loading content...</p>
+          <p class="loader__text">
+            {{ 'storybook.feedback.sections.loadingCards.loadingContent' |
+            translate }}
+          </p>
         </div>
       </div>
 
       @for (card of loadingCards; track trackById($index, card)) {
-        <div class="showcase__card">
-          <div class="skel">
-            <div class="skel__head">
-              @if (card.avatar) {
-                <app-skeleton [variant]="card.avatar.variant" [height]="card.avatar.height" />
-              }
-              <div class="skel__creds">
-                @for (cred of card.credentials; track trackById($index, cred)) {
-                  <app-skeleton [width]="cred.width" [height]="cred.height" />
-                }
-              </div>
-            </div>
-            <div class="skel__body">
-              @for (item of card.content; track trackById($index, item)) {
-                <app-skeleton [width]="item.width" [height]="item.height" />
+      <div class="showcase__card">
+        <div class="skel">
+          <div class="skel__head">
+            @if (card.avatar) {
+            <app-skeleton
+              [variant]="card.avatar.variant"
+              [height]="card.avatar.height"
+            />
+            }
+            <div class="skel__creds">
+              @for (cred of card.credentials; track trackById($index, cred)) {
+              <app-skeleton [width]="cred.width" [height]="cred.height" />
               }
             </div>
           </div>
+          <div class="skel__body">
+            @for (item of card.content; track trackById($index, item)) {
+            <app-skeleton [width]="item.width" [height]="item.height" />
+            }
+          </div>
         </div>
+      </div>
       }
     </div>
   </app-showcase-card>
 
-  <app-showcase-card title="Skeleton Loaders">
+  <app-showcase-card
+    [title]="'storybook.feedback.sections.skeletonLoaders.title' | translate"
+  >
     <div class="showcase__skels">
       <div class="showcase__group">
-        <span class="showcase__label">Text Skeleton:</span>
+        <span class="showcase__label"
+          >{{ 'storybook.feedback.sections.skeletonLoaders.text' | translate
+          }}</span
+        >
         <div class="showcase__text-container">
           @for (s of textSkeletons; track trackById($index, s)) {
-            <app-skeleton [width]="s.width" [height]="s.height" />
+          <app-skeleton [width]="s.width" [height]="s.height" />
           }
         </div>
       </div>
 
       <div class="showcase__group">
-        <span class="showcase__label">List Skeleton:</span>
+        <span class="showcase__label"
+          >{{ 'storybook.feedback.sections.skeletonLoaders.list' | translate
+          }}</span
+        >
         @for (item of listItems; track trackById($index, item)) {
-          <div class="skel__row">
-            <app-skeleton
-              [variant]="item.avatar.variant"
-              [height]="item.avatar.height"
-            />
-            <div class="skel__creds">
-              @for (cred of item.credentials; track trackById($index, cred)) {
-                <app-skeleton [width]="cred.width" [height]="cred.height" />
-              }
-            </div>
+        <div class="skel__row">
+          <app-skeleton
+            [variant]="item.avatar.variant"
+            [height]="item.avatar.height"
+          />
+          <div class="skel__creds">
+            @for (cred of item.credentials; track trackById($index, cred)) {
+            <app-skeleton [width]="cred.width" [height]="cred.height" />
+            }
           </div>
+        </div>
         }
       </div>
 
       <div class="showcase__group">
-        <span class="showcase__label">Card Skeleton:</span>
+        <span class="showcase__label"
+          >{{ 'storybook.feedback.sections.skeletonLoaders.card' | translate
+          }}</span
+        >
         <div class="showcase__card showcase__card--large">
           <div class="skel">
             <div class="skel__head">
               @if (loadingCards[1].avatar) {
-                <app-skeleton [variant]="loadingCards[1].avatar.variant" [height]="loadingCards[1].avatar.height" />
+              <app-skeleton
+                [variant]="loadingCards[1].avatar.variant"
+                [height]="loadingCards[1].avatar.height"
+              />
               }
               <div class="skel__creds">
-                @for (cred of loadingCards[1].credentials; track trackById($index, cred)) {
-                  <app-skeleton [width]="cred.width" [height]="cred.height" />
+                @for (cred of loadingCards[1].credentials; track
+                trackById($index, cred)) {
+                <app-skeleton [width]="cred.width" [height]="cred.height" />
                 }
               </div>
             </div>
             <div class="skel__body">
-              @for (item of loadingCards[1].content; track trackById($index, item)) {
-                <app-skeleton [width]="item.width" [height]="item.height" />
+              @for (item of loadingCards[1].content; track trackById($index,
+              item)) {
+              <app-skeleton [width]="item.width" [height]="item.height" />
               }
             </div>
           </div>
@@ -90,64 +115,78 @@
       </div>
 
       <div class="showcase__group">
-        <span class="showcase__label">Image Skeleton:</span>
+        <span class="showcase__label"
+          >{{ 'storybook.feedback.sections.skeletonLoaders.image' | translate
+          }}</span
+        >
         <div class="showcase__imgs">
           @for (img of imageSkeletons; track trackById($index, img)) {
-            <app-skeleton [width]="img.width" [height]="img.height" />
+          <app-skeleton [width]="img.width" [height]="img.height" />
           }
         </div>
       </div>
     </div>
   </app-showcase-card>
 
-  <app-showcase-card title="Route Loader">
+  <app-showcase-card
+    [title]="'storybook.feedback.sections.routeLoader.title' | translate"
+  >
     <div class="showcase__loaders">
-      <span class="showcase__label">Top Bar Loader:</span>
+      <span class="showcase__label"
+        >{{ 'storybook.feedback.sections.routeLoader.topBar' | translate
+        }}</span
+      >
       <div class="showcase__bar">
         <app-route-loader variant="top-bar" />
       </div>
 
-      <span class="showcase__label">Full Page Loader:</span>
+      <span class="showcase__label"
+        >{{ 'storybook.feedback.sections.routeLoader.fullPage' | translate
+        }}</span
+      >
       <app-basic-card width="100%" maxWidth="100%">
         <div class="showcase__page">
           <app-route-loader
             variant="full-page"
-            text="Loading page content..."
+            [text]="'storybook.feedback.sections.routeLoader.loadingPage' | translate"
           />
         </div>
       </app-basic-card>
 
-      <span class="showcase__label">Pulsing Loader:</span>
+      <span class="showcase__label"
+        >{{ 'storybook.feedback.sections.routeLoader.pulsing' | translate
+        }}</span
+      >
       <div class="showcase__pulse">
         <app-route-loader variant="pulsing" />
       </div>
     </div>
   </app-showcase-card>
 
-  <app-showcase-card title="Error States">
+  <app-showcase-card
+    [title]="'storybook.feedback.sections.errorStates.title' | translate"
+  >
     <div class="showcase__cards">
-
       <app-error-states
         variant="connection-error"
-        header="Connection Error"
-        message="Unable to connect to the server. Please check your internet connection."
-        buttonMessage="Retry Connection"
+        [header]="'storybook.feedback.sections.errorStates.connectionError.title' | translate"
+        [message]="'storybook.feedback.sections.errorStates.connectionError.message' | translate"
+        [buttonMessage]="'storybook.feedback.sections.errorStates.connectionError.retry' | translate"
       />
 
       <app-error-states
         variant="failed"
-        header="Loading Failed"
-        message="Failed to load the requested content. Please try again."
-        buttonMessage="Retry"
+        [header]="'storybook.feedback.sections.errorStates.loadingFailed.title' | translate"
+        [message]="'storybook.feedback.sections.errorStates.loadingFailed.message' | translate"
+        [buttonMessage]="'storybook.feedback.sections.errorStates.loadingFailed.retry' | translate"
       />
 
       <app-error-states
         variant="not-found"
-        header="No Data Found"
-        message="We couldn't find any data to display."
-        buttonMessage="Go Back"
+        [header]="'storybook.feedback.sections.errorStates.noData.title' | translate"
+        [message]="'storybook.feedback.sections.errorStates.noData.message' | translate"
+        [buttonMessage]="'storybook.feedback.sections.errorStates.noData.goBack' | translate"
       />
-
     </div>
   </app-showcase-card>
 </div>

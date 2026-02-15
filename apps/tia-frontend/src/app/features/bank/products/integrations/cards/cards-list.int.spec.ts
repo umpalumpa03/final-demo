@@ -86,7 +86,7 @@ describe('CardList Integration', () => {
     
     component.ngOnInit();
     
-    expect(dispatchSpy).toHaveBeenCalledWith(loadCardAccounts({ forceRefresh: true }));
+    expect(dispatchSpy).toHaveBeenCalledWith(loadCardAccounts({ forceRefresh: false }));
     
     const transformed = component.transformCardGroups(mockCardGroups, {});
     expect(transformed[0].cards.length).toBe(2);

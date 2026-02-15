@@ -54,6 +54,10 @@
         cursor: pointer;
         user-select: none;
 
+        &--error {
+            border-color: $red-500;
+        }
+
         &:hover:not(.select--disabled &) {
             border-color: $blue-ocean;
             box-shadow: 0 0 0 0.1rem rgba($blue-ocean, 0.1);
@@ -71,6 +75,14 @@
         }
     }
 
+    &__message {
+        @include font-inter(400, 1.4rem);
+
+        &--error {
+            color: $red-500;
+        }
+    }
+
     &__value {
         @include font-arimo(400, 1.4rem, 1.5);
         color: var(--color-fg);
@@ -81,6 +93,10 @@
         overflow: hidden;
         text-overflow: ellipsis;
         min-width: 0;
+
+        &--placeholder {
+            color: $gray-500;
+        }
     }
 
     &__arrow {
