@@ -8,8 +8,12 @@ import {
 import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
-import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { Router } from '@angular/router';
+import {
+  TranslateService,
+  TranslateModule,
+  TranslatePipe,
+} from '@ngx-translate/core';
 import { AccountsListComponent } from '../components/accounts-list/accounts-list';
 import { CreateAccountComponent } from '../components/create-account/create-account';
 import {
@@ -35,7 +39,6 @@ import { getAccountSections } from '../shared/config/accounts.config';
 import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/shared/library-title/library-title';
 import { ButtonComponent } from '../../../../../../shared/lib/primitives/button/button';
 import { TransferService } from '../services/transfer/transfer.service';
-import { AlertService } from '@tia/core/services/alert/alert.service';
 
 @Component({
   selector: 'app-accounts-page',
@@ -46,6 +49,7 @@ import { AlertService } from '@tia/core/services/alert/alert.service';
     CreateAccountComponent,
     LibraryTitle,
     ButtonComponent,
+    TranslatePipe,
   ],
   templateUrl: './accounts.html',
   styleUrl: './accounts.scss',
@@ -55,10 +59,8 @@ export class Accounts implements OnInit {
   private readonly store = inject(Store);
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
-  private readonly route = inject(ActivatedRoute);
   private readonly translate = inject(TranslateService);
   private readonly transferService = inject(TransferService);
-  private readonly alertService = inject(AlertService);
 
   protected readonly accountsGrouped = this.store.selectSignal(
     selectAccountsGrouped,
