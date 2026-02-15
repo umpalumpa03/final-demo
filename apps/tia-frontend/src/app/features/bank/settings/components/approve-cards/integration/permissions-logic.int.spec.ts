@@ -2,27 +2,52 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { ApproveCardsContainer } from '../container/approve-cards-container';
-import { ApproveCardsStore } from '../store/approve-cards.store';
 import { TranslateModule } from '@ngx-translate/core';
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { By } from '@angular/platform-browser';
+import { patchState } from '@ngrx/signals';
+import { ApproveCardsState } from '../shared/state/approve-cards.state';
+import { ApproveCardsStore } from '../store/approve-cards.store';
+import { provideMockStore } from '@ngrx/store/testing';
 
 describe('Permissions Logic Integration', () => {
   let fixture: ComponentFixture<ApproveCardsContainer>;
-  let store: any;
   let httpMock: HttpTestingController;
+  let approveComp: any;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ApproveCardsContainer, TranslateModule.forRoot()],
-      providers: [provideHttpClient(), provideHttpClientTesting()]
-    }).compileComponents();
+      imports: [
+        ApproveCardsContainer, 
+        TranslateModule.forRoot(), 
+      ],
+      providers: [
+         { provide: 'BrowserAnimations', useValue: {} },
+        provideHttpClient(), 
+        provideHttpClientTesting(),
+        provideMockStore({}),
+        ApproveCardsState,
+        ApproveCardsStore
+      ]
+    })
+    .overrideComponent(ApproveCardsContainer, {
+      set: {
+        providers: [ApproveCardsState, ApproveCardsStore]
+      }
+    })
+    .compileComponents();
 
     httpMock = TestBed.inject(HttpTestingController);
     fixture = TestBed.createComponent(ApproveCardsContainer);
-    const approveComp = fixture.debugElement.query(By.css('app-approve-cards')).componentInstance;
-    store = approveComp.store;
+    
     fixture.detectChanges();
+    httpMock.expectOne(r => r.url.includes('/cards/pending')).flush([]);
+
+    approveComp = fixture.debugElement.query(By.css('app-approve-cards')).componentInstance;
+  });
+
+  afterEach(() => {
+    httpMock.verify();
   });
 
   it('should dynamically add form controls when permissions are loaded', () => {
@@ -31,12 +56,12 @@ describe('Permissions Logic Integration', () => {
       { value: 'MANAGE', displayName: 'Manage' }
     ];
 
-    store['loadPerrmisionsSuccess']?.(mockPerms); 
+    patchState(approveComp.store, { permissions: mockPerms });
     
-    const approveComp = fixture.debugElement.query(By.css('app-approve-cards')).componentInstance;
     fixture.detectChanges();
 
-    expect(approveComp.cardPermissionsForm.contains('VIEW')).toBe(false);
-    expect(approveComp.cardPermissionsForm.contains('MANAGE')).toBe(false);
+    expect(approveComp.cardPermissionsForm.contains('VIEW')).toBe(true);
+    expect(approveComp.cardPermissionsForm.contains('MANAGE')).toBe(true);
+    expect(approveComp.cardPermissionsForm.get('VIEW')?.value).toBe(false);
   });
 });

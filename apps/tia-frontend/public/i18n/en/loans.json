@@ -127,6 +127,9 @@
       "amount_label": "Prepayment Amount",
       "calc_option_label": "Calculation Option"
     },
+    "tooltips": {
+      "form_invalid": "Please fill in all required fields correctly to proceed."
+    },
     "radio_options": {
       "reduce_monthly_label": "Reduce Monthly Payment",
       "reduce_monthly_desc": "Lower your monthly payment amount",

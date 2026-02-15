@@ -13,6 +13,19 @@
   border: 0.15rem solid var(--color-primary);
   border-radius: 2.4rem;
   padding: 2.4rem;
+  width: 100%;
+
+  @media (max-width: 76.8rem) {
+    padding: 2rem;
+    border-radius: 2rem;
+  }
+
+
+  @media (max-width: 48rem) {
+    padding: 1.6rem;
+    border-radius: 1.6rem;
+    border-width: 0.1rem; 
+  }
 
   &__header {
     margin-bottom: 2.4rem;

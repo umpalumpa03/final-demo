@@ -17,7 +17,7 @@
     width: 100%;
 
     @media (min-width: 120rem) {
-      @include flex-center($justify: space-between, $align: flex-start);
+      @include flex-center();
       gap: 3.2rem;
     }
   }
@@ -28,7 +28,7 @@
     width: 100%;
 
     @media (min-width: 76.8rem) {
-      @include flex-center($align: flex-start);
+      @include flex-center();
       gap: 2rem;
       width: auto;
     }
