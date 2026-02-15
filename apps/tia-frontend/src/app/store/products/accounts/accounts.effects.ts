@@ -15,6 +15,7 @@ import { Store } from '@ngrx/store';
 import { selectAccounts, selectCurrencies } from './accounts.selectors';
 import { AlertService } from '../../../core/services/alert/alert.service';
 import { TranslateService } from '@ngx-translate/core';
+import { AccountsStore } from '../../../features/bank/settings/components/accounts/store/accounts.store';
 
 @Injectable()
 export class AccountsEffects {
@@ -23,6 +24,7 @@ export class AccountsEffects {
   private readonly store = inject(Store);
   private readonly alertService = inject(AlertService);
   private readonly translate = inject(TranslateService);
+  private readonly settingsAccountsStore = inject(AccountsStore);
 
   loadAccounts$ = createEffect(() =>
     this.actions$.pipe(
@@ -203,6 +205,7 @@ export class AccountsEffects {
               title: this.translate.instant('my-products.accounts.success'),
             },
           );
+          this.settingsAccountsStore.resetStore();
         }),
       ),
     { dispatch: false },
