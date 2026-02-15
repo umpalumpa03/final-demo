@@ -131,6 +131,7 @@
     (customError)="handleNoMoreAttempts()"
     redirectUrl="/bank/transfers"
     redirectText="Transfers Page"
+    [otpResendType]="otpResendType"
   ></app-otp-verification>
 </app-ui-modal>
 } @if(isLoading() && !requiresOtp()) {

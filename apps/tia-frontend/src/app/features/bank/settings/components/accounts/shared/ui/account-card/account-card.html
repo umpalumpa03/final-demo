@@ -4,7 +4,7 @@
   [alignItems]="actions.basic.alignItems"
   [minHeight]="actions.basic.minHeight"
   [maxWidth]="actions.basic.maxWidth"
-  [padding]="isXsMobile() ? actions.basic.mobilePadding : actions.basic.padding"
+  [padding]="isXlMobile() ? actions.basic.mobilePadding : actions.basic.padding"
   [gap]="actions.basic.gap"
 >
   <div class="account-card">
@@ -50,7 +50,7 @@
           [icon]="actions.nameBtn.icon"
           [isLoading]="isChangeNameLoading()"
           (click)="onFriendlyNameClick()"
-          >{{(isXsMobile() ? '' : 'settings.accounts.changeButton') |
+          >{{(isXlMobile() ? '' : 'settings.accounts.changeButton') |
           translate}}</app-button
         >
         <app-button
@@ -63,7 +63,7 @@
           [icon]="isFavorite() ? actions.favorite.icons.active : actions.favorite.icons.inactive"
           [isLoading]="isFavoriteLoading()"
         >
-          {{ (isXsMobile() ? '' : (isFavorite() ? actions.favorite.labels.active
+          {{ (isXlMobile() ? '' : (isFavorite() ? actions.favorite.labels.active
           : actions.favorite.labels.inactive)) | translate }}
         </app-button>
 
@@ -76,7 +76,7 @@
           (click)="onHideUnhideClick()"
           [icon]="isHidden() ? actions.visibility.icons.hidden : actions.visibility.icons.visible"
         >
-          {{ (isXsMobile() ? '' : (isHidden() ? actions.visibility.labels.hidden
+          {{ (isXlMobile() ? '' : (isHidden() ? actions.visibility.labels.hidden
           : actions.visibility.labels.visible)) | translate }}
         </app-button>
       </div>

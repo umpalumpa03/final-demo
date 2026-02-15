@@ -91,6 +91,43 @@ describe('OtpVerification', () => {
     expect(emitSpy).toHaveBeenCalledWith('9876');
   });
 
+  it('should decrement attempts immediately on submit', () => {
+    // simulate only 1 remaining attempt
+    component.maxAttempts.set(1);
+
+    fixture.componentRef.setInput('timerType', 'otp');
+    fixture.detectChanges();
+
+    component.otpForm.setValue({ code: '9876' });
+    component.otpForm.updateValueAndValidity();
+
+    component.onSubmit();
+
+    // current implementation decrements attempts immediately on submit
+    expect(component.maxAttempts()).toBe(0);
+    expect(component.pendingVerification()).toBe(true);
+  });
+
+  it('should show error page when attempts reach 0 after submit and verification error', () => {
+    component.maxAttempts.set(1);
+
+    fixture.componentRef.setInput('timerType', 'otp');
+    fixture.detectChanges();
+
+    component.otpForm.setValue({ code: '1111' });
+    component.otpForm.updateValueAndValidity();
+
+    component.onSubmit();
+
+    // simulate parent/service reporting a verification error
+    fixture.componentRef.setInput('errorMessage', 'Invalid OTP code');
+    fixture.detectChanges();
+
+    expect(component.maxAttempts()).toBe(0);
+    // when attempts reach 0 the error page should be shown (default onErrorRedirect = true)
+    expect(component.isErrorPageVisible()).toBe(true);
+  });
+
   it('should emit phone number on submit when timerType is phone', () => {
     const emitSpy = vi.spyOn(component.isVerifyCalled, 'emit');
 

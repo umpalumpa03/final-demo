@@ -8,6 +8,7 @@ import { inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { IOtpVerificationConfig } from '@tia/core/otp-verification/models/otp-verification.models';
 import { OtpVerification } from '@tia/core/otp-verification/container/otp-verification';
+import { OtpResendTypes } from '@tia/core/otp-verification/config/otp.config';
 
 @Component({
   selector: 'app-card-otp-modal-content',
@@ -23,6 +24,7 @@ export class CardOtpModalContent {
   public readonly cancelClicked = output<void>();
   public readonly resendClicked = output<void>();
   public readonly remainingAttempts = input<number | null>(null);
+  public readonly otpResendType = OtpResendTypes.CARDS;
   public handleResend(): void {
     this.resendClicked.emit();
   }

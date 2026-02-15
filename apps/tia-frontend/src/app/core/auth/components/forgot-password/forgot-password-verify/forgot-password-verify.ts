@@ -16,6 +16,7 @@ import { Routes } from '../../../models/tokens.model';
 import { otpVerificationConfig } from '../../../config/otp-verification.config';
 import { OtpVerification } from '@tia/core/otp-verification/container/otp-verification';
 import { OtpVerificationService } from '@tia/core/otp-verification/services/otp-verification.service';
+import { OtpResendTypes } from '@tia/core/otp-verification/config/otp.config';
 
 @Component({
   selector: 'app-forgot-password-verify',
@@ -28,6 +29,7 @@ export class ForgotPasswordVerify implements OnInit {
   private authService = inject(AuthService);
   private tokenService = inject(TokenService)
   private router = inject(Router);
+  public readonly otpResendType = OtpResendTypes.RESET;
   public otpInputConfig = otpVerificationConfig['forgot-password']
 
   public readonly errorMessage = signal<string | null>(null);

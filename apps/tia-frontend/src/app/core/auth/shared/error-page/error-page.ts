@@ -7,10 +7,11 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { Routes } from '../../models/tokens.model';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-error-page',
-  imports: [],
+  imports: [TranslatePipe],
   templateUrl: './error-page.html',
   styleUrl: './error-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

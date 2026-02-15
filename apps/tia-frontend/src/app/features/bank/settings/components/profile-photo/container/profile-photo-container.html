@@ -52,12 +52,17 @@
     type="otp"
     timerType="otp"
     [inputOtpConfig]="otpConfig"
-    [errorMessage]="phoneUpdateError()"
     [isButtonLoading]="phoneUpdateLoading()"
-    [onErrorRedirect]="false"
+    [onErrorRedirect]="true"
+    [otpResendType]="otpResendType"
+    [redirectUrl]="redirectUrl"
+    [redirectText]="redirectText | translate"
+    [noMoreAttempsRedirectRoute]="redirectUrl"
     (isVerifyCalled)="onVerifyOtp($event)"
     (isResendCalled)="onResendOtp()"
     (onBackOut)="onOtpModalClosed()"
+    (customError)="handleNoMoreAttempts()"
   ></app-otp-verification>
 </app-ui-modal>
 }
+ 
