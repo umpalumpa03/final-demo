@@ -13,6 +13,7 @@ describe('Finances Container Integration Tests', () => {
   beforeEach(async () => {
     storeMock = {
       loadAllData: vi.fn(),
+      resetStore: vi.fn(), 
       loading: signal(false),
       isRefreshing: signal(false),
       error: signal(null),
@@ -53,5 +54,11 @@ describe('Finances Container Integration Tests', () => {
       from: '2026-02-01',
       force: false,
     });
+  });
+
+  it('should call resetStore on ngOnDestroy', () => {
+    fixture.detectChanges();
+    component.ngOnDestroy();
+    expect(storeMock.resetStore).toHaveBeenCalled();
   });
 });
