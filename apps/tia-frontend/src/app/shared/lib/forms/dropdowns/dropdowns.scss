@@ -55,7 +55,7 @@
         user-select: none;
 
         &--error {
-            border-color: $red-500 !important;
+            border-color: $red-500;
         }
 
         &:hover:not(.select--disabled &) {
