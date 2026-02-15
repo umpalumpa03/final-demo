@@ -21,7 +21,6 @@ import { BirthdayLogicService } from '../../../birthday/services/birthday-logic.
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import {
-  clearExchangeRates,
   loadExchangeRates,
 } from 'apps/tia-frontend/src/app/store/exchange-rates/exchange-rates.actions';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
@@ -144,8 +143,7 @@ export class DashboardContainer implements OnInit {
   }
 
   public onWidgetRefresh(): void {
-    this.store.dispatch(clearExchangeRates());
-    this.store.dispatch(loadExchangeRates({ baseCurrency: 'USD' }));
+    this.store.dispatch(loadExchangeRates({ baseCurrency: 'USD', forceRefresh: true }));
   }
 
   public onWidgetAdd(): void {

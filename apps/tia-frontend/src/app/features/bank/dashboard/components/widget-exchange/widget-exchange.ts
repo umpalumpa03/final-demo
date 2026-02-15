@@ -35,6 +35,6 @@ export class WidgetExchange extends BaseWidget {
     .pipe(map((rates) => rates.filter((rate) => rate.code !== 'USD')));
 
   public retryLoad(): void {
-    this.store.dispatch(loadExchangeRates({ baseCurrency: 'USD' }));
+    this.store.dispatch(loadExchangeRates({ baseCurrency: 'USD', forceRefresh: true }));
   }
 }
