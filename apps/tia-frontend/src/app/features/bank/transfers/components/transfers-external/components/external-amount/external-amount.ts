@@ -25,7 +25,6 @@ import { Router } from '@angular/router';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { Tooltip } from '@tia/shared/lib/data-display/tooltip/tooltip';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
-import { IVerified } from '@tia/core/otp-verification/models/otp-verification.models';
 import { transferOtpConfig } from '../../config/transfers-external.config';
 import { AlertService } from 'apps/tia-frontend/src/app/core/services/alert/alert.service';
 import { OtpVerification } from '@tia/core/otp-verification/container/otp-verification';
@@ -209,20 +208,18 @@ export class ExternalAmount implements OnInit {
     this.noAttemptsLeft.set(false);
   }
 
-  public onOtpVerify(event: IVerified): void {
-    const otpCode = event.otp;
+  public onOtpVerify(otp: string): void {
+    const otpCode = otp;
     if (otpCode) {
       this.executionService.verifyTransfer(otpCode);
     }
   }
 
-  public resendOtp(isCalled: boolean): void {
-    if (isCalled) {
+  public resendOtp(): void {
       const challengeId = this.transferStore.challengeId();
       console.log(challengeId);
       if (!challengeId) return;
       this.otpService.resendVerificationCode(challengeId).subscribe();
-    }
   }
 
   public handleNoMoreAttempts(): void {

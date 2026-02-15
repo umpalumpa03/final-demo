@@ -1,9 +1,10 @@
 <app-otp-verification
   type="otp"
   (isVerifyCalled)="verifyOtp($event)"
-  (isResendCalled)="resendOtp($event)"
+  (isResendCalled)="resendOtp()"
   timerType="otp"
   (onBackOut)="clearedBackout()"
   [errorMessage]="otpError()?.message ?? null"
   [inputOtpConfig]="otpConfig"
+  [otpResendType]="otpResendType"
 ></app-otp-verification>

@@ -16,17 +16,15 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { Otp } from '@tia/shared/lib/forms/otp/otp';
-import { catchError, EMPTY, map, startWith, tap } from 'rxjs';
+import { catchError, EMPTY, tap } from 'rxjs';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { SimpleAlerts } from '@tia/shared/lib/alerts/components/simple-alerts/simple-alerts';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { translateConfig } from '@tia/shared/utils/translate-config/config-translator.util';
+import { TranslatePipe } from '@ngx-translate/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ErrorPage } from '../../auth/shared/error-page/error-page';
 import { Routes } from '../../auth/models/tokens.model';
 import {
   IOtpVerificationConfig,
-  IVerified,
   OtpSettingsConfiguration,
   OtpVerificationType,
 } from '../models/otp-verification.models';
@@ -59,10 +57,9 @@ import { OtpVerifyService } from '../config/otp-verify.state';
 export class OtpVerification implements OnInit {
   private fb = inject(FormBuilder);
   private otpService = inject(OtpVerificationService);
-  private translate = inject(TranslateService);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
-  public otpForms = inject(OtpVerifyService)
+  public otpForms = inject(OtpVerifyService);
 
   public type = input.required<OtpVerificationType>();
   public timerType = input<TimerType>('phone');
@@ -75,14 +72,15 @@ export class OtpVerification implements OnInit {
   public redirectUrl = input<string>();
   public redirectText = input<string>();
   public isButtonLoading = input<boolean>(false);
+  public otpResendType = input<string>('');
 
   public onBackOut = output<void>();
   public onTimeout = output<void>();
-  public isVerifyCalled = output<IVerified>();
-  public isResendCalled = output<boolean>();
+  public isVerifyCalled = output<string>();
+  public isResendCalled = output<void>();
   public customError = output<void>();
 
-  private activeConfig = signal<OtpSettingsConfiguration>(
+  public activeConfig = signal<OtpSettingsConfiguration>(
     DEFAULT_SETTING_CONFIG,
   );
   public resendRetries = signal<number>(0);
@@ -90,6 +88,7 @@ export class OtpVerification implements OnInit {
   public maxTotalTime = signal<number>(0);
   public maxTimeoutMs = signal<number>(0);
   public isButtonDisabled = signal(false);
+  public buttonLoading = signal(false);
   public isInputDisabled = signal(false);
   public submitError = signal<string | null>(null);
   public isErrorPageVisible = signal<boolean>(false);
@@ -171,51 +170,54 @@ export class OtpVerification implements OnInit {
   }
 
   public onSubmit(): void {
-    this.isInputDisabled.set(true)
-    const currentForm = this.activeForm();
+    const form = this.activeForm();
 
-    if (currentForm.invalid) {
-      currentForm.markAllAsTouched();
-      this.submitError.set('Please check the required fields.');
-
-      setTimeout(() => {
-        this.submitError.set('');
-      }, 5000);
+    if (form.invalid) {
+      form.markAllAsTouched();
+      this.showTemporaryError('Please check the required fields.');
       return;
     }
 
-    const rawValue = currentForm.getRawValue();
-    let otp: string | null = null;
+    this.setLoadingState(true);
 
-    if ('phoneNumber' in rawValue) {
-      otp = rawValue.phoneNumber;
-    } else if ('code' in rawValue) {
-      otp = rawValue.code;
+    const otp = this.extractOtp();
+
+    this.decreaseAttempts();
+    this.isVerifyCalled.emit(otp);
+
+    this.handlePostSubmitReset();
+  }
+
+  private extractOtp(): string {
+    if (this.timerType() === 'phone') {
+      return this.setPhoneNumberForm.controls.phoneNumber.value!;
     }
 
-    if (this.maxAttempts() !== null) {
-      this.maxAttempts.update((value) =>
-        value !== null && value > 0 ? value - 1 : value,
-      );
-    }
+    return this.otpForm.controls.code.value!;
+  }
 
-    this.isVerifyCalled.emit({
-      isCalled: true,
-      otp: otp,
-    });
+  private decreaseAttempts(): void {
+    this.maxAttempts.update((att) => (att > 0 ? att - 1 : att));
+  }
 
-    if (!this.onErrorRedirect() || this.isButtonLoading()) {
-      setTimeout(() => {
-        this.otpForm.reset();
-        this.otpComponent()?.focusFirst();
-      }, 2000);
-    }
+  private setLoadingState(isLoading: boolean): void {
+    this.isInputDisabled.set(isLoading);
+    this.buttonLoading.set(isLoading);
+  }
+
+  private showTemporaryError(message: string): void {
+    this.submitError.set(message);
+    setTimeout(() => this.submitError.set(null), 5000);
+  }
+
+  private handlePostSubmitReset(): void {
+    const delay = !this.onErrorRedirect() || this.isButtonLoading() ? 1000 : 0;
 
     setTimeout(() => {
       this.otpForm.reset();
-      this.isInputDisabled.set(false)
+      this.setLoadingState(false);
       this.otpComponent()?.focusFirst();
-    }, 0);
+    }, delay);
   }
 
   public resgisterBackout(): void {
@@ -237,7 +239,7 @@ export class OtpVerification implements OnInit {
   }
 
   public handleResend(): void {
-    this.isResendCalled.emit(true);
+    this.isResendCalled.emit();
     this.isButtonDisabled.set(false);
   }
 

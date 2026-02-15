@@ -5,12 +5,13 @@
   @include flex-center(column);
   max-width: 48rem;
   margin: 0 auto;
+  text-align: center;
 
   &__icon {
     @include flex-center();
     width: 6.4rem;
     height: 6.4rem;
-    background-color: $blue-royal-secondary;
+    background-color: var(--color-secondary);
     border-radius: 999rem;
     margin-bottom: 1.6rem;
   }

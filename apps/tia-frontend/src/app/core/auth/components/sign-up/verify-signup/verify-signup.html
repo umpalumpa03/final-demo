@@ -1,9 +1,10 @@
 <app-otp-verification
   type="sign-up"
   (isVerifyCalled)="verifyRegisterOtp($event)"
-  (isResendCalled)="resendOtp($event)"
+  (isResendCalled)="resendOtp()"
   timerType="otp"
   (onBackOut)="clearedBackout()"
   [errorMessage]="otpError()?.message ?? null"
   [inputOtpConfig]="inputOtpConfig"
+  [otpResendType]="phoneResend"
 ></app-otp-verification>

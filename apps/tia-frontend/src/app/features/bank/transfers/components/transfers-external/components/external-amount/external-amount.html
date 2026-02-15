@@ -170,7 +170,7 @@
   <app-otp-verification
     type="otp"
     (isVerifyCalled)="onOtpVerify($event)"
-    (isResendCalled)="resendOtp($event)"
+    (isResendCalled)="resendOtp()"
     timerType="otp"
     (onBackOut)="onOtpClose()"
     [errorMessage]="errorFromState()"

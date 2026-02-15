@@ -6,7 +6,6 @@ import {
   input,
   output,
 } from '@angular/core';
-import { IVerified } from '@tia/core/otp-verification/models/otp-verification.models';
 import { LoanVerifyState } from '../../../state/loan-verify.state';
 import { LOANS_ROUTES } from '../../../config/loans-redirect.config';
 import { NavigationStart, Router } from '@angular/router';
@@ -46,9 +45,7 @@ export class Verify {
       .subscribe();
   }
 
-  public onVerify(event: IVerified): void {
-    if (event.otp) {
-      this.verify.emit(event.otp);
-    }
+  public onVerify(otp: string): void {
+      this.verify.emit(otp);
   }
 }

@@ -11,7 +11,6 @@ import { Router } from '@angular/router';
 import { catchError, EMPTY, tap } from 'rxjs';
 import { AuthService } from '../../../services/auth.service';
 import { forgotPasswordSegments } from '../forgot-password.routes';
-import { IVerified } from '../../../../otp-verification/models/otp-verification.models';
 import { TokenService } from '../../../services/token.service';
 import { Routes } from '../../../models/tokens.model';
 import { otpVerificationConfig } from '../../../config/otp-verification.config';
@@ -46,11 +45,10 @@ export class ForgotPasswordVerify implements OnInit {
     }
   }
 
-  public verifyResetOtp(event: IVerified): void {
-    if (event.isCalled) {
+  public verifyResetOtp(otp: string): void {
       this.errorMessage.set(null);
       this.authService
-        .verifyForgotPasswordOtp(event.otp!)
+        .verifyForgotPasswordOtp(otp)
         .pipe(
           tap(() =>
             this.router.navigate(['/auth', ...forgotPasswordSegments.reset]),
@@ -63,14 +61,11 @@ export class ForgotPasswordVerify implements OnInit {
         )
         .subscribe();
     }
-  }
 
-  public resendOtp(isCalled: boolean): void {
-    if (isCalled) {
+  public resendOtp(): void {
       this.otpService
         .resendVerificationCode(this.authService.getChallengeId())
         .subscribe();
-    }
   }
 
   public clearedBackout(): void {

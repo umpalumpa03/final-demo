@@ -55,7 +55,8 @@
         (isVerifyCalled)="onVerify($event)"
         (isResendCalled)="onResend()"
         (onBackOut)="onCancel()"
-        noMoreAttempsRedirectRoute="/bank/paybill/pay"
+        redirectUrl="/bank/paybill/pay"   
+        redirectText="Pay Bills Page"     
         [isButtonLoading]="true"
       />
     </div>

@@ -9,20 +9,16 @@ export interface IOtpVerificationConfig {
   iconUrl?: string;
 }
 
-export interface IVerified {
-  isCalled: boolean;
-  otp: string | null;
-}
-
-export interface OtpSettings {
+export interface IOtpSettings {
   expirationMinutes: number;
   maxResendAttempts: number;
   maxVerifyAttempts: number;
   resendTimeoutMs: number;
+  enabledOtpResends: string[]
 }
 
 export interface OtpSettingsConfiguration {
-  otp: OtpSettings;
+  otp: IOtpSettings;
 }
 
 export interface OtpResponse {

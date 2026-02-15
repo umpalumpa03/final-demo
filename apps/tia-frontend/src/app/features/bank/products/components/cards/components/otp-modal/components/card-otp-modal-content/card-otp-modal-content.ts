@@ -4,7 +4,6 @@ import {
   input,
   output,
 } from '@angular/core';
-import { OtpVerificationData } from '../../../../models/otp-verification-data.model';
 import { inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { IOtpVerificationConfig } from '@tia/core/otp-verification/models/otp-verification.models';
@@ -24,27 +23,29 @@ export class CardOtpModalContent {
   public readonly cancelClicked = output<void>();
   public readonly resendClicked = output<void>();
   public readonly remainingAttempts = input<number | null>(null);
-  public  handleResend(): void {
+  public handleResend(): void {
     this.resendClicked.emit();
   }
 
-  public handleVerify(data: OtpVerificationData): void {
-    if (data.isCalled && data.otp) {
-      this.verifyClicked.emit(data.otp);
-    }
+  public handleVerify(otp: string): void {
+    this.verifyClicked.emit(otp);
   }
 
   public handleCancel(): void {
     this.cancelClicked.emit();
   }
 
-private readonly translate: TranslateService = inject(TranslateService);
+  private readonly translate: TranslateService = inject(TranslateService);
 
-public readonly otpConfig: IOtpVerificationConfig = {
-  iconUrl: '/images/svg/auth/secured-blue.svg',
-  title: this.translate.instant('my-products.card.card-otp-modal.title'),
-  subText: this.translate.instant('my-products.card.card-otp-modal.subText'),
-  submitBtnName: this.translate.instant('my-products.card.card-otp-modal.submitBtn'),
-  backLinkText: this.translate.instant('my-products.card.card-otp-modal.cancel'),
-};
+  public readonly otpConfig: IOtpVerificationConfig = {
+    iconUrl: '/images/svg/auth/secured-blue.svg',
+    title: this.translate.instant('my-products.card.card-otp-modal.title'),
+    subText: this.translate.instant('my-products.card.card-otp-modal.subText'),
+    submitBtnName: this.translate.instant(
+      'my-products.card.card-otp-modal.submitBtn',
+    ),
+    backLinkText: this.translate.instant(
+      'my-products.card.card-otp-modal.cancel',
+    ),
+  };
 }

@@ -7,7 +7,6 @@ import {
 import { AuthService } from '../../../services/auth.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { IMfaVerifyRequest } from '../../../models/authRequest.models';
-import { IVerified } from '../../../../otp-verification/models/otp-verification.models';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TokenService } from '../../../services/token.service';
 import { Router } from '@angular/router';
@@ -15,6 +14,7 @@ import { Routes } from '../../../models/tokens.model';
 import { otpVerificationConfig } from '../../../config/otp-verification.config';
 import { OtpVerification } from '@tia/core/otp-verification/container/otp-verification';
 import { OtpVerificationService } from '@tia/core/otp-verification/services/otp-verification.service';
+import { OtpResendTypes } from '@tia/core/otp-verification/config/otp.config';
 
 @Component({
   selector: 'app-verify-signin',
@@ -29,26 +29,23 @@ export class VerifySignin {
   private router = inject(Router);
   public otpError = this.authService.otpError;
   private destroyRef = inject(DestroyRef);
+  public otpResendType = OtpResendTypes.AUTH;
   public otpConfig = otpVerificationConfig['sign-in'];
 
-  public verifyOtp(event: IVerified): void {
-    if (event.isCalled) {
-      this.authService
-        .verifyMfa({
-          code: event.otp,
-          challengeId: this.authService.getChallengeId(),
-        } as IMfaVerifyRequest)
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe();
-    }
+  public verifyOtp(otp: string): void {
+    this.authService
+      .verifyMfa({
+        code: otp,
+        challengeId: this.authService.getChallengeId(),
+      } as IMfaVerifyRequest)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe();
   }
 
-  public resendOtp(isCalled: boolean): void {
-    if (isCalled) {
-      this.otpService
-        .resendVerificationCode(this.authService.getChallengeId())
-        .subscribe();
-    }
+  public resendOtp(): void {
+    this.otpService
+      .resendVerificationCode(this.authService.getChallengeId())
+      .subscribe();
   }
 
   public clearedBackout(): void {

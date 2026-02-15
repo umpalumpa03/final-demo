@@ -14,7 +14,6 @@ import {
   PaybillProvider,
 } from '../../../../shared/models/paybill.model';
 import { TranslatePipe } from '@ngx-translate/core';
-import { IVerified } from '@tia/core/otp-verification/models/otp-verification.models';
 import { otpConfiguration } from '../../config/otp.config';
 import { OtpVerification } from '@tia/core/otp-verification/container/otp-verification';
 
@@ -81,9 +80,7 @@ export class PaybillOtpVerification {
     this.resendCode.emit();
   }
 
-  public onVerify(event: IVerified): void {
-    if (event.isCalled && event.otp) {
-      this.verify.emit(event.otp);
-    }
+  public onVerify(otp: string): void {
+      this.verify.emit(otp);
   }
 }

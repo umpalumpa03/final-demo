@@ -1,9 +1,13 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  inject,
+} from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { Router } from '@angular/router';
 import { TokenService } from '../../../services/token.service';
-import { IVerified } from '../../../../otp-verification/models/otp-verification.models';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Routes } from '../../../models/tokens.model';
 import { otpVerificationConfig } from '../../../config/otp-verification.config';
@@ -20,15 +24,15 @@ export class PhoneVerification {
   private router = inject(Router);
   private tokenService = inject(TokenService);
   private destroyRef = inject(DestroyRef);
-  public inputOtpConfig = otpVerificationConfig['sign-up']
-  
+  public inputOtpConfig = otpVerificationConfig['sign-up'];
+
   public PhoneOtpError = this.authService.otpError;
 
-  public submit(event: IVerified): void {
-    if (event.isCalled) {
-      let telNumber = event.otp;
-      this.authService.sendPhoneVerificationCode(telNumber!).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
-    }
+  public submit(otp: string): void {
+    this.authService
+      .sendPhoneVerificationCode(otp!)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe();
   }
 
   public clearedBackout(): void {

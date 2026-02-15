@@ -44,6 +44,7 @@ import { Subscription } from 'rxjs';
 import { AlertService } from '@tia/core/services/alert/alert.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ClearSignalStoreService } from '@tia/core/services/clearSignalStores/clear-signal-store.service';
+import showAlert from '@tia/shared/utils/alerts/alert.helper';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -54,7 +55,6 @@ export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
   private store = inject(Store);
-  private monitorInactivity = inject(MonitorInactivity);
   private injector = inject(Injector);
 
   public isAuthenticated = signal<boolean>(false);
@@ -115,23 +115,29 @@ export class AuthService {
           if (res.challengeId && res.reason === 'phone_unverified') {
             this.setChellangeId(res.challengeId);
             this.router.navigate([Routes.OTP_SIGN_UP]);
-            this.alertService.warning(
-              this.translate.instant('auth.alert-errors.phoneWarn'),
-              { variant: 'dismissible', title: 'Warning!' },
+            showAlert(
+              this.alertService,
+              this.translate,
+              'warning',
+              'auth.alert-errors.phoneWarn',
             );
           } else {
             this.router.navigate([Routes.PHONE]);
-            this.alertService.warning(
-              this.translate.instant('auth.alert-errors.phoneVerifyWarn'),
-              { variant: 'dismissible', title: 'Warning!' },
+            showAlert(
+              this.alertService,
+              this.translate,
+              'warning',
+              'auth.alert-errors.phoneVerifyWarn',
             );
           }
         }
       }),
       catchError((err) => {
-        this.alertService.error(
-          this.translate.instant('auth.alert-errors.credentials'),
-          { variant: 'dismissible', title: 'Oops!' },
+        showAlert(
+          this.alertService,
+          this.translate,
+          'error',
+          'auth.alert-errors.credentials',
         );
         return throwError(() => err);
       }),
@@ -164,7 +170,8 @@ export class AuthService {
         if (res.success === true) {
           this.stopInactivityMonitoring();
           this.tokenService.clearAuthToken();
-          this.injector.get(ClearSignalStoreService).resetAllStore()
+          this.store.dispatch(UserInfoActions.logout());
+          this.injector.get(ClearSignalStoreService).resetAllStore();
           this.router.navigate([Routes.SIGN_IN]);
         }
       }),

@@ -477,28 +477,6 @@ describe('AuthService', () => {
     });
   });
 
-  describe('resendVerificationCode', () => {
-    it('should resend verification code successfully', async () => {
-      service.setChellangeId('challenge-123');
-      const mockResponse = { message: 'Verification code resent' };
-
-      const promise = new Promise<void>((resolve) => {
-        service.resendVerificationCode().subscribe({
-          next: (res) => {
-            expect(res.message).toBe('Verification code resent');
-            resolve();
-          },
-        });
-      });
-
-      const req = httpMock.expectOne(`${baseUrl}/mfa/otp-resend`);
-      expect(req.request.body).toEqual({ challengeId: 'challenge-123' });
-      expect(req.request.headers.get('Authorization')).toBe('Bearer test-access-token');
-      req.flush(mockResponse);
-      await promise;
-    });
-  });
-
   describe('signals', () => {
     it('should initialize with default signal values', () => {
       expect(service.isLoginLoading()).toBe(false);
