@@ -62,6 +62,9 @@ export class MailCard {
   }
 
   public onCancelDelete(): void {
+    if (this.isDeleting()) {
+      return;
+    }
     this.isDeleteModalOpen.set(false);
   }
 

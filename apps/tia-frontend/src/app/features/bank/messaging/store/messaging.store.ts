@@ -243,6 +243,7 @@ export const MessagingStore = signalStore(
                                 });
                                 inboxService.fetchInboxCount();
                                 store.getUnreadImportantCount();
+                                alertService.success(translate.instant('messaging.storeSuccess.markedAsRead'), { variant: 'dismissible', title: 'Success!' });
                             }),
                             catchError(() => {
                                 alertService.error(translate.instant('messaging.storeErrors.markAllAsRead'), { variant: 'dismissible', title: 'Oops!' });
