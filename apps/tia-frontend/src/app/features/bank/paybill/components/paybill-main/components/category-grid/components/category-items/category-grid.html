@@ -3,12 +3,22 @@
     [title]="'paybill.main.category' | translate"
   ></app-library-title>
 
+  @if (isLoading()) {
   <app-grid-layout [cols]="cols()" class="paybill-grid__container">
-    @if (isLoading()) { @for (item of [1,2,3,4,5]; track item) {
-    <div class="paybill-grid__card-wrapper">
-      <app-skeleton variant="rectangle" width="100%" height="19rem" />
+    @for (item of [1,2,3,4,5,6,7,8]; track item) {
+    <div class="paybill-grid__skeleton-wrapper">
+      <app-skeleton
+        variant="rectangle"
+        width="100%"
+        height="19rem"
+        borderRadius="1.6rem"
+      />
     </div>
-    } } @else { @for(category of categories(); track category.id) {
+    }
+  </app-grid-layout>
+  } @else if (categories().length > 0) {
+  <app-grid-layout [cols]="cols()" class="paybill-grid__container">
+    @for(category of categories(); track category.id) {
     <div class="paybill-grid__card-wrapper">
       <app-category-card
         [title]="category.name"
@@ -20,6 +30,18 @@
         [customWidth]="true"
       />
     </div>
-    } }
+    }
   </app-grid-layout>
+  } @else {
+  <div class="paybill-grid__empty-state">
+    <app-error-states
+      variant="not-found"
+      [header]="'paybill.main.error.not-available' | translate"
+      [message]="'paybill.main.error.not-available-subtitle' | translate"
+      [showButton]="false"
+      [border]="false"
+      height="22rem"
+    />
+  </div>
+  }
 </section>

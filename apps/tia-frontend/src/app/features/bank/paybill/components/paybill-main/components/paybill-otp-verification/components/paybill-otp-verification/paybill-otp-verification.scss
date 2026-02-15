@@ -1,15 +1,26 @@
 @use '../../../../../../../../../shared/styles/mixins' as *;
 @use '../../../../../../../../../shared/styles/palette' as *;
 
+
 .category-header {
   @include flex-center($direction: row, $justify: flex-start, $align: center);
   gap: 1.6rem;
   margin-bottom: 3.2rem;
 
+  @media (max-width: 480px) {
+    gap: 1.2rem;
+    margin-bottom: 2.4rem;
+  }
+
   &__icon-box {
     width: 6.4rem;
     height: 6.4rem;
     flex-shrink: 0;
+
+    @media (max-width: 480px) {
+      width: 5.2rem;
+      height: 5.2rem;
+    }
   }
 
   &__icon-background {
@@ -18,23 +29,48 @@
     height: 100%;
     border-radius: 1.6rem;
     box-shadow: inset 0 -0.4rem 0.8rem rgba($black, 0.05);
+
+    @media (max-width: 480px) {
+      border-radius: 1.2rem;
+    }
   }
 
   &__img {
     width: 3.2rem;
     height: 3.2rem;
     object-fit: contain;
+
+    @media (max-width: 480px) {
+      width: 2.6rem;
+      height: 2.6rem;
+    }
   }
 
   &__text {
     @include flex-center($direction: column, $align: flex-start);
     gap: 0.4rem;
+    min-width: 0;
+
+    .skeleton-text-group {
+      @include display-flex(column);
+      gap: 0.8rem;
+      width: 100%;
+    }
   }
 
   &__title {
     @include font-inter(600, 2.4rem, 3.2rem);
     color: var(--color-fg);
     margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+
+    @media (max-width: 480px) {
+      font-size: 1.8rem;
+      line-height: 2.4rem;
+    }
   }
 
   &__subtitle {
@@ -42,6 +78,11 @@
     color: var(--color-primary);
     opacity: 0.8;
     margin: 0;
+
+    @media (max-width: 480px) {
+      font-size: 1.4rem;
+      line-height: 2rem;
+    }
   }
 }
 
@@ -50,25 +91,19 @@
   padding-right: 2.4rem;
   width: 100%;
 
+  @media (max-width: 480px) {
+    padding-right: 1.6rem;
+  }
+
   &__alert {
     margin-bottom: 2.4rem;
   }
 
   &__summary {
     margin-bottom: 3.2rem;
-  }
 
-  &__actions {
-    @include flex-center(row, stretch, center);
-    gap: 1.6rem;
-    margin-top: 2.4rem;
-
-    .btn-cancel {
-      flex: 1;
-    }
-
-    .btn-verify {
-      flex: 1;
+    @media (max-width: 480px) {
+      margin-bottom: 2.4rem;
     }
   }
 }
@@ -77,24 +112,4 @@
   @include flex-center(column, center, center);
   gap: 2rem;
   width: 100%;
-
-  &__resend {
-    @include flex-center(row, center, center);
-    gap: 0.8rem;
-  }
-
-  &__text {
-    @include font-inter(400, 1.4rem, 2rem);
-    color: $gray-700;
-    margin: 0;
-  }
-
-  &__btn {
-    @include font-inter(500, 1.4rem, 2rem);
-    background: none;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-    color: $blue-800;
-  }
 }
