@@ -1,7 +1,7 @@
 @let loanData = loan();
 
-<app-ui-modal [isOpen]="isOpen()" (closed)="close.emit()" [hasNavigation]="true" (navigate)="navigate.emit($event)"
-    [hasScroll]="true">
+<app-ui-modal [hasCloseZIndex]="true" [isOpen]="isOpen()" (closed)="close.emit()" [hasNavigation]="true"
+    (navigate)="navigate.emit($event)" [hasScroll]="true">
     <div class="loan-modal">
 
         <header class="loan-modal__header">
@@ -139,7 +139,9 @@
                         }}</p>
                 </div>
                 <app-button [fullWidth]="true" icon="./calculate.svg" (click)="onCalculate()">
-                    {{ 'loans.details.prepayment_promo.button' | translate }}
+                    <span class="loan-modal__prepayment-btn">
+                        {{ 'loans.details.prepayment_promo.button' | translate }}
+                    </span>
                 </app-button>
             </div>
             }
