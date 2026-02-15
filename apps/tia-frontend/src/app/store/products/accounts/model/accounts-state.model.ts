@@ -1,8 +1,16 @@
 import { Account } from '../../../../shared/models/accounts/accounts.model';
 
+export interface AccountNotification {
+  id?: string;
+  notificationType: 'success' | 'error' | 'info';
+  message: string;
+}
+
 export interface AccountsState {
   accounts: Account[];
   selectedAccountId: Account | null;
+  currencies: string[];
+  isLoadingCurrencies: boolean;
   isLoading: boolean;
   isFetching: boolean;
   error: string | null;
@@ -11,11 +19,14 @@ export interface AccountsState {
   isCreateModalOpen: boolean;
   isUpdatingFriendlyName: boolean;
   updateFriendlyNameError: string | null;
+  notifications: AccountNotification[];
 }
 
 export const initialAccountsState: AccountsState = {
   accounts: [],
   selectedAccountId: null,
+  currencies: [],
+  isLoadingCurrencies: false,
   isLoading: false,
   isFetching: false,
   error: null,
@@ -24,4 +35,5 @@ export const initialAccountsState: AccountsState = {
   isCreateModalOpen: false,
   isUpdatingFriendlyName: false,
   updateFriendlyNameError: null,
+  notifications: [],
 };

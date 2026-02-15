@@ -11,9 +11,8 @@ import {
 } from '../../../../../../shared/models/accounts/accounts.model';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 import * as selectors from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
-import { AccountsApiService } from '@tia/shared/services/accounts/accounts.api.service';
+import { TransferService } from '../services/transfer/transfer.service';
 import { AlertService } from '@tia/core/services/alert/alert.service';
-import { TransferService } from '../shared/services/transfer.service';
 
 describe('Accounts', () => {
   let component: Accounts;
@@ -23,9 +22,6 @@ describe('Accounts', () => {
   let alertService: AlertService;
 
   beforeEach(async () => {
-    const mockApiService = {
-      getCurrencies: vi.fn().mockReturnValue(of(['GEL', 'USD'])),
-    };
     const mockTransferService = {
       navigateToTransferPage: vi.fn(),
     };
@@ -40,9 +36,9 @@ describe('Accounts', () => {
             { selector: selectors.selectIsCreating, value: false },
             { selector: selectors.selectCreateError, value: null },
             { selector: selectors.selectIsCreateModalOpen, value: false },
+            { selector: selectors.selectCurrencies, value: [] },
           ],
         }),
-        { provide: AccountsApiService, useValue: mockApiService },
         { provide: TransferService, useValue: mockTransferService },
         {
           provide: AlertService,
@@ -83,21 +79,8 @@ describe('Accounts', () => {
     expect(dispatchSpy).toHaveBeenCalledWith(
       AccountsActions.loadActiveAccounts({ forceRefresh: true }),
     );
+    expect(dispatchSpy).toHaveBeenCalledWith(AccountsActions.loadCurrencies());
     expect(dispatchSpy).toHaveBeenCalledWith(AccountsActions.openCreateModal());
-  });
-
-  it('should handle account creation transitions', () => {
-    component['wasCreating'] = true;
-    store.overrideSelector(selectors.selectCreateError, null);
-    store.refreshState();
-    component['handleIsCreatingAccount'](false);
-    expect(alertService.info).toHaveBeenCalled();
-
-    component['wasCreating'] = true;
-    store.overrideSelector(selectors.selectCreateError, 'Error message');
-    store.refreshState();
-    component['handleIsCreatingAccount'](false);
-    expect(alertService.error).toHaveBeenCalled();
   });
 
   it('should handle create account and form validation', () => {
@@ -133,10 +116,7 @@ describe('Accounts', () => {
     );
   });
 
-  it('should show success alert on rename and handle transfer/retry', () => {
-    component.handleRenameSuccess();
-    expect(alertService.success).toHaveBeenCalled();
-
+  it('should handle transfer and retry', () => {
     const mockAccount = {
       id: 'acc-123',
       userId: 'user-1',

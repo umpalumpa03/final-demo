@@ -4,13 +4,11 @@ import {
   inject,
   OnInit,
   signal,
-  effect,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { shareReplay } from 'rxjs/operators';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { AccountsListComponent } from '../components/accounts-list/accounts-list';
 import { CreateAccountComponent } from '../components/create-account/create-account';
@@ -31,16 +29,13 @@ import {
   selectUpdateFriendlyNameError,
   selectIsCreating,
   selectCreateError,
+  selectCurrencies,
 } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
-import {
-  getAccountSections,
-  PERMISSION_ROUTE_MAP,
-} from '../shared/config/accounts.config';
-import { AccountsApiService } from '@tia/shared/services/accounts/accounts.api.service';
-import { AlertService } from '@tia/core/services/alert/alert.service';
+import { getAccountSections } from '../shared/config/accounts.config';
 import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/shared/library-title/library-title';
 import { ButtonComponent } from '../../../../../../shared/lib/primitives/button/button';
-import { TransferService } from '../shared/services/transfer.service';
+import { TransferService } from '../services/transfer/transfer.service';
+import { AlertService } from '@tia/core/services/alert/alert.service';
 
 @Component({
   selector: 'app-accounts-page',
@@ -59,12 +54,11 @@ import { TransferService } from '../shared/services/transfer.service';
 export class Accounts implements OnInit {
   private readonly store = inject(Store);
   private readonly fb = inject(FormBuilder);
-  private readonly accountsService = inject(AccountsApiService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly translate = inject(TranslateService);
-  private readonly alertService = inject(AlertService);
   private readonly transferService = inject(TransferService);
+  private readonly alertService = inject(AlertService);
 
   protected readonly accountsGrouped = this.store.selectSignal(
     selectAccountsGrouped,
@@ -85,27 +79,14 @@ export class Accounts implements OnInit {
   protected readonly isCreatingAccount =
     this.store.selectSignal(selectIsCreating);
   protected readonly createError = this.store.selectSignal(selectCreateError);
+  protected readonly currencies = this.store.selectSignal(selectCurrencies);
 
   protected readonly accountSectionsData = signal(
     getAccountSections(this.translate),
   );
   protected readonly accountTypeValues = Object.values(AccountType);
-  protected readonly currencyValues = this.accountsService
-    .getCurrencies()
-    .pipe(shareReplay(1));
 
   protected accountForm = signal<FormGroup>(this.createAccountForm());
-
-  private wasCreating = false;
-
-  constructor() {
-    effect(() => {
-      const isCreating = this.isCreatingAccount();
-      if (isCreating !== undefined) {
-        this.handleIsCreatingAccount(isCreating);
-      }
-    });
-  }
 
   private createAccountForm(): FormGroup {
     return this.fb.group({
@@ -119,39 +100,11 @@ export class Accounts implements OnInit {
     this.store.dispatch(
       AccountsActions.loadActiveAccounts({ forceRefresh: true }),
     );
+    this.store.dispatch(AccountsActions.loadCurrencies());
 
     if (this.router.url.includes('/create')) {
       this.store.dispatch(AccountsActions.openCreateModal());
     }
-  }
-
-  private handleIsCreatingAccount(isCreating: boolean): void {
-    if (!isCreating && this.wasCreating) {
-      const error = this.createError();
-      if (error) {
-        this.alertService.error(
-          error ||
-            this.translate.instant(
-              'my-products.accounts.failedToCreateAccount',
-            ),
-          {
-            variant: 'dismissible',
-            title: this.translate.instant('my-products.accounts.error'),
-          },
-        );
-      } else {
-        this.alertService.info(
-          this.translate.instant(
-            'my-products.accounts.accountCreationRequestSent',
-          ),
-          {
-            variant: 'dismissible',
-            title: this.translate.instant('my-products.accounts.information'),
-          },
-        );
-      }
-    }
-    this.wasCreating = isCreating;
   }
 
   public handleOpenModal(): void {
@@ -165,7 +118,6 @@ export class Accounts implements OnInit {
 
   public handleCreateAccount(request: CreateAccountRequest): void {
     if (this.accountForm().valid) {
-      this.alertService.clearAlert();
       this.store.dispatch(AccountsActions.createAccount({ request }));
       this.accountForm.set(this.createAccountForm());
       this.router.navigate(['/bank/products/accounts']);
@@ -200,18 +152,6 @@ export class Accounts implements OnInit {
         accountId: data.accountId,
         friendlyName: data.friendlyName,
       }),
-    );
-  }
-
-  public handleRenameSuccess(): void {
-    this.alertService.success(
-      this.translate.instant(
-        'my-products.accounts.accountNameUpdatedSuccessfully',
-      ),
-      {
-        variant: 'dismissible',
-        title: this.translate.instant('my-products.accounts.success'),
-      },
     );
   }
 }

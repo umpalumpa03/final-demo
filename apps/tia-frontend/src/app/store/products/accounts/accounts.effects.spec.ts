@@ -4,6 +4,7 @@ import { Observable, of, throwError } from 'rxjs';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { Action } from '@ngrx/store';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
+import { TranslateService } from '@ngx-translate/core';
 import { AccountsEffects } from './accounts.effects';
 import { AccountsActions } from './accounts.actions';
 import { selectAccounts } from './accounts.selectors';
@@ -12,6 +13,7 @@ import {
   AccountType,
 } from '../../../shared/models/accounts/accounts.model';
 import { AccountsApiService } from '../../../shared/services/accounts/accounts.api.service';
+import { AlertService } from '../../../core/services/alert/alert.service';
 
 describe('AccountsEffects', () => {
   let actions$: Observable<Action>;
@@ -45,6 +47,16 @@ describe('AccountsEffects', () => {
       updateFriendlyName: vi.fn(),
     };
 
+    const translateMock = {
+      instant: vi.fn((key: string) => key),
+    };
+
+    const alertServiceMock = {
+      info: vi.fn(),
+      error: vi.fn(),
+      success: vi.fn(),
+    };
+
     TestBed.configureTestingModule({
       providers: [
         AccountsEffects,
@@ -53,6 +65,8 @@ describe('AccountsEffects', () => {
           selectors: [{ selector: selectAccounts, value: [] }],
         }),
         { provide: AccountsApiService, useValue: serviceMock },
+        { provide: TranslateService, useValue: translateMock },
+        { provide: AlertService, useValue: alertServiceMock },
       ],
     });
 

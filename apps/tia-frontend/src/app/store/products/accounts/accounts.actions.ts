@@ -3,6 +3,7 @@ import {
   Account,
   CreateAccountRequest,
 } from '../../../shared/models/accounts/accounts.model';
+import { AccountNotification } from './model/accounts-state.model';
 
 export const AccountsActions = createActionGroup({
   source: 'Accounts',
@@ -31,6 +32,14 @@ export const AccountsActions = createActionGroup({
     }>(),
     'Update Friendly Name Success': props<{ account: Account }>(),
     'Update Friendly Name Failure': props<{ error: string }>(),
+
+    'Load Currencies': emptyProps(),
+    'Load Currencies Success': props<{ currencies: string[] }>(),
+    'Load Currencies Failure': props<{ error: string }>(),
+
+    'Add Notification': props<AccountNotification>(),
+    'Dismiss Notification': props<{ id: string }>(),
+    'Clear All Notifications': emptyProps(),
 
     'Open Create Modal': emptyProps(),
     'Close Create Modal': emptyProps(),

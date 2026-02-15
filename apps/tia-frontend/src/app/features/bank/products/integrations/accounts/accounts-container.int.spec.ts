@@ -44,6 +44,10 @@ describe('Accounts Container Integration Tests', () => {
             { selector: selectors.selectError, value: null },
             { selector: selectors.selectIsUpdatingFriendlyName, value: false },
             { selector: selectors.selectUpdateFriendlyNameError, value: null },
+            {
+              selector: selectors.selectCurrencies,
+              value: ['GEL', 'USD', 'EUR'],
+            },
           ],
         }),
         { provide: AccountsApiService, useValue: mockApiService },
@@ -94,7 +98,6 @@ describe('Accounts Container Integration Tests', () => {
 
   describe('Account Creation Flow', () => {
     it('should handle account creation with valid form', () => {
-      fixture.detectChanges();
       const dispatchSpy = vi.spyOn(store, 'dispatch');
       const navigateSpy = vi.spyOn(router, 'navigate');
 
@@ -119,7 +122,6 @@ describe('Accounts Container Integration Tests', () => {
     });
 
     it('should not dispatch action with invalid form', () => {
-      fixture.detectChanges();
       const dispatchSpy = vi.spyOn(store, 'dispatch');
 
       component['accountForm']().setValue({
