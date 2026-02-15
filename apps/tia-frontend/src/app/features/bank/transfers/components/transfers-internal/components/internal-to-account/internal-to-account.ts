@@ -98,12 +98,10 @@ export class InternalToAccount {
   public readonly isSwapDisabled = computed(() => {
     const recipient = this.selectedToAccount();
 
-    // Case 1: No recipient selected
     if (!recipient) {
       return true;
     }
 
-    // Case 2: Recipient account lacks permission for transfers
     if (!recipient.permission || (recipient.permission & 1) !== 1) {
       return true;
     }
@@ -123,16 +121,11 @@ export class InternalToAccount {
       }
     });
 
-    // Auto-select favorite account on load
     effect(() => {
       const transferableAccs = this.transferableAccounts();
       const currentRecipient = this.selectedToAccount();
       const fromAccount = this.selectedFromAccount();
 
-      // Only auto-select if:
-      // - We have a from-account selected (needed for filtering)
-      // - No recipient is already selected
-      // - We have transferable accounts available
       if (!fromAccount || currentRecipient || !transferableAccs.length) return;
 
       untracked(() => {

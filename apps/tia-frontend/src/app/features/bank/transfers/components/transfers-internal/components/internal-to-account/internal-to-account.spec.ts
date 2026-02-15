@@ -7,7 +7,13 @@ import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
 import { signal } from '@angular/core';
 import { of } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { AccountsActions } from '../../../../../../../store/products/accounts/accounts.actions';
+import {
+  selectAccounts,
+  selectError,
+  selectIsLoading,
+} from '../../../../../../../store/products/accounts/accounts.selectors';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -19,6 +25,7 @@ describe('InternalToAccount', () => {
   let mockRouter: any;
   let mockBreakpointService: any;
   let mockTransferInternalService: any;
+  let accountsSubject: BehaviorSubject<typeof mockAccounts>;
 
   const mockAccounts = [
     { id: 'acc1', name: 'Account 1', balance: 1000, isFavorite: false },
@@ -26,12 +33,14 @@ describe('InternalToAccount', () => {
   ];
 
   beforeEach(async () => {
+    accountsSubject = new BehaviorSubject(mockAccounts);
     mockStore = {
-      select: vi
-        .fn()
-        .mockReturnValueOnce(of(mockAccounts))
-        .mockReturnValueOnce(of(false))
-        .mockReturnValueOnce(of(null)),
+      select: vi.fn((selector: unknown) => {
+        if (selector === selectAccounts) return accountsSubject.asObservable();
+        if (selector === selectIsLoading) return of(false);
+        if (selector === selectError) return of(null);
+        return of(null);
+      }),
       dispatch: vi.fn(),
     };
 
@@ -206,6 +215,8 @@ describe('InternalToAccount', () => {
     });
 
     it('should not swap when recipient is not selected', () => {
+      // Only one account so transferableAccounts is empty and auto-select effect does not run
+      accountsSubject.next([mockAccounts[0]]);
       mockTransferStore.senderAccount.set(mockAccounts[0]);
       mockTransferStore.receiverOwnAccount.set(null);
       fixture.detectChanges();

@@ -213,4 +213,33 @@ export class TransferInternalService {
       )
       .subscribe();
   }
+
+  private static readonly INTERNAL_SELECTION_KEY = 'tia.internalTransfer.selection';
+
+  public clearInternalSelection(): void {
+    sessionStorage.removeItem(TransferInternalService.INTERNAL_SELECTION_KEY);
+  }
+
+  public restoreInternalSelection(accounts: Account[]): void {
+    if (accounts.length === 0) {
+      return;
+    }
+    const raw = sessionStorage.getItem(TransferInternalService.INTERNAL_SELECTION_KEY);
+    if (raw == null) {
+      return;
+    }
+    try {
+      const { senderAccountId, receiverOwnAccountId } = JSON.parse(raw);
+      const sender = accounts.find((a) => a.id === senderAccountId);
+      const receiver = accounts.find((a) => a.id === receiverOwnAccountId);
+      if (sender) {
+        this.transferStore.setSenderAccount(sender);
+      }
+      if (receiver) {
+        this.transferStore.setReceiverOwnAccount(receiver);
+      }
+    } catch {
+      // ignore invalid JSON
+    }
+  }
 }

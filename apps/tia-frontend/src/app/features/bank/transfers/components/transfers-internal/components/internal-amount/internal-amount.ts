@@ -204,12 +204,10 @@ export class InternalAmount implements OnInit {
   }
 
   public ngOnInit(): void {
-    // Validate pre-filled amount from repeat transfer
     const initialAmount = this.transferStore.amount();
     if (initialAmount && initialAmount > 0) {
       this.transferInternalService.handleAmountInput(initialAmount);
 
-      // If in conversion mode, update destination amount
       if (this.isConversionMode() && this.conversionRate()) {
         this.updateDestinationAmount(initialAmount);
       }
@@ -296,6 +294,7 @@ export class InternalAmount implements OnInit {
   }
 
   public onSuccessDone(): void {
+    this.transferInternalService.clearInternalSelection();
     this.transferStore.reset();
     this.router.navigate(['/bank/dashboard']);
   }
