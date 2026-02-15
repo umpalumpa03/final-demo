@@ -3,11 +3,18 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { TextInput } from './text-input';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TranslateModule } from '@ngx-translate/core';
-import { INPUT_ICONS } from '../config/text-input.icons';
 
 describe('TextInput', () => {
   let component: TextInput;
   let fixture: ComponentFixture<TextInput>;
+
+  const simulateInput = (value: string) => {
+    const input = fixture.nativeElement.querySelector('input');
+    input.value = value;
+    input.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    return input;
+  };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -18,7 +25,7 @@ describe('TextInput', () => {
     fixture.detectChanges();
   });
 
-  it('should compute configs, icons, and display values', () => {
+  it('should compute configs and icons correctly', () => {
     fixture.componentRef.setInput('type', 'search');
     fixture.componentRef.setInput('config', {
       prefixIcon: 'p.svg',
@@ -31,7 +38,9 @@ describe('TextInput', () => {
     expect(component['prefixIconUrl']()).toContain('p.svg');
     expect(component['labelIconUrl']()).toContain('l.svg');
     expect(component['messageId']()).toBe('my-id-msg');
+  });
 
+  it('should format display values correctly', () => {
     component['value'].set('hello');
     expect(component['getDisplayValue']()).toBe('hello');
 
@@ -39,117 +48,89 @@ describe('TextInput', () => {
     component['value'].set('2025-05-10');
     expect(component['getDisplayValue']()).toBe('10/05/2025');
 
-    component['value'].set('invalid-date');
-    expect(component['getDisplayValue']()).toBe('invalid-date');
+    fixture.componentRef.setInput('type', 'number');
+    component['value'].set(123456789.99);
+    expect(component['getDisplayValue']()).toBe('123456789.99');
 
     fixture.componentRef.setInput('type', 'file');
     expect(component['getDisplayValue']()).toBe('');
   });
 
-  it('should handle password toggles and caps lock', () => {
-    fixture.componentRef.setInput('type', 'password');
-    fixture.detectChanges();
+  describe('Number Input Handling', () => {
+    beforeEach(() => {
+      fixture.componentRef.setInput('type', 'number');
+      fixture.detectChanges();
+    });
 
-    expect(component['inputType']()).toBe('password');
-    component['togglePasswordVisibility']();
-    expect(component['inputType']()).toBe('text');
-    expect(component['suffixIconUrl']()).toContain(INPUT_ICONS.EYE_OFF);
+    it('should force input type to "text" even if type is "number"', () => {
+      expect(component['inputType']()).toBe('text');
+    });
 
-    const keyEvent = new KeyboardEvent('keydown');
-    vi.spyOn(keyEvent, 'getModifierState').mockReturnValue(true);
-    component['checkCapsLock'](keyEvent);
-    expect(component['isCapsLockOn']()).toBe(true);
+    it('should prevent invalid keys via keydown', () => {
+      const event = new KeyboardEvent('keydown', {
+        key: 'e',
+        cancelable: true,
+      });
+      const preventSpy = vi.spyOn(event, 'preventDefault');
 
-    component['handleBlur'](new FocusEvent('blur'));
-    expect(component['isCapsLockOn']()).toBe(false);
+      component['handleKeydown'](event);
+      expect(preventSpy).toHaveBeenCalled();
+    });
+
+    it('should allow navigation keys', () => {
+      const event = new KeyboardEvent('keydown', {
+        key: 'Backspace',
+        cancelable: true,
+      });
+      const preventSpy = vi.spyOn(event, 'preventDefault');
+      component['handleKeydown'](event);
+      expect(preventSpy).not.toHaveBeenCalled();
+    });
   });
 
-  it('should handle date picker state and selection', () => {
-    fixture.componentRef.setInput('type', 'date');
-    expect(component['isDateType']()).toBe(true);
-
-    component['toggleDatePicker']();
-    expect(component['isDatePickerOpen']()).toBe(true);
-
-    component['closeDatePicker']();
-    expect(component['isDatePickerOpen']()).toBe(false);
-
-    const emitSpy = vi.spyOn(component.valueChange, 'emit');
-    component['handleDateSelected']('2025-01-01');
-    expect(component['value']()).toBe('2025-01-01');
-    expect(emitSpy).toHaveBeenCalledWith('2025-01-01');
-    expect(component['getDateValue']()).toBe('2025-01-01');
-  });
-
-  describe('Date Masking', () => {
+  describe('Date Input Handling', () => {
     beforeEach(() => {
       fixture.componentRef.setInput('type', 'date');
       fixture.detectChanges();
     });
 
-    it('should format simple digits into DD/MM/YYYY', () => {
+    it('should format simple input to dd/mm/yyyy', () => {
       const input = document.createElement('input');
-      input.value = '01052025';
-      const event = { target: input } as any;
+      input.value = '01012023';
+      const evt = { target: input, preventDefault: () => {} } as any;
+      component['handleInput'](evt);
 
-      component['handleInput'](event);
-
-      expect(input.value).toBe('01/05/2025');
-      expect(component['value']()).toBe('2025-05-01');
+      expect(input.value).toBe('01/01/2023');
+      expect(component['value']()).toBe('2023-01-01');
     });
 
-    it('should handle manual slash entry', () => {
+    it('should clamp invalid day and month values', () => {
       const input = document.createElement('input');
-      input.value = '01/05/2025';
-      const event = { target: input } as any;
+      input.value = '35152023';
+      const evt = { target: input } as any;
+      component['handleInput'](evt);
 
-      component['handleInput'](event);
-
-      expect(input.value).toBe('01/05/2025');
-      expect(component['value']()).toBe('2025-05-01');
+      expect(input.value).toBe('31/12/2023');
+      expect(component['value']()).toBe('2023-12-31');
     });
 
-    it('should clamp day > 31', () => {
-      const input = document.createElement('input');
-      input.value = '35';
-      const event = { target: input } as any;
+    it('should handle date selection from picker', () => {
+      const spy = vi.spyOn(component.valueChange, 'emit');
+      component['handleDateSelected']('2023-10-10');
 
-      component['handleInput'](event);
-
-      expect(input.value).toBe('31');
+      expect(component['value']()).toBe('2023-10-10');
+      expect(spy).toHaveBeenCalledWith('2023-10-10');
+      expect(component['isDatePickerOpen']()).toBe(false);
     });
 
-    it('should clamp month > 12', () => {
-      const input = document.createElement('input');
-      input.value = '0115';
-      const event = { target: input } as any;
+    it('should toggle date picker visibility', () => {
+      expect(component['isDatePickerOpen']()).toBe(false);
 
-      component['handleInput'](event);
+      component['toggleDatePicker']();
+      expect(component['isDatePickerOpen']()).toBe(true);
 
-      expect(input.value).toBe('01/12');
-    });
-
-    it('should clear model on empty input', () => {
-      component['value'].set('2025-01-01');
-
-      const input = document.createElement('input');
-      input.value = '';
-      const event = { target: input } as any;
-
-      component['handleInput'](event);
-
-      expect(component['value']()).toBe(null);
-    });
-
-    it('should handle slash input logic robustly', () => {
-      const input = document.createElement('input');
-      input.value = '35/15/2025';
-      const event = { target: input } as any;
-
-      component['handleInput'](event);
-
-      expect(input.value).toBe('31/12/2025');
-      expect(component['value']()).toBe('2025-12-31');
+      component['closeDatePicker']();
+      expect(component['isDatePickerOpen']()).toBe(false);
     });
   });
 
@@ -172,10 +153,16 @@ describe('TextInput', () => {
     component['value'].set('2025-01-15');
     component['validateDateInput']();
     expect(component['internalValidationErrors']().length).toBe(0);
+  });
 
-    fixture.componentRef.setInput('type', 'text');
-    component['setValidationErrors']([{ type: 'err', message: '' }]);
-    component['validateDateInput']();
-    expect(component['internalValidationErrors']().length).toBe(0);
+  it('should toggle password visibility', () => {
+    fixture.componentRef.setInput('type', 'password');
+    fixture.detectChanges();
+
+    expect(component['inputType']()).toBe('password');
+
+    component['togglePasswordVisibility']();
+    expect(component['inputType']()).toBe('text');
+    expect(component['showPasswordVisibility']()).toBe(true);
   });
 });

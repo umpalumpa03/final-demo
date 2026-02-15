@@ -14,7 +14,7 @@ import {
   PrepaymentOption,
 } from '../models/prepayment.model';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class LoansService {
   private readonly http = inject(HttpClient);
   private readonly loansApiUrl = `${environment.apiUrl}/loans`;

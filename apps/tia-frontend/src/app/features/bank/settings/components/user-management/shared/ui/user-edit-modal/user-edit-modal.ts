@@ -13,9 +13,9 @@ import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader'
 import { CommonModule } from '@angular/common';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
-import { USER_ROLE } from '../../config/user-edit.config';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
+import { UserEditConfigService } from '../../config/user-edit.config';
 
 @Component({
   selector: 'app-user-edit-modal',
@@ -31,12 +31,13 @@ import { TranslatePipe } from '@ngx-translate/core';
   ],
   templateUrl: './user-edit-modal.html',
   styleUrl: './user-edit-modal.scss',
+  providers: [UserEditConfigService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserEditModal {
   private readonly fb = inject(FormBuilder);
+  protected readonly editConfig = inject(UserEditConfigService).getFormConfig();
 
-  public readonly select = USER_ROLE;
   public readonly isOpen = input<boolean>(false);
   public readonly isLoading = input<boolean>(false);
   public userData = input.required<IUserDetail | null>();
@@ -47,17 +48,9 @@ export class UserEditModal {
   public readonly form = this.fb.group({
     firstName: ['', Validators.required],
     lastName: ['', Validators.required],
+    pId: ['', [Validators.minLength(11), Validators.maxLength(11)]],
     role: ['', Validators.required],
   });
-
-  protected readonly firstNameConfig = {
-    label: 'First Name',
-    placeholder: 'Enter first name',
-  };
-  protected readonly lastNameConfig = {
-    label: 'Last Name',
-    placeholder: 'Enter last name',
-  };
 
   constructor() {
     effect(() => {
@@ -66,6 +59,7 @@ export class UserEditModal {
         this.form.patchValue({
           firstName: user.firstName,
           lastName: user.lastName,
+          pId: user.pId,
           role: user.role,
         });
       } else {

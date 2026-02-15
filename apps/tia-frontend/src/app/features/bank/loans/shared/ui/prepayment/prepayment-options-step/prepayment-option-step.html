@@ -31,9 +31,8 @@
             {{ 'loans.buttons.cancel' | translate }}
         </app-button>
 
-        <app-button [icon]="isLoading() ? null : './calculate.svg'"
-            [isDisabled]="(form.invalid && form.get('type')?.value !== 'full') || isLoading()" [isLoading]="isLoading()"
-            (click)="onCalculate()">
+        <app-button [icon]="isLoading() ? null : './calculate.svg'" [isDisabled]="form.invalid || isLoading()"
+            [isLoading]="isLoading()" (click)="onCalculate()">
             {{ 'loans.prepayment_wizard.step_setup.button' | translate }}
         </app-button>
     </footer>

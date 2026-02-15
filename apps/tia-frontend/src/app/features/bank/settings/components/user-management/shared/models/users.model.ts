@@ -23,6 +23,7 @@ export interface IUserDetail extends IUser {
 export interface IUpdateUserRequest {
   firstName: string;
   lastName: string;
+  pId: string;
   role: string;
   isBlocked: boolean;
 }

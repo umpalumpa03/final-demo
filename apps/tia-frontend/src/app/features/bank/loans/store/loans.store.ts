@@ -9,7 +9,6 @@ import {
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { pipe, switchMap, tap, map, catchError, EMPTY, delay } from 'rxjs';
-import { HttpErrorResponse } from '@angular/common/http';
 import { selectAccounts } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { toTitleCase } from '../shared/utils/titlecase.util';
 import { LoansService } from '../shared/services/loans.service';
@@ -22,8 +21,10 @@ import {
 import { ILoanRequest } from '../shared/models/loan-request.model';
 import { AlertService } from '@tia/core/services/alert/alert.service';
 import { TranslateService } from '@ngx-translate/core';
+import { HttpErrorResponse } from '@angular/common/http';
 
 export const LoansStore = signalStore(
+  { providedIn: 'root' },
   withState(loansInitialState),
   withComputed((store) => {
     const globalStore = inject(Store);
@@ -131,24 +132,28 @@ export const LoansStore = signalStore(
     const alertService = inject(AlertService);
     const translate = inject(TranslateService);
 
-    const handleError = (err: any, key: string) => {
+    const handleLoadError = (err: HttpErrorResponse, key: string) => {
       const backendMsg = err?.error?.message || err?.message;
-
-      const isInsufficient =
-        backendMsg?.includes('Insufficient funds') || err.status === 400;
-      const translationKey =
-        isInsufficient && key === ErrorKeys.INITIATE_PREPAYMENT
-          ? ErrorKeys.INSUFFICIENT_FUNDS
-          : key;
-
-      const msg = translate.instant(translationKey);
+      const msg = backendMsg || translate.instant(key);
 
       patchState(store, {
         error: msg,
         loading: false,
+        detailsLoading: false,
+      });
+      return EMPTY;
+    };
+
+    const handleActionError = (err: HttpErrorResponse, key: string) => {
+      const backendMsg = err?.error?.message || err?.message;
+      const msg = backendMsg || translate.instant(key);
+
+      patchState(store, {
+        loading: false,
         actionLoading: false,
         detailsLoading: false,
       });
+
       alertService.showAlert('error', msg);
       return EMPTY;
     };
@@ -220,7 +225,7 @@ export const LoansStore = signalStore(
                   loading: false,
                 });
               }),
-              catchError((err) => handleError(err, ErrorKeys.LOAD_LOANS)),
+              catchError((err) => handleLoadError(err, ErrorKeys.LOAD_LOANS)),
             );
           }),
         ),
@@ -255,27 +260,11 @@ export const LoansStore = signalStore(
                   },
                 })),
               ),
-              catchError((err) => handleError(err, ErrorKeys.LOAD_DETAILS)),
+              catchError((err) =>
+                handleActionError(err, ErrorKeys.LOAD_DETAILS),
+              ),
             );
           }),
-        ),
-      ),
-
-      renameLoan: rxMethod<{ id: string; name: string }>(
-        pipe(
-          switchMap(({ id, name }) =>
-            loansService.updateFriendlyName(id, name).pipe(
-              tap(() => {
-                const updatedLoans = store
-                  .loans()
-                  .map((loan) =>
-                    loan.id === id ? { ...loan, friendlyName: name } : loan,
-                  );
-                patchState(store, { loans: updatedLoans });
-              }),
-              catchError((err) => handleError(err, ErrorKeys.RENAME)),
-            ),
-          ),
         ),
       ),
 
@@ -285,7 +274,7 @@ export const LoansStore = signalStore(
             if (store.months().length > 0 && !forceRefresh) return EMPTY;
             return loansService.getLoanMonths().pipe(
               tap((months) => patchState(store, { months })),
-              catchError((err) => handleError(err, ErrorKeys.MONTHS)),
+              catchError((err) => handleActionError(err, ErrorKeys.MONTHS)),
             );
           }),
         ),
@@ -297,7 +286,7 @@ export const LoansStore = signalStore(
             if (store.purposes().length > 0 && !forceRefresh) return EMPTY;
             return loansService.getPurposes().pipe(
               tap((purposes) => patchState(store, { purposes, error: null })),
-              catchError((err) => handleError(err, ErrorKeys.PURPOSES)),
+              catchError((err) => handleActionError(err, ErrorKeys.PURPOSES)),
             );
           }),
         ),
@@ -312,7 +301,7 @@ export const LoansStore = signalStore(
               tap((options) =>
                 patchState(store, { prepaymentOptions: options, error: null }),
               ),
-              catchError((err) => handleError(err, ErrorKeys.OPTIONS)),
+              catchError((err) => handleActionError(err, ErrorKeys.OPTIONS)),
             );
           }),
         ),
@@ -339,7 +328,9 @@ export const LoansStore = signalStore(
                   actionLoading: false,
                 }),
               ),
-              catchError((err) => handleError(err, ErrorKeys.CALCULATION)),
+              catchError((err) =>
+                handleActionError(err, ErrorKeys.CALCULATION),
+              ),
             );
           }),
         ),
@@ -351,6 +342,27 @@ export const LoansStore = signalStore(
     const loansService = inject(LoansService);
     const alertService = inject(AlertService);
     const translate = inject(TranslateService);
+
+    const handleActionError = (err: HttpErrorResponse, key: string) => {
+      const backendMsg = err?.error?.message || err?.message;
+      const msg = backendMsg || translate.instant(key);
+      patchState(store, { actionLoading: false });
+      alertService.showAlert('error', msg);
+      return EMPTY;
+    };
+
+    const handleActionSuccess = (key: string) => {
+      const msg = translate.instant(key);
+
+      patchState(store, {
+        actionLoading: false,
+        detailsLoading: false,
+      });
+
+      alertService.showAlert('success', msg);
+
+      store._triggerAutoHide();
+    };
 
     const showAlert = (message: string, alertType: LoanAlertType) => {
       patchState(store, { alertMessage: message, alertType });
@@ -384,21 +396,21 @@ export const LoansStore = signalStore(
                     activeChallengeId: response.verify.challengeId,
                     actionLoading: false,
                   });
-
-                  const msg = translate.instant(SuccessKeys.OTP_SENT);
-                  alertService.showAlert('success', msg);
-                } else {
-                  patchState(store, {
-                    error: 'No challenge ID returned',
-                    actionLoading: false,
-                  });
+                  handleActionSuccess(SuccessKeys.OTP_SENT);
                 }
               }),
               catchError((err) => {
-                const msg = translate.instant(ErrorKeys.LOAD_DETAILS);
-                patchState(store, { error: msg, actionLoading: false });
-                alertService.showAlert('error', msg);
-                return EMPTY;
+                const backendMsg = err?.error?.message;
+                if (
+                  err.status === 400 &&
+                  backendMsg?.includes('Insufficient funds')
+                ) {
+                  const msg = translate.instant(ErrorKeys.INSUFFICIENT_FUNDS);
+                  patchState(store, { actionLoading: false });
+                  alertService.showAlert('error', msg);
+                  return EMPTY;
+                }
+                return handleActionError(err, ErrorKeys.INITIATE_PREPAYMENT);
               }),
             ),
           ),
@@ -421,17 +433,31 @@ export const LoansStore = signalStore(
                   actionLoading: false,
                   loanDetailsCache: {},
                 });
-                const msg = translate.instant(SuccessKeys.PAYMENT_COMPLETE);
-                alertService.showAlert('success', msg);
-
+                handleActionSuccess(SuccessKeys.PAYMENT_COMPLETE);
                 store.loadLoans({ forceChange: true });
               }),
-              catchError((err) => {
-                const msg = translate.instant(ErrorKeys.VERIFY_PREPAYMENT);
-                patchState(store, { error: msg, actionLoading: false });
-                alertService.showAlert('error', msg);
-                return EMPTY;
+              catchError((err) =>
+                handleActionError(err, ErrorKeys.VERIFY_PREPAYMENT),
+              ),
+            ),
+          ),
+        ),
+      ),
+
+      renameLoan: rxMethod<{ id: string; name: string }>(
+        pipe(
+          switchMap(({ id, name }) =>
+            loansService.updateFriendlyName(id, name).pipe(
+              tap(() => {
+                const updatedLoans = store
+                  .loans()
+                  .map((loan) =>
+                    loan.id === id ? { ...loan, friendlyName: name } : loan,
+                  );
+                handleActionSuccess(SuccessKeys.RENAME);
+                patchState(store, { loans: updatedLoans });
               }),
+              catchError((err) => handleActionError(err, ErrorKeys.RENAME)),
             ),
           ),
         ),
@@ -447,16 +473,12 @@ export const LoansStore = signalStore(
                   actionLoading: false,
                   loanDetailsCache: {},
                 });
-                const msg = translate.instant(SuccessKeys.REQUEST);
-                alertService.showAlert('success', msg);
+                handleActionSuccess(SuccessKeys.REQUEST);
                 store.loadLoans({ forceChange: true });
               }),
-              catchError((err) => {
-                const msg = translate.instant(ErrorKeys.REQUEST_LOAN);
-                patchState(store, { error: msg, actionLoading: false });
-                alertService.showAlert('error', msg);
-                return EMPTY;
-              }),
+              catchError((err) =>
+                handleActionError(err, ErrorKeys.REQUEST_LOAN),
+              ),
             ),
           ),
         ),
