@@ -1,6 +1,9 @@
-import { TestBed } from '@angular/core/testing';
-import { Store, StoreModule } from '@ngrx/store';
+import { Action } from '@ngrx/store';
 import { paybillReducer } from '../../../store/paybill.reducer';
+import {
+  initialPaybillState,
+  PaybillState,
+} from '../../../store/paybill.state';
 import { Templates, TemplateGroups } from '../models/paybill-templates.model';
 
 export const mockTemplates: Templates[] = [
@@ -35,11 +38,22 @@ export const mockGroups: TemplateGroups[] = [
   { id: 'g2', groupName: 'Subscriptions', templateCount: 0 },
 ];
 
-export function setupIntegrationStore(): Store {
-  TestBed.resetTestingModule();
-  TestBed.configureTestingModule({
-    imports: [StoreModule.forRoot({ paybill: paybillReducer })],
-  });
+export interface RootState {
+  paybill: PaybillState;
+}
 
-  return TestBed.inject(Store);
+export function createStore() {
+  let state: PaybillState = { ...initialPaybillState };
+
+  return {
+    dispatch(action: Action) {
+      state = paybillReducer(state, action);
+    },
+    select<T>(selector: (state: RootState) => T): T {
+      return selector({ paybill: state } as RootState);
+    },
+    getState(): PaybillState {
+      return state;
+    },
+  };
 }

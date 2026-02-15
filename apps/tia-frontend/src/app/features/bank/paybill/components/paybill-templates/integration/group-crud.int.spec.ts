@@ -1,6 +1,4 @@
-import { Store } from '@ngrx/store';
 import { describe, it, expect, beforeEach } from 'vitest';
-import { firstValueFrom } from 'rxjs';
 
 import { TemplatesPageActions } from '../../../store/paybill.actions';
 import {
@@ -11,14 +9,14 @@ import {
 import {
   mockTemplates,
   mockGroups,
-  setupIntegrationStore,
+  createStore,
 } from './integration-test.setup';
 
 describe('Integration: Group CRUD', () => {
-  let store: Store;
+  let store: ReturnType<typeof createStore>;
 
   beforeEach(() => {
-    store = setupIntegrationStore();
+    store = createStore();
     store.dispatch(
       TemplatesPageActions.loadTemplateGroupsSuccess({
         templateGroups: mockGroups,
@@ -31,7 +29,7 @@ describe('Integration: Group CRUD', () => {
     );
   });
 
-  it('should create a new group and prepend it', async () => {
+  it('should create a new group and prepend it', () => {
     store.dispatch(
       TemplatesPageActions.createTemplatesGroupsSuccess({
         templateGroup: {
@@ -42,12 +40,12 @@ describe('Integration: Group CRUD', () => {
       }),
     );
 
-    const groups = await firstValueFrom(store.select(selectTemplatesGroup));
+    const groups = store.select(selectTemplatesGroup);
     expect(groups).toHaveLength(3);
     expect(groups[0].groupName).toBe('Entertainment');
   });
 
-  it('should rename a group and reflect in selectors', async () => {
+  it('should rename a group and reflect in selectors', () => {
     store.dispatch(
       TemplatesPageActions.renameTemplateGroupSuccess({
         templateGroup: {
@@ -60,14 +58,12 @@ describe('Integration: Group CRUD', () => {
       }),
     );
 
-    const groups = await firstValueFrom(
-      store.select(selectTemplatesGroupWithConfigs),
-    );
+    const groups = store.select(selectTemplatesGroupWithConfigs);
     const renamed = groups.find((g) => g.id === 'g1');
     expect(renamed?.groupName).toBe('Home Utilities');
   });
 
-  it('should delete a group and ungroup its templates', async () => {
+  it('should delete a group and ungroup its templates', () => {
     store.dispatch(
       TemplatesPageActions.deleteTemplateGroupSuccess({
         groupId: 'g1',
@@ -75,11 +71,11 @@ describe('Integration: Group CRUD', () => {
       }),
     );
 
-    const groups = await firstValueFrom(store.select(selectTemplatesGroup));
+    const groups = store.select(selectTemplatesGroup);
     expect(groups).toHaveLength(1);
     expect(groups.find((g) => g.id === 'g1')).toBeUndefined();
 
-    const templates = await firstValueFrom(store.select(selectTemplates));
+    const templates = store.select(selectTemplates);
     const t1 = templates.find((t) => t.id === 't1');
     const t3 = templates.find((t) => t.id === 't3');
     expect(t1?.groupId).toBeNull();

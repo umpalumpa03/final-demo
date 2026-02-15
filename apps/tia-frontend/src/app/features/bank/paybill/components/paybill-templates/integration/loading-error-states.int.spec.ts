@@ -1,6 +1,4 @@
-import { Store } from '@ngrx/store';
 import { describe, it, expect, beforeEach } from 'vitest';
-import { firstValueFrom } from 'rxjs';
 
 import {
   PaybillActions,
@@ -11,22 +9,21 @@ import {
   selectError,
   selectSelectedSenderAccountId,
 } from '../../../store/paybill.selectors';
-import { setupIntegrationStore } from './integration-test.setup';
+import { createStore } from './integration-test.setup';
 
 describe('Integration: Loading & Error States', () => {
-  let store: Store;
+  let store: ReturnType<typeof createStore>;
 
   beforeEach(() => {
-    store = setupIntegrationStore();
+    store = createStore();
   });
 
-  it('should set loading on CRUD operations and clear on success', async () => {
+  it('should set loading on CRUD operations and clear on success', () => {
     store.dispatch(
       TemplatesPageActions.deleteTemplate({ templateId: 't1' }),
     );
 
-    let loading = await firstValueFrom(store.select(selectLoading));
-    expect(loading).toBe(true);
+    expect(store.select(selectLoading)).toBe(true);
 
     store.dispatch(
       TemplatesPageActions.deleteTemplateSuccess({
@@ -35,27 +32,24 @@ describe('Integration: Loading & Error States', () => {
       }),
     );
 
-    loading = await firstValueFrom(store.select(selectLoading));
-    expect(loading).toBe(false);
+    expect(store.select(selectLoading)).toBe(false);
   });
 
-  it('should set error on failure and clear on clearError', async () => {
+  it('should set error on failure and clear on clearError', () => {
     store.dispatch(
       TemplatesPageActions.renameTemplateFailure({
         error: 'Rename failed',
       }),
     );
 
-    let error = await firstValueFrom(store.select(selectError));
-    expect(error).toBe('Rename failed');
+    expect(store.select(selectError)).toBe('Rename failed');
 
     store.dispatch(PaybillActions.clearError());
 
-    error = await firstValueFrom(store.select(selectError));
-    expect(error).toBeNull();
+    expect(store.select(selectError)).toBeNull();
   });
 
-  it('should clear selection and reset related state', async () => {
+  it('should clear selection and reset related state', () => {
     store.dispatch(
       TemplatesPageActions.setSenderId({
         selectedSenderAccountId: 'acc-1',
@@ -64,9 +58,6 @@ describe('Integration: Loading & Error States', () => {
 
     store.dispatch(PaybillActions.clearSelection());
 
-    const id = await firstValueFrom(
-      store.select(selectSelectedSenderAccountId),
-    );
-    expect(id).toBeNull();
+    expect(store.select(selectSelectedSenderAccountId)).toBeNull();
   });
 });

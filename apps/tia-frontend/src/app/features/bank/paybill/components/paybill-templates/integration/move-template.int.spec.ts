@@ -1,6 +1,4 @@
-import { Store } from '@ngrx/store';
 import { describe, it, expect, beforeEach } from 'vitest';
-import { firstValueFrom } from 'rxjs';
 
 import { TemplatesPageActions } from '../../../store/paybill.actions';
 import {
@@ -10,14 +8,14 @@ import {
 import {
   mockTemplates,
   mockGroups,
-  setupIntegrationStore,
+  createStore,
 } from './integration-test.setup';
 
 describe('Integration: Move Template Between Groups', () => {
-  let store: Store;
+  let store: ReturnType<typeof createStore>;
 
   beforeEach(() => {
-    store = setupIntegrationStore();
+    store = createStore();
     store.dispatch(
       TemplatesPageActions.loadTemplatesSuccess({
         templates: mockTemplates,
@@ -30,7 +28,7 @@ describe('Integration: Move Template Between Groups', () => {
     );
   });
 
-  it('should move template to a different group', async () => {
+  it('should move template to a different group', () => {
     store.dispatch(
       TemplatesPageActions.moveTemplateSuccess({
         templateId: 't2',
@@ -39,12 +37,12 @@ describe('Integration: Move Template Between Groups', () => {
       }),
     );
 
-    const templates = await firstValueFrom(store.select(selectTemplates));
+    const templates = store.select(selectTemplates);
     const moved = templates.find((t) => t.id === 't2');
     expect(moved?.groupId).toBe('g2');
   });
 
-  it('should ungroup a template (move to null)', async () => {
+  it('should ungroup a template (move to null)', () => {
     store.dispatch(
       TemplatesPageActions.moveTemplateSuccess({
         templateId: 't1',
@@ -53,9 +51,7 @@ describe('Integration: Move Template Between Groups', () => {
       }),
     );
 
-    const items = await firstValueFrom(
-      store.select(selectTemplatesAsTreeItems),
-    );
+    const items = store.select(selectTemplatesAsTreeItems);
     const ungrouped = items.find((i) => i.id === 't1');
     expect(ungrouped?.groupId).toBeNull();
   });

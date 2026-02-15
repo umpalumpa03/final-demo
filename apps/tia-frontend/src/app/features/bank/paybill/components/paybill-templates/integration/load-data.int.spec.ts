@@ -1,6 +1,4 @@
-import { Store } from '@ngrx/store';
 import { describe, it, expect, beforeEach } from 'vitest';
-import { firstValueFrom } from 'rxjs';
 
 import { TemplatesPageActions } from '../../../store/paybill.actions';
 import {
@@ -14,81 +12,73 @@ import {
 import {
   mockTemplates,
   mockGroups,
-  setupIntegrationStore,
+  createStore,
 } from './integration-test.setup';
 
 describe('Integration: Load Templates & Groups', () => {
-  let store: Store;
+  let store: ReturnType<typeof createStore>;
 
   beforeEach(() => {
-    store = setupIntegrationStore();
+    store = createStore();
   });
 
-  it('should set loading true on loadTemplates', async () => {
+  it('should set loading true on loadTemplates', () => {
     store.dispatch(TemplatesPageActions.loadTemplates());
 
-    const loading = await firstValueFrom(store.select(selectLoading));
-    expect(loading).toBe(true);
+    expect(store.select(selectLoading)).toBe(true);
   });
 
-  it('should populate templates via selectTemplates', async () => {
+  it('should populate templates via selectTemplates', () => {
     store.dispatch(
       TemplatesPageActions.loadTemplatesSuccess({
         templates: mockTemplates,
       }),
     );
 
-    const templates = await firstValueFrom(store.select(selectTemplates));
+    const templates = store.select(selectTemplates);
     expect(templates).toHaveLength(3);
     expect(templates[0].nickname).toBe('Internet Bill');
   });
 
-  it('should mark templates as loaded after success', async () => {
+  it('should mark templates as loaded after success', () => {
     store.dispatch(
       TemplatesPageActions.loadTemplatesSuccess({
         templates: mockTemplates,
       }),
     );
 
-    const loaded = await firstValueFrom(
-      store.select(selectTemplatesLoaded),
-    );
-    expect(loaded).toBe(true);
+    expect(store.select(selectTemplatesLoaded)).toBe(true);
   });
 
-  it('should populate groups via selectTemplatesGroup', async () => {
+  it('should populate groups via selectTemplatesGroup', () => {
     store.dispatch(
       TemplatesPageActions.loadTemplateGroupsSuccess({
         templateGroups: mockGroups,
       }),
     );
 
-    const groups = await firstValueFrom(store.select(selectTemplatesGroup));
+    const groups = store.select(selectTemplatesGroup);
     expect(groups).toHaveLength(2);
     expect(groups[0].groupName).toBe('Utilities');
   });
 
-  it('should mark groups as loaded after success', async () => {
+  it('should mark groups as loaded after success', () => {
     store.dispatch(
       TemplatesPageActions.loadTemplateGroupsSuccess({
         templateGroups: mockGroups,
       }),
     );
 
-    const loaded = await firstValueFrom(
-      store.select(selectTemplateGroupsLoaded),
-    );
-    expect(loaded).toBe(true);
+    expect(store.select(selectTemplateGroupsLoaded)).toBe(true);
   });
 
-  it('should set error on loadTemplatesFailure', async () => {
+  it('should set error on loadTemplatesFailure', () => {
     store.dispatch(
       TemplatesPageActions.loadTemplatesFailure({
         error: 'Network error',
       }),
     );
 
-    const error = await firstValueFrom(store.select(selectError));
-    expect(error).toBe('Network error');
+    expect(store.select(selectError)).toBe('Network error');
   });
 });

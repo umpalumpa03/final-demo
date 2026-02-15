@@ -1,6 +1,4 @@
-import { Store } from '@ngrx/store';
 import { describe, it, expect, beforeEach } from 'vitest';
-import { firstValueFrom } from 'rxjs';
 
 import { TemplatesPageActions } from '../../../store/paybill.actions';
 import {
@@ -10,27 +8,25 @@ import {
 import {
   mockTemplates,
   mockGroups,
-  setupIntegrationStore,
+  createStore,
 } from './integration-test.setup';
 
 describe('Integration: Derived Selectors', () => {
-  let store: Store;
+  let store: ReturnType<typeof createStore>;
 
   beforeEach(() => {
-    store = setupIntegrationStore();
+    store = createStore();
   });
 
   describe('selectTemplatesAsTreeItems', () => {
-    it('should map templates to tree items with correct shape', async () => {
+    it('should map templates to tree items with correct shape', () => {
       store.dispatch(
         TemplatesPageActions.loadTemplatesSuccess({
           templates: mockTemplates,
         }),
       );
 
-      const items = await firstValueFrom(
-        store.select(selectTemplatesAsTreeItems),
-      );
+      const items = store.select(selectTemplatesAsTreeItems);
       expect(items).toHaveLength(3);
 
       const first = items[0];
@@ -43,25 +39,21 @@ describe('Integration: Derived Selectors', () => {
       expect(first.order).toBe(0);
     });
 
-    it('should return empty array when no templates are loaded', async () => {
-      const items = await firstValueFrom(
-        store.select(selectTemplatesAsTreeItems),
-      );
+    it('should return empty array when no templates are loaded', () => {
+      const items = store.select(selectTemplatesAsTreeItems);
       expect(items).toEqual([]);
     });
   });
 
   describe('selectTemplatesGroupWithConfigs', () => {
-    it('should add icon and expanded flag to groups', async () => {
+    it('should add icon and expanded flag to groups', () => {
       store.dispatch(
         TemplatesPageActions.loadTemplateGroupsSuccess({
           templateGroups: mockGroups,
         }),
       );
 
-      const groups = await firstValueFrom(
-        store.select(selectTemplatesGroupWithConfigs),
-      );
+      const groups = store.select(selectTemplatesGroupWithConfigs);
       expect(groups).toHaveLength(2);
 
       expect(groups[0].icon).toBe('images/svg/paybill/group.svg');
