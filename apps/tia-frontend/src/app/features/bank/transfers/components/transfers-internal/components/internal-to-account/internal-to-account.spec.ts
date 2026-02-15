@@ -21,8 +21,8 @@ describe('InternalToAccount', () => {
   let mockTransferInternalService: any;
 
   const mockAccounts = [
-    { id: 'acc1', name: 'Account 1', balance: 1000 },
-    { id: 'acc2', name: 'Account 2', balance: 2000 },
+    { id: 'acc1', name: 'Account 1', balance: 1000, isFavorite: false },
+    { id: 'acc2', name: 'Account 2', balance: 2000, isFavorite: true },
   ];
 
   beforeEach(async () => {

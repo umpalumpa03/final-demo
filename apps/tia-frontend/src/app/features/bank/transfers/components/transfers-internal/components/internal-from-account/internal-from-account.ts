@@ -131,6 +131,22 @@ export class InternalFromAccount implements OnInit {
         this.store.dispatch(AccountsActions.selectAccount({ account: null }));
       });
     });
+
+    effect(() => {
+      const accs = this.accounts();
+      const currentSender = this.selectedFromAccount();
+      const preSelected = this.preSelectedAccount();
+
+      if (currentSender || preSelected || !accs.length) return;
+
+      untracked(() => {
+        const favoriteAccount = accs.find((acc) => acc.isFavorite);
+
+        if (favoriteAccount && !this.isAccountDisabled(favoriteAccount)) {
+          this.transferStore.setSenderAccount(favoriteAccount);
+        }
+      });
+    });
   }
 
   ngOnInit() {

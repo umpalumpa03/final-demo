@@ -5,6 +5,7 @@ import {
   effect,
   inject,
   signal,
+  untracked,
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { TransferInternalService } from 'apps/tia-frontend/src/app/features/bank/transfers/components/transfers-internal/services/transfer.internal.service';
@@ -94,6 +95,22 @@ export class InternalToAccount {
     );
   });
 
+  public readonly isSwapDisabled = computed(() => {
+    const recipient = this.selectedToAccount();
+
+    // Case 1: No recipient selected
+    if (!recipient) {
+      return true;
+    }
+
+    // Case 2: Recipient account lacks permission for transfers
+    if (!recipient.permission || (recipient.permission & 1) !== 1) {
+      return true;
+    }
+
+    return false;
+  });
+
   constructor() {
     effect(() => {
       const error = this.transferError();
@@ -104,6 +121,27 @@ export class InternalToAccount {
           this.transferStore.setError('');
         }, 5000);
       }
+    });
+
+    // Auto-select favorite account on load
+    effect(() => {
+      const transferableAccs = this.transferableAccounts();
+      const currentRecipient = this.selectedToAccount();
+      const fromAccount = this.selectedFromAccount();
+
+      // Only auto-select if:
+      // - We have a from-account selected (needed for filtering)
+      // - No recipient is already selected
+      // - We have transferable accounts available
+      if (!fromAccount || currentRecipient || !transferableAccs.length) return;
+
+      untracked(() => {
+        const favoriteAccount = transferableAccs.find((acc) => acc.isFavorite);
+
+        if (favoriteAccount) {
+          this.transferStore.setReceiverOwnAccount(favoriteAccount);
+        }
+      });
     });
   }
 

@@ -11,6 +11,7 @@ import {
   selectAccounts,
   selectError,
   selectIsLoading,
+  selectSelectedAccount,
 } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.selectors';
 import { AccountsActions } from '../../../../../../../store/products/accounts/accounts.actions';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
@@ -51,6 +52,7 @@ describe('InternalFromAccount', () => {
     mockTransferStore = {
       senderAccount: signal(null),
       error: signal(null),
+      setSenderAccount: vi.fn(),
       setError: vi.fn(),
     };
 
@@ -75,6 +77,7 @@ describe('InternalFromAccount', () => {
             { selector: selectAccounts, value: mockAccounts },
             { selector: selectIsLoading, value: false },
             { selector: selectError, value: null },
+            { selector: selectSelectedAccount, value: null },
           ],
         }),
         { provide: TransferStore, useValue: mockTransferStore },
