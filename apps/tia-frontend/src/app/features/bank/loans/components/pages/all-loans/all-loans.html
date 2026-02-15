@@ -1,6 +1,6 @@
 @if (store.error()) {
 <div class="loans-error-wrapper">
-    <app-error-states variant="failed" [header]="'loans.dashboard.error_title' | translate"
+    <app-error-states variant="failed" [border]="false" [header]="'loans.dashboard.error_title' | translate"
         [message]="store.error() || ''" [buttonMessage]="'loans.buttons.resend' | translate" (buttonClick)="loadData()">
     </app-error-states>
 </div>

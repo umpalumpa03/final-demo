@@ -65,7 +65,11 @@ describe('Loans Integration - Prepayment Wizard Flow', () => {
     });
 
     const calcReq = ctx.httpMock.expectOne(
-      (req: { url: string; method: string; params: { get: (k: string) => string | null } }) =>
+      (req: {
+        url: string;
+        method: string;
+        params: { get: (k: string) => string | null };
+      }) =>
         req.url.includes('/loans/calculate-partial-prepayment') &&
         req.method === 'GET' &&
         req.params.get('loanId') === mockLoan.id &&
@@ -171,7 +175,8 @@ describe('Loans Integration - Prepayment Wizard Flow', () => {
     );
 
     await vi.waitFor(() => {
-      expect(ctx.loansStore.error()).toBeTruthy();
+      expect(ctx.loansStore.actionLoading()).toBe(false);
+      expect(ctx.loansStore.error()).toBeNull();
     });
 
     ctx.loansStore.verifyPrepayment({

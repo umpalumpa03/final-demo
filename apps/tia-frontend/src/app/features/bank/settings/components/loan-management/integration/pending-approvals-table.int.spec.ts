@@ -21,9 +21,8 @@ describe('PendingApprovalsTable Component Integration', () => {
     fixture.detectChanges();
   });
 
-  it('should show empty state when no approvals and not loading', () => {
+  it('should show empty state when no approvals and no error', () => {
     fixture.componentRef.setInput('approvals', []);
-    fixture.componentRef.setInput('isLoading', false);
     fixture.componentRef.setInput('error', null);
     fixture.detectChanges();
 
@@ -32,22 +31,8 @@ describe('PendingApprovalsTable Component Integration', () => {
     expect(component.showError()).toBe(false);
   });
 
-  it('should show loading state', () => {
-    fixture.componentRef.setInput('isLoading', true);
-    fixture.detectChanges();
-
-    expect(component.showList()).toBe(false);
-    expect(component.showEmptyState()).toBe(false);
-    expect(component.showError()).toBe(false);
-
-    const spinner: HTMLElement | null =
-      fixture.nativeElement.querySelector('.pending-approvals__loading');
-    expect(spinner).toBeTruthy();
-  });
-
   it('should show error state with reload button', () => {
     fixture.componentRef.setInput('error', 'Something went wrong');
-    fixture.componentRef.setInput('isLoading', false);
     fixture.detectChanges();
 
     expect(component.showError()).toBe(true);
@@ -60,7 +45,6 @@ describe('PendingApprovalsTable Component Integration', () => {
 
   it('should show list when approvals exist', () => {
     fixture.componentRef.setInput('approvals', mockPendingApprovals);
-    fixture.componentRef.setInput('isLoading', false);
     fixture.componentRef.setInput('error', null);
     fixture.detectChanges();
 
@@ -75,7 +59,6 @@ describe('PendingApprovalsTable Component Integration', () => {
 
   it('should emit rowClick with approval id on card click', () => {
     fixture.componentRef.setInput('approvals', mockPendingApprovals);
-    fixture.componentRef.setInput('isLoading', false);
     fixture.componentRef.setInput('error', null);
     fixture.detectChanges();
 

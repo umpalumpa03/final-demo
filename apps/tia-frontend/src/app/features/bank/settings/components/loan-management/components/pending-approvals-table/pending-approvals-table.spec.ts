@@ -44,28 +44,25 @@ describe('PendingApprovalsTable', () => {
     expect(component.hasApprovals()).toBe(true);
   });
 
-  it('showEmptyState should be true only when not loading, no error, and no approvals', () => {
-    fixture.componentRef.setInput('isLoading', false);
+  it('showEmptyState should be true only when no error and no approvals', () => {
     fixture.componentRef.setInput('error', null);
     fixture.componentRef.setInput('approvals', []);
     fixture.detectChanges();
     expect(component.showEmptyState()).toBe(true);
 
-    fixture.componentRef.setInput('isLoading', true);
+    fixture.componentRef.setInput('error', 'some error');
     fixture.detectChanges();
     expect(component.showEmptyState()).toBe(false);
   });
 
-  it('showError should be true when error exists and not loading', () => {
-    fixture.componentRef.setInput('isLoading', false);
+  it('showError should be true when error exists', () => {
     fixture.componentRef.setInput('error', 'Failed to load');
     fixture.detectChanges();
     expect(component.showError()).toBe(true);
   });
 
-  it('showList should be true when has approvals, not loading, and no error', () => {
+  it('showList should be true when has approvals and no error', () => {
     fixture.componentRef.setInput('approvals', mockApprovals);
-    fixture.componentRef.setInput('isLoading', false);
     fixture.componentRef.setInput('error', null);
     fixture.detectChanges();
     expect(component.showList()).toBe(true);

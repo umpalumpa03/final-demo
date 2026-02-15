@@ -2,23 +2,14 @@ import { Routes } from '@angular/router';
 import { provideState } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { LoansContainer } from './container/loans-container';
-import { LoansService } from './shared/services/loans.service';
 import { AccountsEffects } from '../../../store/products/accounts/accounts.effects';
 import { accountsFeature } from '../../../store/products/accounts/accounts.reducer';
-import { LoansStore } from './store/loans.store';
 
 export const loansRoutes: Routes = [
   {
     path: '',
     component: LoansContainer,
-    providers: [
-      LoansStore,
-
-      LoansService,
-
-      provideState(accountsFeature),
-      provideEffects(AccountsEffects),
-    ],
+    providers: [provideState(accountsFeature), provideEffects(AccountsEffects)],
     children: [
       { path: '', redirectTo: 'all', pathMatch: 'full' },
       {
