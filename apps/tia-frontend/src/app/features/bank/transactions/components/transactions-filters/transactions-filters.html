@@ -8,12 +8,12 @@
         {{'transactions.filters.subtitle' | translate}}
       </p>
     </div>
-    @if(hasActiveFilter()){
+    @if(presenter.hasActiveFilter()){
     <app-button
       [type]="'reset'"
       [variant]="'outline'"
       [icon]="'x-icon.svg'"
-      (click)="resetFilters()"
+      (click)="presenter.resetFilters()"
     >
       {{ 'transactions.filters.reset_all' | translate }}
     </app-button>
@@ -32,11 +32,11 @@
   </div>
 
   <form
-    [formGroup]="filterForm"
+    [formGroup]="presenter.filterForm"
     class="transactions-filters__form"
     [class.is-open]="actions.isFiltersOpen()"
   >
-    @for (field of filtersConfig(); track field.controlName) {
+    @for (field of presenter.filtersConfig(); track field.controlName) {
 
     <div class="transactions-filters__form__input-wrapper">
       @if (field.type === 'select') {
@@ -61,7 +61,7 @@
              label: (field.uiConfig.label | translate),
              max: field.uiConfig.max,
            errorMessage: field.inputType === 'date' 
-        ? ('transactions.filters.errors.max_date' | translate: { date: today }) 
+        ? ('transactions.filters.errors.max_date' | translate: { date: presenter.today}) 
         : (field.uiConfig.errorMessage | translate)
     }"
       >
@@ -71,13 +71,13 @@
     }
   </form>
 
-  @if (activeFilters().length > 0) {
+  @if (presenter.activeFilters().length > 0) {
   <div class="transactions-filters__active-filters">
-    @for (filter of activeFilters(); track filter.key) {
+    @for (filter of presenter.activeFilters(); track filter.key) {
     <app-button
       [variant]="'outline'"
       [icon]="'x-icon.svg'"
-      (click)="removeFilter(filter.key)"
+      (click)="presenter.removeFilter(filter.key)"
     >
       <span class="filter-text">
         {{ filter.label | translate }} : {{ filter.value }}

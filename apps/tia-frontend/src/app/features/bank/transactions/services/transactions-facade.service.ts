@@ -47,9 +47,22 @@ export class TransactionsFacadeService {
     },
   );
 
-  public initializePage(): void {
+  public initializePage(initialFilters?: Partial<ITransactionFilter>): void {
     this.store.dispatch(TransactionActions.enter());
     this.store.dispatch(AccountsActions.loadAccounts({}));
+
+    if (initialFilters && Object.keys(initialFilters).length > 0) {
+      this.store.dispatch(
+        TransactionActions.updateFilters({
+          filters: {
+            ...initialFilters,
+            pageLimit: 20, 
+            pageCursor: undefined,
+          },
+        }),
+      );
+      return;
+    }
 
     const currentFilters = this.filters();
     const needsReset =
@@ -65,7 +78,6 @@ export class TransactionsFacadeService {
       this.store.dispatch(TransactionActions.loadTransactions({}));
     }
   }
-
   public updateFilters(filters: ITransactionFilter): void {
     this.store.dispatch(TransactionActions.updateFilters({ filters }));
   }
