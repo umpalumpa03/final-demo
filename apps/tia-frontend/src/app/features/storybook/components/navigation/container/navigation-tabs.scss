@@ -27,7 +27,7 @@
       @include display-flex(column);
       gap: 0.8rem;
       padding: 1.68rem;
-      border: 0.08rem solid $blue-400;
+      border: 0.08rem solid var(--color-primary);
       border-radius: 1rem;
       width: 100%;
 

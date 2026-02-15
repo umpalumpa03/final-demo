@@ -7,7 +7,7 @@
   height: 100%;
   min-height: 20rem;
   overflow: hidden;
-  border: 0.0625rem solid $blue-400;
+  border: 0.0625rem solid var(--color-primary);
   border-radius: 1rem;
 
   &__content {
@@ -105,5 +105,3 @@
     }
   }
 }
-
-
