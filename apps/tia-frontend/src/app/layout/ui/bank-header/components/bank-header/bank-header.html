@@ -32,11 +32,14 @@
       <span class="badge"></span>
       }
     </div>
+
     <div
       class="bank-header-wrapper__container__avatar"
-      routerLink="settings"
+      [routerLink]="['/settings']"
       routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: false }"
       [class.birthday]="hasBirthday()"
+      [class.has-image]="hasAvatar()"
     >
       @if (hasBirthday()) {
       <span class="birthday-cake">🎂</span>
