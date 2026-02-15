@@ -31,7 +31,6 @@ export class LazyTranslateLoader implements TranslateLoader {
  
     return forkJoin(requests).pipe(
       catchError((err) => {
-        console.warn('error:', err);
         return of([]);
       }),
       map((results) =>

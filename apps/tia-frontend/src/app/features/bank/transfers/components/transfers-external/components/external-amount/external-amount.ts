@@ -219,7 +219,6 @@ export class ExternalAmount implements OnInit {
 
   public resendOtp(): void {
       const challengeId = this.transferStore.challengeId();
-      console.log(challengeId);
       if (!challengeId) return;
       this.otpService.resendVerificationCode(challengeId).subscribe();
   }
