@@ -131,6 +131,12 @@ export class PaybillTemplates implements OnInit {
         }
       }
     });
+    effect(() => {
+      const open = this.isModalOpen();
+      if (!open) {
+        this.isDistribution.set(false);
+      }
+    });
   }
 
   // Action Handlers
