@@ -15,6 +15,7 @@ export class TransactionList {
   readonly transactions = input.required<ITransactions[]>();
   readonly uncategorizedText = input.required<string>();
   readonly locale = input.required<string>();
+
   protected formatDate(dateString: string): string {
     const date = new Date(dateString);
     return date.toLocaleDateString(this.locale(), {

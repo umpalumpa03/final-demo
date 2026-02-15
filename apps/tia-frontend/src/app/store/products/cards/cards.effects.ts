@@ -122,40 +122,44 @@ export class CardsEffects {
       }),
     ),
   );
+
+
   loadCardDetails$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(CardsActions.loadCardDetails),
-      mergeMap(({ cardId, forceRefresh = false }) =>
-        combineLatest([
-          this.store.select(selectIsCardDetailLoaded(cardId)),
-          this.store.select(selectCardDetails),
-        ]).pipe(
-          take(1),
-          switchMap(([isLoaded, allDetails]) => {
-            if (isLoaded && !forceRefresh) {
-              const details = allDetails[cardId];
-              return of(
-                CardsActions.loadCardDetailsSuccess({ cardId, details }),
-              );
-            }
-            return this.cardListApiService.getCardDetails(cardId).pipe(
-              map((details) =>
-                CardsActions.loadCardDetailsSuccess({ cardId, details }),
-              ),
-              catchError((error) =>
-                of(
-                  CardsActions.loadCardDetailsFailure({
-                    cardId,
-                    error: error.message,
-                  }),
-                ),
-              ),
+  this.actions$.pipe(
+    ofType(CardsActions.loadCardDetails),
+    mergeMap(({ cardId, forceRefresh = false }) =>
+      combineLatest([
+        this.store.select(selectIsCardDetailLoaded(cardId)),
+        this.store.select(selectCardDetails),
+      ]).pipe(
+        take(1),
+        switchMap(([isLoaded, allDetails]) => {
+          if (isLoaded && !forceRefresh) {
+            const details = allDetails[cardId];
+            return of(
+              CardsActions.loadCardDetailsSuccess({ cardId, details }),
             );
-          }),
-        ),
+          }
+          return this.cardListApiService.getCardDetails(cardId).pipe(
+            map((details) =>
+              CardsActions.loadCardDetailsSuccess({ cardId, details }),
+            ),
+            catchError((error) =>
+              of(
+                CardsActions.loadCardDetailsFailure({
+                  cardId,
+                  error: error.message,
+                }),
+              ),
+            ),
+          );
+        }),
       ),
     ),
-  );
+  ),
+);
+
+
   loadCardCreationData$ = createEffect(() =>
     this.actions$.pipe(
       ofType(CardsActions.loadCardCreationData),
@@ -192,7 +196,11 @@ export class CardsEffects {
               catchError((error) =>
                 of(
                   CardsActions.loadCardCreationDataFailure({
-error: error.message || this.translate.instant('my-products.card.errors.failedToLoadCreationData')
+                    error:
+                      error.message ||
+                      this.translate.instant(
+                        'my-products.card.errors.failedToLoadCreationData',
+                      ),
                   }),
                 ),
               ),
@@ -211,7 +219,11 @@ error: error.message || this.translate.instant('my-products.card.errors.failedTo
           catchError((error) =>
             of(
               CardsActions.createCardFailure({
-error: error.message || this.translate.instant('my-products.card.errors.failedToCreateCard')
+                error:
+                  error.message ||
+                  this.translate.instant(
+                    'my-products.card.errors.failedToCreateCard',
+                  ),
               }),
             ),
           ),
@@ -234,20 +246,18 @@ error: error.message || this.translate.instant('my-products.card.errors.failedTo
         this.store.select(selectAllAccounts).pipe(
           take(1),
           switchMap((accounts: CardAccount[]) => {
-            const actions = [];
-
             if (accounts.length === 0) {
-              actions.push(CardsActions.loadCardAccounts({}));
-            } else {
-              const account = accounts.find((acc) => acc.id === accountId);
-              if (account?.cardIds && account.cardIds.length > 0) {
-                account.cardIds.forEach((cardId) => {
-                  actions.push(CardsActions.loadCardDetails({ cardId }));
-                });
-              }
+              return [CardsActions.loadCardAccounts({})];
             }
 
-            return actions;
+            const account = accounts.find((acc) => acc.id === accountId);
+            if (!account?.cardIds || account.cardIds.length === 0) {
+              return EMPTY;
+            }
+
+            return account.cardIds.map((cardId) =>
+              CardsActions.loadCardDetails({ cardId }),
+            );
           }),
         ),
       ),
@@ -271,7 +281,11 @@ error: error.message || this.translate.instant('my-products.card.errors.failedTo
             of(
               CardsActions.updateCardNameFailure({
                 cardId,
-error: error.message || this.translate.instant('my-products.card.errors.failedToUpdateCardName')
+                error:
+                  error.message ||
+                  this.translate.instant(
+                    'my-products.card.errors.failedToUpdateCardName',
+                  ),
               }),
             ),
           ),
@@ -292,7 +306,11 @@ error: error.message || this.translate.instant('my-products.card.errors.failedTo
           catchError((error) =>
             of(
               CardsActions.requestCardOtpFailure({
-error: error.message || this.translate.instant('my-products.card.errors.failedToRequestOtp')
+                error:
+                  error.message ||
+                  this.translate.instant(
+                    'my-products.card.errors.failedToRequestOtp',
+                  ),
               }),
             ),
           ),
@@ -311,9 +329,15 @@ error: error.message || this.translate.instant('my-products.card.errors.failedTo
           ),
           catchError((error) => {
             const errorMessage =
-             error.status === 400 || error.error?.message === 'Invalid OTP'
-  ? this.translate.instant('my-products.card.errors.otpNotCorrect')
-  : error.error?.message || error.message || this.translate.instant('my-products.card.errors.failedToVerifyOtp')
+              error.status === 400 || error.error?.message === 'Invalid OTP'
+                ? this.translate.instant(
+                    'my-products.card.errors.otpNotCorrect',
+                  )
+                : error.error?.message ||
+                  error.message ||
+                  this.translate.instant(
+                    'my-products.card.errors.failedToVerifyOtp',
+                  );
             return of(
               CardsActions.verifyCardOtpFailure({ error: errorMessage }),
             );
@@ -329,52 +353,79 @@ error: error.message || this.translate.instant('my-products.card.errors.failedTo
     ),
   );
 
+  showOtpSentAlert$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(CardsActions.requestCardOtpSuccess),
+        tap(() =>
+          CardsAlerts.showOtpSentAlert(this.alertService, this.translate),
+        ),
+      ),
+    { dispatch: false },
+  );
 
-showOtpSentAlert$ = createEffect(
-  () =>
-    this.actions$.pipe(
-      ofType(CardsActions.requestCardOtpSuccess),
-      tap(() => CardsAlerts.showOtpSentAlert(this.alertService, this.translate))
-    ),
-  { dispatch: false },
-);
+  showOtpVerifiedAlert$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(CardsActions.verifyCardOtpSuccess),
+        tap(() =>
+          CardsAlerts.showOtpVerifiedAlert(this.alertService, this.translate),
+        ),
+      ),
+    { dispatch: false },
+  );
 
-showOtpVerifiedAlert$ = createEffect(
-  () =>
-    this.actions$.pipe(
-      ofType(CardsActions.verifyCardOtpSuccess),
-      tap(() => CardsAlerts.showOtpVerifiedAlert(this.alertService, this.translate))
-    ),
-  { dispatch: false },
-);
+  showOtpErrorAlert$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(CardsActions.verifyCardOtpFailure),
+        switchMap(({ error }) =>
+          this.store.select(selectOtpRemainingAttempts).pipe(
+            take(1),
+            tap((attempts) => {
+              if (attempts === 0) {
+                this.store.dispatch(CardsActions.closeCardOtpModal());
+              } else {
+                CardsAlerts.showOtpErrorAlert(
+                  this.alertService,
+                  this.translate,
+                  error,
+                  attempts,
+                );
+              }
+            }),
+          ),
+        ),
+      ),
+    { dispatch: false },
+  );
 
-showOtpErrorAlert$ = createEffect(
-  () =>
-    this.actions$.pipe(
-      ofType(CardsActions.verifyCardOtpFailure),
-      switchMap(({ error }) =>
-        this.store.select(selectOtpRemainingAttempts).pipe(
-          take(1),
-          tap((attempts) => {
-            if (attempts === 0) {
-              this.store.dispatch(CardsActions.closeCardOtpModal());
-            } else {
-              CardsAlerts.showOtpErrorAlert(this.alertService, this.translate, error, attempts);
-            }
-          })
-        )
-      )
-    ),
-  { dispatch: false },
-);
+  createCardSuccessAlert$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(CardsActions.createCardSuccess),
 
-createCardSuccessAlert$ = createEffect(() =>
+        tap(() =>
+          CardsAlerts.showCardCreatedAlert(this.alertService, this.translate),
+        ),
+      ),
+    { dispatch: false },
+  );
+
+  loadCardTransactionsPage$ = createEffect(() =>
   this.actions$.pipe(
-    ofType(CardsActions.createCardSuccess),
-
-    tap(() => CardsAlerts.showCardCreatedAlert(this.alertService, this.translate))
+    ofType(CardsActions.loadCardDetails),
+    switchMap(({ cardId }) =>
+      this.store.select(selectAllAccounts).pipe(
+        take(1),
+        switchMap((accounts: CardAccount[]) => {
+          if (accounts.length === 0) {
+            return [CardsActions.loadCardAccounts({})];
+          }
+          return EMPTY;
+        }),
+      ),
+    ),
   ),
-  { dispatch: false }
 );
-
 }
