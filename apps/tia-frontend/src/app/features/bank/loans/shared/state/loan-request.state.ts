@@ -38,7 +38,7 @@ export class LoanRequestState {
     label: this.translate.instant('loans.request.details.date'),
     required: true,
     min: new Date().toISOString().split('T')[0],
-    max: '2030-12-31',
+    max: '2029-12-31',
     type: 'date' as TextInputType,
   });
 

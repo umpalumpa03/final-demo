@@ -331,7 +331,7 @@ describe('AccountsEffects', () => {
         updatedAt: '2026-01-01',
       };
       vi.spyOn(transactionService, 'getTransactions').mockReturnValue(
-        of({ items: [mockTx], total: 1 } as any),
+        of({ items: [mockTx], pageInfo: { hasNextPage: false, nextCursor: '' } } as any),
       );
       actions$ = of(
         AccountsActions.loadAccountsSuccess({
@@ -345,8 +345,7 @@ describe('AccountsEffects', () => {
         (action) => (result = action),
       );
       expect(transactionService.getTransactions).toHaveBeenCalledWith({
-        accountIban: mockAccount.iban,
-        pageLimit: 1,
+        pageLimit: 2,
       });
       expect(result).toEqual(
         AccountsActions.enrichAccountsSuccess({
@@ -356,9 +355,9 @@ describe('AccountsEffects', () => {
     });
 
     it('should return enrichAccountsSuccess when one account request fails (null for that iban)', () => {
-      vi.spyOn(transactionService, 'getTransactions')
-        .mockReturnValueOnce(of({ items: [], total: 0 } as any))
-        .mockReturnValueOnce(throwError(() => new Error('tx failed')));
+      vi.spyOn(transactionService, 'getTransactions').mockReturnValue(
+        of({ items: [], pageInfo: { hasNextPage: false, nextCursor: '' } } as any),
+      );
       const account2 = {
         ...mockAccount,
         id: '2',
@@ -387,7 +386,7 @@ describe('AccountsEffects', () => {
 
     it('should run on loadActiveAccountsSuccess', () => {
       vi.spyOn(transactionService, 'getTransactions').mockReturnValue(
-        of({ items: [], total: 0 } as any),
+        of({ items: [], pageInfo: { hasNextPage: false, nextCursor: '' } } as any),
       );
       actions$ = of(
         AccountsActions.loadActiveAccountsSuccess({

@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { unsavedChangesGuard } from './components/appearance/guard/unsaved-changes.guard';
+import { supportRoleGuard } from '@tia/core/guards/support-role.guard';
 
 export const settingsRoutes: Routes = [
   {
@@ -51,6 +52,7 @@ export const settingsRoutes: Routes = [
       },
       {
         path: 'user-management',
+        canActivate: [supportRoleGuard],
         loadChildren: () =>
           import('./components/user-management/user-management.routes').then(
             (m) => m.userManagementRoutes,
@@ -58,6 +60,7 @@ export const settingsRoutes: Routes = [
       },
       {
         path: 'approve-accounts',
+        canActivate: [supportRoleGuard],
         loadComponent: () =>
           import(
             './components/approve-accounts/container/approve-accounts-container'
@@ -65,6 +68,7 @@ export const settingsRoutes: Routes = [
       },
       {
         path: 'approve-cards',
+        canActivate: [supportRoleGuard],
         loadComponent: () =>
           import(
             './components/approve-cards/container/approve-cards-container'
@@ -72,6 +76,7 @@ export const settingsRoutes: Routes = [
       },
       {
         path: 'loan-management',
+        canActivate: [supportRoleGuard],
         loadComponent: () =>
           import(
             './components/loan-management/container/loan-management-container'
