@@ -51,7 +51,7 @@ export const loadTransactionsEffect = createEffect(
           .forceRefresh;
 
         if (isLoadMore && !nextCursor) {
-          return EMPTY;
+          return of(TransactionActions.loadTransactionsCached());
         }
         if (!isLoadMore && loaded && !forceRefresh) {
           return of(TransactionActions.loadTransactionsCached());
