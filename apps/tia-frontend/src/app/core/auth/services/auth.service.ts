@@ -8,7 +8,6 @@ import {
   CreateNewPasswordRequest,
   ResendOtpRequest,
   IRefreshTokenRequest,
-  OtpInitSettings,
 } from '../models/authRequest.models';
 import {
   CreateNewPasswordResponse,
@@ -42,21 +41,25 @@ import { Store } from '@ngrx/store';
 import { UserInfoActions } from '../../../store/user-info/user-info.actions';
 import { MonitorInactivity } from './monitor-inacticity.service';
 import { Subscription } from 'rxjs';
+import { AlertService } from '@tia/core/services/alert/alert.service';
+import { TranslateService } from '@ngx-translate/core';
 import { ClearSignalStoreService } from '@tia/core/services/clearSignalStores/clear-signal-store.service';
+import showAlert from '@tia/shared/utils/alerts/alert.helper';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+  private monitorInactivity = inject(MonitorInactivity);
+  private translate = inject(TranslateService);
+  private tokenService = inject(TokenService);
+  private alertService = inject(AlertService);
   private http = inject(HttpClient);
   private router = inject(Router);
-  private tokenService = inject(TokenService);
   private store = inject(Store);
-  private monitorInactivity = inject(MonitorInactivity);
   private injector = inject(Injector);
 
   public isAuthenticated = signal<boolean>(false);
   public isLoginLoading = signal<boolean>(false);
   public errorMessage = signal<boolean | null>(false);
-  public resendRetryCounter = signal<number>(0);
   public otpError = signal<OtpResponse | null>(null);
 
   private challengeId!: string;
@@ -112,13 +115,30 @@ export class AuthService {
           if (res.challengeId && res.reason === 'phone_unverified') {
             this.setChellangeId(res.challengeId);
             this.router.navigate([Routes.OTP_SIGN_UP]);
+            showAlert(
+              this.alertService,
+              this.translate,
+              'warning',
+              'auth.alert-errors.phoneWarn',
+            );
           } else {
             this.router.navigate([Routes.PHONE]);
+            showAlert(
+              this.alertService,
+              this.translate,
+              'warning',
+              'auth.alert-errors.phoneVerifyWarn',
+            );
           }
         }
       }),
       catchError((err) => {
-        this.errorMessage.set(true);
+        showAlert(
+          this.alertService,
+          this.translate,
+          'error',
+          'auth.alert-errors.credentials',
+        );
         return throwError(() => err);
       }),
       finalize(() => this.isLoginLoading.set(false)),
@@ -150,7 +170,8 @@ export class AuthService {
         if (res.success === true) {
           this.stopInactivityMonitoring();
           this.tokenService.clearAuthToken();
-          this.injector.get(ClearSignalStoreService).resetAllStore()
+          this.store.dispatch(UserInfoActions.logout());
+          this.injector.get(ClearSignalStoreService).resetAllStore();
           this.router.navigate([Routes.SIGN_IN]);
         }
       }),
@@ -309,9 +330,7 @@ export class AuthService {
   ): Observable<CreateNewPasswordResponse> {
     const token = this.tokenService.resetPasswordToken;
     if (!token) {
-      return throwError(
-        () => new Error('Missing reset password token'),
-      );
+      return throwError(() => new Error('Missing reset password token'));
     }
 
     this.isLoginLoading.set(true);
@@ -343,31 +362,6 @@ export class AuthService {
     return this.http.post<ResendOtpResponse>(
       `${this.baseUrl}/phone/otp-resend`,
       payload,
-    );
-  }
-
-  public resendVerificationCode(): Observable<OtpResponse> {
-    if (this.resendRetryCounter() >= 5) {
-      this.resendRetryCounter.set(0);
-      return throwError(() => new Error('MAX_ATTEMPTS_REACHED'));
-    }
-
-    const challengeId = this.getChallengeId();
-    const token =
-      this.tokenService.accessToken || this.tokenService.getSignUpToken;
-
-    if (this.tokenService.accessToken) {
-      this.resendRetryCounter.update((r) => r + 1);
-    }
-
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`,
-    });
-
-    return this.http.post<OtpResponse>(
-      `${this.baseUrl}/mfa/otp-resend`,
-      { challengeId },
-      { headers },
     );
   }
 

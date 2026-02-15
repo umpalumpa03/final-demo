@@ -10,10 +10,11 @@ import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { PaybillDynamicField } from '../../../services/paybill-dynamic-form/models/dynamic-form.model';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
+import { Dropdowns } from '@tia/shared/lib/forms/dropdowns/dropdowns';
 
 @Component({
   selector: 'app-dynamic-inputs',
-  imports: [ReactiveFormsModule, TextInput, RouteLoader],
+  imports: [ReactiveFormsModule, TextInput, RouteLoader, Dropdowns],
   templateUrl: './dynamic-inputs.html',
   styleUrl: './dynamic-inputs.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -29,6 +30,11 @@ export class DynamicInputs {
   protected readonly fieldConfigs = computed(() =>
     this.fields().map((field) => ({
       id: field.id,
+      type: field.component,
+      options: (field.options || []).map((opt) => ({
+        label: opt.value,
+        value: opt.key,
+      })),
       config: this.dynamicFormService.mapFieldToConfig(field),
     })),
   );

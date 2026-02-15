@@ -21,6 +21,7 @@
   [selectAll]="selectAll()"
   (checkedItemsChange)="onTemplateChecked($event)"
   (buttonClicked)="singleItemSelected($event)"
+  [unselectAll]="resetTreeState()"
 >
   <app-templates-header
     [headerButtons]="headerButtons"
@@ -87,22 +88,26 @@
   }
 </app-ui-modal>
 
-<!-- ES MODALZE BEQAS VELODEBI TYUILAD AR DAMIWEROT RAME VICHXUBEBT :D -->
-<app-ui-modal [isOpen]="isOtpModalOpen()">
+<app-ui-modal [isOpen]="isOtpModalOpen()" (closed)="onOtpClose()">
   <app-otp-verification
     type="otp"
     timerType="otp"
-    [timeLimit]="1"
-    [customRemainingAttempts]="3"
     [isBtnRowDirection]="true"
     redirectUrl="/bank/paybill/templates"
     redirectText="Paybills Template"
     [inputOtpConfig]="otpConfig"
     (isResendCalled)="resendOtp($event)"
+    (onBackOut)="onOtpClose()"
+    (isVerifyCalled)="onOtpVerify($event)"
+    [isButtonLoading]="true"
   ></app-otp-verification>
 </app-ui-modal>
 
-<!-- (isVerifyCalled)="" -->
-<!-- (isResendCalled)="resendOtp($event)" -->
-
-<app-success-modal [isOpen]="false"></app-success-modal>
+<app-success-modal
+  [title]="'paybill.templates.success.title' | translate"
+  [description]="'paybill.templates.success.subText' | translate"
+  [buttonText]="'paybill.templates.success.submitBtnName' | translate"
+  [isOpen]="succesModalHidden()"
+  (closed)="onSuccessDone()"
+  (done)="onSuccessDone()"
+></app-success-modal>

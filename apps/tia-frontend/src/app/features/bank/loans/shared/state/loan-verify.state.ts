@@ -1,6 +1,6 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { IOtpVerificationConfig } from 'apps/tia-frontend/src/app/core/auth/models/otp-verification.models';
+import { IOtpVerificationConfig } from '@tia/core/otp-verification/models/otp-verification.models';
 
 @Injectable()
 export class LoanVerifyState {

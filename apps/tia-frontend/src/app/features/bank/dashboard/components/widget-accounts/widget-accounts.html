@@ -10,16 +10,44 @@
     <div class="account-card">
       <div class="account-card__header">
         <div class="account-card__header-top">
-          {{ account.friendlyName }}
+
+          {{ (account.friendlyName && account.friendlyName.trim()) ? account.friendlyName : account.name}}
           <span class="account-card__header-top--iban">
             ****{{ account.iban.slice(-4) }}
           </span>
         </div>
-        <div class="account-card__header-bottom"></div>
+        @if (account.trendline) {
+          <div
+            class="account-card__trendline"
+            [ngClass]="{
+              'account-card__trendline--positive': account.trendline.direction === 'up',
+              'account-card__trendline--negative': account.trendline.direction === 'down'
+            }"
+          >
+            <img
+              [src]="account.trendline.direction === 'up' ? '/images/svg/dashboard/arrow-up.svg' : '/images/svg/dashboard/arrow-down.svg'"
+              [alt]="account.trendline.direction === 'up' ? 'up' : 'down'"
+              class="account-card__trendline-arrow"
+            />
+            @if (balancesHidden()) {
+              {{ account.currency | currencySymbol }}{{ formatAsAsterisks(account.trendline.amount) }}
+            } @else {
+              {{ account.currency | currencySymbol }}{{ account.trendline.amount | number: '1.2-2' }}
+            }
+          </div>
+        }
       </div>
 
       <div class="account-card__balance">
-        {{account.currency | currencySymbol }}{{ account.balance | number: '1.2-2' }}
+        @if (balancesHidden()) {
+          <span>{{ account.currency | currencySymbol }}{{ formatAsAsterisks(account.balance) }}</span>
+        } @else {
+          <span>{{account.currency | currencySymbol }}{{
+            account.trendline
+              ? (getAnimatedBalance(account.id) | number: '1.2-2')
+              : (account.balance | number: '1.2-2')
+          }}</span>
+        }
       </div>
     </div>
     }

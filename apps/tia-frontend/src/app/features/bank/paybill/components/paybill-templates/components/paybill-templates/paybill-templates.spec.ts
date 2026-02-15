@@ -125,4 +125,128 @@ describe('PaybillTemplates', () => {
       expect(activeForm.pristine).toBe(true);
     });
   });
+
+  describe('Tree Actions', () => {
+    it('should emit item-edit tree action', () => {
+      const spy = vi.spyOn(component.treeAction, 'emit');
+      component.onItemEditAction('t-1');
+      expect(spy).toHaveBeenCalledWith({ type: 'item-edit', id: 't-1' });
+    });
+
+    it('should emit group-delete tree action', () => {
+      const spy = vi.spyOn(component.treeAction, 'emit');
+      component.onGroupDeleteAction('g-1');
+      expect(spy).toHaveBeenCalledWith({ type: 'group-delete', id: 'g-1' });
+    });
+
+    it('should emit treeItemMoved when itemMoved is called', () => {
+      const spy = vi.spyOn(component.treeItemMoved, 'emit');
+      const event = {
+        itemId: 't-1',
+        fromGroupId: 'g-1',
+        toGroupId: 'g-2',
+        newOrder: 0,
+      };
+      component.itemMoved(event);
+      expect(spy).toHaveBeenCalledWith(event);
+    });
+  });
+
+  describe('Payment & Selection', () => {
+    it('should emit markedCheckbox when onTemplateChecked is called', () => {
+      const spy = vi.spyOn(component.markedCheckbox, 'emit');
+      component.onTemplateChecked(['t-1', 't-2']);
+      expect(spy).toHaveBeenCalledWith(['t-1', 't-2']);
+    });
+
+    it('should emit selectedItem and headerButtonAction on singleItemSelected', () => {
+      const itemSpy = vi.spyOn(component.selectedItem, 'emit');
+      const headerSpy = vi.spyOn(component.headerButtonAction, 'emit');
+      component.singleItemSelected('t-1');
+      expect(itemSpy).toHaveBeenCalledWith('t-1');
+      expect(headerSpy).toHaveBeenCalledWith(HeaderCtaAction.Pay);
+    });
+
+    it('should emit headerButtonAction Pay on paySelected', () => {
+      const spy = vi.spyOn(component.headerButtonAction, 'emit');
+      component.paySelected();
+      expect(spy).toHaveBeenCalledWith(HeaderCtaAction.Pay);
+    });
+
+    it('should set isDistribution on paymentTypeChanged', () => {
+      component.paymentTypeChanged(true);
+      expect(component.isDistribution()).toBe(true);
+      component.paymentTypeChanged(false);
+      expect(component.isDistribution()).toBe(false);
+    });
+  });
+
+  describe('OTP Logic', () => {
+    it('should emit otpCloseEmit on onOtpClose', () => {
+      const spy = vi.spyOn(component.otpCloseEmit, 'emit');
+      component.onOtpClose();
+      expect(spy).toHaveBeenCalledWith(false);
+    });
+
+    it('should emit paymentDone on onSuccessDone', () => {
+      const spy = vi.spyOn(component.paymentDone, 'emit');
+      component.onSuccessDone();
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it('should emit verifyOtp on onOtpVerify', () => {
+      const spy = vi.spyOn(component.verifyOtp, 'emit');
+      const otpEvent = { otp: '123456' } as any;
+      component.onOtpVerify(otpEvent);
+      expect(spy).toHaveBeenCalledWith(otpEvent);
+    });
+  });
+
+  describe('Action Handler edge cases', () => {
+    it('should not throw when onActionHandler receives undefined', () => {
+      expect(() => component.onActionHandler(undefined)).not.toThrow();
+    });
+
+    it('should call all CRUD action handlers', () => {
+      const editSpy = vi.spyOn(component.editTemplateModal, 'emit');
+      component.onActionHandler(CrudActionType.RenameTemplate);
+      expect(editSpy).toHaveBeenCalled();
+
+      const deleteGroupSpy = vi.spyOn(component.deleteGroupModal, 'emit');
+      component.onActionHandler(CrudActionType.DeleteGroup);
+      expect(deleteGroupSpy).toHaveBeenCalled();
+
+      const renameGroupSpy = vi.spyOn(component.renameGroupModal, 'emit');
+      component.onActionHandler(CrudActionType.RenameGroup);
+      expect(renameGroupSpy).toHaveBeenCalled();
+
+      const paySpy = vi.spyOn(component.payAction, 'emit');
+      component.onActionHandler(CrudActionType.ConfirmPayment);
+      expect(paySpy).toHaveBeenCalled();
+    });
+  });
+
+  describe('Form Submit edge cases', () => {
+    it('should not emit formSubmit if activeForm is invalid', () => {
+      const spy = vi.spyOn(component.formSubmit, 'emit');
+      fixture.componentRef.setInput('activeModal', ModalType.Group);
+      const form = component.createGroupForm();
+      form.get('groupName')?.setErrors({ required: true });
+
+      component.onFormSubmit('create-group');
+      expect(spy).not.toHaveBeenCalled();
+    });
+
+    it('should not emit formSubmit for action submit types', () => {
+      const spy = vi.spyOn(component.formSubmit, 'emit');
+      fixture.componentRef.setInput('activeModal', ModalType.Group);
+      component.onFormSubmit('delete-template');
+      expect(spy).not.toHaveBeenCalled();
+    });
+
+    it('should return null activeForm when no modal is active', () => {
+      fixture.componentRef.setInput('activeModal', null);
+      expect(component.activeForm()).toBeNull();
+    });
+  });
 });

@@ -13,6 +13,9 @@ export const {
   selectIsCreateModalOpen,
   selectIsUpdatingFriendlyName,
   selectUpdateFriendlyNameError,
+  selectLastTransactions,
+  selectIsLoadingLastTransactions,
+  selectLastTransactionsError,
 } = accountsFeature;
 
 export const selectCurrentAccounts = createSelector(
@@ -70,3 +73,5 @@ export const selectGelAccountOptions = createSelector(
         isFavorite: acc.isFavorite,
       })),
 );
+
+

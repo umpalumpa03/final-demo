@@ -44,4 +44,26 @@ describe('ModalActions', () => {
     component.submit.emit();
     expect(spy).toHaveBeenCalled();
   });
+
+  describe('submitHandler', () => {
+    it('should emit submit when not disabled', () => {
+      const spy = vi.spyOn(component.submit, 'emit');
+      fixture.componentRef.setInput('isDisabled', false);
+      fixture.detectChanges();
+
+      component.submitHandler();
+
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it('should not emit submit when disabled', () => {
+      const spy = vi.spyOn(component.submit, 'emit');
+      fixture.componentRef.setInput('isDisabled', true);
+      fixture.detectChanges();
+
+      component.submitHandler();
+
+      expect(spy).not.toHaveBeenCalled();
+    });
+  });
 });

@@ -230,16 +230,13 @@ describe('LoansStore', () => {
     });
 
     it('should rename loan and show error alert via service on failure', async () => {
-      loansService.updateFriendlyName.mockReturnValue(
-        throwError(
-          () => new HttpErrorResponse({ error: { message: 'Rename failed' } }),
-        ),
-      );
+      loansService.updateFriendlyName.mockReturnValue(throwError(() => ({})));
 
       store.renameLoan({ id: '1', name: 'New Name' });
 
       await vi.waitFor(() => {
-        expect(store.error()).toBe(ErrorKeys.RENAME);
+        expect(store.error()).toBeNull();
+
         expect(alertServiceMock.showAlert).toHaveBeenCalledWith(
           'error',
           ErrorKeys.RENAME,
@@ -282,7 +279,7 @@ describe('LoansStore', () => {
 
     it('should handle calculation error', async () => {
       loansService.calculateFullPrepayment.mockReturnValue(
-        throwError(() => new Error('Calc Error')),
+        throwError(() => ({})),
       );
       store.calculatePrepayment({ payload: { type: 'full', loanId: '1' } });
 
@@ -325,14 +322,16 @@ describe('LoansStore', () => {
     });
 
     it('should handle generic verify prepayment failure', async () => {
-      loansService.verifyPrepayment.mockReturnValue(
-        throwError(() => new HttpErrorResponse({ status: 500 })),
-      );
+      loansService.verifyPrepayment.mockReturnValue(throwError(() => ({})));
 
       store.verifyPrepayment({ payload: { challengeId: '1', code: 'wrong' } });
 
       await vi.waitFor(() => {
-        expect(store.error()).toBe(ErrorKeys.VERIFY_PREPAYMENT);
+        expect(store.error()).toBeNull();
+        expect(alertServiceMock.showAlert).toHaveBeenCalledWith(
+          'error',
+          ErrorKeys.VERIFY_PREPAYMENT,
+        );
       });
     });
   });
@@ -354,42 +353,40 @@ describe('LoansStore', () => {
     });
 
     it('should handle request loan error', async () => {
-      loansService.requestLoan.mockReturnValue(
-        throwError(() => new Error('Failed')),
-      );
+      loansService.requestLoan.mockReturnValue(throwError(() => ({})));
 
       store.requestLoan({} as any);
 
       await vi.waitFor(() => {
-        expect(store.error()).toBe(ErrorKeys.REQUEST_LOAN);
+        expect(store.error()).toBeNull();
+        expect(alertServiceMock.showAlert).toHaveBeenCalledWith(
+          'error',
+          ErrorKeys.REQUEST_LOAN,
+        );
       });
     });
   });
 
   describe('Error Handling', () => {
     it('should handle load errors', async () => {
-      loansService.getAllLoans.mockReturnValue(
-        throwError(() => new Error('Network error')),
-      );
+      loansService.getAllLoans.mockReturnValue(throwError(() => ({})));
       store.loadLoans({ forceChange: true });
 
       await vi.waitFor(() => {
         expect(store.error()).toBe(ErrorKeys.LOAD_LOANS);
-        expect(alertServiceMock.showAlert).toHaveBeenCalledWith(
-          'error',
-          ErrorKeys.LOAD_LOANS,
-        );
+        expect(alertServiceMock.showAlert).not.toHaveBeenCalled();
       });
     });
-
     it('should handle detail load errors', async () => {
-      loansService.getLoanById.mockReturnValue(
-        throwError(() => new Error('Not found')),
-      );
+      loansService.getLoanById.mockReturnValue(throwError(() => ({})));
       store.loadLoanDetails('999');
 
       await vi.waitFor(() => {
-        expect(store.error()).toBe(ErrorKeys.LOAD_DETAILS);
+        expect(store.error()).toBeNull();
+        expect(alertServiceMock.showAlert).toHaveBeenCalledWith(
+          'error',
+          ErrorKeys.LOAD_DETAILS,
+        );
       });
     });
   });

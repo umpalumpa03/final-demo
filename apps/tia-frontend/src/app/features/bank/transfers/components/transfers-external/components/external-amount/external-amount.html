@@ -112,7 +112,8 @@
   (done)="onSuccessDone()"
 ></app-success-modal>
 
-<app-ui-modal [isOpen]="requiresOtp()" (closed)="onOtpClose()">
+@if(requiresOtp()) {
+  <app-ui-modal [isOpen]="requiresOtp()" (closed)="onOtpClose()">
   @if(isLoading() && !noAttemptsLeft()) {
   <div class="external-amount__otp-loader">
     <app-route-loader variant="pulsing"></app-route-loader>
@@ -121,12 +122,10 @@
   <app-otp-verification
     type="otp"
     (isVerifyCalled)="onOtpVerify($event)"
-    (isResendCalled)="resendOtp($event)"
+    (isResendCalled)="resendOtp()"
     timerType="otp"
     (onBackOut)="onOtpClose()"
-    [timeLimit]="1"
     [errorMessage]="errorFromState()"
-    [customRemainingAttempts]="3"
     [inputOtpConfig]="otpConfig"
     [isBtnRowDirection]="true"
     (customError)="handleNoMoreAttempts()"
@@ -134,6 +133,7 @@
     redirectText="Transfers Page"
   ></app-otp-verification>
 </app-ui-modal>
+}
 
 @if(isLoading() && !requiresOtp()) {
 <div class="external-amount__loader-overlay">

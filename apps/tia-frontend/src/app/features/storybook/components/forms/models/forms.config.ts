@@ -34,7 +34,8 @@ export const REGISTATION_FORM = {
     label: 'auth.sign-up.birthDate',
     required: false,
     min: '1990-01-01',
-    max: '2008-12-31'
+    max: '2008-12-31',
+    errorMessage: 'You must be at least 18 years old',
   },
 } as const;
 

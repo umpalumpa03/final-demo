@@ -83,10 +83,9 @@
       <div class="bank-dashboard__content">
         @switch (item.type) { @case ('transactions') {
         <app-widget-transactions [isLarge]="$index === 0" /> } @case
-        ('accounts') { <app-widget-accounts [isLarge]="$index === 0" /> } @case
+        ('accounts') { <app-widget-accounts [isLarge]="$index === 0" [balancesHidden]="accountsHidden()" /> } @case
         ('exchange') { <app-widget-exchange [isLarge]="$index === 0" /> } }
       </div>
-      <!-- aq inputad mieci accounts ro gaigo hiddenia tu ara parentidan chagawodeb -->
       }
     </app-draggable-card>
     }
@@ -125,6 +124,8 @@
     (closed)="onBirthdayDismiss()"
     [hideExit]="true"
   >
-    <app-birthday-modal (dismiss)="onBirthdayDismiss()"></app-birthday-modal>
+    @if (isBirthdayVisible()) {
+      <app-birthday-modal (dismiss)="onBirthdayDismiss()"></app-birthday-modal>
+    }
   </app-ui-modal>
 </div>

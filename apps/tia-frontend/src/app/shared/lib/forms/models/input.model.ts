@@ -11,6 +11,17 @@ export type TextInputType =
   | 'url'
   | 'tel';
 
+export interface CalendarDay {
+  date: Date;
+  day: number;
+  isCurrentMonth: boolean;
+  isToday: boolean;
+  isSelected: boolean;
+  isDisabled: boolean;
+}
+
+export type DatePickerView = 'calendar' | 'months' | 'years';
+
 export type InputFieldValue = string | number | boolean | FileList | null;
 
 export interface FormStatus {

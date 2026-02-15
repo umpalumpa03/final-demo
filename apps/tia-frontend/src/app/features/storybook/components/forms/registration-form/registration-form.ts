@@ -30,6 +30,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { map, startWith } from 'rxjs';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { translateConfig } from '@tia/shared/utils/translate-config/config-translator.util';
+import { maxDateValidator } from '@tia/shared/lib/forms/input-field/date-picker/date-validator/date.validator';
 
 @Component({
   selector: 'app-registration-form',
@@ -46,6 +47,8 @@ export class RegistrationForm {
   public readonly emailError = input<boolean | null>(null);
   public readonly passwordTouched = signal<boolean>(false);
   public readonly passwordInteracted = signal<boolean>(false);
+
+  private readonly maxBirthDate = REGISTATION_FORM.birthDate.max;
 
   private readonly fb = inject(FormBuilder);
   public readonly submitRegistrationForm = output<IRegistrationForm>();
@@ -71,14 +74,25 @@ export class RegistrationForm {
 
   public inputConfig = toSignal(
     this.translate.onLangChange.pipe(
-      startWith({
-        lang: this.translate.getCurrentLang(),
-        translation: null,
-      }),
+      startWith({ lang: this.translate.getCurrentLang() }),
       map(() => {
-        return translateConfig(REGISTATION_FORM, (key) =>
+        const config = translateConfig(REGISTATION_FORM, (key) =>
           this.translate.instant(key),
         );
+
+        if (config.birthDate) {
+          config.birthDate = {
+            ...config.birthDate,
+            errorMessage: this.translate.instant(
+              'auth.sign-up.errors.too_young',
+              {
+                date: REGISTATION_FORM.birthDate.max,
+              },
+            ),
+          };
+        }
+
+        return config;
       }),
     ),
     {
@@ -87,7 +101,6 @@ export class RegistrationForm {
       ),
     },
   );
-
   constructor() {
     effect(() => {
       this.passwordValue();
@@ -107,7 +120,9 @@ export class RegistrationForm {
         }
       };
 
-      ['firstName', 'lastName', 'email', 'username', 'birthday'].forEach(toggle);
+      ['firstName', 'lastName', 'email', 'username', 'birthday'].forEach(
+        toggle,
+      );
     });
 
     effect(() => {
@@ -122,15 +137,28 @@ export class RegistrationForm {
 
   public registrationForm = this.fb.nonNullable.group(
     {
-      firstName: ['', [Validators.required, Validators.minLength(2), spaceValidator()]],
-      lastName: ['', [Validators.required, Validators.minLength(2), spaceValidator()]],
+      firstName: [
+        '',
+        [Validators.required, Validators.minLength(2), spaceValidator()],
+      ],
+      lastName: [
+        '',
+        [Validators.required, Validators.minLength(2), spaceValidator()],
+      ],
       email: ['', [Validators.required, Validators.email]],
-      birthday: ['', Validators.required],
+      birthday: [
+        '',
+        [Validators.required, maxDateValidator(this.maxBirthDate)],
+      ],
       password: ['', [passwordValidator]],
       confirmPassword: ['', [Validators.required]],
       username: [
         '',
-        [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]{2,}$/), spaceValidator()],
+        [
+          Validators.required,
+          Validators.pattern(/^[a-zA-Z0-9_]{2,}$/),
+          spaceValidator(),
+        ],
       ],
     },
     {
@@ -306,11 +334,10 @@ export class RegistrationForm {
       return;
     }
 
-    const birthDay = this.registrationForm
-        .value.birthday
-        ?.split('-')
-        .reverse()
-        .join('-');
+    const birthDay = this.registrationForm.value.birthday
+      ?.split('-')
+      .reverse()
+      .join('-');
 
     const regRequest = {
       ...this.registrationForm.value,

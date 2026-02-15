@@ -23,7 +23,7 @@ describe('User Management Integration', () => {
   });
 
   it('should load all users successfully', async () => {
-    ctx.store.loadUsers();
+    ctx.store.loadUsers({});
     expect(ctx.store.loading()).toBe(true);
 
     const req = ctx.httpMock.expectOne(apiUrl);
@@ -79,6 +79,7 @@ describe('User Management Integration', () => {
       firstName: 'Johnny',
       lastName: 'Doe',
       role: 'SUPPORT',
+      pId: '12345678912',
       isBlocked: false,
     };
 

@@ -37,9 +37,9 @@ import { distinctUntilChanged, tap } from 'rxjs';
 import { InputFieldValue } from '@tia/shared/lib/forms/models/input.model';
 import { PaybillDynamicField } from '../../../../services/paybill-dynamic-form/models/dynamic-form.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { OtpVerification } from '@tia/core/auth/shared/otp-verification/otp-verification';
 import { SuccessModal } from '@tia/shared/lib/overlay/ui-success-modal/ui-success-modal';
 import { payBillOtpConfig } from '../../configs/otp.config';
+import { OtpVerification } from '@tia/core/otp-verification/container/otp-verification';
 import { DeleteConfirmModal } from '../modals/delete-confirm-modal/delete-confirm-modal';
 import { ConfirmPaymentModal } from '../modals/confirm-payment-modal/confirm-payment-modal';
 import { CreateTemplateModal } from '../modals/create-template-modal/create-template-modal';
@@ -112,6 +112,8 @@ export class PaybillTemplates implements OnInit {
   public itemMoved(event: TreeItemMoved) {
     this.treeItemMoved.emit(event);
   }
+
+  public resetTreeState = input<boolean>(false);
 
   // Create Form Effect to reset form on modal open/close
   constructor() {
@@ -264,14 +266,30 @@ export class PaybillTemplates implements OnInit {
     this.isDistribution.set(value);
   }
 
-  // Otp Logic (Need to be fixed) WAITING
+  // OTP Logic
   public isOtpModalOpen = input<boolean>(false);
   public isPaymentModalHidden = input<boolean>(false);
-
+  public succesModalHidden = input<boolean>(false);
+  public otpCloseEmit = output<boolean>();
+  public paymentDone = output<void>();
   public otpConfig = payBillOtpConfig;
 
-  // ANY IMITOM ROM ARVICIT RAIQNEBA BEQASGAN
+  // need to be fixed
   public resendOtp(event: any): void {
     console.log(event);
+  }
+
+  public onOtpClose() {
+    this.otpCloseEmit.emit(false);
+  }
+
+  public onSuccessDone(): void {
+    this.paymentDone.emit();
+  }
+
+  public verifyOtp = output<string>();
+
+  public onOtpVerify(otp: string): void {
+    this.verifyOtp.emit(otp);
   }
 }

@@ -1,5 +1,3 @@
-import { IFeaturePanel } from '../models/auth.models';
-
 export const SIGN_IN_FORM = {
   username: {
     label: 'auth.sign-in.username',
@@ -11,19 +9,6 @@ export const SIGN_IN_FORM = {
   },
   checkbox: {
     label: 'auth.sign-in.checkbox',
-  },
-} as const;
-
-export const OTP_VERIFY_FORM = {
-  otp: {
-    label: 'auth.otp-sign-in.otpPlaceholder',
-    length: 4,
-    errorMessage: ' ',
-  },
-  phone: {
-    label: 'auth.otp-sign-up.otpPlaceholder',
-    errorMessage: 'auth.otp-sign-up.errorMessage',
-    placeholder: '(555) 0000-0000',
   },
 } as const;
 
