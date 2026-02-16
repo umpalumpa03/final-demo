@@ -12,16 +12,20 @@ import { ApproveCardsStore } from '../store/approve-cards.store';
 import { CardsApproveElement } from '../../../shared/ui/approve-ui/approve-card-element/cards-approve-element';
 import { buttonEmit } from '../../../shared/models/approve-models/cards-models/approve-card-element.model';
 import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
-import { Spinner } from '@tia/shared/lib/feedback/spinner/spinner';
 import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
 import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 import { PermissionsModal } from '../../../shared/ui/approve-ui/permissions-modal/permissions-modal';
 import { FormBuilder, FormControl, FormRecord } from '@angular/forms';
-import { CardPermission, PendingCard } from '../../../shared/models/approve-models/cards-models/approve-cards.model';
+import {
+  CardPermission,
+  PendingCard,
+} from '../../../shared/models/approve-models/cards-models/approve-cards.model';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { ScrollArea } from '@tia/shared/lib/layout/components/scroll-area/container/scroll-area';
-import { ApproveCardsState } from '../shared/state/approve-cards.state';
 import { IAccountsPermissions } from '../../../shared/models/approve-models/accounts-models/account-permissions.models';
+import * as CardsActions from '../../../../../../store/products/cards/cards.actions';
+import { Store } from '@ngrx/store';
+import { ApproveCardsState } from '../shared/state/approve-cards.state';
 
 @Component({
   selector: 'app-approve-cards',
@@ -43,6 +47,7 @@ export class ApproveCards implements OnInit {
   public readonly store = inject(ApproveCardsStore);
   public readonly fb = inject(FormBuilder);
   public readonly userState = inject(ApproveCardsState);
+  public readonly ngrxStore = inject(Store);
 
   public cardInfo = signal<PendingCard[]>([]);
 
@@ -129,7 +134,7 @@ export class ApproveCards implements OnInit {
   }
 
   private handlePermissions(id: string): void {
-    this.store.loadPerrmisions();
+    this.store.loadPermissions();
 
     if (
       this.permissionsSavedCard() !== null &&
@@ -153,10 +158,10 @@ export class ApproveCards implements OnInit {
 
     this.closeModal();
   }
-
   private handleApprove(id: string): void {
+    let permissions: CardPermission[] = [];
+
     if (this.permissionsSavedCard() === id) {
-      let permissions: CardPermission[] = [];
       const rawValues = this.cardPermissionsForm.getRawValue();
 
       Object.entries(rawValues).forEach(([key, isEnabled]) => {
@@ -164,11 +169,13 @@ export class ApproveCards implements OnInit {
           permissions.push(key as CardPermission);
         }
       });
+
       this.store.updateStatus({
         cardId: id,
         status: 'ACTIVE',
         permissions: permissions,
       });
+
       this.clearPermissionsState();
     } else {
       this.store.updateStatus({
@@ -177,6 +184,12 @@ export class ApproveCards implements OnInit {
         permissions: [],
       });
     }
+
+    this.ngrxStore.dispatch(
+      CardsActions.loadCardAccounts({
+        forceRefresh: true,
+      }),
+    );
   }
 
   private handleDecline(id: string): void {

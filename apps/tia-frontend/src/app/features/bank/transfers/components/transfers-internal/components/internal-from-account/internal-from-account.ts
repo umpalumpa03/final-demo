@@ -30,6 +30,7 @@ import { TransferInternalService } from 'apps/tia-frontend/src/app/features/bank
 import { BreakpointService } from 'apps/tia-frontend/src/app/core/services/breakpoints/breakpoint.service';
 import { DisabledReason } from 'apps/tia-frontend/src/app/features/bank/transfers/components/transfers-internal/models/transfers.internal.model';
 import { AlertService } from 'apps/tia-frontend/src/app/core/services/alert/alert.service';
+import { Tooltip } from '@tia/shared/lib/data-display/tooltip/tooltip';
 
 @Component({
   selector: 'app-internal-from-account',
@@ -39,6 +40,7 @@ import { AlertService } from 'apps/tia-frontend/src/app/core/services/alert/aler
     ErrorStates,
     RouteLoader,
     ButtonComponent,
+    Tooltip
   ],
   templateUrl: './internal-from-account.html',
   styleUrl: './internal-from-account.scss',

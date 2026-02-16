@@ -8,14 +8,15 @@ import {
 } from '@angular/core';
 import { LoanVerifyState } from '../../../state/loan-verify.state';
 import { LOANS_ROUTES } from '../../../config/loans-redirect.config';
-import { NavigationStart, Router } from '@angular/router';
+import { NavigationSkipped, NavigationStart, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter, tap } from 'rxjs';
 import { OtpVerification } from '@tia/core/otp-verification/container/otp-verification';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-verify',
-  imports: [CommonModule, OtpVerification],
+  imports: [CommonModule, OtpVerification, TranslatePipe],
   templateUrl: './verify.html',
   styleUrl: './verify.scss',
   providers: [LoanVerifyState],
@@ -38,7 +39,11 @@ export class Verify {
   constructor() {
     this.router.events
       .pipe(
-        filter((event) => event instanceof NavigationStart),
+        filter(
+          (event) =>
+            event instanceof NavigationStart ||
+            event instanceof NavigationSkipped,
+        ),
         takeUntilDestroyed(),
         tap(() => this.closeModal.emit()),
       )
@@ -46,6 +51,7 @@ export class Verify {
   }
 
   public onVerify(otp: string): void {
+    this.verify.emit(otp);
     this.verify.emit(otp);
   }
 

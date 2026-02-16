@@ -1,5 +1,6 @@
 {
   "title": "Transfers",
+  "page": "Transfers Page",
   "description": "Send money between accounts or to other recipients",
   "types": {
     "internal": "Between Own Accounts",
@@ -37,6 +38,9 @@
         "header": "Failed to Load Your Accounts",
         "message": "Your accounts could not be loaded. Please try again."
       },
+      "accountsError": {
+        "retry": "Retry"
+      },
       "swap": {
         "noRecipientSelected": "Please select a recipient account to swap",
         "noPermission": "Selected account doesn't have permission to transfer funds"
@@ -62,6 +66,11 @@
       "description": {
         "label": "Description (optional)",
         "placeholder": "Add a note for this transfer"
+      },
+      "success": {
+        "title": "Transfer Successful!",
+        "message": "Your transfer has been completed successfully",
+        "button": "Done"
       }
     },
     "stepper": {

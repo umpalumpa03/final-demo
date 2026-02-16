@@ -14,7 +14,7 @@
   nav {
     @include display-flex(row, wrap);
     background-color: $white;
-    border: 0.1rem solid $blue-400;
+    border: 0.1rem solid var(--color-primary);
     border-radius: 1rem;
     padding: 0.4rem 0.16rem;
     width: 100%;

@@ -1,9 +1,9 @@
-import { createAction, emptyProps, props } from '@ngrx/store';
+import { createAction, props } from '@ngrx/store';
 import { ExchangeRateInterface } from 'apps/tia-frontend/src/app/store/exchange-rates/models/exchange-rates.models';
 
 export const loadExchangeRates = createAction(
   '[EXCHANGE_RATES] Load Exchange Rates',
-  props<{ baseCurrency?: string }>()
+  props<{ baseCurrency?: string; forceRefresh?: boolean }>()
 );
 
 export const loadExchangeRatesSuccess = createAction(

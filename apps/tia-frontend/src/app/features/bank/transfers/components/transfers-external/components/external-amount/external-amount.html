@@ -128,7 +128,7 @@
     [inputOtpConfig]="otpConfig"
     [isBtnRowDirection]="true"
     redirectUrl="/bank/transfers"
-    redirectText="Transfers Page"
+    [redirectText]="'transfers.page' | translate"
   ></app-otp-verification>
 </app-ui-modal>
 } @if(isLoading() && !requiresOtp()) {

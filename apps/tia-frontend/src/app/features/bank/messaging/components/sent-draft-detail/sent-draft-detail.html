@@ -60,7 +60,7 @@ reply.id) {
       ></app-library-title>
     </header>
     <footer class="delete-account__footer">
-      <app-button variant="outline" (click)="onCancelDelete()"
+      <app-button variant="outline" (click)="onCancelDelete()" [isDisabled]="isDeleting()"
         >{{ 'messaging.deleteModal.cancel' | translate }}</app-button
       >
       <app-button

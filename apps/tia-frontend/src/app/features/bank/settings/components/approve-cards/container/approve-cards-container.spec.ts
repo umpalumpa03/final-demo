@@ -5,6 +5,7 @@ import { ApproveCardsStore } from '../store/approve-cards.store';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { signal } from '@angular/core';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { provideMockStore } from '@ngrx/store/testing';
 
 describe('ApproveCardsContainer', () => {
   let component: ApproveCardsContainer;
@@ -14,38 +15,37 @@ describe('ApproveCardsContainer', () => {
 
   beforeEach(async () => {
     stateMock = {
-      newConfig: vi.fn(() => ({
+      newConfig: signal({
+        title: 'Approve Cards',
+        subtitle: 'Manage card requests',
         alertMessages: {
           successDesc: 'Success',
           errorDesc: 'Error'
         }
-      })),
+      }),
     };
 
     storeMock = {
       cards: signal([]),
       isLoading: signal(false),
+      isPermissionsLoading: signal(false),
       error: signal(null),
       success: signal(null),
       permissions: signal([]),
       count: signal(0),
       load: vi.fn(),
-      loadPerrmisions: vi.fn()
+      loadPermissions: vi.fn()
     };
 
     await TestBed.configureTestingModule({
       imports: [ApproveCardsContainer],
+      providers: [
+        provideMockStore({}),
+        { provide: ApproveCardsState, useValue: stateMock },
+        { provide: ApproveCardsStore, useValue: storeMock }
+      ],
       schemas: [NO_ERRORS_SCHEMA]
-    })
-    .overrideComponent(ApproveCardsContainer, {
-      set: {
-        providers: [
-          { provide: ApproveCardsState, useValue: stateMock },
-          { provide: ApproveCardsStore, useValue: storeMock }
-        ]
-      }
-    })
-    .compileComponents();
+    }).compileComponents();
 
     fixture = TestBed.createComponent(ApproveCardsContainer);
     component = fixture.componentInstance;
@@ -58,6 +58,6 @@ describe('ApproveCardsContainer', () => {
 
   it('should inject ApproveCardsState', () => {
     expect(component.userState).toBeDefined();
-    expect(component.userState).toEqual(stateMock);
+    expect(component.userState.newConfig()).toEqual(stateMock.newConfig());
   });
 });

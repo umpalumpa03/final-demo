@@ -121,7 +121,7 @@ describe('WidgetAccounts', () => {
     fixture.detectChanges();
     const el = fixture.nativeElement as HTMLElement;
     expect(el.querySelector('app-error-states')).toBeTruthy();
-    expect(el.textContent).toContain('Failed to load');
+    expect(el.textContent).toContain('dashboard.widgets.accounts.error.header');
   });
 
   it('should show empty state when no accounts', () => {
@@ -131,7 +131,7 @@ describe('WidgetAccounts', () => {
     store.refreshState();
     fixture.detectChanges();
     const el = fixture.nativeElement as HTMLElement;
-    expect(el.textContent).toContain('Empty');
+    expect(el.textContent).toContain('dashboard.widgets.accounts.empty.header');
   });
 
   it('should render trendline when account has trendline', () => {

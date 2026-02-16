@@ -27,6 +27,7 @@
     &__checkbox {
         @include flex-center();
         gap: 0.5rem;
+        cursor: pointer;
     }
 
     &__action {

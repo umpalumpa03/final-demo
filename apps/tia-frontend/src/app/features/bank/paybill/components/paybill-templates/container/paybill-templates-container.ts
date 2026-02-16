@@ -512,23 +512,19 @@ export class PaybillTemplatesContainer implements OnInit {
   public isSuccessModalVisible = signal(false);
   public selectPaymentsForm = this.store.selectSignal(selectFormPayload);
   public selectTotalAmount = this.store.selectSignal(selectTotalAmount);
+
   // Payment Logic
   public onPayAction(): void {
-    if (this.selectTotalAmount() > 50) {
-      this.actions$
-        .pipe(ofType(TemplatesPageActions.payManyBillsSuccess), take(1))
-        .subscribe(() => {
-          this.isPaymentModalVisible.set(true);
+    this.actions$
+      .pipe(ofType(TemplatesPageActions.payManyBillsSuccess), take(1))
+      .subscribe(() => {
+        this.isPaymentModalVisible.set(true);
+        if (this.selectTotalAmount() > 50) {
           this.isOtpModalOpen.set(true);
-        });
-    } else {
-      this.actions$
-        .pipe(ofType(TemplatesPageActions.payManyBillsSuccess), take(1))
-        .subscribe(() => {
-          this.isPaymentModalVisible.set(true);
+        } else {
           this.isSuccessModalVisible.set(true);
-        });
-    }
+        }
+      });
 
     this.store.dispatch(
       TemplatesPageActions.payManyBills({
@@ -538,18 +534,21 @@ export class PaybillTemplatesContainer implements OnInit {
   }
 
   public onOtpClose(event: boolean): void {
-    this.isOtpModalOpen.set(event);
-    this.isPaymentModalVisible.set(false);
+    this.resetPaymentState();
   }
 
-  public onPaymentDone(): void {
+  public resetPaymentState() {
     this.isOtpModalOpen.set(false);
     this.isPaymentModalVisible.set(false);
     this.isSuccessModalVisible.set(false);
     this.isModalOpen.set(false);
     this.modalType.set(null);
-    this.store.dispatch(TemplatesPageActions.clearPaymentInfo());
     this.resetTree.set(true);
+  }
+
+  public onPaymentDone(): void {
+    this.resetPaymentState();
+    this.store.dispatch(TemplatesPageActions.clearPaymentInfo());
   }
 
   public onVerifyOtp(otp: string): void {

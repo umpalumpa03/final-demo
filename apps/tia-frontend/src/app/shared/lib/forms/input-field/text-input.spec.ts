@@ -114,6 +114,66 @@ describe('TextInput', () => {
       expect(component['value']()).toBe('2023-12-31');
     });
 
+    it('should prioritize raw input value over model value while typing', () => {
+      component['internalRawValue'].set('2025/');
+      component['value'].set(null);
+
+      expect(component['getDisplayValue']()).toBe('2025/');
+
+      component['internalRawValue'].set(null);
+      component['value'].set(null);
+
+      expect(component['getDisplayValue']()).toBe('');
+    });
+
+    it('should handle number input with edge cases (empty, dot, negative)', () => {
+      fixture.componentRef.setInput('type', 'number');
+      fixture.detectChanges();
+
+      const spy = vi.spyOn(component.valueChange, 'emit');
+
+      simulateInput('');
+      expect(spy).toHaveBeenCalledWith(null);
+
+      simulateInput('.');
+      expect(spy).toHaveBeenCalledWith(null);
+
+      simulateInput('-');
+      expect(spy).toHaveBeenCalledWith(null);
+
+      simulateInput('42.5');
+      expect(component['value']()).toBe('42.5');
+      expect(spy).toHaveBeenCalledWith(42.5);
+    });
+
+    it('should handle blur event and reset caps lock state', () => {
+      fixture.componentRef.setInput('type', 'password');
+      fixture.detectChanges();
+
+      const input = fixture.nativeElement.querySelector('input');
+      const capsEvent = new KeyboardEvent('keydown', {
+        key: 'A',
+        bubbles: true,
+      });
+
+      Object.defineProperty(capsEvent, 'getModifierState', {
+        value: vi.fn(() => true),
+      });
+
+      input.dispatchEvent(capsEvent);
+      fixture.detectChanges();
+      expect(component['isCapsLockOn']()).toBe(true);
+
+      component['internalRawValue'].set('temp');
+
+      const blurEvent = new FocusEvent('blur');
+      input.dispatchEvent(blurEvent);
+      fixture.detectChanges();
+
+      expect(component['isCapsLockOn']()).toBe(false);
+      expect(component['internalRawValue']()).toBeNull();
+    });
+
     it('should handle date selection from picker', () => {
       const spy = vi.spyOn(component.valueChange, 'emit');
       component['handleDateSelected']('2023-10-10');

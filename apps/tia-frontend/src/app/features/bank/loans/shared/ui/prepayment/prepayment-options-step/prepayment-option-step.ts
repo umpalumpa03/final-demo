@@ -19,6 +19,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { LoansStore } from '../../../../store/loans.store';
 import { LoanPrepaymentState } from '../../../state/loan-prepayment.state';
 import { tap } from 'rxjs';
+import { Tooltip } from '@tia/shared/lib/data-display/tooltip/tooltip';
 
 @Component({
   selector: 'app-prepayment-option-step',
@@ -30,6 +31,7 @@ import { tap } from 'rxjs';
     CommonModule,
     ReactiveFormsModule,
     TranslatePipe,
+    Tooltip,
   ],
   templateUrl: './prepayment-option-step.html',
   styleUrl: './prepayment-option-step.scss',

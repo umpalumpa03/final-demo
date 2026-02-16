@@ -63,7 +63,13 @@
         gap: 1.6rem;
 
         @media (max-width: 600px) {
-            flex-direction: column;
+            flex-direction: column-reverse;
+
+            > div,
+            app-tooltip,
+            app-tooltip > div {
+                width: 100%;
+            }
         }
     }
 }

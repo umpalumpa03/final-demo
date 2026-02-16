@@ -26,6 +26,10 @@ export class LoanPrepaymentState {
     hasBorder: true,
   });
 
+  public buttonTooltip = signal(
+    this.translate.instant('loans.prepayment_wizard.tooltips.form_invalid'),
+  );
+
   public radioOptions = signal<RadioOption[]>([
     {
       label: this.translate.instant(

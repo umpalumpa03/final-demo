@@ -104,6 +104,9 @@ export class SentDraftDetail {
   }
 
   public onCancelDelete(): void {
+    if (this.isDeleting()) {
+      return;
+    }
     this.isDeleteModalOpen.set(false);
   }
 

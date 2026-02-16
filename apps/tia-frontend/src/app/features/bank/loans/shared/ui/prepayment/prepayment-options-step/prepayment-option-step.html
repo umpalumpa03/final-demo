@@ -27,13 +27,28 @@
     </form>
 
     <footer class="prepayment-step__footer">
-        <app-button variant="outline" (click)="cancel.emit()">
-            {{ 'loans.buttons.cancel' | translate }}
-        </app-button>
+        <div>
+            <app-button variant="outline" [fullWidth]="true" (click)="cancel.emit()">
+                {{ 'loans.buttons.cancel' | translate }}
+            </app-button>
+        </div>
 
-        <app-button [icon]="isLoading() ? null : './calculate.svg'" [isDisabled]="form.invalid || isLoading()"
-            [isLoading]="isLoading()" (click)="onCalculate()">
-            {{ 'loans.prepayment_wizard.step_setup.button' | translate }}
-        </app-button>
+        @if (form.invalid) {
+        <app-tooltip [content]="cfg.buttonTooltip()" placement="top">
+            <div>
+                <app-button [icon]="isLoading() ? null : './calculate.svg'" [fullWidth]="true"
+                    [isDisabled]="form.invalid || isLoading()" [isLoading]="isLoading()" (click)="onCalculate()">
+                    {{ 'loans.prepayment_wizard.step_setup.button' | translate }}
+                </app-button>
+            </div>
+        </app-tooltip>
+        } @else {
+        <div>
+            <app-button [icon]="isLoading() ? null : './calculate.svg'" [fullWidth]="true"
+                [isDisabled]="form.invalid || isLoading()" [isLoading]="isLoading()" (click)="onCalculate()">
+                {{ 'loans.prepayment_wizard.step_setup.button' | translate }}
+            </app-button>
+        </div>
+        }
     </footer>
 </div>
