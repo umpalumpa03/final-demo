@@ -24,7 +24,8 @@
       "amount": "Amount",
       "policyNumber": "Policy Number",
       "meterNumber": "Meter Number",
-      "propertyCode": "Property Code"
+      "propertyCode": "Property Code",
+      "leaseNumber": "Lease Number"
     },
     "summary": {
       "customer_name": "Customer Name:",
@@ -111,7 +112,8 @@
       "insufficient_balance": "Balance is not enough",
       "invalid_account": "Account is not correct",
       "default_error": "There is a problem, please try again",
-      "invalid_category_path": "There was an error processing your request!"
+      "invalid_category_path": "There was an error processing your request!",
+      "exact_payment_required": "This bill requires an exact payment of {{amount}} GEL"
     },
     "navigate": "Go Back",
     "search-placeholder": "Search..."

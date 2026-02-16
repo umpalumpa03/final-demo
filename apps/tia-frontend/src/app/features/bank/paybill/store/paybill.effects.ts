@@ -39,6 +39,13 @@ import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions
 import { AlertService } from '@tia/core/services/alert/alert.service';
 import { TranslateService } from '@ngx-translate/core';
 import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
+import { HttpErrorResponse } from '@angular/common/http';
+
+export interface PaybillBackendError {
+  message: string;
+  error: string;
+  statusCode: number;
+}
 
 @Injectable()
 export class PaybillEffect {
@@ -82,11 +89,29 @@ export class PaybillEffect {
       'paybill.main.errors.invalid_category_path',
   };
 
-  private getErrorMessage(error: any): string {
-    if (typeof error?.error === 'string') return error.error;
-    if (error?.error?.message) return error.error.message;
-    if (error?.message) return error.message;
-    return 'paybill.main.form.default_error';
+  private getErrorMessage(error: HttpErrorResponse | string): string {
+    let rawMessage = '';
+
+    if (typeof error === 'string') {
+      rawMessage = error;
+    } else if (error instanceof HttpErrorResponse) {
+      const body = error.error as PaybillBackendError;
+      rawMessage = body?.message || error.message || '';
+    }
+
+    const exactPaymentRegex =
+      /This bill requires exact payment of ([\d.]+) GEL/;
+    const match = rawMessage.match(exactPaymentRegex);
+
+    if (match) {
+      const amount = match[1];
+      return this.translate.instant(
+        'paybill.main.errors.exact_payment_required',
+        { amount },
+      );
+    }
+
+    return rawMessage || 'paybill.main.form.default_error';
   }
 
   loadCategories$ = createEffect(() => {
@@ -354,12 +379,11 @@ export class PaybillEffect {
           PaybillActions.loadCategoriesFailure,
           PaybillActions.loadProvidersFailure,
           PaybillActions.resendOTPCodeFailure,
+          TemplatesPageActions.payManyBillsFailure,
         ),
         tap(({ error }) => {
-          const translationKey =
-            this.errorMapping[error] ||
-            error ||
-            'paybill.main.errors.default_error';
+          const processed = this.getErrorMessage(error);
+          const translationKey = this.errorMapping[processed] || processed;
           this.alertService.error(this.translate.instant(translationKey));
         }),
       );

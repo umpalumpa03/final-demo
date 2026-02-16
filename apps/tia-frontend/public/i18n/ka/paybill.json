@@ -23,7 +23,8 @@
       "amount": "თანხა",
       "policyNumber": "დაზღვევის კოდი",
       "meterNumber": "აპარატის კოდი",
-      "propertyCode": "საკადასტრო კოდი"
+      "propertyCode": "საკადასტრო კოდი",
+      "leaseNumber": "იჯარის კოდი"
     },
     "summary": {
       "customer_name": "აბონენტი:",
@@ -110,7 +111,8 @@
       "invalid_account": "აბონენტის ნომერი არასწორია",
       "default_error": "დაფიქსირდა შეცდომა, სცადეთ მოგვიანებით",
       "invalid_code": "კოდი არასწორია",
-      "invalid_category_path": "თქვენი მოთხოვნა ვერ გაიგზავნა!"
+      "invalid_category_path": "თქვენი მოთხოვნა ვერ გაიგზავნა!",
+      "exact_payment_required": "კომუნალურს სჭირდება {{amount}} ლარის ოდენობის თანხა"
     },
     "navigate": "უკან დაბრუნება",
     "search-placeholder": "ძიება..."
