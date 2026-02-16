@@ -104,25 +104,25 @@ describe('CardTransactions Integration', () => {
       imports: [CardTransactions, TranslateModule.forRoot()],
       providers: [
         provideMockStore({
-  initialState: {
-    cards: {
-      cardDetails: { 'card-1': mockCardData.details },
-      cardImages: { 'card-1': 'base64-image' },
-      accounts: [mockAccount],
-    },
-    accounts: { 
-      accounts: [mockAccount],
-    },
-    transactions: {
-      items: mockTransactions,
-      isLoading: false,
-      error: null,
-      nextCursor: null,
-      filters: { accountIban: '', pageLimit: 100 },
-      loaded: false,
-    },
-  },
-}),
+          initialState: {
+            cards: {
+              cardDetails: { 'card-1': mockCardData.details },
+              cardImages: { 'card-1': 'base64-image' },
+              accounts: [mockAccount],
+            },
+            accounts: {
+              accounts: [mockAccount],
+            },
+            transactions: {
+              items: mockTransactions,
+              isLoading: false,
+              error: null,
+              nextCursor: null,
+              filters: { accountIban: '', pageLimit: 100 },
+              loaded: false,
+            },
+          },
+        }),
         { provide: Router, useValue: { navigate: vi.fn() } },
         {
           provide: ActivatedRoute,
@@ -158,20 +158,20 @@ describe('CardTransactions Integration', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
-it('should load card and transaction data on init', () => {
-  const dispatchSpy = vi.spyOn(store, 'dispatch');
-  
-  store.overrideSelector(selectTransactionsLoaded, false);
-  store.overrideSelector(selectFilters, { accountIban: '', pageLimit: 100 });
-  store.refreshState();
-  
-  component.ngOnInit();
-  
-  expect(dispatchSpy).toHaveBeenCalledWith(
-    loadCardDetails({ cardId: mockCardId }),
-  );
-  expect(dispatchSpy).toHaveBeenCalledWith(TransactionActions.enter());
-});
+  it('should load card and transaction data on init', () => {
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+
+    store.overrideSelector(selectTransactionsLoaded, false);
+    store.overrideSelector(selectFilters, { accountIban: '', pageLimit: 100 });
+    store.refreshState();
+
+    component.ngOnInit();
+
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      loadCardDetails({ cardId: mockCardId }),
+    );
+    expect(dispatchSpy).toHaveBeenCalledWith(TransactionActions.enter());
+  });
 
   it('should display account name', async () => {
     const accountName = await firstValueFrom(component['accountName$']);
@@ -180,7 +180,10 @@ it('should load card and transaction data on init', () => {
   });
 
   it('should paginate transactions correctly', () => {
-    const paginatedTransactions = component['getPaginatedTransactions'](mockTransactions, 1);
+    const paginatedTransactions = component['getPaginatedTransactions'](
+      mockTransactions,
+      1,
+    );
 
     expect(paginatedTransactions.length).toBe(2);
     expect(paginatedTransactions[0].id).toBe('tx-1');
@@ -210,21 +213,24 @@ it('should load card and transaction data on init', () => {
   });
 
   it('should update filters when account iban changes', () => {
-  const dispatchSpy = vi.spyOn(store, 'dispatch');
-  
-  store.overrideSelector(selectTransactionsLoaded, false);
-  store.overrideSelector(selectFilters, { accountIban: 'DIFFERENT_IBAN', pageLimit: 100 }); 
-  store.refreshState();
-  
-  component.ngOnInit();
-  
-  expect(dispatchSpy).toHaveBeenCalledWith(TransactionActions.enter());
-  expect(dispatchSpy).toHaveBeenCalledWith(
-    TransactionActions.updateFilters({
-      filters: { accountIban: mockAccount.iban, pageLimit: 100 },
-    })
-  );
-});
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+
+    store.overrideSelector(selectTransactionsLoaded, false);
+    store.overrideSelector(selectFilters, {
+      accountIban: 'DIFFERENT_IBAN',
+      pageLimit: 100,
+    });
+    store.refreshState();
+
+    component.ngOnInit();
+
+    expect(dispatchSpy).toHaveBeenCalledWith(TransactionActions.enter());
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      TransactionActions.updateFilters({
+        filters: { accountIban: mockAccount.iban, pageLimit: 100 },
+      }),
+    );
+  });
 
   it('should show loading state initially', async () => {
     store.overrideSelector(selectIsLoading, true);
@@ -238,6 +244,7 @@ it('should load card and transaction data on init', () => {
   });
 
   it('should dispatch loadMore when cursor exists', () => {
+    vi.useFakeTimers();
     const dispatchSpy = vi.spyOn(store, 'dispatch');
 
     store.overrideSelector(selectNextCursor, 'cursor-123');
@@ -245,9 +252,11 @@ it('should load card and transaction data on init', () => {
 
     component['autoLoadAllTransactions']();
 
-    setTimeout(() => {
-      expect(dispatchSpy).toHaveBeenCalledWith(TransactionActions.loadMore());
-    }, 100);
+    vi.advanceTimersByTime(100);
+
+    expect(dispatchSpy).toHaveBeenCalledWith(TransactionActions.loadMore());
+
+    vi.useRealTimers();
   });
 
   it('should retry loading data', () => {
