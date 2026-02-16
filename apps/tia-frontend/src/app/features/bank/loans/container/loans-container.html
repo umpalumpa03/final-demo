@@ -60,7 +60,7 @@
         </app-loan-details>
         }
 
-        <app-ui-modal [isOpen]="store.isPrepaymentOpen()" (closed)="store.closeModals()">
+        <app-ui-modal [hasScroll]="true" [isOpen]="store.isPrepaymentOpen()" (closed)="store.closeModals()">
             @let prepayLoan = store.activePrepaymentLoan();
             @if (prepayLoan) {
             <app-prepayment-container [loan]="prepayLoan" (close)="store.closeModals()" />

@@ -1,0 +1,13 @@
+@use "../../../../../../../shared/styles/mixins" as *;
+
+.wizard-wrapper {
+    max-height: 75vh;
+    overflow-y: auto;
+    padding-right: 2.48rem;
+    @include display-flex(column);
+
+    > * {
+        width: 100%;
+        padding-right: 0;
+    }
+}

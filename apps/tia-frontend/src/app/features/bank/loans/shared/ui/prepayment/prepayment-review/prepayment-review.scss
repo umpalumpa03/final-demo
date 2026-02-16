@@ -38,7 +38,6 @@
         flex: 1;
         @include display-flex(column);
         gap: 2.4rem;
-        overflow-y: auto;
     }
 
     &__section {
@@ -92,6 +91,6 @@
 
     &__footer {
         @include flex-center($justify: flex-end, $align: flex-start);
-        gap: 0.8rem;
+        gap: 0.4rem;
     }
 }

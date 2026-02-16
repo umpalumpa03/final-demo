@@ -24,6 +24,7 @@ import { LoansStore } from '../../../../store/loans.store';
   selector: 'app-prepayment-container',
   imports: [CommonModule, PrepaymentOptionStep, PrepaymentReview, Verify],
   templateUrl: './prepayment-container.html',
+  styleUrl: './prepayment-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PrepaymentContainer implements OnInit {
