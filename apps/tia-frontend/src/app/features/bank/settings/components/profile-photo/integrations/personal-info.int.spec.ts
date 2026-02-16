@@ -10,7 +10,7 @@ import { PersonalInfoEffects } from '../../../../../../store/personal-info/perso
 import { personalInfoFeature } from '../../../../../../store/personal-info/personal-info.reducer';
 import { PersonalInfoActions } from '../../../../../../store/personal-info/pesronal-info.actions';
 import * as PersonalInfoSelectors from '../../../../../../store/personal-info/personal-info.selectors';
-import { firstValueFrom, take } from 'rxjs';
+import { firstValueFrom, take, timeout, skip } from 'rxjs';
 import { ofType } from '@ngrx/effects';
 
 describe('Personal Info Integration', () => {
@@ -69,14 +69,18 @@ describe('Personal Info Integration', () => {
 
     await successActionPromise;
 
-
     const state = await firstValueFrom(
-      store.select(PersonalInfoSelectors.selectPersonalInfo).pipe(take(1))
+      store
+        .select(PersonalInfoSelectors.selectPersonalInfo)
+        .pipe(skip(1), take(1), timeout(1000))
     );
 
-    expect(state.pId).toBe(newPId);
-    expect(state.loading).toBe(false);
-    expect(state.error).toBeNull();
+    expect(state).toBeTruthy();
+    if (state) {
+      expect(state.pId).toBe(newPId);
+      expect(state.loading).toBe(false);
+      expect(state.error).toBeNull();
+    }
   });
 
   it('should initiate phone update successfully', async () => {
@@ -85,9 +89,11 @@ describe('Personal Info Integration', () => {
 
     store.dispatch(PersonalInfoActions.loadPersonalInfoPhoneNumber({ phoneNumber: initialPhoneNumber }));
 
-    
+
     await firstValueFrom(
-      store.select(PersonalInfoSelectors.selectPersonalInfo).pipe(take(1))
+      store
+        .select(PersonalInfoSelectors.selectPersonalInfo)
+        .pipe(take(1), timeout(1000))
     );
 
     const successActionPromise = firstValueFrom(
@@ -108,15 +114,20 @@ describe('Personal Info Integration', () => {
 
     await successActionPromise;
 
-   
+
     const state = await firstValueFrom(
-      store.select(PersonalInfoSelectors.selectPersonalInfo).pipe(take(1))
+      store
+        .select(PersonalInfoSelectors.selectPersonalInfo)
+        .pipe(skip(1), take(1), timeout(1000))
     );
 
-    expect(state.phoneUpdateChallengeId).toBe(mockResponse.challengeId);
-    expect(state.phoneUpdateLoading).toBe(false);
-    expect(state.phoneUpdateError).toBeNull();
-    expect(state.phoneUpdatePendingPhone).toBe(newPhone);
-    expect(state.phoneNumber).toBe(initialPhoneNumber);
+    expect(state).toBeTruthy();
+    if (state) {
+      expect(state.phoneUpdateChallengeId).toBe(mockResponse.challengeId);
+      expect(state.phoneUpdateLoading).toBe(false);
+      expect(state.phoneUpdateError).toBeNull();
+      expect(state.phoneUpdatePendingPhone).toBe(newPhone);
+      expect(state.phoneNumber).toBe(initialPhoneNumber);
+    }
   });
 });
