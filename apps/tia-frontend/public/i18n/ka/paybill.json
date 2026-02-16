@@ -109,7 +109,8 @@
       "insufficient_balance": "ბალანსი არ არის საკმარისი",
       "invalid_account": "აბონენტის ნომერი არასწორია",
       "default_error": "დაფიქსირდა შეცდომა, სცადეთ მოგვიანებით",
-      "invalid_code": "კოდი არასწორია"
+      "invalid_code": "კოდი არასწორია",
+      "invalid_category_path": "თქვენი მოთხოვნა ვერ გაიგზავნა!"
     },
     "navigate": "უკან დაბრუნება",
     "search-placeholder": "ძიება..."

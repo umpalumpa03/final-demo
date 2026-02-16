@@ -75,7 +75,11 @@ export class PaybillEffect {
     'Invalid code': 'paybill.main.errors.invalid_code',
     'Account not found. Please check your account number.':
       'paybill.main.form.account_error',
-      'Cannot POST /paybill/resend-otp': 'common.alertMessages.otpResend'
+    'Cannot POST /paybill/resend-otp': 'common.alertMessages.otpResend',
+    "Category 'confirm-payment' not found. Available categories: phone, internet, utilities, insurance, rent":
+      'paybill.main.errors.invalid_category_path',
+    "Category 'otp-verification' not found. Available categories: phone, internet, utilities, insurance, rent":
+      'paybill.main.errors.invalid_category_path',
   };
 
   private getErrorMessage(error: any): string {
@@ -713,18 +717,16 @@ export class PaybillEffect {
       ofType(PaybillActions.resendOTPCode),
       switchMap(({ challengeId }) =>
         this.paybillService.resendOtp(challengeId).pipe(
-          map(() =>
-            PaybillActions.resendOTPCode({ challengeId })
-          ),
+          map(() => PaybillActions.resendOTPCode({ challengeId })),
           catchError((error) =>
             of(
               PaybillActions.resendOTPCodeFailure({
                 error: this.getErrorMessage(error),
-              })
+              }),
             ),
-          )
-        )
-      )
-    )
+          ),
+        ),
+      ),
+    ),
   );
 }

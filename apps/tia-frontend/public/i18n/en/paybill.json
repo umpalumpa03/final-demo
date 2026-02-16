@@ -110,7 +110,8 @@
     "errors": {
       "insufficient_balance": "Balance is not enough",
       "invalid_account": "Account is not correct",
-      "default_error": "There is a problem, please try again"
+      "default_error": "There is a problem, please try again",
+      "invalid_category_path": "There was an error processing your request!"
     },
     "navigate": "Go Back",
     "search-placeholder": "Search..."
