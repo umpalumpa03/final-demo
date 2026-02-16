@@ -52,11 +52,9 @@ import { QuickActionsSection } from '../components/quick-actions-section/quick-a
 import { CardViewData } from '../../../models/card-view-data.model';
 import { TranslatePipe } from '@ngx-translate/core';
 import { CardDetailsModal } from '../../card-details-modal/container/card-details-modal/card-details-modal';
-import { PillsComponent } from 'apps/tia-frontend/src/app/features/storybook/components/navigation/components/pills-component/pills-component';
 import { PillPaging } from '@tia/shared/ui/pill-paging/pill-paging';
 import { AlertService } from '@tia/core/services/alert/alert.service';
-import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
-import { selectLoading } from 'apps/tia-frontend/src/app/store/exchange-rates/exchange-rates.selectors';
+
 
 @Component({
   selector: 'app-card-details',
