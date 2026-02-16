@@ -89,7 +89,7 @@ describe('LoanManagementContainer', () => {
 
     expect(alertServiceMock.success).toHaveBeenCalledWith(
       'Loan approved',
-      { variant: 'dismissible', title: 'Success!' },
+      { variant: 'dismissible', title: 'settings.loan-management.alerts.titles.success' },
     );
     expect(clearSpy).toHaveBeenCalled();
   });
@@ -102,7 +102,7 @@ describe('LoanManagementContainer', () => {
 
     expect(alertServiceMock.error).toHaveBeenCalledWith(
       'Something went wrong',
-      { variant: 'dismissible', title: 'Oops!' },
+      { variant: 'dismissible', title: 'settings.loan-management.alerts.titles.error' },
     );
     expect(clearSpy).toHaveBeenCalled();
   });

@@ -50,7 +50,7 @@ describe('Loan Management Integration', () => {
 
     await vi.waitFor(() => {
       expect(ctx.store.loading()).toBe(false);
-      expect(ctx.store.error()).toBe('Access denied. Support role required.');
+      expect(ctx.store.error()).toBe('settings.loan-management.alerts.error.access_denied');
       expect(ctx.store.pendingApprovals().length).toBe(0);
     });
   });
@@ -121,7 +121,7 @@ describe('Loan Management Integration', () => {
     await vi.waitFor(() => {
       expect(ctx.store.actionLoading()).toBe(false);
       expect(ctx.store.selectedLoanId()).toBeNull();
-      expect(ctx.store.successMessage()).toBe('The loan has been approved.');
+      expect(ctx.store.successMessage()).toBe('settings.loan-management.alerts.success.loan_approved');
     });
   });
 
@@ -139,7 +139,7 @@ describe('Loan Management Integration', () => {
     await vi.waitFor(() => {
       expect(ctx.store.actionLoading()).toBe(false);
       expect(ctx.store.actionError()).toBe(
-        'Loan already processed by another user.',
+        'settings.loan-management.alerts.error.already_processed',
       );
       expect(ctx.store.pendingApprovals().length).toBe(2);
     });
@@ -165,7 +165,7 @@ describe('Loan Management Integration', () => {
     await vi.waitFor(() => {
       expect(ctx.store.actionLoading()).toBe(false);
       expect(ctx.store.selectedLoanId()).toBeNull();
-      expect(ctx.store.successMessage()).toBe('The loan has been rejected.');
+      expect(ctx.store.successMessage()).toBe('settings.loan-management.alerts.success.loan_rejected');
     });
   });
 
@@ -183,7 +183,7 @@ describe('Loan Management Integration', () => {
     await vi.waitFor(() => {
       expect(ctx.store.actionLoading()).toBe(false);
       expect(ctx.store.actionError()).toBe(
-        'Access denied. Support role required.',
+        'settings.loan-management.alerts.error.access_denied',
       );
     });
   });

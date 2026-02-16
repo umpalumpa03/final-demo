@@ -59,6 +59,8 @@ describe('Integration: Paybill Payment Flow', () => {
       }),
       storeAccounts: signal([]),
       challengeId: signal('otp-session-123'),
+      // provide `error` callable so template calls succeed
+      error: () => null,
 
       backToDetails: vi.fn(),
       resetFlow: vi.fn(),

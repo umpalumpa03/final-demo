@@ -253,6 +253,8 @@ describe('PaybillTemplatesContainer', () => {
   it('should return filtered templates when search has value', () => {
     component.filteredTemplates.set([{ id: '1', title: 'Filtered' }] as any);
     component.searchControl.setValue('test');
+    // the component uses `hasSearch()` to decide which list to return — set it explicitly
+    component.hasSearch.set(true);
 
     const result = component.displayTemplates();
 

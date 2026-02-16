@@ -436,9 +436,28 @@ export const LoansStore = signalStore(
                 handleActionSuccess(SuccessKeys.PAYMENT_COMPLETE);
                 store.loadLoans({ forceChange: true });
               }),
-              catchError((err) =>
-                handleActionError(ErrorKeys.VERIFY_PREPAYMENT, err),
-              ),
+              catchError((err: HttpErrorResponse) => {
+                const backendMsg = err?.error?.message || err?.message || '';
+                const normalized = backendMsg.toLowerCase();
+
+                // სპეციალური ქეისი OTP-სთვის: "invalid code" / "no attempts left"
+                // ჩავწეროთ როგორც error, რომ OTP კომპონენტმა დაინახოს
+                // და ფრონტმა დაითვალოს ცდები.
+                if (
+                  normalized.includes('invalid code') ||
+                  normalized.includes('no attempts left')
+                ) {
+                  const msg = backendMsg || translate.instant(ErrorKeys.INVALID_CODE);
+                  patchState(store, {
+                    error: msg,
+                    actionLoading: false,
+                  });
+                  alertService.showAlert('error', msg);
+                  return EMPTY;
+                }
+
+                return handleActionError(ErrorKeys.VERIFY_PREPAYMENT, err);
+              }),
             ),
           ),
         ),

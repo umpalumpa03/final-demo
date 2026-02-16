@@ -62,6 +62,7 @@ export class PrepaymentContainer implements OnInit {
         this.close.emit();
       }
     });
+
   }
 
   public ngOnInit(): void {

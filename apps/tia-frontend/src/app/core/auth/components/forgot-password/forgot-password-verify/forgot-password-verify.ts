@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, EMPTY, tap } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../../services/auth.service';
 import { forgotPasswordSegments } from '../forgot-password.routes';
 import { TokenService } from '../../../services/token.service';
@@ -28,6 +29,7 @@ export class ForgotPasswordVerify implements OnInit {
   private authService = inject(AuthService);
   private tokenService = inject(TokenService)
   private router = inject(Router);
+  private translate = inject(TranslateService);
   public otpInputConfig = otpVerificationConfig['forgot-password']
 
   public readonly errorMessage = signal<string | null>(null);
@@ -55,7 +57,7 @@ export class ForgotPasswordVerify implements OnInit {
           ),
           catchError((error) => {
             const httpError = error as HttpErrorResponse;
-            this.errorMessage.set(httpError.error?.message || 'Invalid code');
+            this.errorMessage.set(this.translate.instant('auth.otp-forgot-password.alerts.invalidCode'));
             return EMPTY;
           }),
         )

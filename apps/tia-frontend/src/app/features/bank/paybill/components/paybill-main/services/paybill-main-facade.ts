@@ -102,6 +102,7 @@ export class PaybillMainFacade {
   public readonly paymentFields = this.store.selectSignal(
     PAYBILL_SELECTORS.selectPaymentFields,
   );
+  public readonly error = this.store.selectSignal(PAYBILL_SELECTORS.selectError);
 
   public readonly selectedSenderAccountId = this.store.selectSignal(
     PAYBILL_SELECTORS.selectSelectedSenderAccountId,

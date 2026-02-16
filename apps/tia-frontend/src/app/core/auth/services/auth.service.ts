@@ -331,6 +331,9 @@ export class AuthService {
           );
         }),
         catchError((err) => {
+          const errorData: OtpResponse = err.error || { message: err.message || 'Invalid code' };
+          this.otpError.set(errorData);
+          
           showAlert(
             this.alertService,
             this.translate,

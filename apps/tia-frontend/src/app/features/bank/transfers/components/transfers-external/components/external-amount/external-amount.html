@@ -126,6 +126,7 @@
     timerType="otp"
     (onBackOut)="onOtpClose()"
     [inputOtpConfig]="otpConfig"
+    [errorMessage]="otpErrorMessage()"
     [isBtnRowDirection]="true"
     redirectUrl="/bank/transfers"
     [redirectText]="'transfers.page' | translate"

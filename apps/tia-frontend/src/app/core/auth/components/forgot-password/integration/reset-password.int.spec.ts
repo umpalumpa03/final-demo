@@ -111,7 +111,7 @@ describe('ResetPassword Component Integration', () => {
 
     expect(component.isSubmitting()).toBe(false);
     expect(successSpy).toHaveBeenCalledWith(
-      'Password updated successfully',
+      'auth.reset-password.alerts.passwordUpdated',
       expect.objectContaining({ variant: 'dismissible' }),
     );
   });
@@ -136,7 +136,7 @@ describe('ResetPassword Component Integration', () => {
 
     expect(component.isSubmitting()).toBe(false);
     expect(errorSpy).toHaveBeenCalledWith(
-      'Unable to reset password. Please try again.',
+      'auth.reset-password.alerts.unableToReset',
       expect.objectContaining({ variant: 'dismissible' }),
     );
   });
@@ -158,7 +158,7 @@ describe('ResetPassword Component Integration', () => {
 
     expect(component.isSubmitting()).toBe(false);
     expect(warningSpy).toHaveBeenCalledWith(
-      'Something went wrong. Please try again.',
+      'auth.reset-password.alerts.somethingWentWrong',
       expect.objectContaining({ variant: 'dismissible' }),
     );
   });

@@ -44,6 +44,8 @@ describe('PaybillOtpVerificationContainer', () => {
       }),
       isLoading: signal(false),
       challengeId: signal<string | null>('chal-123'),
+      // provide `error` as a callable so template bindings like `facade.error()` don't fail
+      error: () => null,
 
       activeCategoryUI: signal({
         iconBgColor: '#F0F9FF',

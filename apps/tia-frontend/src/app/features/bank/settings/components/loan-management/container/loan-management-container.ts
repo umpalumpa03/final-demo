@@ -6,8 +6,10 @@ import {
   OnInit,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { TranslateService } from '@ngx-translate/core';
 import { AlertService } from '@tia/core/services/alert/alert.service';
 import { LoanManagementStore } from '../store/loan-management.store';
+import { LoanAlertTitleKeys } from '../store/loan-management.state';
 import { PendingApprovalsTable } from '../components/pending-approvals-table/pending-approvals-table';
 import { LoanCaseDrawer } from '../components/loan-case-drawer/loan-case-drawer';
 import { useLoanManagementConfig } from '../shared/config/loan-management.config';
@@ -24,6 +26,7 @@ import { BasicCard } from '@tia/shared/lib/cards/basic-card/basic-card';
 export class LoanManagementContainer implements OnInit {
   protected readonly store = inject(LoanManagementStore);
   private readonly alertService = inject(AlertService);
+  private readonly translate = inject(TranslateService);
 
   protected readonly config = toSignal(useLoanManagementConfig(), {
     initialValue: { title: '', subtitle: '' },
@@ -35,7 +38,7 @@ export class LoanManagementContainer implements OnInit {
       if (message) {
         this.alertService.success(message, {
           variant: 'dismissible',
-          title: 'Success!',
+          title: this.translate.instant(LoanAlertTitleKeys.SUCCESS),
         });
         this.store.clearSuccessMessage();
       }
@@ -45,7 +48,7 @@ export class LoanManagementContainer implements OnInit {
       if (error) {
         this.alertService.error(error, {
           variant: 'dismissible',
-          title: 'Oops!',
+          title: this.translate.instant(LoanAlertTitleKeys.ERROR),
         });
         this.store.clearError();
       }
