@@ -9,7 +9,7 @@ import { PersonalInfoEffects } from '../../../../../../store/personal-info/perso
 import { personalInfoFeature } from '../../../../../../store/personal-info/personal-info.reducer';
 import { PersonalInfoActions } from '../../../../../../store/personal-info/pesronal-info.actions';
 import * as PersonalInfoSelectors from '../../../../../../store/personal-info/personal-info.selectors';
-import { firstValueFrom, filter, take, timeout } from 'rxjs';
+import { firstValueFrom, take, timeout } from 'rxjs';
 
 describe('Personal Info Integration', () => {
   let store: Store;
@@ -59,27 +59,27 @@ describe('Personal Info Integration', () => {
 
     req.flush({ message: 'PID updated successfully' });
 
+
+    await new Promise(resolve => setTimeout(resolve, 10));
+
     const pId = await firstValueFrom(
       store.select(PersonalInfoSelectors.selectPId).pipe(
-        filter((id) => id === newPId),
         take(1),
-        timeout(5000),
+        timeout(1000),
       ),
     );
 
     const loading = await firstValueFrom(
       store.select(PersonalInfoSelectors.selectPersonalInfoLoading).pipe(
-        filter((isLoading) => isLoading === false),
         take(1),
-        timeout(5000),
+        timeout(1000),
       ),
     );
 
     const error = await firstValueFrom(
       store.select(PersonalInfoSelectors.selectPersonalInfoError).pipe(
-        filter((err) => err === null),
         take(1),
-        timeout(5000),
+        timeout(1000),
       ),
     );
 
@@ -100,27 +100,27 @@ describe('Personal Info Integration', () => {
     const mockResponse = { challengeId: 'challenge-123', method: 'SMS' };
     req.flush(mockResponse);
 
+
+    await new Promise(resolve => setTimeout(resolve, 10));
+
     const challengeId = await firstValueFrom(
       store.select(PersonalInfoSelectors.selectPhoneUpdateChallengeId).pipe(
-        filter((id) => id === mockResponse.challengeId),
         take(1),
-        timeout(5000),
+        timeout(1000),
       ),
     );
 
     const loading = await firstValueFrom(
       store.select(PersonalInfoSelectors.selectPhoneUpdateLoading).pipe(
-        filter((isLoading) => isLoading === false),
         take(1),
-        timeout(5000),
+        timeout(1000),
       ),
     );
 
     const error = await firstValueFrom(
       store.select(PersonalInfoSelectors.selectPhoneUpdateError).pipe(
-        filter((err) => err === null),
         take(1),
-        timeout(5000),
+        timeout(1000),
       ),
     );
 
