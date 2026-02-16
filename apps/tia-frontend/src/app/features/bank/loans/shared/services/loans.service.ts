@@ -104,4 +104,11 @@ export class LoansService {
       payload,
     );
   }
+
+  public resendOtp(challengeId: string): Observable<boolean> {
+    return this.http.post<boolean>(
+      `${this.loansApiUrl}/mfa/resend-otp`,
+      challengeId,
+    );
+  }
 }

@@ -14,6 +14,6 @@
 
     @if (step() === 'otp') {
     <app-verify [isLoading]="isLoading()" [errorMessage]="error()" (cancel)="step.set('review')"
-        (verify)="onVerifyOtp($event)" (closeModal)="close.emit()"> </app-verify>
+        (verify)="onVerifyOtp($event)" (closeModal)="close.emit()" (resend)="resendOtp()"> </app-verify>
     }
 </div>

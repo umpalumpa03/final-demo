@@ -80,7 +80,8 @@
     "didntReceiveCode": "კოდი არ მიგიღიათ?",
     "phoneNumberUpdated": "ტელეფონის ნომერი წარმატებით განახლდა",
     "maxResendReached": "მაქსიმალური რაოდენობის გაგზავნა მიღწეულია",
-    "startTour": "ტურის დაწყება"
+    "startTour": "ტურის დაწყება",
+    "redirectText": "პროფილის ფეიჯზე"
   },
   "security": {
     "title": "უსაფრთხოების პარამეტრები",

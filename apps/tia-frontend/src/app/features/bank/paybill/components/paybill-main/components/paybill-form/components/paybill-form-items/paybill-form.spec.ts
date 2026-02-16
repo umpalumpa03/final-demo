@@ -35,6 +35,10 @@ describe('PaybillForm', () => {
     fixture.detectChanges();
   });
 
+  afterEach(() => {
+    TestBed.resetTestingModule();
+  });
+
   describe('Computed Signals', () => {
     it('should compute isVerified as false when verifiedDetails is null or invalid', () => {
       fixture.componentRef.setInput('verifiedDetails', null);

@@ -12,7 +12,6 @@ import { Router } from '@angular/router';
 import { Routes } from '../../../models/tokens.model';
 import { otpVerificationConfig } from '../../../config/otp-verification.config';
 import { OtpVerification } from '@tia/core/otp-verification/container/otp-verification';
-import { OtpResendTypes } from '@tia/core/otp-verification/config/otp.config';
 
 @Component({
   selector: 'app-verify-signup',
@@ -26,7 +25,6 @@ export class VerifySignup {
   private router = inject(Router);
   public otpError = this.authService.otpError;
   private destroyRef = inject(DestroyRef);
-  public phoneResend = OtpResendTypes.PHONE_RESEND;
   public inputOtpConfig = otpVerificationConfig['sign-up'];
 
   public verifyRegisterOtp(otp: string): void {

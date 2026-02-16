@@ -93,7 +93,8 @@
     "didntReceiveCode": "Didn't receive the code?",
     "phoneNumberUpdated": "Phone number updated successfully",
     "maxResendReached": "Maximum resend limit reached",
-    "startTour": "Start Tour"
+    "startTour": "Start Tour",
+    "redirectText": "Profile page"
   },
   "security": {
     "title": "Security Settings",

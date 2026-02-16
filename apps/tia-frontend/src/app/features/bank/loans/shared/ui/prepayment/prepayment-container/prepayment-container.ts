@@ -109,4 +109,11 @@ export class PrepaymentContainer implements OnInit {
       });
     }
   }
+
+  public resendOtp(): void {
+    const challengeId = this.activeChallengeId();
+    if (!challengeId) return;
+
+    this.store.resendOtp({ challengeId });
+  }
 }

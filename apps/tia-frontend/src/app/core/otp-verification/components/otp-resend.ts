@@ -41,7 +41,7 @@ export class OtpResend implements OnInit {
   public maxTime = computed(() => this.maxTimeoutMs() / 1000);
 
   public canResend = computed(
-    () => this.countdown() === 0 && this.resendRetries() > 0,
+    () => this.countdown() === 0 && this.resendRetriesCount() > 0,
   );
 
   constructor() {

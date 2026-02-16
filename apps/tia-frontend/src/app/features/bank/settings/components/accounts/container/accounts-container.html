@@ -3,12 +3,15 @@
 <app-basic-card
   width="100%"
   maxWidth="100%"
-  height="fit-content"
+  [height]="isXlMobile() ? 'calc(100vh - 30rem)' : 'calc(100vh - 27rem)'"
   [title]="'settings.accounts.title' | translate"
   [subtitle]="isXsMobile()? '': 'settings.accounts.subtitle' | translate"
 >
   <app-scroll-area
-    height="calc(100vh - 46.4rem)"
+    [height]="
+    isXsMobile() ? 'calc(100vh - 37rem)' : 
+    isXlMobile() ? 'calc(100vh - 44rem)' : 
+    'calc(100vh - 39rem)'"
     [hideBorder]="true"
     scrollbar="hidden"
   >

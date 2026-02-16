@@ -137,6 +137,7 @@
       "reduce_term_desc": "Shorten the loan term"
     }
   },
+  "redirectText": "Loans page",
   "buttons": {
     "cancel": "Cancel",
     "close": "Close",

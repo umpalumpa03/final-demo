@@ -108,4 +108,11 @@ export class TransfersApiService {
       ...(payload.code && { code: payload.code }),
     });
   }
+
+  public resendOtp(challengeId: string): Observable<boolean> {
+    return this.http.post<boolean>(
+      `${this.baseURL}/mfa/resend-otp`,
+      challengeId,
+    );
+  }
 }

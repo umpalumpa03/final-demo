@@ -1,4 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { TestBed } from '@angular/core/testing';
+import { Store } from '@ngrx/store';
+import { of } from 'rxjs';
 import { environment } from '../../../../../../environments/environment';
 import {
   LoginTestContext,
@@ -22,6 +25,9 @@ describe('Auth — VerifySignin Integration', () => {
   it('should verify MFA, set tokens, dispatch loadUser and stop loading', async () => {
     const payload = { code: '123456', challengeId: 'challenge-1' } as any;
     let response: any;
+
+    const store = TestBed.inject(Store);
+    vi.spyOn(store, 'select').mockReturnValue(of({ loaded: true, loading: false, error: null } as any));
 
     ctx.authService.verifyMfa(payload).subscribe((res) => (response = res));
 

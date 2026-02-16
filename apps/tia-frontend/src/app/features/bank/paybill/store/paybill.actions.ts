@@ -52,6 +52,8 @@ export const PaybillActions = createActionGroup({
     'Load Payment Details Success': props<{ details: PaybillPaymentDetails }>(),
     'Load Payment Details Failure': props<{ error: string }>(),
     'Init Repeat Process': emptyProps(),
+    'Resend OTP code': props<{ challengeId: string }>(),
+    'Resend OTP code Failure': props<{ error: string }>(),
   },
 });
 

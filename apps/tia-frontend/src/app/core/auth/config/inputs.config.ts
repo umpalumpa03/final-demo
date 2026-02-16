@@ -52,7 +52,7 @@ export const AUTH_SIDE_PANEL_DATA = {
         id: 3,
         title: 'auth.sign-in.side-panel.features.protected-data-2.title',
         text: 'auth.sign-in.side-panel.features.protected-data-2.text',
-        icon: '/images/svg/auth/secured.svg',
+        icon: '/images/svg/auth/light.svg',
       },
     ],
   },
