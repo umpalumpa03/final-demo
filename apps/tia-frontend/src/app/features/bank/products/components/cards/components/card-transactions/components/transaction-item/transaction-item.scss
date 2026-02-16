@@ -46,6 +46,10 @@
     @include font-inter(600, 1.6rem, 2.4rem);
     color: $gray-700;
     margin: 0;
+    max-width: 40vw;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   &__meta {

@@ -29,6 +29,8 @@
     @include font-inter(400, 1.6rem, 1.5rem);
     padding: 4rem;
     text-align: center;
+    @include flex-center(column, center,center); 
+    min-height: 50vh;
   }
 
   &__error {

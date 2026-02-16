@@ -165,7 +165,8 @@
         "creating": "მუშავდება",
         "createCard": "დამატება",
         "enterText": "შეიყვანეთ ტექსტი",
-        "chooseOption": "აირჩიეთ ვარიანტი"
+        "chooseOption": "აირჩიეთ ვარიანტი",
+        "noAccounts":"ანგარიში არ არის ხელმისაწვდომი"
       },
       "design-selector": {
         "cardDesign": "შეარჩიეთ ბარათის დიზაინი"

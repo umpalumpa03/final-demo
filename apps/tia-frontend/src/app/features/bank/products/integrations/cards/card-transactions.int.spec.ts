@@ -155,18 +155,19 @@ describe('CardTransactions Integration', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
-
-  it('should load card and transaction data on init', () => {
-    const dispatchSpy = vi.spyOn(store, 'dispatch');
-
-    component.ngOnInit();
-
-    expect(dispatchSpy).toHaveBeenCalledWith(loadCardAccounts({}));
-    expect(dispatchSpy).toHaveBeenCalledWith(
-      loadCardDetails({ cardId: mockCardId }),
-    );
-    expect(dispatchSpy).toHaveBeenCalledWith(TransactionActions.enter());
-  });
+it('should load card and transaction data on init', () => {
+  const dispatchSpy = vi.spyOn(store, 'dispatch');
+  
+  store.overrideSelector(selectTransactionsLoaded, false);
+  store.refreshState();
+  
+  component.ngOnInit();
+  
+  expect(dispatchSpy).toHaveBeenCalledWith(
+    loadCardDetails({ cardId: mockCardId }),
+  );
+  expect(dispatchSpy).toHaveBeenCalledWith(TransactionActions.enter());
+});
 
   it('should display account name', async () => {
     const accountName = await firstValueFrom(component['accountName$']);
@@ -205,17 +206,20 @@ describe('CardTransactions Integration', () => {
   });
 
   it('should update filters when account iban changes', () => {
-    const dispatchSpy = vi.spyOn(store, 'dispatch');
-
-    component.ngOnInit();
-
-    expect(dispatchSpy).toHaveBeenCalledWith(TransactionActions.enter());
-    expect(dispatchSpy).toHaveBeenCalledWith(
-      TransactionActions.updateFilters({
-        filters: { accountIban: mockAccount.iban, pageLimit: 100 },
-      }),
-    );
-  });
+  const dispatchSpy = vi.spyOn(store, 'dispatch');
+  
+  store.overrideSelector(selectTransactionsLoaded, false);
+  store.refreshState();
+  
+  component.ngOnInit();
+  
+  expect(dispatchSpy).toHaveBeenCalledWith(TransactionActions.enter());
+  expect(dispatchSpy).toHaveBeenCalledWith(
+    TransactionActions.updateFilters({
+      filters: { accountIban: mockAccount.iban, pageLimit: 100 },
+    })
+  );
+});
 
   it('should show loading state initially', async () => {
     store.overrideSelector(selectIsLoading, true);

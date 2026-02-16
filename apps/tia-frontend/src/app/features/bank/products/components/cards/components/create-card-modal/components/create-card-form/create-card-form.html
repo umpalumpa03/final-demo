@@ -41,14 +41,18 @@
       {{'my-products.card.create-card-modal.create-card-form.cancelBtn' |
       translate }}
     </app-button>
-    } @if (formGroup().valid && !isCreating()) {
-    <app-button [variant]="'default'" [icon]="'plus-icon.svg'" type="submit">
-      @if (isCreating()) {
-      {{'my-products.card.create-card-modal.create-card-form.creating' |
-      translate }}} @else {
-      {{'my-products.card.create-card-modal.create-card-form.createCard' |
-      translate }} }
-    </app-button>
-    }
+    } 
+    <app-button 
+  [variant]="'default'" 
+  [icon]="'plus-icon.svg'" 
+  type="submit"
+  [isDisabled]="!formGroup().valid || isCreating()"
+>
+  @if (isCreating()) {
+  {{'my-products.card.create-card-modal.create-card-form.creating' |
+  translate }}} @else {
+  {{'my-products.card.create-card-modal.create-card-form.createCard' |
+  translate }} }
+</app-button>
   </div>
 </form>

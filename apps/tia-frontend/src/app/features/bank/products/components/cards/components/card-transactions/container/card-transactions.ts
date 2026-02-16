@@ -48,6 +48,7 @@ import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions
 import { Pagination } from '@tia/shared/lib/navigation/pagination/pagination';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ITransactions } from '@tia/shared/models/transactions/transactions.models';
 
 @Component({
   selector: 'app-card-transactions',
@@ -62,7 +63,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     TransactionCardHeader,
     TransactionList,
     Pagination,
-    TranslatePipe
+    TranslatePipe,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -71,7 +72,9 @@ export class CardTransactions implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly accountsLoaded$ = this.store.select(selectAccountsLoaded);
-  private readonly loadedCardDetailsIds$ = this.store.select(selectLoadedCardDetailsIds);
+  private readonly loadedCardDetailsIds$ = this.store.select(
+    selectLoadedCardDetailsIds,
+  );
   private readonly cardId = this.route.snapshot.paramMap.get('cardId') || '';
 
   protected readonly loading$ = this.store.select(selectIsLoading);
@@ -82,13 +85,15 @@ export class CardTransactions implements OnInit {
   private readonly currentPageSubject = new BehaviorSubject<number>(1);
   protected readonly currentPage$ = this.currentPageSubject.asObservable();
   protected readonly itemsPerPage = 20;
- 
+
   private readonly destroyRef = inject(DestroyRef);
-  protected readonly uncategorizedText$ = this.translate.stream('my-products.card.card-transactions.transaction-list.uncategorized');
+  protected readonly uncategorizedText$ = this.translate.stream(
+    'my-products.card.card-transactions.transaction-list.uncategorized',
+  );
 
   protected readonly currentLocale$ = this.translate.onLangChange.pipe(
-    map(event => event.lang === 'ka' ? 'ka-GE' : 'en-US'),
-    startWith(this.translate.currentLang === 'ka' ? 'ka-GE' : 'en-US')
+    map((event) => (event.lang === 'ka' ? 'ka-GE' : 'en-US')),
+    startWith(this.translate.currentLang === 'ka' ? 'ka-GE' : 'en-US'),
   );
 
   protected readonly cardHeaderData$ = combineLatest([
@@ -112,7 +117,7 @@ export class CardTransactions implements OnInit {
           }),
         );
     }),
-    startWith(null)
+    startWith(null),
   );
 
   protected readonly accountName$ = combineLatest([
@@ -146,30 +151,38 @@ export class CardTransactions implements OnInit {
     this.store.select(selectItems),
     this.store.select(selectTransactionsLoaded),
   ]).pipe(
-    map(([accountsLoaded, loading, cardData, transactions, transactionsLoaded]) => {
-      if (!accountsLoaded) return true;
-      if (!cardData) return true;
-      if (loading) return true;
-      if (!transactionsLoaded && transactions.length === 0) return true;
-      return false;
-    }),
-    startWith(true)
+    map(
+      ([
+        accountsLoaded,
+        loading,
+        cardData,
+        transactions,
+        transactionsLoaded,
+      ]) => {
+        if (!accountsLoaded) return true;
+        if (!cardData) return true;
+        if (loading) return true;
+        if (!transactionsLoaded && transactions.length === 0) return true;
+        return false;
+      },
+    ),
+    startWith(true),
   );
 
-  protected getTotalCount(transactions: any[]): number {
-    return transactions?.length || 0;
-  }
+ protected getTotalCount(transactions: ITransactions[]): number {
+  return transactions?.length || 0;
+}
 
-  protected getPaginatedTransactions(transactions: any[], page: number): any[] {
-    if (!transactions) return [];
-    const startIndex = (page - 1) * this.itemsPerPage;
-    return transactions.slice(startIndex, startIndex + this.itemsPerPage);
-  }
+protected getPaginatedTransactions(transactions: ITransactions[], page: number): ITransactions[] {
+  if (!transactions) return [];
+  const startIndex = (page - 1) * this.itemsPerPage;
+  return transactions.slice(startIndex, startIndex + this.itemsPerPage);
+}
 
-  protected getTotalPages(transactions: any[]): number {
-    if (!transactions) return 0;
-    return Math.ceil(transactions.length / this.itemsPerPage);
-  }
+ protected getTotalPages(transactions: ITransactions[]): number {
+  if (!transactions) return 0;
+  return Math.ceil(transactions.length / this.itemsPerPage);
+}
 
   protected handlePageChange(page: number): void {
     this.currentPageSubject.next(page);
@@ -190,45 +203,56 @@ export class CardTransactions implements OnInit {
 
   ngOnInit(): void {
     this.store.dispatch(loadCardAccounts({}));
-    
-    this.store.select(selectAccountsLoaded).pipe(
-      filter(loaded => loaded === true),
-      take(1),
-      tap(() => {
-        this.store.dispatch(loadCardDetails({ cardId: this.cardId }));
-        this.initializeTransactionFilters();
-        this.autoLoadAllTransactions();
-      }),
-      takeUntilDestroyed(this.destroyRef)
-    ).subscribe();
+
+    this.store
+      .select(selectAccountsLoaded)
+      .pipe(
+        filter((loaded) => loaded === true),
+        take(1),
+        tap(() => {
+          this.store.dispatch(loadCardDetails({ cardId: this.cardId }));
+          this.initializeTransactionFilters();
+          this.autoLoadAllTransactions();
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe();
   }
 
   private initializeTransactionFilters(): void {
-    this.store.select(selectCardDetailById(this.cardId)).pipe(
-      filter(cardData => !!cardData?.details?.accountId),
-      take(1),
-      switchMap(cardData => 
-        this.store.select(selectAccountById(cardData!.details.accountId)).pipe(
-          filter(account => !!account),
-          take(1)
-        )
-      ),
-      tap(account => {
-        this.store.dispatch(TransactionActions.enter());
-        this.store.dispatch(
-          TransactionActions.updateFilters({
-            filters: { accountIban: account!.iban, pageLimit: 100 },
-          })
-        );
-      }),
-      takeUntilDestroyed(this.destroyRef)
-    ).subscribe();
+    combineLatest([
+      this.store.select(selectCardDetailById(this.cardId)),
+      this.store.select(selectTransactionsLoaded),
+    ])
+      .pipe(
+        filter(
+          ([cardData, loaded]) => !!cardData?.details?.accountId && !loaded,
+        ),
+        take(1),
+        switchMap(([cardData]) =>
+          this.store
+            .select(selectAccountById(cardData!.details.accountId))
+            .pipe(
+              filter((account) => !!account),
+              take(1),
+            ),
+        ),
+        takeUntilDestroyed(this.destroyRef),
+        tap((account) => {
+          this.store.dispatch(TransactionActions.enter());
+          this.store.dispatch(
+            TransactionActions.updateFilters({
+              filters: { accountIban: account!.iban, pageLimit: 100 },
+            }),
+          );
+        }),
+      )
+      .subscribe();
   }
-
   protected readonly paginationConfig = computed(() => ({
-    previousLabel:" ",
-    nextLabel: " ",
-    maxVisiblePages: 2,  
-    showEllipsis: true
+    previousLabel: ' ',
+    nextLabel: ' ',
+    maxVisiblePages: 2,
+    showEllipsis: true,
   }));
 }
