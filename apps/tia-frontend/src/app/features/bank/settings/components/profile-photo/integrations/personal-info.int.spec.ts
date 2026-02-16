@@ -10,7 +10,7 @@ import { PersonalInfoEffects } from '../../../../../../store/personal-info/perso
 import { personalInfoFeature } from '../../../../../../store/personal-info/personal-info.reducer';
 import { PersonalInfoActions } from '../../../../../../store/personal-info/pesronal-info.actions';
 import * as PersonalInfoSelectors from '../../../../../../store/personal-info/personal-info.selectors';
-import { firstValueFrom, take, filter } from 'rxjs';
+import { firstValueFrom, take } from 'rxjs';
 import { ofType } from '@ngrx/effects';
 
 describe('Personal Info Integration', () => {
@@ -41,17 +41,8 @@ describe('Personal Info Integration', () => {
   it('should update PID successfully', async () => {
     const newPId = '12345678901';
     
-
     const currentState = await firstValueFrom(
       store.select(PersonalInfoSelectors.selectPersonalInfo).pipe(take(1))
-    );
-
-
-    const statePromise = firstValueFrom(
-      store.select(PersonalInfoSelectors.selectPersonalInfo).pipe(
-        filter((s) => s.pId === newPId && s.loading === false),
-        take(1)
-      )
     );
 
     const successActionPromise = firstValueFrom(
@@ -61,7 +52,6 @@ describe('Personal Info Integration', () => {
       )
     );
 
- 
     store.dispatch(
       PersonalInfoActions.updatePersonalInfo({
         personalInfo: {
@@ -79,7 +69,10 @@ describe('Personal Info Integration', () => {
 
     await successActionPromise;
 
-    const state = await statePromise;
+
+    const state = await firstValueFrom(
+      store.select(PersonalInfoSelectors.selectPersonalInfo).pipe(take(1))
+    );
 
     expect(state.pId).toBe(newPId);
     expect(state.loading).toBe(false);
@@ -92,20 +85,9 @@ describe('Personal Info Integration', () => {
 
     store.dispatch(PersonalInfoActions.loadPersonalInfoPhoneNumber({ phoneNumber: initialPhoneNumber }));
 
-
+    
     await firstValueFrom(
-      store.select(PersonalInfoSelectors.selectPersonalInfo).pipe(
-        filter((s) => s.phoneNumber === initialPhoneNumber),
-        take(1)
-      )
-    );
-
- 
-    const statePromise = firstValueFrom(
-      store.select(PersonalInfoSelectors.selectPersonalInfo).pipe(
-        filter((s) => s.phoneUpdateChallengeId === 'challenge-123' && s.phoneUpdateLoading === false),
-        take(1)
-      )
+      store.select(PersonalInfoSelectors.selectPersonalInfo).pipe(take(1))
     );
 
     const successActionPromise = firstValueFrom(
@@ -126,15 +108,15 @@ describe('Personal Info Integration', () => {
 
     await successActionPromise;
 
-  
-    const state = await statePromise;
+   
+    const state = await firstValueFrom(
+      store.select(PersonalInfoSelectors.selectPersonalInfo).pipe(take(1))
+    );
 
     expect(state.phoneUpdateChallengeId).toBe(mockResponse.challengeId);
     expect(state.phoneUpdateLoading).toBe(false);
     expect(state.phoneUpdateError).toBeNull();
     expect(state.phoneUpdatePendingPhone).toBe(newPhone);
-    
-
     expect(state.phoneNumber).toBe(initialPhoneNumber);
   });
 });
