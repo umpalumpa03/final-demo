@@ -53,8 +53,8 @@ import showAlert from '@tia/shared/utils/alerts/alert.helper';
 export class AuthService {
   private monitorInactivity = inject(MonitorInactivity);
   private translate = inject(TranslateService);
-  private tokenService = inject(TokenService);
   private alertService = inject(AlertService);
+  private tokenService = inject(TokenService);
   private http = inject(HttpClient);
   private router = inject(Router);
   private store = inject(Store);

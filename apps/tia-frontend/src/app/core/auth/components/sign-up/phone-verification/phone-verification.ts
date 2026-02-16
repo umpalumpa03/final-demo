@@ -12,7 +12,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Routes } from '../../../models/tokens.model';
 import { otpVerificationConfig } from '../../../config/otp-verification.config';
 import { OtpVerification } from '@tia/core/otp-verification/container/otp-verification';
-import { OtpResendTypes } from '@tia/core/otp-verification/config/otp.config';
 
 @Component({
   selector: 'app-phone-verification',
@@ -26,7 +25,6 @@ export class PhoneVerification {
   private tokenService = inject(TokenService);
   private destroyRef = inject(DestroyRef);
   public inputOtpConfig = otpVerificationConfig['sign-up'];
-  public readonly otpResendType = OtpResendTypes.PHONE_RESEND
   public PhoneOtpError = this.authService.otpError;
 
   public submit(otp: string): void {
