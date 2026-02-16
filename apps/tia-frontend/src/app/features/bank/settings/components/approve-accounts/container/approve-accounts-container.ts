@@ -38,7 +38,7 @@ import { ApproveAccountsConfig } from '../config/approve-accounts.config';
     AlertTypesWithIcons,
     BasicCard,
   ],
-  providers: [AccountPermissionsStore, ApproveAccountsConfig],
+  providers: [ApproveAccountsConfig],
   templateUrl: './approve-accounts-container.html',
   styleUrl: './approve-accounts-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

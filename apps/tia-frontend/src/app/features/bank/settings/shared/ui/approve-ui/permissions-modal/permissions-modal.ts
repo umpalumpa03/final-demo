@@ -1,4 +1,4 @@
-import { Component, computed, input, output } from '@angular/core';
+import { Component, computed, inject, input, output } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { IAccountsPermissions } from '../../../models/approve-models/accounts-models/account-permissions.models';
 import { Checkboxes } from '@tia/shared/lib/forms/checkboxes/checkboxes';
@@ -8,6 +8,7 @@ import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { LibraryTitle } from 'apps/tia-frontend/src/app/features/storybook/shared/library-title/library-title';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { startWith, switchMap } from 'rxjs';
+import { permissionsModalConfig } from './config/permission-modal.config';
 
 @Component({
   selector: 'app-permissions-modal',
@@ -18,10 +19,14 @@ import { startWith, switchMap } from 'rxjs';
     ButtonComponent,
     LibraryTitle,
   ],
+  providers: [permissionsModalConfig],
   templateUrl: './permissions-modal.html',
   styleUrl: './permissions-modal.scss',
 })
 export class PermissionsModal {
+  private readonly _configService = inject(permissionsModalConfig);
+  public readonly config = this._configService.config;
+
   public readonly form = input.required<FormGroup>();
   public readonly items = input.required<IAccountsPermissions[]>();
   public readonly title = input<string>('');

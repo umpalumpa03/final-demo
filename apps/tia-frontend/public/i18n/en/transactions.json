@@ -29,8 +29,20 @@
       "amount": "Amount",
       "actions": "Actions"
     },
+    "export_btn": "Export Table",
     "loading": "Loading",
     "showing_text": "Showing {{fetched}} of {{total}} transactions"
+  },
+  "error_states": {
+    "failed": {
+      "header": "Failed to load",
+      "message": "Could not load transactions",
+      "retry": "Retry"
+    },
+    "not_found": {
+      "header": "No transactions",
+      "message": "There are no transactions available"
+    }
   },
   "categorize_modal": {
     "title": "Categorize Transaction",
@@ -41,7 +53,8 @@
       "custom_category": "Or Add Custom Category",
       "enter_category_name": "Enter category name",
       "new-category-tooltip": "Should Enter Category to add",
-      "save-category-tooltip": "Choose category to save"
+      "save-category-tooltip": "Choose category to save",
+      "disabled-select-tooltip": "Drop down menu is empty"
     },
     "buttons": {
       "add": "Add",

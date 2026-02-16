@@ -40,13 +40,13 @@
 
     <div class="transactions-filters__form__input-wrapper">
       @if (field.type === 'select') {
-
       <lib-select
         [formControlName]="field.controlName"
         [options]="field.options || []"
         [config]="{
              label: (field.uiConfig.label | translate),
              placeholder: (field.uiConfig.placeholder | translate),
+             disabled:field.uiConfig.disabled
           }"
         [height]="'3.6rem'"
       >

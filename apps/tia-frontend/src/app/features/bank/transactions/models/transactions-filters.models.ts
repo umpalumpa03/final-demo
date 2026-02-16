@@ -16,6 +16,7 @@ export interface FilterConfig {
     max?: string;
     min?: string;
     errorMessage?: string;
+    disabled?: boolean;
   };
 }
 
