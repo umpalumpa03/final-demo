@@ -6,7 +6,7 @@ import { Notifications } from '../components/header-notifications/service/notifi
 import { InboxService } from '@tia/shared/services/messages/inbox.service';
 import { Store } from '@ngrx/store';
 import { NotificationsStore } from '../components/header-notifications/store/notifications.store';
-import { signal, ElementRef, Component } from '@angular/core';
+import { signal, ElementRef, Component, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BankHeader } from '../components/bank-header/bank-header';
 import { NotificationsContainer } from '../components/header-notifications/container/notifications-container';
@@ -16,14 +16,23 @@ import { NotificationsContainer } from '../components/header-notifications/conta
   standalone: true,
   template: '',
 })
-class BankHeaderStub {}
+class BankHeaderStub {
+  @Input() hasUnread: any;
+  @Input() inboxCount: any;
+  @Input() avatarUrl: any;
+  @Input() fullName: any;
+  @Input() hasBirthday: any;
+}
 
 @Component({
   selector: 'app-notifications-container',
   standalone: true,
   template: '',
 })
-class NotificationsContainerStub {}
+class NotificationsContainerStub {
+  @Input() isModalOpen: any;
+  @Input() notificationEl: any;
+}
 
 describe('BankHeaderContainer', () => {
   let component: BankHeaderContainer;
