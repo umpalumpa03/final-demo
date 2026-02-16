@@ -1,16 +1,19 @@
 <div class="wildcard">
   <div class="wildcard__content">
     <h1 class="wildcard__title">404</h1>
-    <h2 class="wildcard__subtitle">Page Not Found</h2>
+    <h2 class="wildcard__subtitle">
+      {{'common.wildcard.page-not-found' | translate}}
+    </h2>
     <p class="wildcard__description">
-      We're sorry, the requested page could not be found or is no longer available.
+      {{'common.wildcard.page-not-found-subtitle' | translate}}
     </p>
-    
-    <app-button 
-      variant="default" 
-      size="large" 
-      [routerLink]="['/bank/dashboard']">
-      Back To Home
+
+    <app-button
+      variant="default"
+      size="large"
+      [routerLink]="['/bank/dashboard']"
+    >
+      {{'common.wildcard.back-to-home' | translate}}
     </app-button>
   </div>
 </div>
