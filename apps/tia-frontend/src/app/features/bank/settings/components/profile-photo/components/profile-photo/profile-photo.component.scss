@@ -73,7 +73,7 @@
     object-fit: cover;
     display: block;
     transition: opacity 0.2s ease;
-
+    background: $blue-800;
     &--loading {
       opacity: 0.3;
     }

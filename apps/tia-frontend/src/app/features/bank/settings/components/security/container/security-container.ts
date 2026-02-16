@@ -47,7 +47,8 @@ export class SecurityContainer implements OnDestroy {
 
       if (error || success) {
         if (error) {
-          this.alertService.error(error, { variant: 'dismissible', title: 'Oops!' });
+          const errorMessage = this.getPasswordErrorMessage(error);
+          this.alertService.error(errorMessage, { variant: 'dismissible', title: 'Oops!' });
         }
 
         if (success) {
@@ -130,6 +131,33 @@ export class SecurityContainer implements OnDestroy {
         newPassword: event.newPassword,
       })
     );
+  }
+
+  private getPasswordErrorMessage(error: string | null): string {
+    if (!error) {
+      return '';
+    }
+    
+    const errorLower = error.toLowerCase();
+    const currentPasswordIncorrectPatterns = [
+      'current password is incorrect',
+      'current password incorrect',
+      'incorrect current password',
+      'invalid current password',
+      'wrong current password',
+      'მიმდინარე პაროლი არასწორი',
+      'current password',
+    ];
+    
+    const isCurrentPasswordIncorrect = currentPasswordIncorrectPatterns.some(pattern => 
+      errorLower.includes(pattern)
+    );
+    
+    if (isCurrentPasswordIncorrect) {
+      return this.translate.instant('settings.security.currentPasswordIncorrect');
+    }
+    
+    return error;
   }
 
   public ngOnDestroy(): void {
