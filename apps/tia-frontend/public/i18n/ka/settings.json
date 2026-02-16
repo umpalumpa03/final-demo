@@ -79,6 +79,7 @@
     "verify": "დადასტურება",
     "didntReceiveCode": "კოდი არ მიგიღიათ?",
     "phoneNumberUpdated": "ტელეფონის ნომერი წარმატებით განახლდა",
+    "phoneNumberAlreadyInUse": "ეს ტელეფონის ნომერი უკვე გამოყენებულია",
     "maxResendReached": "მაქსიმალური რაოდენობის გაგზავნა მიღწეულია",
     "startTour": "ტურის დაწყება",
     "redirectText": "პროფილის ფეიჯზე"
@@ -96,6 +97,7 @@
     "updatePassword": "პაროლის განახლება",
     "twoFactorAuth": "ორი ფაქტორიანი ავთენტიფიკაცია",
     "passwordChangedSuccessfully": "პაროლი წარმატებით შეიცვალა",
+    "currentPasswordIncorrect": "მიმდინარე პაროლი არასწორია",
     "tooltip": {
       "passwordMismatch": "დამადასტურებელი პაროლი არასწორია ",
       "fillAllFields": " შეავსეთ ყველა ველი"

@@ -212,8 +212,7 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
         this.isOtpModalOpen.set(true);
       }
      
-      // Close modal when challengeId is cleared, but not if OTP attempts expired
-      // (error page will handle redirect and modal will close after redirect)
+    
       if (!challengeId && this.isOtpModalOpen() && !this.otpAttemptsExpired()) {
         this.isOtpModalOpen.set(false);
         this.editedPhoneNumber.set(this.originalPhoneBeforeUpdate || this.phoneNumber() || '');
@@ -248,11 +247,13 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
      
  
       if (loadingFinished && error && challengeId) {
-        this.alertService.error(error, { variant: 'dismissible', title: 'Oops!' });
+        const errorMessage = this.getPhoneUpdateErrorMessage(error);
+        this.alertService.error(errorMessage, { variant: 'dismissible', title: 'Oops!' });
       }
- 
+
       if (loadingFinished && error && !challengeId) {
-        this.alertService.error(error, { variant: 'dismissible', title: 'Oops!' });
+        const errorMessage = this.getPhoneUpdateErrorMessage(error);
+        this.alertService.error(errorMessage, { variant: 'dismissible', title: 'Oops!' });
         const phoneToRestore = this.originalPhoneBeforeUpdate || this.phoneNumber() || '';
         this.editedPhoneNumber.set(phoneToRestore);
         this.store.dispatch(PersonalInfoActions.resetPhoneUpdate());
@@ -585,7 +586,7 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
       this.store.dispatch(PersonalInfoActions.resetPhoneUpdate());
       this.editedPhoneNumber.set(this.originalPhoneBeforeUpdate || this.phoneNumber() || '');
     }
-    // Reset attempts expired flag when modal closes
+
     if (this.otpAttemptsExpired()) {
       this.otpAttemptsExpired.set(false);
       this.store.dispatch(PersonalInfoActions.resetPhoneUpdate());
@@ -619,17 +620,17 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
   }
  
   public handleNoMoreAttempts(): void {
-    // Mark attempts as expired - error page will show inside OTP verification modal
+ 
     this.otpAttemptsExpired.set(true);
    
-    // Close modal after 3 seconds (when timer reaches 0) without redirecting
+ 
     setTimeout(() => {
       this.onErrorPageTimerExpired();
     }, 3000);
   }
  
   public onErrorPageTimerExpired(): void {
-    // Close modal when error page timer expires (reaches 0)
+   
     this.isOtpModalOpen.set(false);
     this.otpAttemptsExpired.set(false);
     this.store.dispatch(PersonalInfoActions.resetPhoneUpdate());
@@ -659,7 +660,34 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
     newMap.set(avatarId, false);
     this.defaultAvatarsLoadingMap.set(newMap);
   }
- 
+
+  private getPhoneUpdateErrorMessage(error: string | null): string {
+    if (!error) {
+      return '';
+    }
+    
+    const errorLower = error.toLowerCase();
+    const phoneAlreadyInUsePatterns = [
+      'phone number is already in use',
+      'phone number already in use',
+      'phone already in use',
+      'phone number already exists',
+      'phone already exists',
+      'ტელეფონის ნომერი უკვე',
+      'phone is already',
+    ];
+    
+    const isPhoneAlreadyInUse = phoneAlreadyInUsePatterns.some(pattern => 
+      errorLower.includes(pattern)
+    );
+    
+    if (isPhoneAlreadyInUse) {
+      return this.translate.instant('settings.profile-photo.phoneNumberAlreadyInUse');
+    }
+    
+    return error;
+  }
+
   public onStartTour(): void {
     this.store.dispatch(UserInfoActions.updateOnboardingStatus({ completed: false }));
     this.router.navigate([Routes.DASHBOARD]);

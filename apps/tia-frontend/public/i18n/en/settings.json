@@ -92,6 +92,7 @@
     "verify": "Verify",
     "didntReceiveCode": "Didn't receive the code?",
     "phoneNumberUpdated": "Phone number updated successfully",
+    "phoneNumberAlreadyInUse": "This phone number is already in use",
     "maxResendReached": "Maximum resend limit reached",
     "startTour": "Start Tour",
     "redirectText": "Profile page"
@@ -109,6 +110,7 @@
     "updatePassword": "Update Password",
     "twoFactorAuth": "Two-Factor Authentication",
     "passwordChangedSuccessfully": "Password changed successfully",
+    "currentPasswordIncorrect": "Current password is incorrect",
     "tooltip": {
       "passwordMismatch": "The confirmed password does not match",
       "fillAllFields": "Fill in all fields "
