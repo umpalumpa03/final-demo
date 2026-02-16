@@ -218,8 +218,9 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
      
     
       if (!challengeId && this.isOtpModalOpen() && !this.otpAttemptsExpired()) {
+      
         this.isOtpModalOpen.set(false);
-        this.editedPhoneNumber.set(this.originalPhoneBeforeUpdate || this.phoneNumber() || '');
+        this.editedPhoneNumber.set(this.phoneNumber() || '');
         this.originalPhoneBeforeUpdate = null;
       }
     });
@@ -234,18 +235,20 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
       const error = this.phoneUpdateError();
       const loadingFinished = previousPhoneUpdateLoading && !loading;
       const challengeIdCleared = previousChallengeId !== null && challengeId === null;
-     
+
       previousChallengeId = challengeId;
       previousPhoneUpdateLoading = loading;
 
-      if (challengeIdCleared && !error && loadingFinished && !this.otpAttemptsExpired()) {
+   
+      if (challengeIdCleared && !error && loadingFinished) {
         this.alertService.success(
           this.translate.instant('settings.profile-photo.phoneNumberUpdated'),
           { variant: 'dismissible', title: 'Success!' },
         );
         this.isEditing.set(false);
         this.isOtpModalOpen.set(false);
-        this.store.dispatch(PersonalInfoActions.loadPersonalInfo({ forceRefresh: true }));
+     
+        this.store.dispatch(PersonalInfoActions.loadPersonalInfo({}));
       }
      
 
@@ -539,6 +542,10 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
   public onEdit(): void {
     this.isEditing.set(true);
     this.otpAttemptsExpired.set(false);
+
+
+    this.editedPhoneNumber.set(this.phoneNumber() || '');
+    this.editedPId.set(this.pId() || '');
   }
  
   public onPersonalNumberChange(value: string | number | boolean | FileList | null): void {
