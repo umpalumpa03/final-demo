@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AuthContainer } from './auth-container';
 import { Router, NavigationEnd, RouterOutlet } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
@@ -14,6 +15,8 @@ describe('AuthContainer Component', () => {
     url: string;
     events: Subject<any>;
     navigate: ReturnType<typeof vi.fn>;
+    createUrlTree?: ReturnType<typeof vi.fn>;
+    serializeUrl?: ReturnType<typeof vi.fn>;
   };
 
   beforeEach(async () => {
@@ -29,6 +32,7 @@ describe('AuthContainer Component', () => {
       imports: [AuthContainer, TranslateModule.forRoot()],
       providers: [
         { provide: Router, useValue: routerMock },
+        { provide: ActivatedRoute, useValue: {} },
         TranslateService,
         provideMockStore({}),
       ],
@@ -59,8 +63,10 @@ describe('AuthContainer Component', () => {
       '/auth/sign-up'
     );
 
+    // Mock createUrlTree for router
+    routerMock.createUrlTree = vi.fn();
+    routerMock.serializeUrl = vi.fn();
     routerMock.events.next(navigationEndEvent);
-
     expect(component.sidePanelData()).not.toBeNull();
   });
 });

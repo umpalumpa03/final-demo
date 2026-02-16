@@ -5,6 +5,7 @@
 .auth {
   --auth-container-width: 48rem;
   position: relative;
+  overflow-x: hidden;
 
   &__loader-overlay {
     @include flex-center;
@@ -85,6 +86,7 @@
       @include flex-center($align: start);
       flex: 1;
       width: 100%;
+      padding: 16rem 3.2rem 0rem;
 
       @media (max-width: 768px) {
         align-items: center;
@@ -124,4 +126,8 @@
       }
     }
   }
+}
+
+.padding {
+  padding: 8rem 3.2rem 0rem;
 }

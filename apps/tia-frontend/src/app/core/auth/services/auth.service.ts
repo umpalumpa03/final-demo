@@ -53,8 +53,8 @@ import showAlert from '@tia/shared/utils/alerts/alert.helper';
 export class AuthService {
   private monitorInactivity = inject(MonitorInactivity);
   private translate = inject(TranslateService);
-  private tokenService = inject(TokenService);
   private alertService = inject(AlertService);
+  private tokenService = inject(TokenService);
   private http = inject(HttpClient);
   private router = inject(Router);
   private store = inject(Store);
@@ -233,8 +233,31 @@ export class AuthService {
       );
   }
 
-  public signUpUser(userData: IRegistrationForm): Observable<ISignUpResponse> {
-    return this.http.post<ISignUpResponse>(`${this.baseUrl}/signup`, userData);
+  public signUpUser(
+    userData: IRegistrationForm,
+  ): Observable<ISignUpResponse | never> {
+    this.isLoginLoading.set(true);
+
+    return this.http
+      .post<ISignUpResponse>(`${this.baseUrl}/signup`, userData)
+      .pipe(
+        tap((res) => {
+          if (res?.signup_token) {
+            this.tokenService.setSignUpToken(res.signup_token);
+          }
+          this.router.navigate([Routes.PHONE]);
+        }),
+        catchError((err) => {
+          const errorMessage = this.translate.instant(
+            'auth.alert-errors.registerError',
+          );
+
+          showAlert(this.alertService, this.translate, 'error', errorMessage);
+
+          return EMPTY;
+        }),
+        finalize(() => this.isLoginLoading.set(false)),
+      );
   }
 
   public sendPhoneVerificationCode(
@@ -262,10 +285,15 @@ export class AuthService {
           this.router.navigate([Routes.OTP_SIGN_UP]);
         }),
         catchError((err) => {
-          const errorData: phoneOtpError = err.error;
-          this.otpError.set(errorData);
+          const backendMessage = err.error?.message;
 
-          setTimeout(() => this.otpError.set(null), 2000);
+          const displayMessage =
+            err.status === 404
+              ? this.translate.instant('auth.alert-errors.doubledPhone')
+              : backendMessage || 'Error occurred';
+
+          showAlert(this.alertService, this.translate, 'error', displayMessage);
+
           return EMPTY;
         }),
         finalize(() => this.isLoginLoading.set(false)),
@@ -303,13 +331,12 @@ export class AuthService {
           );
         }),
         catchError((err) => {
-          const errorData = err.error as OtpResponse;
-          this.otpError.set(errorData);
-
-          setTimeout(() => {
-            this.otpError.set(null);
-          }, 2000);
-
+          showAlert(
+            this.alertService,
+            this.translate,
+            'error',
+            'auth.alert-errors.registerError',
+          );
           return throwError(() => err);
         }),
         finalize(() => {

@@ -25,7 +25,6 @@ export class PhoneVerification {
   private tokenService = inject(TokenService);
   private destroyRef = inject(DestroyRef);
   public inputOtpConfig = otpVerificationConfig['sign-up'];
-
   public PhoneOtpError = this.authService.otpError;
 
   public submit(otp: string): void {

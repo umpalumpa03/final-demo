@@ -73,19 +73,22 @@ describe('RegistrationForm', () => {
   it('emits payload without confirmPassword and resets signals on successful submit', async () => {
     const spy = vi.spyOn(component.submitRegistrationForm, 'emit');
 
-    component.registrationForm.get('firstName')?.setValue('Al');
-    component.registrationForm.get('lastName')?.setValue('Ng');
-    component.registrationForm.get('birthday')?.setValue('11-11-2001');
-    component.registrationForm.get('email')?.setValue('a@b.com');
-    component.registrationForm.get('username')?.setValue('alice');
-    component.registrationForm.get('password')?.setValue('Aa12345@');
-    component.registrationForm.get('confirmPassword')?.setValue('Aa12345@');
-
+    component.registrationForm.setValue({
+      firstName: 'Al',
+      lastName: 'Ng',
+      birthday: '2000-01-01',
+      email: 'a@b.com',
+      password: 'Aa12345@',
+      confirmPassword: 'Aa12345@',
+      username: 'alice',
+    });
+    component.registrationForm.markAllAsTouched();
+    component.registrationForm.updateValueAndValidity();
     fixture.detectChanges();
     await fixture.whenStable();
 
+    // Ensure form is valid and touched
     component.submit();
-
     expect(spy).toHaveBeenCalled();
     const payload = (spy as any).mock.calls[0][0];
     expect(payload.confirmPassword).toBeUndefined();
