@@ -60,32 +60,16 @@ describe('Personal Info Integration', () => {
     req.flush({ message: 'PID updated successfully' });
 
 
-    await new Promise(resolve => setTimeout(resolve, 10));
+    await new Promise(resolve => setTimeout(resolve, 50));
 
-    const pId = await firstValueFrom(
-      store.select(PersonalInfoSelectors.selectPId).pipe(
-        take(1),
-        timeout(1000),
-      ),
+ 
+    const state = await firstValueFrom(
+      store.select(PersonalInfoSelectors.selectPersonalInfo).pipe(take(1), timeout(1000))
     );
 
-    const loading = await firstValueFrom(
-      store.select(PersonalInfoSelectors.selectPersonalInfoLoading).pipe(
-        take(1),
-        timeout(1000),
-      ),
-    );
-
-    const error = await firstValueFrom(
-      store.select(PersonalInfoSelectors.selectPersonalInfoError).pipe(
-        take(1),
-        timeout(1000),
-      ),
-    );
-
-    expect(pId).toBe(newPId);
-    expect(loading).toBe(false);
-    expect(error).toBeNull();
+    expect(state.pId).toBe(newPId);
+    expect(state.loading).toBe(false);
+    expect(state.error).toBeNull();
   });
 
   it('should initiate phone update successfully', async () => {
@@ -100,32 +84,16 @@ describe('Personal Info Integration', () => {
     const mockResponse = { challengeId: 'challenge-123', method: 'SMS' };
     req.flush(mockResponse);
 
+    
+    await new Promise(resolve => setTimeout(resolve, 50));
 
-    await new Promise(resolve => setTimeout(resolve, 10));
-
-    const challengeId = await firstValueFrom(
-      store.select(PersonalInfoSelectors.selectPhoneUpdateChallengeId).pipe(
-        take(1),
-        timeout(1000),
-      ),
+ 
+    const state = await firstValueFrom(
+      store.select(PersonalInfoSelectors.selectPersonalInfo).pipe(take(1), timeout(1000))
     );
 
-    const loading = await firstValueFrom(
-      store.select(PersonalInfoSelectors.selectPhoneUpdateLoading).pipe(
-        take(1),
-        timeout(1000),
-      ),
-    );
-
-    const error = await firstValueFrom(
-      store.select(PersonalInfoSelectors.selectPhoneUpdateError).pipe(
-        take(1),
-        timeout(1000),
-      ),
-    );
-
-    expect(challengeId).toBe(mockResponse.challengeId);
-    expect(loading).toBe(false);
-    expect(error).toBeNull();
+    expect(state.phoneUpdateChallengeId).toBe(mockResponse.challengeId);
+    expect(state.phoneUpdateLoading).toBe(false);
+    expect(state.phoneUpdateError).toBeNull();
   });
 });
