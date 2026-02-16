@@ -10,6 +10,7 @@ import { RouteLoader } from './shared/lib/feedback/route-loader/route-loader';
 import { NavigationService } from './core/services/navigation/navigation.service';
 import { NoConnection } from './features/no-connection/container/no-connection';
 import { GlobalAlert } from './shared/ui/global-alert/global-alert';
+import { Store } from '@ngrx/store';
 @Component({
   imports: [RouterModule, RouteLoader, NoConnection, GlobalAlert],
   selector: 'app-root',
@@ -22,8 +23,10 @@ export class App {
   private readonly navigationService = inject(NavigationService);
   protected readonly isLoading = this.navigationService.isFeatureLoading;
   private readonly document = inject(DOCUMENT);
+  private readonly userLanguage = inject(Store).selectSignal((state) => state["user-info"].language);
+  
   constructor() {
-    const savedLanguage = localStorage.getItem('language') || 'en';
+    const savedLanguage = this.userLanguage();
     const langToUse =
       savedLanguage === 'georgian' || savedLanguage === 'ka' ? 'ka' : 'en';
 

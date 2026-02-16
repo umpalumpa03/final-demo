@@ -19,7 +19,7 @@ describe('BankContainer', () => {
         provideHttpClient(),
         provideHttpClientTesting(),
         provideTranslateService(),
-        provideMockStore({ initialState: {} }),
+        provideMockStore({ initialState: { 'user-info': { language: 'en' } } }),
       ],
     }).compileComponents();
 

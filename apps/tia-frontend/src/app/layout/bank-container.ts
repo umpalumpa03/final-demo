@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  DOCUMENT,
   inject,
   OnInit,
 } from '@angular/core';
@@ -14,6 +15,7 @@ import { UiModal } from '@tia/shared/lib/overlay/ui-modal/ui-modal';
 import { NavigationService } from 'apps/tia-frontend/src/app/core/services/navigation/navigation.service';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { PersonalInfoActions } from '../store/personal-info/pesronal-info.actions';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-bank-container',
@@ -37,4 +39,27 @@ export class BankContainer {
   public subtitle = 'You will be automatically logged out in';
   public timeWarning = this.monitorInactivity.timeWarning;
   protected readonly isLoading = this.navigationService.isChangingAtSegment(2);
+
+  private readonly document = inject(DOCUMENT);
+  private readonly translate = inject(TranslateService);
+  private readonly userLanguage = inject(Store).selectSignal((state) => state["user-info"].language);
+
+
+  constructor() {
+    const savedLanguage = this.userLanguage();
+    const langToUse =
+      savedLanguage === 'georgian' || savedLanguage === 'ka' ? 'ka' : 'en';
+
+    this.translate.use(langToUse);
+    this.updateHtmlLang(langToUse);
+
+    this.translate.onLangChange.subscribe((event) => {
+      this.updateHtmlLang(event.lang);
+    });
+  }
+
+  private updateHtmlLang(lang: string): void {
+    this.document.documentElement.lang = lang;
+  }
+  
 }
