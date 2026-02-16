@@ -71,6 +71,14 @@
       "submit": "Submit Application"
     }
   },
+  "card": {
+    "amount": "Amount",
+    "term": "Term",
+    "monthly": "Monthly",
+    "next": "Next Payment",
+    "applied": "Applied",
+    "months": "Month"
+  },
   "details": {
     "title": "Loan Details",
     "description": "View complete information about this loan",
