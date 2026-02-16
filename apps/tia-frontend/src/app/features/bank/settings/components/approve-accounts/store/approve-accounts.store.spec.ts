@@ -158,4 +158,93 @@ describe('AccountPermissionsStore', () => {
     store.selectAccount(null);
     expect(store.selectedAccountId()).toBeNull();
   });
+  it('should load permissions from API if store is empty', () => {
+    expect(store.permissions().length).toBe(0);
+
+    apiServiceMock.getAccountPermissions.mockReturnValue(of(mockPermissions));
+
+    store.loadPermissions();
+
+    expect(apiServiceMock.getAccountPermissions).toHaveBeenCalledTimes(1);
+    expect(store.permissions()).toEqual(mockPermissions);
+    expect(store.isLoading()).toBe(false);
+  });
+
+  it('should handle API errors in loadPermissions', () => {
+    const errorMsg = 'Permissions Load Failed';
+    apiServiceMock.getAccountPermissions.mockReturnValue(
+      throwError(() => ({ message: errorMsg })),
+    );
+
+    store.loadPermissions();
+
+    expect(store.error()).toBe(errorMsg);
+    expect(store.isLoading()).toBe(false);
+    expect(store.permissions()).toEqual([]);
+  });
+
+  it('should show correct alert title (Info) when status is not active', () => {
+    apiServiceMock.getPendingAccounts.mockReturnValue(of(mockAccounts));
+    store.loadPendingAccounts();
+
+    apiServiceMock.updateAccountStatus.mockReturnValue(of({}));
+    const payload = { accountId: '1', updatedStatus: 'declined' };
+
+    store.updateStatus(payload as any);
+
+    expect(store.pendingAccounts().find((a) => a.id === '1')).toBeUndefined();
+
+    expect(mockAlertService.success).toHaveBeenCalledWith(
+      'settings.approve-accounts.alerts.declined_success',
+      expect.objectContaining({
+        title: 'Info',
+      }),
+    );
+  });
+
+  it('should handle API errors in updateStatus', () => {
+    const errorMsg = 'Update Failed';
+    apiServiceMock.updateAccountStatus.mockReturnValue(
+      throwError(() => ({ message: errorMsg })),
+    );
+
+    store.updateStatus({ accountId: '1', updatedStatus: 'active' });
+
+    expect(store.isLoading()).toBe(false);
+    expect(store.error()).toBe(errorMsg);
+    expect(mockAlertService.success).not.toHaveBeenCalled();
+  });
+
+  it('should correctly compute pendingAccountsCount and selectedAccount', () => {
+    expect(store.pendingAccountsCount()).toBe(0);
+    expect(store.selectedAccount()).toBeUndefined();
+
+    apiServiceMock.getPendingAccounts.mockReturnValue(of(mockAccounts));
+    store.loadPendingAccounts();
+
+    expect(store.pendingAccountsCount()).toBe(2);
+
+    store.selectAccount('2');
+    const selected = store.selectedAccount();
+
+    expect(selected).toBeDefined();
+    expect(selected?.id).toBe('2');
+    expect(selected?.name).toBe('Account B');
+  });
+
+  it('should reset state to initial values', () => {
+    store.selectAccount('123');
+    apiServiceMock.getPendingAccounts.mockReturnValue(of(mockAccounts));
+    store.loadPendingAccounts();
+
+    expect(store.pendingAccounts().length).toBeGreaterThan(0);
+    expect(store.selectedAccountId()).toBe('123');
+
+    store.resetState();
+
+    expect(store.pendingAccounts()).toEqual([]);
+    expect(store.selectedAccountId()).toBeNull();
+    expect(store.permissions()).toEqual([]);
+    expect(store.error()).toBeNull();
+  });
 });
