@@ -31,7 +31,7 @@
     },
     "export_btn": "ცხრილის ექსპორტი",
     "loading": "იტვირთება",
-    "showing_text": "ნაჩვენებია {{fetched}} {{total}}-დან"
+    "showing_text": "ნაჩვენებია {{fetched}} ტრანზაქცია {{total}}-დან"
   },
   "error_states": {
     "failed": {

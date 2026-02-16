@@ -7,7 +7,7 @@ export class BreakpointService {
   private readonly XL_MOBILE_BREAKPOINT = 600;
   private readonly MOBILE_BREAKPOINT = 768;
   private readonly TABLET_BREAKPOINT = 1024;
-  private readonly L_TABLET_BREAKPOINT = 1040;
+  private readonly L_TABLET_BREAKPOINT = 1200;
 
   public isExtraSmall = signal(
     window.innerWidth <= this.EXTRA_SMALL_BREAKPOINT,

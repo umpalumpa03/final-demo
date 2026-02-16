@@ -63,5 +63,10 @@
   "reconnected": {
     "title": "Connection Restored",
     "description": "Your internet connection has been restored successfully."
+  },
+  "wildcard": {
+    "page-not-found": "Page Not Found",
+    "page-not-found-subtitle": "We're sorry, the requested page could not be found or is no longer available.",
+    "back-to-home": "Back To Home"
   }
 }
