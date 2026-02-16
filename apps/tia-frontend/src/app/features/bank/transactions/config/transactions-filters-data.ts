@@ -84,3 +84,5 @@ export const getTransactionFiltersConfig = (
     },
   ] as const;
 };
+
+export const TODAY = new Date().toISOString().split('T')[0];
