@@ -7,6 +7,8 @@ import { CardDesign } from 'apps/tia-frontend/src/app/features/bank/products/com
 import { CardCategory } from 'apps/tia-frontend/src/app/features/bank/products/components/cards/models/card-category.model';
 import { CardType } from '../../../features/bank/products/components/cards/models/card-type.model';
 import { CardSensitiveData } from '../../../features/bank/products/components/cards/models/card-sensitive-data.model';
+import { selectAccounts } from '../accounts/accounts.selectors';
+import { Account } from '@tia/shared/models/accounts/accounts.model';
 
 export const selectCardsState = createFeatureSelector<CardsState>('cards');
 
@@ -57,10 +59,17 @@ export const selectCardGroups = createSelector(
 export const selectAccountById = (accountId: string) =>
   createSelector(
     selectAllAccounts,
-    (accounts: CardAccount[]): CardAccount | undefined =>
-      accounts.find((account) => account.id === accountId),
+    selectAccounts,
+    (accounts: CardAccount[], accountsStoreAccounts: Account[]): CardAccount | undefined => {
+      const cardAccount = accounts.find((account) => account.id === accountId);
+      if (!cardAccount) return undefined;
+      
+      const accountStoreAcc = accountsStoreAccounts.find(a => a.id === accountId);
+      return accountStoreAcc 
+        ? { ...cardAccount, balance: accountStoreAcc.balance }
+        : cardAccount;
+    }
   );
-
 export const selectCardDetailsByAccountId = (accountId: string) =>
   createSelector(
     selectAccountById(accountId),
@@ -151,17 +160,28 @@ export const selectCardCreationData = createSelector(
   selectCardCategories,
   selectCardTypes,
   selectAllAccounts,
+  selectAccounts,  
   (
     designs: CardDesign[],
     categories: CardCategory[],
     types: CardType[],
     accounts: CardAccount[],
-  ) => ({
-    designs,
-    categories,
-    types,
-    accounts,
-  }),
+    accountsStoreAccounts: Account[],
+  ) => {
+   const accountsWithUpdatedBalance = accounts.map(cardAcc => {
+      const accountStoreAcc = accountsStoreAccounts.find(a => a.id === cardAcc.id);
+      return accountStoreAcc 
+        ? { ...cardAcc, balance: accountStoreAcc.balance }
+        : cardAcc;
+    });
+
+    return {
+      designs,
+      categories,
+      types,
+      accounts: accountsWithUpdatedBalance,
+    }
+  }
 );
 
 export const selectCardCreationDataLoading = createSelector(
@@ -183,11 +203,13 @@ export const selectCardDetailsModalData = createSelector(
   selectCardDetails,
   selectCardImages,
   selectAllAccounts,
+  selectAccounts,
   (
     cardId: string | null,
     cardDetails: Record<string, CardDetail>,
     cardImages: Record<string, string>,
     accounts: CardAccount[],
+    accountsStoreAccounts: Account[],
   ) => {
     if (!cardId) return null;
 
@@ -197,6 +219,9 @@ export const selectCardDetailsModalData = createSelector(
     if (!details || !image) return null;
 
     const account = accounts.find((acc) => acc.id === details.accountId);
+    
+    const accountStoreAcc = accountsStoreAccounts.find(a => a.id === details.accountId);
+    const updatedBalance = accountStoreAcc ? accountStoreAcc.balance : account?.balance ?? 0;
 
     return {
       cardId,
@@ -205,7 +230,7 @@ export const selectCardDetailsModalData = createSelector(
       account,
       currency: account?.currency ?? 'N/A',
       formattedBalance: account
-        ? `${account.currency} ${account.balance.toLocaleString()}`
+        ? `${account.currency} ${updatedBalance.toLocaleString()}`
         : 'N/A',
       shouldShowCreditLimit: details.type === 'CREDIT' && !!details.creditLimit,
       formattedCreditLimit:

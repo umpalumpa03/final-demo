@@ -36,6 +36,7 @@ import {
 } from './cards.selectors';
 import { CardsState } from './cards.state';
 import { ITransactions } from '@tia/shared/models/transactions/transactions.models';
+import { Account } from '@tia/shared/models/accounts/accounts.model';
 
 describe('CardsSelectors - Full Coverage', () => {
 
@@ -82,7 +83,25 @@ describe('CardsSelectors - Full Coverage', () => {
   loadedCardDetailsIds: ['card-1'],
   loadedCardImageIds: ['card-1'],
 };
-
+const mockAccountsStoreAccounts: Account[] = [
+  { 
+    id: 'acc-1', 
+    iban: 'GE123', 
+    name: 'Main', 
+    balance: 2000, 
+    currency: 'GEL', 
+    status: 'ACTIVE',
+    type: 'current' as any,
+    friendlyName: 'Main',
+    isFavorite: false,
+    isHidden: false,
+    permission: 0,
+    openedAt: '2024-01-01',
+    userId: 'user-1',
+    createdAt: '2024-01-01',
+    closedAt: "",
+  },
+];
 it('should select all accounts', () => {
     expect(selectAllAccounts.projector(mockState)).toEqual(mockState.accounts);
   });
@@ -92,10 +111,11 @@ it('should select all accounts', () => {
     expect(result[0].cardImages[0].cardId).toBe('card-1');
   });
 
-  it('should select account by id', () => {
-    expect(selectAccountById('acc-1').projector(mockState.accounts)?.id).toBe('acc-1');
-    expect(selectAccountById('unknown').projector(mockState.accounts)).toBeUndefined();
-  });
+it('should select account by id', () => {
+  expect(selectAccountById('acc-1').projector(mockState.accounts, mockAccountsStoreAccounts)?.id).toBe('acc-1');
+  expect(selectAccountById('acc-1').projector(mockState.accounts, mockAccountsStoreAccounts)?.balance).toBe(2000);
+  expect(selectAccountById('unknown').projector(mockState.accounts, mockAccountsStoreAccounts)).toBeUndefined();
+});
 
   it('should select card details by account id', () => {
     const result = selectCardDetailsByAccountId('acc-1').projector(
@@ -119,11 +139,18 @@ it('should select all accounts', () => {
     expect(selectCardDetailById('unknown').projector(mockState.cardDetails, mockState.cardImages)).toBeNull();
   });
 
-  it('should select card creation data', () => {
-    const result = selectCardCreationData.projector(mockState.designs, mockState.categories, mockState.types, mockState.accounts);
-    expect(result.designs).toEqual(mockState.designs);
-    expect(result.accounts).toEqual(mockState.accounts);
-  });
+it('should select card creation data', () => {
+  const result = selectCardCreationData.projector(
+    mockState.designs, 
+    mockState.categories, 
+    mockState.types, 
+    mockState.accounts, 
+    mockAccountsStoreAccounts
+  );
+  expect(result.designs).toEqual(mockState.designs);
+  expect(result.accounts[0].balance).toBe(2000); 
+  expect(result.accounts[0].cardIds).toEqual(['card-1']);
+});
 
   it('should select isCreateModalOpen', () => {
     expect(selectIsCreateModalOpen.projector(mockState)).toBe(true);
@@ -168,13 +195,17 @@ it('should select all accounts', () => {
 it('should select selectedCardIdForModal', () => {
   expect(selectSelectedCardIdForModal.projector({ ...mockState, selectedCardIdForModal: 'card-1' })).toBe('card-1');
 });
-
 it('should select card details modal data', () => {
-  const result = selectCardDetailsModalData.projector('card-1', mockState.cardDetails, mockState.cardImages, mockState.accounts);
+  const result = selectCardDetailsModalData.projector(
+    'card-1', 
+    mockState.cardDetails, 
+    mockState.cardImages, 
+    mockState.accounts,
+    mockAccountsStoreAccounts 
+  );
   expect(result?.cardId).toBe('card-1');
-  expect(result?.formattedBalance).toBeDefined();
+  expect(result?.formattedBalance).toBe('GEL 2,000'); 
 });
-
 it('should select cardImagesLoading', () => {
   expect(selectCardImagesLoading.projector({ ...mockState, cardImagesLoading: true })).toBe(true);
 });
@@ -231,4 +262,10 @@ it('should select current account card ids', () => {
   const result = selectCurrentAccountCardIds.projector('acc-1', mockState.accounts);
   expect(result).toEqual(['card-1']);
 });
+it('should select account by id with empty accounts store', () => {
+  expect(selectAccountById('acc-1').projector(mockState.accounts, [])?.id).toBe('acc-1');
+  expect(selectAccountById('acc-1').projector(mockState.accounts, [])?.balance).toBe(1000); 
+});
+
+
 });

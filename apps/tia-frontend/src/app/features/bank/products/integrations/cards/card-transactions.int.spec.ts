@@ -104,22 +104,25 @@ describe('CardTransactions Integration', () => {
       imports: [CardTransactions, TranslateModule.forRoot()],
       providers: [
         provideMockStore({
-          initialState: {
-            cards: {
-              cardDetails: { 'card-1': mockCardData.details },
-              cardImages: { 'card-1': 'base64-image' },
-              accounts: [mockAccount],
-            },
-            transactions: {
-              items: mockTransactions,
-              isLoading: false,
-              error: null,
-              nextCursor: null,
-              filters: { accountIban: '', pageLimit: 100 },
-              loaded: false,
-            },
-          },
-        }),
+  initialState: {
+    cards: {
+      cardDetails: { 'card-1': mockCardData.details },
+      cardImages: { 'card-1': 'base64-image' },
+      accounts: [mockAccount],
+    },
+    accounts: { 
+      accounts: [mockAccount],
+    },
+    transactions: {
+      items: mockTransactions,
+      isLoading: false,
+      error: null,
+      nextCursor: null,
+      filters: { accountIban: '', pageLimit: 100 },
+      loaded: false,
+    },
+  },
+}),
         { provide: Router, useValue: { navigate: vi.fn() } },
         {
           provide: ActivatedRoute,
