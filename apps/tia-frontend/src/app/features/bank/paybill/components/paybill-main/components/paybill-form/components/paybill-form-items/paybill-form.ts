@@ -2,9 +2,12 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   inject,
   input,
   output,
+  signal,
+  untracked,
 } from '@angular/core';
 import {
   BillDetails,
@@ -63,6 +66,7 @@ export class PaybillForm {
   public readonly pay = output<PaybillFormProceedEvent>();
 
   public readonly isVerified = computed(() => !!this.verifiedDetails()?.valid);
+  private hasBeenInteractedWith = signal(false);
 
   protected readonly summaryItems = computed(() =>
     mapBillSummaryFields(this.verifiedDetails()),
@@ -88,6 +92,7 @@ export class PaybillForm {
   }
 
   public onAmountInput(event: Event): void {
+    this.hasBeenInteractedWith.set(true);
     const inputElement = event.target as HTMLInputElement;
     let value = inputElement.value;
 
@@ -113,6 +118,21 @@ export class PaybillForm {
       inputElement.value = value;
     }
   }
+
+  public clearInitialAmount(): void {
+    const control = this.paybillForm().get('amount');
+
+    if (!this.hasBeenInteractedWith() && control?.value) {
+      control.setValue('', { emitEvent: true });
+      this.hasBeenInteractedWith.set(true);
+    }
+  }
+
+  public readonly resetInteractionOnVerify = effect(() => {
+    if (!this.isVerified()) {
+      untracked(() => this.hasBeenInteractedWith.set(false));
+    }
+  });
 
   public onSubmit(): void {
     if (this.isLoading()) return;
