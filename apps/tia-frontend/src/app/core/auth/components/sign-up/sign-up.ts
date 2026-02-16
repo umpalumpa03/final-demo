@@ -15,7 +15,7 @@ import {
   tap,
 } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { RegistrationForm } from 'apps/tia-frontend/src/app/features/storybook/components/forms/registration-form/registration-form';
 import { TokenService } from '../../services/token.service';
 import { IRegistrationForm } from 'apps/tia-frontend/src/app/features/storybook/components/forms/models/contact-forms.model';
@@ -38,6 +38,9 @@ import { AuthHeader } from '../../shared/auth-header/auth-header';
 })
 export class SignUp {
   private authService = inject(AuthService);
+  private tokenService = inject(TokenService);
+  private router = inject(Router);
+  private errorMessageSignal = signal<string>('');
 
   @HostListener('window:keydown.enter', ['$event'])
   public handleKeyboardEvent(event: Event): void {
@@ -104,7 +107,36 @@ export class SignUp {
 
   public onSignUp(signUpData: IRegistrationForm): void {
     this.authService.isLoginLoading.set(true);
+    this.errorMessageSignal.set('');
+    this.authService.signUpUser(signUpData).subscribe({
+      next: (res: any) => {
+        if (res && res.signup_token) {
+          this.tokenService.setSignUpToken(res.signup_token);
+          this.router.navigate(['/auth/phone']);
+        }
+        this.errorMessageSignal.set('');
+        this.authService.isLoginLoading.set(false);
+      },
+      error: (err: any) => {
+        let msg = 'An unexpected error occurred';
+        if (err && err.error && err.error.message) {
+          if (Array.isArray(err.error.message)) {
+            if (err.error.message[0] === 'email must be an email') {
+              msg = 'Invalid Email';
+            } else {
+              msg = err.error.message[0];
+            }
+          } else if (typeof err.error.message === 'string') {
+            msg = err.error.message || msg;
+          }
+        }
+        this.errorMessageSignal.set(msg);
+        this.authService.isLoginLoading.set(false);
+      },
+    });
+  }
 
-    this.authService.signUpUser(signUpData).subscribe();
+  public errorMessage(): string {
+    return this.errorMessageSignal();
   }
 }
