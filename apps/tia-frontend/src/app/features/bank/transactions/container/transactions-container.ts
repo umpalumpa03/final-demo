@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  effect,
   inject,
   OnInit,
 } from '@angular/core';
@@ -77,7 +78,11 @@ export class TransactionsContainer implements OnInit {
       this.actions.exportSingleTransaction(trx);
     }
   }
-
+  constructor() {
+    effect(() => {
+      console.log(this.facade.items().length);
+    });
+  }
   private updateUrl(filters: Partial<ITransactionFilter>): void {
     this.router.navigate([], {
       relativeTo: this.route,

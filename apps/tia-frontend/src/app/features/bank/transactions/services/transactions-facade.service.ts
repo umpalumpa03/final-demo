@@ -86,7 +86,7 @@ export class TransactionsFacadeService {
 
   public loadMore(): void {
     const itemsLength = this.items().length;
-    if (itemsLength > 0 && itemsLength % 20 === 0 && !this.isLoading()) {
+    if (itemsLength > 0) {
       this.store.dispatch(TransactionActions.loadMore());
     }
   }

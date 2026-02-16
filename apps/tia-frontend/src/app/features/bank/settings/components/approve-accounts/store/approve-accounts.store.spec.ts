@@ -71,18 +71,7 @@ describe('AccountPermissionsStore', () => {
     expect(store.isLoading()).toBe(false);
     expect(store.error()).toBeNull();
   });
-
-  it('should load pending accounts and reverse them', () => {
-    apiServiceMock.getPendingAccounts.mockReturnValue(of(mockAccounts));
-
-    store.loadPendingAccounts();
-
-    const expectedReversed = [...mockAccounts].reverse();
-    expect(store.pendingAccounts()).toEqual(expectedReversed);
-    expect(store.pendingAccounts()[0].id).toBe('2');
-    expect(store.isLoading()).toBe(false);
-  });
-
+  
   it('should not call API if pending accounts are already loaded (Cache)', () => {
     apiServiceMock.getPendingAccounts.mockReturnValue(of(mockAccounts));
 

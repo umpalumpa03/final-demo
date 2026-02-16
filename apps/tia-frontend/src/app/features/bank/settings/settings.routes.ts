@@ -1,14 +1,12 @@
 import { Routes } from '@angular/router';
 import { unsavedChangesGuard } from './components/appearance/guard/unsaved-changes.guard';
 import { supportRoleGuard } from '@tia/core/guards/support-role.guard';
-import { AccountPermissionsStore } from './components/approve-accounts/store/approve-accounts.store';
 
 export const settingsRoutes: Routes = [
   {
     path: '',
     loadComponent: () =>
       import('./container/settings-container').then((c) => c.SettingsContainer),
-    providers: [AccountPermissionsStore],
     children: [
       {
         path: '',

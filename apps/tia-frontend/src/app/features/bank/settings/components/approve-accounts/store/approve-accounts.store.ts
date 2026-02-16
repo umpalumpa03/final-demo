@@ -63,7 +63,7 @@ export const AccountPermissionsStore = signalStore(
             return apiService.getPendingAccounts().pipe(
               tap((accounts) =>
                 patchState(store, {
-                  pendingAccounts: [...accounts].reverse(),
+                  pendingAccounts: accounts,
                   isLoading: false,
                 }),
               ),
