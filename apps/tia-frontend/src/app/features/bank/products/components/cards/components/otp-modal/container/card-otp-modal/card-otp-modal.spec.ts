@@ -4,6 +4,7 @@ import { CardOtpModal } from './card-otp-modal';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import {
   requestCardOtp,
+  resendOTPCode,
   verifyCardOtp,
 } from 'apps/tia-frontend/src/app/store/products/cards/cards.actions';
 import * as CardsSelectors from 'apps/tia-frontend/src/app/store/products/cards/cards.selectors';
@@ -59,11 +60,11 @@ describe('CardOtpModal', () => {
     );
   });
 
-  it('should dispatch requestCardOtp on handleResendOtp', () => {
+  it('should dispatch resendOTPCode on handleResendOtp', () => {
     const dispatchSpy = vi.spyOn(store, 'dispatch');
     component.handleResendOtp();
     expect(dispatchSpy).toHaveBeenCalledWith(
-      requestCardOtp({ challengeId: 'ch-123' }),
+      resendOTPCode({ challengeId: 'ch-123' }),
     );
   });
 
