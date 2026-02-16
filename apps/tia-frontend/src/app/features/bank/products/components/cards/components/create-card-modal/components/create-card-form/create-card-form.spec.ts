@@ -53,15 +53,5 @@ describe('CreateCardForm', () => {
 
     expect(emitSpy).toHaveBeenCalled();
   });
-//   it('should not emit formSubmit when form is invalid', () => {
-//   formGroup.patchValue({ cardName: '', accountId: '' });
-//   formGroup.markAsTouched();
-  
-//   const emitSpy = vi.fn();
-//   component.formSubmit.subscribe(emitSpy);
 
-//   component['onSubmit']();
-
-//   expect(emitSpy).not.toHaveBeenCalled();
-// });
 });

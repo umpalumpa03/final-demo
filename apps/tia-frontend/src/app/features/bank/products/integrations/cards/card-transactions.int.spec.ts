@@ -159,6 +159,7 @@ it('should load card and transaction data on init', () => {
   const dispatchSpy = vi.spyOn(store, 'dispatch');
   
   store.overrideSelector(selectTransactionsLoaded, false);
+  store.overrideSelector(selectFilters, { accountIban: '', pageLimit: 100 });
   store.refreshState();
   
   component.ngOnInit();
@@ -209,6 +210,7 @@ it('should load card and transaction data on init', () => {
   const dispatchSpy = vi.spyOn(store, 'dispatch');
   
   store.overrideSelector(selectTransactionsLoaded, false);
+  store.overrideSelector(selectFilters, { accountIban: 'DIFFERENT_IBAN', pageLimit: 100 }); 
   store.refreshState();
   
   component.ngOnInit();

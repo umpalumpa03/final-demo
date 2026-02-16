@@ -39,6 +39,7 @@ import { TransactionCardHeader } from '../components/transaction-card-header/tra
 import { TransactionList } from '../components/transaction-list/transaction-list';
 import {
   selectError,
+  selectFilters,
   selectIsLoading,
   selectItems,
   selectNextCursor,
@@ -48,7 +49,11 @@ import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions
 import { Pagination } from '@tia/shared/lib/navigation/pagination/pagination';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ITransactions } from '@tia/shared/models/transactions/transactions.models';
+import {
+  ITransactionFilter,
+  ITransactions,
+} from '@tia/shared/models/transactions/transactions.models';
+import { CardAccount } from '@tia/shared/models/cards/card-account.model';
 
 @Component({
   selector: 'app-card-transactions',
@@ -169,20 +174,23 @@ export class CardTransactions implements OnInit {
     startWith(true),
   );
 
- protected getTotalCount(transactions: ITransactions[]): number {
-  return transactions?.length || 0;
-}
+  protected getTotalCount(transactions: ITransactions[]): number {
+    return transactions?.length || 0;
+  }
 
-protected getPaginatedTransactions(transactions: ITransactions[], page: number): ITransactions[] {
-  if (!transactions) return [];
-  const startIndex = (page - 1) * this.itemsPerPage;
-  return transactions.slice(startIndex, startIndex + this.itemsPerPage);
-}
+  protected getPaginatedTransactions(
+    transactions: ITransactions[],
+    page: number,
+  ): ITransactions[] {
+    if (!transactions) return [];
+    const startIndex = (page - 1) * this.itemsPerPage;
+    return transactions.slice(startIndex, startIndex + this.itemsPerPage);
+  }
 
- protected getTotalPages(transactions: ITransactions[]): number {
-  if (!transactions) return 0;
-  return Math.ceil(transactions.length / this.itemsPerPage);
-}
+  protected getTotalPages(transactions: ITransactions[]): number {
+    if (!transactions) return 0;
+    return Math.ceil(transactions.length / this.itemsPerPage);
+  }
 
   protected handlePageChange(page: number): void {
     this.currentPageSubject.next(page);
@@ -222,30 +230,34 @@ protected getPaginatedTransactions(transactions: ITransactions[], page: number):
   private initializeTransactionFilters(): void {
     combineLatest([
       this.store.select(selectCardDetailById(this.cardId)),
+      this.store.select(selectFilters),
       this.store.select(selectTransactionsLoaded),
     ])
       .pipe(
-        filter(
-          ([cardData, loaded]) => !!cardData?.details?.accountId && !loaded,
-        ),
+        filter(([cardData, filters, loaded]) => !!cardData?.details?.accountId),
         take(1),
-        switchMap(([cardData]) =>
+        switchMap(([cardData, filters, loaded]) =>
           this.store
             .select(selectAccountById(cardData!.details.accountId))
             .pipe(
               filter((account) => !!account),
               take(1),
+              map((account) => ({ account, filters, loaded })),
             ),
         ),
-        takeUntilDestroyed(this.destroyRef),
-        tap((account) => {
-          this.store.dispatch(TransactionActions.enter());
-          this.store.dispatch(
-            TransactionActions.updateFilters({
-              filters: { accountIban: account!.iban, pageLimit: 100 },
-            }),
-          );
+        tap(({ account, filters, loaded }) => {
+          const isSameAccount = filters?.accountIban === account!.iban;
+
+          if (!loaded || !isSameAccount) {
+            this.store.dispatch(TransactionActions.enter());
+            this.store.dispatch(
+              TransactionActions.updateFilters({
+                filters: { accountIban: account!.iban, pageLimit: 100 },
+              }),
+            );
+          }
         }),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe();
   }
