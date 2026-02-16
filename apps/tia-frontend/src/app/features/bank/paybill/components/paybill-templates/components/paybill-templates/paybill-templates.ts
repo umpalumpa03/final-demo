@@ -281,6 +281,7 @@ export class PaybillTemplates implements OnInit {
   public isOtpModalOpen = input<boolean>(false);
   public isPaymentModalHidden = input<boolean>(false);
   public succesModalHidden = input<boolean>(false);
+  public errorMessage = input<string | null>(null);
   public otpCloseEmit = output<boolean>();
   public paymentDone = output<void>();
   public resendOtpCode = output<void>();

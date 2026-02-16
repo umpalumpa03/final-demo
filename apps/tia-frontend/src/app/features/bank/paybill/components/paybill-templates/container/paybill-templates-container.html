@@ -48,6 +48,7 @@
   (payAction)="onPayAction()"
   [isOtpModalOpen]="isOtpModalOpen()"
   [isPaymentModalHidden]="isPaymentModalVisible()"
+  [errorMessage]="errorMessage()"
   (otpCloseEmit)="onOtpClose($event)"
   [resetTreeState]="resetTree()"
   (paymentDone)="onPaymentDone()"

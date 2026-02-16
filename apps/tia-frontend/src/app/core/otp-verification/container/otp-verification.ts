@@ -138,6 +138,7 @@ export class OtpVerification implements OnInit {
   });
 
   constructor() {
+   
     effect(() => {
       if (this.maxAttempts() === 0) {
         this.customError.emit();
@@ -145,6 +146,21 @@ export class OtpVerification implements OnInit {
           this.isErrorPageVisible.set(true);
         }
       }
+    });
+
+ 
+    let previousError: string | null = null;
+    effect(() => {
+      const currentError = this.errorMessage();
+
+    
+      const hadNoErrorBefore = !previousError;
+
+      if (currentError && hadNoErrorBefore) {
+        this.decreaseAttempts();
+      }
+
+      previousError = currentError;
     });
   }
 
@@ -170,6 +186,13 @@ export class OtpVerification implements OnInit {
   }
 
   public onSubmit(): void {
+    // Prevent multiple submissions while a request is already in progress
+    // Use internal loading state instead of external input flag, so that
+    // parents can still pass [isButtonLoading] without blocking submits.
+    if (this.buttonLoading() || this.isButtonDisabled()) {
+      return;
+    }
+
     const form = this.activeForm();
 
     if (form.invalid) {
@@ -182,7 +205,6 @@ export class OtpVerification implements OnInit {
 
     const otp = this.extractOtp();
 
-    this.decreaseAttempts();
     this.isVerifyCalled.emit(otp);
 
     this.handlePostSubmitReset();
