@@ -24,7 +24,6 @@ import { CardOtpModalContent } from '../../components/card-otp-modal-content/car
   selector: 'app-card-otp-modal',
   imports: [AsyncPipe, UiModal, CardOtpModalContent],
   templateUrl: './card-otp-modal.html',
-  styleUrl: './card-otp-modal.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardOtpModal {

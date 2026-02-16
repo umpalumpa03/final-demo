@@ -9,14 +9,6 @@
   />
   } @else if (state.data; as data) {
   <div class="card-details">
-    @if (alertService.isVisible() && !(isDetailsModalOpen$ | async)) {
-    <div class="card-details__alert">
-      <app-alert-types-with-icons
-        [alertType]="alertService.alertType()!"
-        [alertMessage]="alertService.alertMessage()"
-      />
-    </div>
-    }
     
     <div class="card-details__header">
       <app-button

@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   inject,
   OnInit,
 } from '@angular/core';
@@ -32,6 +33,8 @@ import { AccountHeader } from '../components/account-header/account-header';
 import { CardGridItem } from '../components/card-grid-item/card-grid-item';
 import { TranslatePipe } from '@ngx-translate/core';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { CardOtpModal } from '../../otp-modal/container/card-otp-modal/card-otp-modal';
 
 @Component({
   selector: 'app-account-cards',
@@ -44,7 +47,7 @@ import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader'
     AccountHeader,
     CardGridItem,
     TranslatePipe,
-    RouteLoader,
+    RouteLoader
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -52,6 +55,7 @@ export class AccountCards implements OnInit {
   private readonly store = inject(Store);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
 
   private readonly accountId =
     this.route.snapshot.paramMap.get('accountId') || '';
@@ -118,7 +122,7 @@ export class AccountCards implements OnInit {
     }),
   );
 
-  ngOnInit(): void {
+   ngOnInit(): void {
     this.store.dispatch(loadCardAccounts({}));
 
     this.store
@@ -126,6 +130,7 @@ export class AccountCards implements OnInit {
       .pipe(
         filter((loaded) => loaded === true),
         take(1),
+        takeUntilDestroyed(this.destroyRef), 
         tap(() => {
           this.store.dispatch(
             loadAccountCardsPage({ accountId: this.accountId }),
@@ -135,10 +140,11 @@ export class AccountCards implements OnInit {
       .subscribe();
   }
 
-  public handleCardClick(cardId: string): void {
+ public handleCardClick(cardId: string): void {
     this.accountData$
       .pipe(
         take(1),
+        takeUntilDestroyed(this.destroyRef), 
         tap((data) => {
           if (data) {
             const index = data.account.cardIds.indexOf(cardId);
