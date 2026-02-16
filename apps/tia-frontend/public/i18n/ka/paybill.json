@@ -127,7 +127,7 @@
     "payButton": "გადაიხადე ახლავე",
     "errorHeader": "შაბლონები არ არსებობს",
     "errorMessage": "ჩააგდეთ შაბლონები აქ ან შექმენით ახალი",
-    "cancelButton": "გუქმება",
+    "cancelButton": "გაუქმება",
     "paymentHeader": {
       "description": "შაბლონი არჩეულია",
       "payAction": "არჩეულების გადახდა"
