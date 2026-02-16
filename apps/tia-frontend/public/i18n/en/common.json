@@ -26,7 +26,8 @@
     "success": "success",
     "error": "error",
     "warning": "warning",
-    "information": "information"
+    "information": "information",
+    "otpResend": "OTP code could not be sent"
   },
   "validation": {
     "required": "This field is required",

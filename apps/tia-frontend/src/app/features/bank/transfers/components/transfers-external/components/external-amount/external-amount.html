@@ -125,10 +125,8 @@
     (isResendCalled)="resendOtp()"
     timerType="otp"
     (onBackOut)="onOtpClose()"
-    [errorMessage]="errorFromState()"
     [inputOtpConfig]="otpConfig"
     [isBtnRowDirection]="true"
-    (customError)="handleNoMoreAttempts()"
     redirectUrl="/bank/transfers"
     [redirectText]="'transfers.page' | translate"
   ></app-otp-verification>

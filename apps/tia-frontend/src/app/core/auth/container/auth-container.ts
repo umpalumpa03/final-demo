@@ -29,6 +29,7 @@ export class AuthContainer implements OnInit {
   private authService = inject(AuthService);
   private destroyRef = inject(DestroyRef);
   public isLoading = computed(() => this.authService.isLoginLoading());
+  public currentRoute = signal<string>('');
 
   public sidePanelData = signal<IFeature | null>(null);
 
@@ -41,6 +42,7 @@ export class AuthContainer implements OnInit {
         tap((res) => {
           if (res instanceof NavigationEnd) {
             updateSidePanelForRoute(res.url, this.sidePanelData);
+            this.currentRoute.set(res.url);
           }
         }),
       )

@@ -45,6 +45,7 @@ import { ConfirmPaymentModal } from '../modals/confirm-payment-modal/confirm-pay
 import { CreateTemplateModal } from '../modals/create-template-modal/create-template-modal';
 import { TemplatesHeader } from '../../ui/templates-header/templates-header';
 
+
 @Component({
   selector: 'app-paybill-templates',
   imports: [
@@ -65,6 +66,7 @@ import { TemplatesHeader } from '../../ui/templates-header/templates-header';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaybillTemplates implements OnInit {
+  
   // Forms
   public createGroupForm = input.required<FormGroup>();
   public createTemplateForm = input.required<FormGroup>();
@@ -281,6 +283,7 @@ export class PaybillTemplates implements OnInit {
   public succesModalHidden = input<boolean>(false);
   public otpCloseEmit = output<boolean>();
   public paymentDone = output<void>();
+  public resendOtpCode = output<void>();
   public otpConfig = payBillOtpConfig;
 
   public onOtpClose() {
@@ -295,5 +298,9 @@ export class PaybillTemplates implements OnInit {
 
   public onOtpVerify(otp: string): void {
     this.verifyOtp.emit(otp);
+  }
+
+  public resendOtp(): void {
+    this.resendOtpCode.emit();
   }
 }

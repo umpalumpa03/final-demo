@@ -58,6 +58,13 @@ export class PaybillService {
     );
   }
 
+  public resendOtp(challengeId: string): Observable<{ success: boolean }> {
+    return this.http.post<{ success: boolean }>(
+      `${this.baseUrl}/resend-otp`,
+      challengeId,
+    );
+  }
+
   public getPaymentDetails(
     serviceId: string,
   ): Observable<PaybillPaymentDetails> {

@@ -343,7 +343,7 @@ export const LoansStore = signalStore(
     const alertService = inject(AlertService);
     const translate = inject(TranslateService);
 
-    const handleActionError = (err: HttpErrorResponse, key: string) => {
+    const handleActionError = (key: string, err?: HttpErrorResponse) => {
       const backendMsg = err?.error?.message || err?.message;
       const msg = backendMsg || translate.instant(key);
       patchState(store, { actionLoading: false });
@@ -410,7 +410,7 @@ export const LoansStore = signalStore(
                   alertService.showAlert('error', msg);
                   return EMPTY;
                 }
-                return handleActionError(err, ErrorKeys.INITIATE_PREPAYMENT);
+                return handleActionError(ErrorKeys.INITIATE_PREPAYMENT, err);
               }),
             ),
           ),
@@ -437,8 +437,18 @@ export const LoansStore = signalStore(
                 store.loadLoans({ forceChange: true });
               }),
               catchError((err) =>
-                handleActionError(err, ErrorKeys.VERIFY_PREPAYMENT),
+                handleActionError(ErrorKeys.VERIFY_PREPAYMENT, err),
               ),
+            ),
+          ),
+        ),
+      ),
+
+      resendOtp: rxMethod<{ challengeId: string }>(
+        pipe(
+          switchMap(({ challengeId }) =>
+            loansService.resendOtp(challengeId).pipe(
+              catchError((err) => handleActionError(ErrorKeys.INVALID_RESEND),),
             ),
           ),
         ),
@@ -457,7 +467,7 @@ export const LoansStore = signalStore(
                 handleActionSuccess(SuccessKeys.RENAME);
                 patchState(store, { loans: updatedLoans });
               }),
-              catchError((err) => handleActionError(err, ErrorKeys.RENAME)),
+              catchError((err) => handleActionError(ErrorKeys.RENAME, err)),
             ),
           ),
         ),
@@ -477,7 +487,7 @@ export const LoansStore = signalStore(
                 store.loadLoans({ forceChange: true });
               }),
               catchError((err) =>
-                handleActionError(err, ErrorKeys.REQUEST_LOAN),
+                handleActionError(ErrorKeys.REQUEST_LOAN, err),
               ),
             ),
           ),

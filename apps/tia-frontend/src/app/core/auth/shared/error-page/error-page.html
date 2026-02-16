@@ -4,11 +4,14 @@
       <img src="images/svg/auth/download.svg" alt="" />
     </div>
 
-    <h1 class="error-page__title">Too many retries</h1>
-    <p class="error-page__description">You have reached the limit of retries</p>
+    <h1 class="error-page__title">{{'auth.error-page.title' | translate}}</h1>
+    <p class="error-page__description">
+      {{'auth.error-page.subtitle' | translate}}
+    </p>
 
     <p class="error-page__redirect-text">
-      You will be redirected to {{redirectText() || 'sign in'}}
+      {{'auth.error-page.redirectText' | translate}} {{redirectText() ||
+      ('auth.error-page.login' | translate)}}
     </p>
 
     <div class="error-page__circle error-page__circle--timer">

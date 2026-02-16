@@ -133,6 +133,15 @@ export class PaybillMainFacade {
     return storeProvider || null;
   });
 
+  public readonly isCategoriesPage = computed(() => {
+    const segments = this.urlSegments();
+    return segments.length > 0 && segments[segments.length - 1] === 'pay';
+  });
+
+  public readonly isProviderListVisible = computed(() => {
+    return !!this.activeCategory();
+  });
+
   private findProviderRecursive(
     providers: PaybillProvider[],
     targetId: string,

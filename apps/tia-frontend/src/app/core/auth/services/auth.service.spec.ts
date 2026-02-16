@@ -10,7 +10,7 @@ import { Store } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
 import { AlertService } from '@tia/core/services/alert/alert.service';
 import { AuthService } from './auth.service';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 import { TokenService } from './token.service';
 import { environment } from '../../../../environments/environment';
 import { Routes } from '../models/tokens.model';
@@ -48,6 +48,7 @@ describe('AuthService', () => {
     const storeMock = {
       dispatch: vi.fn(),
       selectSignal: vi.fn(() => () => []),
+      select: vi.fn(() => of({ loaded: true, loading: false, error: null })),
     };
 
     const alertServiceMock = {

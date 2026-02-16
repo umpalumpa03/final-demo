@@ -38,6 +38,7 @@ import { ITransactions } from '@tia/shared/models/transactions/transactions.mode
 import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions/transactions.actions';
 import { AlertService } from '@tia/core/services/alert/alert.service';
 import { TranslateService } from '@ngx-translate/core';
+import { AccountsActions } from 'apps/tia-frontend/src/app/store/products/accounts/accounts.actions';
 
 @Injectable()
 export class PaybillEffect {
@@ -74,6 +75,7 @@ export class PaybillEffect {
     'Invalid code': 'paybill.main.errors.invalid_code',
     'Account not found. Please check your account number.':
       'paybill.main.form.account_error',
+      'Cannot POST /paybill/resend-otp': 'common.alertMessages.otpResend'
   };
 
   private getErrorMessage(error: any): string {
@@ -237,6 +239,7 @@ export class PaybillEffect {
               return [
                 PaybillActions.confirmPaymentSuccess(),
                 TransactionActions.loadTransactions({ forceRefresh: true }),
+                AccountsActions.loadAccounts({ forceRefresh: true }),
               ];
             }
 
@@ -346,6 +349,7 @@ export class PaybillEffect {
           PaybillActions.confirmPaymentFailure,
           PaybillActions.loadCategoriesFailure,
           PaybillActions.loadProvidersFailure,
+          PaybillActions.resendOTPCodeFailure,
         ),
         tap(({ error }) => {
           const translationKey =
@@ -703,4 +707,24 @@ export class PaybillEffect {
       map(() => PaybillActions.clearSelection()),
     );
   });
+
+  resendOtpCode$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(PaybillActions.resendOTPCode),
+      switchMap(({ challengeId }) =>
+        this.paybillService.resendOtp(challengeId).pipe(
+          map(() =>
+            PaybillActions.resendOTPCode({ challengeId })
+          ),
+          catchError((error) =>
+            of(
+              PaybillActions.resendOTPCodeFailure({
+                error: this.getErrorMessage(error),
+              })
+            ),
+          )
+        )
+      )
+    )
+  );
 }
