@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideStore } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
+import { Actions } from '@ngrx/effects';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { environment } from '../../../../../../../environments/environment';
@@ -9,11 +10,13 @@ import { PersonalInfoEffects } from '../../../../../../store/personal-info/perso
 import { personalInfoFeature } from '../../../../../../store/personal-info/personal-info.reducer';
 import { PersonalInfoActions } from '../../../../../../store/personal-info/pesronal-info.actions';
 import * as PersonalInfoSelectors from '../../../../../../store/personal-info/personal-info.selectors';
-import { firstValueFrom, take, timeout } from 'rxjs';
+import { firstValueFrom, take } from 'rxjs';
+import { ofType } from '@ngrx/effects';
 
 describe('Personal Info Integration', () => {
   let store: Store;
   let httpMock: HttpTestingController;
+  let actions$: Actions;
   const baseUrl = `${environment.apiUrl}/settings/personal-info`;
 
   beforeEach(async () => {
@@ -28,6 +31,7 @@ describe('Personal Info Integration', () => {
 
     store = TestBed.inject(Store);
     httpMock = TestBed.inject(HttpTestingController);
+    actions$ = TestBed.inject(Actions);
   });
 
   afterEach(() => {
@@ -37,18 +41,25 @@ describe('Personal Info Integration', () => {
   it('should update PID successfully', async () => {
     const newPId = '12345678901';
     
+
+    const currentState = await firstValueFrom(
+      store.select(PersonalInfoSelectors.selectPersonalInfo).pipe(take(1))
+    );
+
+
+    const successActionPromise = firstValueFrom(
+      actions$.pipe(
+        ofType(PersonalInfoActions.updatePersonalInfoSuccess),
+        take(1)
+      )
+    );
+
+ 
     store.dispatch(
       PersonalInfoActions.updatePersonalInfo({
         personalInfo: {
+          ...currentState,
           pId: newPId,
-          phoneNumber: null,
-          loading: false,
-          error: null,
-          phoneUpdateChallengeId: null,
-          phoneUpdateLoading: false,
-          phoneUpdateError: null,
-          phoneUpdatePendingPhone: null,
-          phoneUpdateResendCount: 0,
         },
       }),
     );
@@ -59,11 +70,11 @@ describe('Personal Info Integration', () => {
 
     req.flush({ message: 'PID updated successfully' });
 
-  
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await successActionPromise;
+
 
     const state = await firstValueFrom(
-      store.select(PersonalInfoSelectors.selectPersonalInfo).pipe(take(1), timeout(1000))
+      store.select(PersonalInfoSelectors.selectPersonalInfo).pipe(take(1))
     );
 
     expect(state.pId).toBe(newPId);
@@ -77,6 +88,14 @@ describe('Personal Info Integration', () => {
 
     store.dispatch(PersonalInfoActions.loadPersonalInfoPhoneNumber({ phoneNumber: initialPhoneNumber }));
 
+ 
+    const successActionPromise = firstValueFrom(
+      actions$.pipe(
+        ofType(PersonalInfoActions.initiatePhoneUpdateSuccess),
+        take(1)
+      )
+    );
+
     store.dispatch(PersonalInfoActions.initiatePhoneUpdate({ phone: newPhone }));
 
     const req = httpMock.expectOne(`${baseUrl}/update-phone`);
@@ -86,13 +105,13 @@ describe('Personal Info Integration', () => {
     const mockResponse = { challengeId: 'challenge-123', method: 'SMS' };
     req.flush(mockResponse);
 
- 
-    await new Promise(resolve => setTimeout(resolve, 100));
+
+    await successActionPromise;
+
 
     const state = await firstValueFrom(
-      store.select(PersonalInfoSelectors.selectPersonalInfo).pipe(take(1), timeout(1000))
+      store.select(PersonalInfoSelectors.selectPersonalInfo).pipe(take(1))
     );
-
 
     expect(state.phoneUpdateChallengeId).toBe(mockResponse.challengeId);
     expect(state.phoneUpdateLoading).toBe(false);
