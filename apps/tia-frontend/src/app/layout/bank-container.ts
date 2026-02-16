@@ -19,6 +19,8 @@ import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader'
 import { PersonalInfoActions } from '../store/personal-info/pesronal-info.actions';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { EMPTY } from 'rxjs';
+import { switchMap, tap } from 'rxjs/operators';
 import { TranslationLoaderService } from '../core/i18n';
 
 @Component({
@@ -54,16 +56,23 @@ export class BankContainer {
 
   constructor() {
     this.translate.onLangChange
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((event) => {
-        this.updateHtmlLang(event.lang);
-        const activeModules = this.translationLoader.getActiveModules();
-        if (activeModules.length > 0) {
-          this.translationLoader
-            .loadTranslations(activeModules, event.lang)
-            .subscribe();
-        }
-      });
+      .pipe(
+        tap((event) => {
+          this.updateHtmlLang(event.lang);
+        }),
+        switchMap((event) => {
+          const activeModules = this.translationLoader.getActiveModules();
+          if (activeModules.length === 0) {
+            return EMPTY;
+          }
+          return this.translationLoader.loadTranslations(
+            activeModules,
+            event.lang,
+          );
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe();
 
     effect(() => {
       const savedLanguage = this.userLanguage();
