@@ -59,10 +59,9 @@ describe('Personal Info Integration', () => {
 
     req.flush({ message: 'PID updated successfully' });
 
+  
+    await new Promise(resolve => setTimeout(resolve, 100));
 
-    await new Promise(resolve => setTimeout(resolve, 50));
-
- 
     const state = await firstValueFrom(
       store.select(PersonalInfoSelectors.selectPersonalInfo).pipe(take(1), timeout(1000))
     );
@@ -74,6 +73,9 @@ describe('Personal Info Integration', () => {
 
   it('should initiate phone update successfully', async () => {
     const newPhone = '555123456';
+    const initialPhoneNumber = '123456789';
+
+    store.dispatch(PersonalInfoActions.loadPersonalInfoPhoneNumber({ phoneNumber: initialPhoneNumber }));
 
     store.dispatch(PersonalInfoActions.initiatePhoneUpdate({ phone: newPhone }));
 
@@ -84,16 +86,20 @@ describe('Personal Info Integration', () => {
     const mockResponse = { challengeId: 'challenge-123', method: 'SMS' };
     req.flush(mockResponse);
 
-    
-    await new Promise(resolve => setTimeout(resolve, 50));
-
  
+    await new Promise(resolve => setTimeout(resolve, 100));
+
     const state = await firstValueFrom(
       store.select(PersonalInfoSelectors.selectPersonalInfo).pipe(take(1), timeout(1000))
     );
 
+
     expect(state.phoneUpdateChallengeId).toBe(mockResponse.challengeId);
     expect(state.phoneUpdateLoading).toBe(false);
     expect(state.phoneUpdateError).toBeNull();
+    expect(state.phoneUpdatePendingPhone).toBe(newPhone);
+    
+
+    expect(state.phoneNumber).toBe(initialPhoneNumber);
   });
 });
