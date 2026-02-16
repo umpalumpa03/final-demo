@@ -42,6 +42,7 @@ export enum ErrorKeys {
   VERIFY_PREPAYMENT = 'loans.store-errors.verify_prepayment',
   INSUFFICIENT_FUNDS = 'loans.store-errors.insufficient_funds',
   INVALID_CODE = 'loans.store-errors.invalid_code',
+  INVALID_RESEND = 'common.alertMessages.otpResend',
 }
 
 export enum SuccessKeys {

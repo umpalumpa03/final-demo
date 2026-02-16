@@ -249,6 +249,12 @@ export class OtpVerification implements OnInit {
   public handleResend(): void {
     this.isResendCalled.emit();
     this.isButtonDisabled.set(false);
+    this.isInputDisabled.set(false);
+    this.otpForm.reset();
+    this.submitError.set(null);
+    setTimeout(() => {
+      this.otpComponent()?.focusFirst();
+    }, 0);
   }
 
   public handleTimeout(): void {

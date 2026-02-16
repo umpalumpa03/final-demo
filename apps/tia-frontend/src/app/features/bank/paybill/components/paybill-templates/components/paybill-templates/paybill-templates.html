@@ -99,7 +99,7 @@
     (onBackOut)="onOtpClose()"
     (isVerifyCalled)="onOtpVerify($event)"
     [isButtonLoading]="true"
-    [otpResendType]="otpResendType"
+    (isResendCalled)="resendOtp()"
   ></app-otp-verification>
 </app-ui-modal>
 } @if(succesModalHidden()) {

@@ -75,6 +75,7 @@ export class PaybillEffect {
     'Invalid code': 'paybill.main.errors.invalid_code',
     'Account not found. Please check your account number.':
       'paybill.main.form.account_error',
+      'Cannot POST /paybill/resend-otp': 'common.alertMessages.otpResend'
   };
 
   private getErrorMessage(error: any): string {
@@ -336,6 +337,7 @@ export class PaybillEffect {
           PaybillActions.confirmPaymentFailure,
           PaybillActions.loadCategoriesFailure,
           PaybillActions.loadProvidersFailure,
+          PaybillActions.resendOTPCodeFailure,
         ),
         tap(({ error }) => {
           const translationKey =
@@ -693,4 +695,24 @@ export class PaybillEffect {
       map(() => PaybillActions.clearSelection()),
     );
   });
+
+  resendOtpCode$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(PaybillActions.resendOTPCode),
+      switchMap(({ challengeId }) =>
+        this.paybillService.resendOtp(challengeId).pipe(
+          map(() =>
+            PaybillActions.resendOTPCode({ challengeId })
+          ),
+          catchError((error) =>
+            of(
+              PaybillActions.resendOTPCodeFailure({
+                error: this.getErrorMessage(error),
+              })
+            ),
+          )
+        )
+      )
+    )
+  );
 }

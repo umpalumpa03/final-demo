@@ -1,9 +1,4 @@
-import {
-  signalStore,
-  withState,
-  withMethods,
-  patchState,
-} from '@ngrx/signals';
+import { signalStore, withState, withMethods, patchState } from '@ngrx/signals';
 import { initialTransferState } from './transfers.state';
 import {
   RecipientType,
@@ -136,6 +131,22 @@ export const TransferStore = signalStore(
             }),
           );
         }),
+      ),
+    ),
+
+    resendOtp: rxMethod<{ challengeId: string }>(
+      pipe(
+        switchMap(({ challengeId }) =>
+          transfersApi.resendOtp(challengeId).pipe(
+            catchError(() => {
+              patchState(store, {
+                error: 'common.alertMessages.otpResend',
+                isLoading: false,
+              });
+              return of(null);
+            }),
+          ),
+        ),
       ),
     ),
     reset() {

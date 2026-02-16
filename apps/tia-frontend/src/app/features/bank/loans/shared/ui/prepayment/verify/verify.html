@@ -1,6 +1,6 @@
 <div class="otp-step">
     <app-otp-verification type="otp" timerType="otp"
         [errorMessage]="errorMessage()" [inputOtpConfig]="verifyState.otpConfig()" redirectText="Loans page" [redirectUrl]="routes.ALL"
-        (isVerifyCalled)="onVerify($event)" (onBackOut)="cancel.emit()" [isButtonLoading]="true" [otpResendType]="otpResendType">
+        (isVerifyCalled)="onVerify($event)" (onBackOut)="cancel.emit()" [isButtonLoading]="true" (isResendCalled)="resendOtp()">
     </app-otp-verification>
 </div>

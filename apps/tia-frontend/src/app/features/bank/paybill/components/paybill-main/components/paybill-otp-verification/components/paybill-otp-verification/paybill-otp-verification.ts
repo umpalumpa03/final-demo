@@ -16,7 +16,7 @@ import {
 import { TranslatePipe } from '@ngx-translate/core';
 import { otpConfiguration } from '../../config/otp.config';
 import { OtpVerification } from '@tia/core/otp-verification/container/otp-verification';
-import { OtpResendTypes } from '@tia/core/otp-verification/config/otp.config';
+
 import { Skeleton } from "@tia/shared/lib/feedback/skeleton/skeleton";
 
 @Component({
@@ -46,7 +46,6 @@ export class PaybillOtpVerification {
   public readonly resendCode = output<void>();
 
   protected readonly otpConfig = otpConfiguration;
-  public readonly otpResendType = OtpResendTypes.PAY_BILL;
 
   public currentCode = model('');
 

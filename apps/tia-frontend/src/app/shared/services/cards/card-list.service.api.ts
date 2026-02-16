@@ -1,4 +1,3 @@
-
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -19,5 +18,12 @@ export class CardListApiService {
 
   getCardDetails(cardId: string): Observable<CardDetailsResponse> {
     return this.http.get<CardDetailsResponse>(`${this.apiUrl}/${cardId}`);
+  }
+
+  public resendOtp(challengeId: string): Observable<boolean> {
+    return this.http.post<boolean>(
+      `${this.apiUrl}/mfa/resend-otp`,
+      challengeId,
+    );
   }
 }

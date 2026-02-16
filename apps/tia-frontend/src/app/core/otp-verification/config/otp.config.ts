@@ -9,15 +9,3 @@ export const DEFAULT_SETTING_CONFIG: OtpSettingsConfiguration = {
     enabledOtpResends: ['AUTH', 'PHONE_RESEND', 'PERSONAL_INFO'],
   },
 } as const;
-
-export enum OtpResendTypes {
-  PAY_BILL_TEMPLATE = 'PAY_BILL_TEMPLATE',
-  PERSONAL_INFO = 'PERSONAL_INFO',
-  PHONE_RESEND = 'PHONE_RESEND',
-  TRANSFERS = 'TRANSFERS',
-  PAY_BILL = 'PAY_BILL',
-  LOANS = 'LOANS',
-  CARDS = 'CARDS',
-  RESET = 'RESET',
-  AUTH = 'AUTH',
-}

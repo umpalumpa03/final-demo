@@ -570,4 +570,12 @@ export class PaybillTemplatesContainer implements OnInit {
       );
     }
   }
+
+  public resendOtp(): void {
+    const challengeId = this.store.selectSignal(selectChallengeId);
+
+    if (challengeId()) {
+      this.store.dispatch(PaybillActions.resendOTPCode({ challengeId: challengeId()! }));
+    }
+  }
 }

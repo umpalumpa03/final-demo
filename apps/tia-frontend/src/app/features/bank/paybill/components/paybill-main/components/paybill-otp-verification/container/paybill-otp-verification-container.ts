@@ -14,7 +14,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-paybill-otp-verification-container',
-  imports: [PaybillOtpVerification, ErrorStates, BasicCard,TranslatePipe],
+  imports: [PaybillOtpVerification, ErrorStates, BasicCard, TranslatePipe],
   templateUrl: './paybill-otp-verification-container.html',
   styleUrl: './paybill-otp-verification-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -42,6 +42,13 @@ export class PaybillOtpVerificationContainer {
           payload: { challengeId, code: otpCode },
         }),
       );
+    }
+  }
+
+  public resendOtp(): void {
+    const challengeId = this.facade.challengeId();
+    if (challengeId) {
+      this.store.dispatch(PaybillActions.resendOTPCode({ challengeId }));
     }
   }
 }

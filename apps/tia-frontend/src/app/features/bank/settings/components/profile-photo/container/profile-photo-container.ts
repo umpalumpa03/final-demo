@@ -35,7 +35,7 @@ import {
   selectPhoneUpdateResendCount,
 } from '../../../../../../store/personal-info/personal-info.selectors';
 import { OtpVerification } from '@tia/core/otp-verification/container/otp-verification';
-import { OtpResendTypes } from '@tia/core/otp-verification/config/otp.config';
+
  
 @Component({
   selector: 'app-profile-photo-container',
@@ -72,7 +72,6 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
   public readonly phoneUpdateResendCount = this.store.selectSignal(selectPhoneUpdateResendCount);
  
   public readonly otpConfig = personalInfoOtpConfig;
-  public readonly otpResendType = OtpResendTypes.PERSONAL_INFO;
   public readonly redirectUrl = '/bank/settings/profile-photo';
   public readonly redirectText = 'settings.profile-photo.redirectText';
  

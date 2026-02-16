@@ -12,7 +12,6 @@ import { NavigationStart, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter, tap } from 'rxjs';
 import { OtpVerification } from '@tia/core/otp-verification/container/otp-verification';
-import { OtpResendTypes } from '@tia/core/otp-verification/config/otp.config';
 
 @Component({
   selector: 'app-verify',
@@ -29,7 +28,6 @@ export class Verify {
 
   public readonly errorMessage = input<string | null>(null);
   public readonly routes = LOANS_ROUTES;
-  public readonly otpResendType = OtpResendTypes.LOANS;
 
   public readonly cancel = output<void>();
   public readonly verify = output<string>();
@@ -49,5 +47,9 @@ export class Verify {
 
   public onVerify(otp: string): void {
     this.verify.emit(otp);
+  }
+
+  public resendOtp(): void {
+    this.resend.emit()
   }
 }

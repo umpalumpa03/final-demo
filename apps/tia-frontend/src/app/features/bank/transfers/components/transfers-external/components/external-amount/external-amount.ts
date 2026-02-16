@@ -30,7 +30,6 @@ import { AlertService } from 'apps/tia-frontend/src/app/core/services/alert/aler
 import { OtpVerification } from '@tia/core/otp-verification/container/otp-verification';
 import { OtpVerificationService } from '@tia/core/otp-verification/services/otp-verification.service';
 import { TransferSummaryComponent } from '../../../../ui/transfer-summary/transfer-summary';
-import { OtpResendTypes } from '@tia/core/otp-verification/config/otp.config';
 
 @Component({
   selector: 'app-external-amount',
@@ -53,7 +52,6 @@ import { OtpResendTypes } from '@tia/core/otp-verification/config/otp.config';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ExternalAmount implements OnInit {
-  private readonly otpService = inject(OtpVerificationService);
   private readonly transferStore = inject(TransferStore);
   private readonly amountService = inject(TransferAmountService);
   private readonly executionService = inject(TransferExecutionService);
@@ -82,7 +80,6 @@ export class ExternalAmount implements OnInit {
   public readonly requiresOtp = this.transferStore.requiresOtp;
   public readonly errorFromState = this.transferStore.error;
   public readonly otpConfig = transferOtpConfig['extrenal'];
-  public readonly otpResendType = OtpResendTypes.TRANSFERS;
 
   public readonly isExternalIban = computed(
     () => this.transferStore.recipientType() === 'iban-different-bank',
@@ -230,9 +227,13 @@ export class ExternalAmount implements OnInit {
   }
 
   public resendOtp(): void {
-      const challengeId = this.transferStore.challengeId();
-      if (!challengeId) return;
-      this.otpService.resendVerificationCode(challengeId).subscribe();
+    const challengeId = this.transferStore.challengeId();
+    if (!challengeId) return;
+    this.transferStore.resendOtp({ challengeId });
+    
+    this.alertService.error(
+      this.translate.instant('common.alertMessages.otpResend'),
+    );
   }
 
   public handleNoMoreAttempts(): void {

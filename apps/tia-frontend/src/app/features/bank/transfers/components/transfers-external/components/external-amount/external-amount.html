@@ -125,13 +125,10 @@
     (isResendCalled)="resendOtp()"
     timerType="otp"
     (onBackOut)="onOtpClose()"
-    [errorMessage]="errorFromState()"
     [inputOtpConfig]="otpConfig"
     [isBtnRowDirection]="true"
-    (customError)="handleNoMoreAttempts()"
     redirectUrl="/bank/transfers"
     redirectText="Transfers Page"
-    [otpResendType]="otpResendType"
   ></app-otp-verification>
 </app-ui-modal>
 } @if(isLoading() && !requiresOtp()) {

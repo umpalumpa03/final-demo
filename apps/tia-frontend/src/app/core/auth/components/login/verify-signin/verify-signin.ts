@@ -14,7 +14,6 @@ import { Routes } from '../../../models/tokens.model';
 import { otpVerificationConfig } from '../../../config/otp-verification.config';
 import { OtpVerification } from '@tia/core/otp-verification/container/otp-verification';
 import { OtpVerificationService } from '@tia/core/otp-verification/services/otp-verification.service';
-import { OtpResendTypes } from '@tia/core/otp-verification/config/otp.config';
 
 @Component({
   selector: 'app-verify-signin',
@@ -29,7 +28,6 @@ export class VerifySignin {
   private router = inject(Router);
   public otpError = this.authService.otpError;
   private destroyRef = inject(DestroyRef);
-  public otpResendType = OtpResendTypes.AUTH;
   public otpConfig = otpVerificationConfig['sign-in'];
 
   public verifyOtp(otp: string): void {

@@ -44,7 +44,7 @@ import { DeleteConfirmModal } from '../modals/delete-confirm-modal/delete-confir
 import { ConfirmPaymentModal } from '../modals/confirm-payment-modal/confirm-payment-modal';
 import { CreateTemplateModal } from '../modals/create-template-modal/create-template-modal';
 import { TemplatesHeader } from '../../ui/templates-header/templates-header';
-import { OtpResendTypes } from '@tia/core/otp-verification/config/otp.config';
+
 
 @Component({
   selector: 'app-paybill-templates',
@@ -66,7 +66,6 @@ import { OtpResendTypes } from '@tia/core/otp-verification/config/otp.config';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaybillTemplates implements OnInit {
-  public readonly otpResendType = OtpResendTypes.PAY_BILL_TEMPLATE;
   
   // Forms
   public createGroupForm = input.required<FormGroup>();
@@ -284,6 +283,7 @@ export class PaybillTemplates implements OnInit {
   public succesModalHidden = input<boolean>(false);
   public otpCloseEmit = output<boolean>();
   public paymentDone = output<void>();
+  public resendOtpCode = output<void>();
   public otpConfig = payBillOtpConfig;
 
   public onOtpClose() {
@@ -298,5 +298,9 @@ export class PaybillTemplates implements OnInit {
 
   public onOtpVerify(otp: string): void {
     this.verifyOtp.emit(otp);
+  }
+
+  public resendOtp(): void {
+    this.resendOtpCode.emit();
   }
 }

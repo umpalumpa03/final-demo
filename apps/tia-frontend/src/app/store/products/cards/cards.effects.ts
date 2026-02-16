@@ -428,4 +428,21 @@ export class CardsEffects {
     ),
   ),
 );
+
+  resendOtpCode$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(CardsActions.resendOTPCode),
+      switchMap(({ challengeId }) =>
+        this.cardListApiService.resendOtp(challengeId).pipe(
+          catchError((error) => {
+            this.alertService.error(
+              this.translate.instant('common.alertMessages.otpResend')
+            );
+            return EMPTY;
+          }),
+        )
+      )
+    ),
+    { dispatch: false }
+  );
 }
