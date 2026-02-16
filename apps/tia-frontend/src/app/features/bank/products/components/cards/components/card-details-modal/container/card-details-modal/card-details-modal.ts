@@ -27,7 +27,6 @@ import { SimpleAlerts } from '@tia/shared/lib/alerts/components/simple-alerts/si
 import { combineLatest, map } from 'rxjs';
 import { AlertService } from '@tia/core/services/alert/alert.service';
 import { AlertsWithActions } from '@tia/shared/lib/alerts/components/alerts-with-actions/alerts-with-actions';
-import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
 @Component({
   selector: 'app-card-details-modal',
   imports: [AsyncPipe, UiModal, CardDetailsModalContent, CardOtpModal],

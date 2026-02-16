@@ -73,7 +73,7 @@ import { selectLoading } from 'apps/tia-frontend/src/app/store/exchange-rates/ex
     TranslatePipe,
     CardDetailsModal,
     PillPaging,
-    AlertTypesWithIcons,
+    RouteLoader
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -329,4 +329,11 @@ export class CardDetails implements OnInit {
       data,
     })),
   );
+
+  protected readonly isInitialLoading$ = combineLatest([
+  this.cardData$,
+  this.store.select(selectCardDetailsLoading),
+]).pipe(
+  map(([data, loading]) => loading || !data)
+);
 }

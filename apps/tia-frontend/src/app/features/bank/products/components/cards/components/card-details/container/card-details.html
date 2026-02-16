@@ -1,4 +1,9 @@
-@if (viewState$ | async; as state) {
+<!-- @if (viewState$ | async; as state) { -->
+ @if (isInitialLoading$ | async) {
+ <div class="card-details__loader">
+    <app-route-loader variant="pulsing" />
+  </div>}
+   @else if (viewState$ | async; as state) {
   @if (state.error; as errorMsg) {
   <app-error-states
     variant="failed"
