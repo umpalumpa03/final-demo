@@ -5,6 +5,7 @@ import { TranslateService, provideTranslateService } from '@ngx-translate/core';
 import { NavigationService } from './core/services/navigation/navigation.service';
 import { signal } from '@angular/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { provideMockStore } from '@ngrx/store/testing';
 
 describe('App Component', () => {
   let translateService: TranslateService;
@@ -20,6 +21,7 @@ describe('App Component', () => {
       providers: [
         provideRouter([]),
         provideTranslateService(),
+        provideMockStore({ initialState: { 'user-info': { language: 'en' } } }),
         { provide: NavigationService, useValue: mockNavigationService },
       ],
     }).compileComponents();
