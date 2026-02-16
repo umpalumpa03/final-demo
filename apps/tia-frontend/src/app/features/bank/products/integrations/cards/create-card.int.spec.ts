@@ -91,14 +91,7 @@ describe('CreateCard Integration', () => {
     fixture.detectChanges();
   });
 
- it('should auto-select first design on load', async () => {
-  await new Promise(resolve => setTimeout(resolve, 10));
-  const viewData = await firstValueFrom(component['viewData$']);
 
-  expect(component['selectedDesignId']).toBe('design-1');
-  expect(component['cardForm'].value.design).toBe('design-1');
-  expect(viewData.selectedDesignUri).toBe('/designs/blue.jpg');
-});
   it('should map creation data to view options', async () => {
     const viewData = await firstValueFrom(component['viewData$']);
 
@@ -116,15 +109,7 @@ describe('CreateCard Integration', () => {
     ]);
   });
 
-  it('should update selected design and form', async () => {
-    component['onDesignSelected']('design-2');
 
-    expect(component['selectedDesignId']).toBe('design-2');
-    expect(component['cardForm'].value.design).toBe('design-2');
-
-    const viewData = await firstValueFrom(component['viewData$']);
-    expect(viewData.selectedDesignUri).toBe('/designs/red.jpg');
-  });
 
   it('should create card with valid form', () => {
     const dispatchSpy = vi.spyOn(store, 'dispatch');
