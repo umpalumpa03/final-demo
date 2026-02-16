@@ -52,7 +52,6 @@ export class Verify {
 
   public onVerify(otp: string): void {
     this.verify.emit(otp);
-    this.verify.emit(otp);
   }
 
   public resendOtp(): void {
