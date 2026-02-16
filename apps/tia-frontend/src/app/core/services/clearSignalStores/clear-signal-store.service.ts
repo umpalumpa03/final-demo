@@ -26,6 +26,7 @@ export class ClearSignalStoreService {
     this.safelyResetStore(LanguagesStore, (store) => store.resetState());
     this.safelyResetStore(LoansStore, (store) => store.reset());
     this.safelyResetStore(AppearanceStore, (store) => store.resetState());
+    this.safelyResetStore(AccountPermissionsStore, (store) => store.resetState());
   }
 
   private safelyResetStore<T>(
