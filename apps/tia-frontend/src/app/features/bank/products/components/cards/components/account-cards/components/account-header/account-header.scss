@@ -4,7 +4,7 @@
 .account-header {
   @include flex-center(column, start, start);
   gap: 1.6rem;
-  padding-left: 5rem;
+  padding-left: 2rem;
   &__heading {
     @include display-flex();
     gap: 1.6rem;
