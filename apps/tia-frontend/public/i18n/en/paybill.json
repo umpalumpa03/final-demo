@@ -35,7 +35,7 @@
       "na": "N/A"
     },
     "success": {
-      "title": "Payment Successful!",
+      "title": "Payment has been successful!",
       "description": "Your bill has been paid successfully",
       "summary_subheader": "Transaction details",
       "pay_another_btn": "Pay Another Bill",
