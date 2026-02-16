@@ -2,6 +2,8 @@ import {
   ChangeDetectionStrategy,
   Component,
   DOCUMENT,
+  DestroyRef,
+  effect,
   inject,
   OnInit,
 } from '@angular/core';
@@ -16,6 +18,8 @@ import { NavigationService } from 'apps/tia-frontend/src/app/core/services/navig
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { PersonalInfoActions } from '../store/personal-info/pesronal-info.actions';
 import { TranslateService } from '@ngx-translate/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TranslationLoaderService } from '../core/i18n';
 
 @Component({
   selector: 'app-bank-container',
@@ -34,6 +38,8 @@ import { TranslateService } from '@ngx-translate/core';
 export class BankContainer {
   private monitorInactivity = inject(MonitorInactivity);
   private readonly navigationService = inject(NavigationService);
+  private readonly translationLoader = inject(TranslationLoaderService);
+  private readonly destroyRef = inject(DestroyRef);
 
   public modalTitle = 'Inactivity Detected!';
   public subtitle = 'You will be automatically logged out in';
@@ -42,24 +48,39 @@ export class BankContainer {
 
   private readonly document = inject(DOCUMENT);
   private readonly translate = inject(TranslateService);
-  private readonly userLanguage = inject(Store).selectSignal((state) => state["user-info"].language);
-
+  private readonly userLanguage = inject(Store).selectSignal(
+    (state) => state['user-info'].language,
+  );
 
   constructor() {
-    const savedLanguage = this.userLanguage();
-    const langToUse =
-      savedLanguage === 'georgian' || savedLanguage === 'ka' ? 'ka' : 'en';
+    this.translate.onLangChange
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((event) => {
+        this.updateHtmlLang(event.lang);
+        const activeModules = this.translationLoader.getActiveModules();
+        if (activeModules.length > 0) {
+          this.translationLoader
+            .loadTranslations(activeModules, event.lang)
+            .subscribe();
+        }
+      });
 
-    this.translate.use(langToUse);
-    this.updateHtmlLang(langToUse);
-
-    this.translate.onLangChange.subscribe((event) => {
-      this.updateHtmlLang(event.lang);
+    effect(() => {
+      const savedLanguage = this.userLanguage();
+      if (!savedLanguage) {
+        return;
+      }
+      const langToUse =
+        savedLanguage === 'georgian' || savedLanguage === 'ka' ? 'ka' : 'en';
+      const currentLang = this.translate.getCurrentLang();
+      if (currentLang !== langToUse) {
+        this.translate.use(langToUse);
+        this.updateHtmlLang(langToUse);
+      }
     });
   }
 
   private updateHtmlLang(lang: string): void {
     this.document.documentElement.lang = lang;
   }
-  
 }
