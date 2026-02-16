@@ -14,6 +14,8 @@ import { NoConnection } from './features/no-connection/container/no-connection';
 import { GlobalAlert } from './shared/ui/global-alert/global-alert';
 import { Store } from '@ngrx/store';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { EMPTY } from 'rxjs';
+import { switchMap, tap } from 'rxjs/operators';
 import { TranslationLoaderService } from './core/i18n';
 @Component({
   imports: [RouterModule, RouteLoader, NoConnection, GlobalAlert],
@@ -35,16 +37,23 @@ export class App {
 
   constructor() {
     this.translate.onLangChange
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((event) => {
-        this.updateHtmlLang(event.lang);
-        const activeModules = this.translationLoader.getActiveModules();
-        if (activeModules.length > 0) {
-          this.translationLoader
-            .loadTranslations(activeModules, event.lang)
-            .subscribe();
-        }
-      });
+      .pipe(
+        tap((event) => {
+          this.updateHtmlLang(event.lang);
+        }),
+        switchMap((event) => {
+          const activeModules = this.translationLoader.getActiveModules();
+          if (activeModules.length === 0) {
+            return EMPTY;
+          }
+          return this.translationLoader.loadTranslations(
+            activeModules,
+            event.lang,
+          );
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe();
 
     effect(() => {
       const savedLanguage = this.userLanguage();
