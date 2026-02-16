@@ -164,7 +164,9 @@
         "creating": "Creating...",
         "createCard": "create Card",
         "enterText": "Enter text",
-    "chooseOption": "Choose an option"
+    "chooseOption": "Choose an option",
+            "noAccounts":"account is not avaliable"
+
       },
       "design-selector": {
         "cardDesign": "Choose Card Design"

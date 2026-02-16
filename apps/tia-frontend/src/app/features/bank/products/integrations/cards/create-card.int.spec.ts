@@ -213,4 +213,22 @@ describe('CreateCard Integration', () => {
 
     expect(viewData.createError).toBe('Failed to create card');
   });
+  it('should show no accounts message when accounts list is empty', async () => {
+  const emptyCreationData = {
+    ...mockCreationData,
+    accounts: [],
+  };
+
+  store.overrideSelector(selectCardCreationData, emptyCreationData);
+  store.refreshState();
+
+  await new Promise(resolve => setTimeout(resolve, 10));
+  
+  const viewData = await firstValueFrom(component['viewData$']);
+
+  expect(viewData.accountOptions).toEqual([{
+    label: 'my-products.card.create-card-modal.create-card-form.noAccounts',
+    value: '',
+  }]);
+});
 });

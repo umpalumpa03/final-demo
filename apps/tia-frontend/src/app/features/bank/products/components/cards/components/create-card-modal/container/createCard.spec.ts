@@ -126,5 +126,35 @@ it('should not dispatch createCard on invalid form', () => {
     expect(view.typeOptions).toEqual([{ label: 'Visa', value: 'VISA' }]);
     expect(view.accountOptions).toEqual([{ label: 'Main - 1000 GEL', value: 'acc-1' }]);
   });
+  it('should show no accounts message when accounts list is empty', async () => {
+  const emptyCreationData = {
+    designs: [{ id: 'design-1', designName: 'Blue', uri: 'uri1' }],
+    categories: [{ value: 'DEBIT' as const, displayName: 'Debit' }],
+    types: [{ value: 'VISA' as const, displayName: 'Visa' }],
+    accounts: [],
+  };
+  
+  let callIndex = 0;
+  store.select = vi.fn(() => {
+    const responses = [of(emptyCreationData), of(false), of(null), of(false)];
+    return responses[callIndex++];
+  });
+
+  fixture = TestBed.createComponent(CreateCard);
+  component = fixture.componentInstance;
+  fixture.componentRef.setInput('isOpen', true);
+  fixture.detectChanges();
+  
+  await new Promise(resolve => setTimeout(resolve, 10));
+  
+  const view = await firstValueFrom(
+    (component as unknown as { viewData$: Observable<ViewData> }).viewData$
+  );
+  
+  expect(view.accountOptions).toEqual([{
+    label: 'my-products.card.create-card-modal.create-card-form.noAccounts',
+    value: '',
+  }]);
+});
 });
 

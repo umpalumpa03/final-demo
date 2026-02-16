@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
   inject,
   input,
   output,
@@ -36,6 +37,7 @@ import { DesignSelector } from '../components/design-selector/design-selector';
 import { CreateCardForm } from '../components/create-card-form/create-card-form';
 import { CommonModule } from '@angular/common';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-create-card',
@@ -115,10 +117,21 @@ export class CreateCard {
           label: t.displayName,
           value: t.value,
         })),
-        accountOptions: creationData.accounts.map((a) => ({
-          label: `${a.name} - ${a.balance} ${a.currency}`,
-          value: a.id,
-        })),
+    
+        accountOptions:
+          creationData.accounts.length > 0
+            ? creationData.accounts.map((a) => ({
+                label: `${a.name} - ${a.balance} ${a.currency}`,
+                value: a.id,
+              }))
+            : [
+                {
+                  label: this.translate.instant(
+                    'my-products.card.create-card-modal.create-card-form.noAccounts',
+                  ),
+                  value: '',
+                },
+              ],
         isCreating,
         createError,
         isLoading,
@@ -131,26 +144,26 @@ export class CreateCard {
     this.cardForm.patchValue({ design });
   }
 
-  protected onFormSubmit(): void {
-    if (this.cardForm.valid) {
-      const request: CreateCardRequest = this.cardForm.getRawValue();
-      this.store.dispatch(createCard({ request }));
+private readonly destroyRef = inject(DestroyRef);
 
-      this.store
-        .select(selectIsCreating)
-        .pipe(
-          pairwise(),
-          filter(([prev, curr]) => prev === true && curr === false),
-          take(1),
-          tap(() => {
-            this.resetForm();
-            this.store.dispatch(closeCreateCardModal());
-            this.closed.emit();
-          }),
-        )
-        .subscribe();
-    }
+protected onFormSubmit(): void {
+  if (this.cardForm.valid) {
+    const request: CreateCardRequest = this.cardForm.getRawValue();
+    this.store.dispatch(createCard({ request }));
+    
+    this.store.select(selectIsCreating).pipe(
+      pairwise(),
+      filter(([prev, curr]) => prev === true && curr === false),
+      take(1),
+      takeUntilDestroyed(this.destroyRef), 
+      tap(() => {
+        this.resetForm();
+        this.store.dispatch(closeCreateCardModal());
+        this.closed.emit();
+      })
+    ).subscribe();
   }
+}
   protected onFormCancel(): void {
     this.resetForm();
     this.store.dispatch(closeCreateCardModal());
