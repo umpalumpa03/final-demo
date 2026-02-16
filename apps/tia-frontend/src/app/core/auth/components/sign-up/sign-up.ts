@@ -3,15 +3,12 @@ import {
   Component,
   HostListener,
   inject,
-  OnInit,
   signal,
 } from '@angular/core';
 import {
   catchError,
   debounceTime,
   distinctUntilChanged,
-  EMPTY,
-  finalize,
   of,
   Subject,
   switchMap,
@@ -23,8 +20,6 @@ import { RegistrationForm } from 'apps/tia-frontend/src/app/features/storybook/c
 import { TokenService } from '../../services/token.service';
 import { IRegistrationForm } from 'apps/tia-frontend/src/app/features/storybook/components/forms/models/contact-forms.model';
 import { AuthService } from '../../services/auth.service';
-import { Routes } from '../../models/tokens.model';
-import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AuthHeader } from '../../shared/auth-header/auth-header';
 
@@ -33,7 +28,6 @@ import { AuthHeader } from '../../shared/auth-header/auth-header';
   imports: [
     RouterLink,
     RegistrationForm,
-    AlertTypesWithIcons,
     TranslatePipe,
     AuthHeader,
   ],
@@ -46,7 +40,7 @@ export class SignUp {
   private authService = inject(AuthService);
   private tokenService = inject(TokenService);
   private router = inject(Router);
-  public errorMessage = signal<string>('');
+  private errorMessageSignal = signal<string>('');
 
   @HostListener('window:keydown.enter', ['$event'])
   public handleKeyboardEvent(event: Event): void {
@@ -95,7 +89,7 @@ export class SignUp {
       .subscribe();
   }
 
-  public handleCurrentUsername(username: string):void {
+  public handleCurrentUsername(username: string): void {
     if (username.length > 2) {
       this.usernameSource$.next(username);
     }
@@ -113,39 +107,36 @@ export class SignUp {
 
   public onSignUp(signUpData: IRegistrationForm): void {
     this.authService.isLoginLoading.set(true);
-
-    this.authService
-      .signUpUser(signUpData)
-      .pipe(
-        tap((res) => {
-          if (res) this.tokenService.setSignUpToken(res.signup_token);
-
-          this.errorMessage.set('');
-
-          this.router.navigate([Routes.PHONE]);
-        }),
-
-        catchError((err) => {
-          const messages = err.error?.message;
-
-          if (Array.isArray(messages)) {
-            const invalidEmailError = 'email must be an email';
-
-            if (messages[0] === invalidEmailError) {
-              this.errorMessage.set('Invalid Email');
+    this.errorMessageSignal.set('');
+    this.authService.signUpUser(signUpData).subscribe({
+      next: (res: any) => {
+        if (res && res.signup_token) {
+          this.tokenService.setSignUpToken(res.signup_token);
+          this.router.navigate(['/auth/phone']);
+        }
+        this.errorMessageSignal.set('');
+        this.authService.isLoginLoading.set(false);
+      },
+      error: (err: any) => {
+        let msg = 'An unexpected error occurred';
+        if (err && err.error && err.error.message) {
+          if (Array.isArray(err.error.message)) {
+            if (err.error.message[0] === 'email must be an email') {
+              msg = 'Invalid Email';
             } else {
-              this.errorMessage.set(messages[0]);
+              msg = err.error.message[0];
             }
-          } else if (typeof messages === 'string') {
-            this.errorMessage.set(messages);
-          } else {
-            this.errorMessage.set('An unexpected error occurred');
+          } else if (typeof err.error.message === 'string') {
+            msg = err.error.message || msg;
           }
+        }
+        this.errorMessageSignal.set(msg);
+        this.authService.isLoginLoading.set(false);
+      },
+    });
+  }
 
-          return EMPTY;
-        }),
-        finalize(() => this.authService.isLoginLoading.set(false)),
-      )
-      .subscribe();
+  public errorMessage(): string {
+    return this.errorMessageSignal();
   }
 }

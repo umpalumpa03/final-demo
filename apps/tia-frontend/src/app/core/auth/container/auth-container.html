@@ -3,10 +3,12 @@
     <div class="auth__auth-layout__content">
       <header class="auth__auth-layout__header">
         <div class="auth__auth-layout__header__bar">
-          <img
-            class="auth__auth-layout__header__bar__logo"
-            src="images/png/dashboard/banners/tia_logo.png"
-          />
+          <a routerLink="/auth/sign-in">
+            <img
+              class="auth__auth-layout__header__bar__logo"
+              src="images/png/dashboard/banners/tia_logo.png"
+            />
+          </a>
           <span class="auth__auth-layout__header__bar__slogan"
             >A Single Source of Truth for Finance</span
           >
@@ -15,7 +17,7 @@
       </header>
 
       <main
-        [style.padding]="currentRoute() === '/auth/sign-up' ? '8rem 3.2rem 0rem': '16rem 3.2rem 0rem'"
+        [class.padding]="currentRoute() === '/auth/sign-up'"
         class="auth__auth-layout__body"
       >
         <div class="auth__auth-layout__form">

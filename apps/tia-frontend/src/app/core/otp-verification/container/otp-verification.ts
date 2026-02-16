@@ -19,7 +19,7 @@ import { Otp } from '@tia/shared/lib/forms/otp/otp';
 import { catchError, EMPTY, tap } from 'rxjs';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { SimpleAlerts } from '@tia/shared/lib/alerts/components/simple-alerts/simple-alerts';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ErrorPage } from '../../auth/shared/error-page/error-page';
 import { Routes } from '../../auth/models/tokens.model';
@@ -35,6 +35,8 @@ import { DEFAULT_SETTING_CONFIG } from '../config/otp.config';
 import { ExpirationTimer } from '../directive/expiration-timer';
 import { OtpResend } from '../components/otp-resend';
 import { OtpVerifyService } from '../config/otp-verify.state';
+import showAlert from '@tia/shared/utils/alerts/alert.helper';
+import { AlertService } from '@tia/core/services/alert/alert.service';
 
 @Component({
   selector: 'app-otp-verification',
@@ -55,6 +57,8 @@ import { OtpVerifyService } from '../config/otp-verify.state';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OtpVerification implements OnInit {
+  private translate = inject(TranslateService);
+  private alertService = inject(AlertService);
   private fb = inject(FormBuilder);
   private otpService = inject(OtpVerificationService);
   private router = inject(Router);
@@ -116,7 +120,7 @@ export class OtpVerification implements OnInit {
       return `${error} (Remaining attempts: ${attempts})`;
     }
 
-    if (attempts === 0) {
+  if (attempts === 0 && !this.pendingVerification()) {
       const redirectRoute = this.noMoreAttempsRedirectRoute();
       this.router.navigate([redirectRoute || Routes.ERROR_PAGE]);
     }
@@ -140,7 +144,7 @@ export class OtpVerification implements OnInit {
 
   constructor() {
     effect(() => {
-      if (this.maxAttempts() === 0) {
+      if (this.maxAttempts() === 0 && !this.pendingVerification()) {
         this.customError.emit();
         if (this.onErrorRedirect()) {
           this.isErrorPageVisible.set(true);
@@ -181,7 +185,7 @@ export class OtpVerification implements OnInit {
 
     if (form.invalid) {
       form.markAllAsTouched();
-      this.showTemporaryError('Please check the required fields.');
+      showAlert(this.alertService, this.translate, 'error', 'auth.alert-errors.otpPhoneError');
       return;
     }
 

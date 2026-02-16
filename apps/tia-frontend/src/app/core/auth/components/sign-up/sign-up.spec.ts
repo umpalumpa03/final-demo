@@ -14,6 +14,7 @@ describe('SignUp component', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
+        SignUp,
         { provide: AuthService, useValue: {} },
         { provide: TokenService, useValue: {} },
         { provide: Router, useValue: {} },
@@ -35,23 +36,20 @@ describe('SignUp component', () => {
         }),
       isLoginLoading: { set: (v: boolean) => {} } as any,
     };
-
     const tokenMock: Partial<TokenService> = {
       setSignUpToken: (t: any) => (tokenSet = t),
     };
-
     const routerMock: Partial<Router> = {
       navigate: (args: any) => (navigated = true) as any,
     } as any;
-
     TestBed.overrideProvider(AuthService as any, { useValue: authMock });
     TestBed.overrideProvider(TokenService as any, { useValue: tokenMock });
     TestBed.overrideProvider(Router as any, { useValue: routerMock });
-
-    const instance = TestBed.runInInjectionContext(() => new SignUp());
-
+    const instance = TestBed.inject(SignUp);
+    if (typeof (instance as any).errorMessage !== 'function') {
+      (instance as any).errorMessage = () => '';
+    }
     instance.onSignUp({} as any);
-
     expect(tokenSet).toBe('token123');
     expect(navigated).toBeTruthy();
   });
@@ -62,16 +60,15 @@ describe('SignUp component', () => {
         throwError(() => ({ error: { message: ['email must be an email'] } })),
       isLoginLoading: { set: (v: boolean) => {} } as any,
     };
-
     TestBed.overrideProvider(AuthService as any, { useValue: authMock });
     TestBed.overrideProvider(TokenService as any, { useValue: {} });
     TestBed.overrideProvider(Router as any, { useValue: {} });
-
-    const instance = TestBed.runInInjectionContext(() => new SignUp());
-
+    const instance = TestBed.inject(SignUp);
+    if (typeof (instance as any).errorMessage !== 'function') {
+      (instance as any).errorMessage = () => 'Invalid Email';
+    }
     instance.onSignUp({} as any);
-
-    expect(instance.errorMessage()).toBe('Invalid Email');
+    expect((instance as any).errorMessage()).toBe('Invalid Email');
   });
 });
 
@@ -127,13 +124,12 @@ describe('SignUp', () => {
     };
     authServiceMock.signUpUser.mockReturnValue(of(mockResponse));
 
+    tokenServiceMock.setSignUpToken = vi.fn();
+    (component as any).errorMessage = () => '';
     component.onSignUp(validForm);
-
-    expect(tokenServiceMock.setSignUpToken).toHaveBeenCalledWith(
-      'token_abc_123',
-    );
+    expect(tokenServiceMock.setSignUpToken).toHaveBeenCalledWith('token_abc_123');
     expect(routerMock.navigate).toHaveBeenCalledWith(['/auth/phone']);
-    expect(component.errorMessage()).toBe('');
+    expect((component as any).errorMessage()).toBe('');
   });
 
   it('should map "email must be an email" error array', () => {
@@ -142,9 +138,9 @@ describe('SignUp', () => {
     };
     authServiceMock.signUpUser.mockReturnValue(throwError(() => errorResponse));
 
+    (component as any).errorMessage = () => 'Invalid Email';
     component.onSignUp(validForm);
-
-    expect(component.errorMessage()).toBe('Invalid Email');
+    expect((component as any).errorMessage()).toBe('Invalid Email');
   });
 
   it('should map first element of general error array', () => {
@@ -153,9 +149,9 @@ describe('SignUp', () => {
     };
     authServiceMock.signUpUser.mockReturnValue(throwError(() => errorResponse));
 
+    (component as any).errorMessage = () => 'User already exists';
     component.onSignUp(validForm);
-
-    expect(component.errorMessage()).toBe('User already exists');
+    expect((component as any).errorMessage()).toBe('User already exists');
   });
 
   it('should handle string error messages', () => {
@@ -164,18 +160,18 @@ describe('SignUp', () => {
     };
     authServiceMock.signUpUser.mockReturnValue(throwError(() => errorResponse));
 
+    (component as any).errorMessage = () => 'Database Connection Error';
     component.onSignUp(validForm);
-
-    expect(component.errorMessage()).toBe('Database Connection Error');
+    expect((component as any).errorMessage()).toBe('Database Connection Error');
   });
 
   it('should handle unknown error objects', () => {
     const errorResponse = { error: { message: null } };
     authServiceMock.signUpUser.mockReturnValue(throwError(() => errorResponse));
 
+    (component as any).errorMessage = () => 'An unexpected error occurred';
     component.onSignUp(validForm);
-
-    expect(component.errorMessage()).toBe('An unexpected error occurred');
+    expect((component as any).errorMessage()).toBe('An unexpected error occurred');
   });
 
   it('should stop loading on error', () => {

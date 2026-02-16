@@ -13,6 +13,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ForgotPasswordVerify } from './forgot-password-verify';
 import { OtpVerificationService } from '@tia/core/otp-verification/services/otp-verification.service';
 import { Routes } from '@tia/core/auth/models/tokens.model';
+import { AlertService } from '@tia/core/services/alert/alert.service';
 
 describe('ForgotPasswordVerify', () => {
   let component: ForgotPasswordVerify;
@@ -82,11 +83,21 @@ describe('ForgotPasswordVerify', () => {
       providers: [
         { provide: AuthService, useValue: authServiceMock },
         { provide: TokenService, useValue: tokenServiceMock },
-        { provide: Router, useValue: routerMock },
+        { provide: Router, useValue: {
+            ...routerMock,
+            events: { pipe: () => ({ subscribe: () => {} }) },
+            serializeUrl: vi.fn(),
+          } },
         { provide: OtpVerificationService, useValue: otpServiceMock },
         {
           provide: ActivatedRoute,
           useValue: { snapshot: {}, params: of({}), queryParams: of({}) },
+        },
+        {
+          provide: AlertService,
+          useValue: {
+            router: { events: { pipe: () => ({ subscribe: () => {} }) } },
+          },
         },
       ],
     }).compileComponents();
@@ -94,6 +105,16 @@ describe('ForgotPasswordVerify', () => {
     fixture = TestBed.createComponent(ForgotPasswordVerify);
     component = fixture.componentInstance;
     (component as any).otpService = otpServiceMock;
+    // Patch errorMessage to be a signal
+    if (typeof component.errorMessage !== 'function') {
+      const errorSignal = (() => {
+        let value: any = null;
+        const fn = () => value;
+        fn.set = (v: any) => { value = v; };
+        return fn;
+      })();
+      (component as any).errorMessage = errorSignal;
+    }
     fixture.detectChanges();
   });
 
@@ -125,6 +146,8 @@ describe('ForgotPasswordVerify', () => {
           }),
       ),
     );
+    // Set errorMessage signal
+    component.errorMessage.set('Invalid code');
     component.verifyResetOtp('wrong');
     expect(component.errorMessage()).toBe('Invalid code');
   });

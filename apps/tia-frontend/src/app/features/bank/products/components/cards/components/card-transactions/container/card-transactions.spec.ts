@@ -19,6 +19,7 @@ import { of } from 'rxjs';
 import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions/transactions.actions';
 import { CardAccount } from '@tia/shared/models/cards/card-account.model';
 import { AlertService } from '@tia/core/services/alert/alert.service';
+import { ITransactions } from '@tia/shared/models/transactions/transactions.models';
 
 interface MockStore {
   select: Mock;
@@ -201,35 +202,34 @@ describe('CardTransactions', () => {
     expect(config.maxVisiblePages).toBe(2);
     expect(config.showEllipsis).toBe(true);
   });
+it('should get total count from transactions', () => {
+  const mockTransactions: ITransactions[] = [{}, {}, {}] as ITransactions[];
+  const count = component['getTotalCount'](mockTransactions);
+  expect(count).toBe(3);
+});
 
-  it('should get total count from transactions', () => {
-    const mockTransactions = [{}, {}, {}];
-    const count = component['getTotalCount'](mockTransactions);
-    expect(count).toBe(3);
-  });
 
   it('should return 0 for empty transactions in getTotalCount', () => {
     const count = component['getTotalCount']([]);
     expect(count).toBe(0);
   });
 
-  it('should paginate transactions correctly', () => {
-    const mockTransactions = new Array(25).fill({});
-    const paginated = component['getPaginatedTransactions'](mockTransactions, 2);
-    expect(paginated.length).toBe(5);
-  });
+ it('should paginate transactions correctly', () => {
+  const mockTransactions: ITransactions[] = new Array(25).fill({}) as ITransactions[];
+  const paginated = component['getPaginatedTransactions'](mockTransactions, 2);
+  expect(paginated.length).toBe(5);
+});
 
   it('should return empty array for null transactions in getPaginatedTransactions', () => {
     const paginated = component['getPaginatedTransactions'](null as any, 1);
     expect(paginated).toEqual([]);
   });
 
-  it('should calculate total pages correctly', () => {
-    const mockTransactions = new Array(25).fill({});
-    const pages = component['getTotalPages'](mockTransactions);
-    expect(pages).toBe(2);
-  });
-
+it('should calculate total pages correctly', () => {
+  const mockTransactions: ITransactions[] = new Array(25).fill({}) as ITransactions[];
+  const pages = component['getTotalPages'](mockTransactions);
+  expect(pages).toBe(2);
+});
   it('should return 0 pages for null transactions', () => {
     const pages = component['getTotalPages'](null as any);
     expect(pages).toBe(0);

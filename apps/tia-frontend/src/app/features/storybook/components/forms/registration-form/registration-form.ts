@@ -30,7 +30,10 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { map, startWith } from 'rxjs';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { translateConfig } from '@tia/shared/utils/translate-config/config-translator.util';
-import { maxDateValidator } from '@tia/shared/lib/forms/input-field/date-picker/date-validator/date.validator';
+import {
+  maxDateValidator,
+  minDateValidator,
+} from '@tia/shared/lib/forms/input-field/date-picker/date-validator/date.validator';
 
 @Component({
   selector: 'app-registration-form',
@@ -48,7 +51,7 @@ export class RegistrationForm {
   public readonly passwordTouched = signal<boolean>(false);
   public readonly passwordInteracted = signal<boolean>(false);
 
-  private readonly maxBirthDate = REGISTATION_FORM.birthDate.max;
+  private readonly birthDate = REGISTATION_FORM.birthDate;
 
   private readonly fb = inject(FormBuilder);
   public readonly submitRegistrationForm = output<IRegistrationForm>();
@@ -148,7 +151,11 @@ export class RegistrationForm {
       email: ['', [Validators.required, Validators.email]],
       birthday: [
         '',
-        [Validators.required, maxDateValidator(this.maxBirthDate)],
+        [
+          Validators.required,
+          maxDateValidator(this.birthDate.max),
+          minDateValidator(this.birthDate.min),
+        ],
       ],
       password: ['', [passwordValidator]],
       confirmPassword: ['', [Validators.required]],
