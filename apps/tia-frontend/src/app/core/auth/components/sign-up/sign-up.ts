@@ -3,28 +3,23 @@ import {
   Component,
   HostListener,
   inject,
-  OnInit,
   signal,
 } from '@angular/core';
 import {
   catchError,
   debounceTime,
   distinctUntilChanged,
-  EMPTY,
-  finalize,
   of,
   Subject,
   switchMap,
   tap,
 } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { RegistrationForm } from 'apps/tia-frontend/src/app/features/storybook/components/forms/registration-form/registration-form';
 import { TokenService } from '../../services/token.service';
 import { IRegistrationForm } from 'apps/tia-frontend/src/app/features/storybook/components/forms/models/contact-forms.model';
 import { AuthService } from '../../services/auth.service';
-import { Routes } from '../../models/tokens.model';
-import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AuthHeader } from '../../shared/auth-header/auth-header';
 
@@ -33,7 +28,6 @@ import { AuthHeader } from '../../shared/auth-header/auth-header';
   imports: [
     RouterLink,
     RegistrationForm,
-    AlertTypesWithIcons,
     TranslatePipe,
     AuthHeader,
   ],
@@ -44,9 +38,6 @@ import { AuthHeader } from '../../shared/auth-header/auth-header';
 })
 export class SignUp {
   private authService = inject(AuthService);
-  private tokenService = inject(TokenService);
-  private router = inject(Router);
-  public errorMessage = signal<string>('');
 
   @HostListener('window:keydown.enter', ['$event'])
   public handleKeyboardEvent(event: Event): void {
@@ -95,7 +86,7 @@ export class SignUp {
       .subscribe();
   }
 
-  public handleCurrentUsername(username: string):void {
+  public handleCurrentUsername(username: string): void {
     if (username.length > 2) {
       this.usernameSource$.next(username);
     }
@@ -114,38 +105,6 @@ export class SignUp {
   public onSignUp(signUpData: IRegistrationForm): void {
     this.authService.isLoginLoading.set(true);
 
-    this.authService
-      .signUpUser(signUpData)
-      .pipe(
-        tap((res) => {
-          if (res) this.tokenService.setSignUpToken(res.signup_token);
-
-          this.errorMessage.set('');
-
-          this.router.navigate([Routes.PHONE]);
-        }),
-
-        catchError((err) => {
-          const messages = err.error?.message;
-
-          if (Array.isArray(messages)) {
-            const invalidEmailError = 'email must be an email';
-
-            if (messages[0] === invalidEmailError) {
-              this.errorMessage.set('Invalid Email');
-            } else {
-              this.errorMessage.set(messages[0]);
-            }
-          } else if (typeof messages === 'string') {
-            this.errorMessage.set(messages);
-          } else {
-            this.errorMessage.set('An unexpected error occurred');
-          }
-
-          return EMPTY;
-        }),
-        finalize(() => this.authService.isLoginLoading.set(false)),
-      )
-      .subscribe();
+    this.authService.signUpUser(signUpData).subscribe();
   }
 }
