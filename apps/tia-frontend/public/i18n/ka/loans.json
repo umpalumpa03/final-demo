@@ -97,6 +97,14 @@
       "close": "დახურვა"
     }
   },
+  "card": {
+    "amount": "თანხა",
+    "term": "ვადა",
+    "monthly": "ყოველთვიური გადასახადი",
+    "next": "შემდეგი გადახდა",
+    "applied": "გაფორმდა",
+    "months": "თვე"
+  },
   "redirectText": "სესხების გვერდზე",
   "prepayment_wizard": {
     "step_setup": {
