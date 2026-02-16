@@ -5,9 +5,7 @@
   @include display-flex(column);
   gap: 3rem;
   width: 100%;
-  @media (max-width: 480px) {
-    padding: 3.2rem 0 0 2rem;
-  }
+
   &__header {
     @include flex-center(column, start, start);
     padding-top: 2rem;
