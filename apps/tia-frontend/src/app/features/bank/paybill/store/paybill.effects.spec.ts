@@ -38,6 +38,7 @@ import { selectTransactionToRepeat } from 'apps/tia-frontend/src/app/store/trans
 import { AlertService } from '@tia/core/services/alert/alert.service';
 import { TranslateService } from '@ngx-translate/core';
 import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions/transactions.actions';
+import { HttpErrorResponse } from '@angular/common/http';
 
 describe('PaybillEffect (Refactored)', () => {
   let actions$: Observable<Action>;
@@ -169,7 +170,7 @@ describe('PaybillEffect (Refactored)', () => {
   describe('Unhappy Paths (Errors)', () => {
     it('loadCategories$: should dispatch Failure on API throw', () => {
       paybillService.getCategories.mockReturnValue(
-        throwError(() => new Error('API Error')),
+        throwError(() => 'API Error'),
       );
       actions$ = of(PaybillActions.loadCategories());
       store.overrideSelector(selectCategoriesLoaded, false);
@@ -183,7 +184,7 @@ describe('PaybillEffect (Refactored)', () => {
 
     it('loadProviders$: should dispatch Failure on API throw', () => {
       paybillService.getProviders.mockReturnValue(
-        throwError(() => new Error('Provider Error')),
+        throwError(() => 'Provider Error'),
       );
       actions$ = of(PaybillActions.selectCategory({ categoryId: '123' }));
 
@@ -577,7 +578,7 @@ describe('PaybillEffect (Refactored)', () => {
 
     it('should dispatch failure on error', () => {
       paybillService.getPaymentDetails.mockReturnValue(
-        throwError(() => new Error('Load failed')),
+        throwError(() => 'Load failed'),
       );
       actions$ = of(PaybillActions.loadPaymentDetails({ serviceId: 'S1' }));
 
@@ -710,7 +711,10 @@ describe('PaybillEffect (Refactored)', () => {
     });
 
     it('getErrorMessage: should handle error.error.message structure', () => {
-      const complexError = { error: { message: 'Deep Error' } };
+      const complexError = new HttpErrorResponse({
+        error: { message: 'Deep Error' },
+      });
+
       paybillService.getCategories.mockReturnValue(
         throwError(() => complexError),
       );
@@ -740,7 +744,7 @@ describe('PaybillEffect (Refactored)', () => {
   });
 
   it('should dispatch checkBillForTemplateFailure on API error', () => {
-    const errorResponse = { error: 'Bulk payment failed' };
+    const errorResponse = 'Bulk payment failed';
     paybillTemplatesService.payManyBills.mockReturnValue(
       throwError(() => errorResponse),
     );
@@ -834,7 +838,7 @@ describe('PaybillEffect (Refactored)', () => {
     });
 
     it('should handle errors in the chain (Branch C)', () => {
-      const errorResponse = { message: 'Move failed' };
+      const errorResponse = 'Move failed';
       paybillTemplatesService.removeTemplateFromGroup.mockReturnValue(
         throwError(() => errorResponse),
       );

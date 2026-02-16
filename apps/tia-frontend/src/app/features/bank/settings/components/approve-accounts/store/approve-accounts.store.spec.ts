@@ -71,7 +71,17 @@ describe('AccountPermissionsStore', () => {
     expect(store.isLoading()).toBe(false);
     expect(store.error()).toBeNull();
   });
-  
+
+  it('should load pending accounts', () => {
+    apiServiceMock.getPendingAccounts.mockReturnValue(of(mockAccounts));
+
+    store.loadPendingAccounts();
+
+    expect(store.pendingAccounts()).toEqual(mockAccounts);
+    expect(store.pendingAccounts()[0].id).toBe('1');
+    expect(store.isLoading()).toBe(false);
+  });
+
   it('should not call API if pending accounts are already loaded (Cache)', () => {
     apiServiceMock.getPendingAccounts.mockReturnValue(of(mockAccounts));
 
