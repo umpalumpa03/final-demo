@@ -10,7 +10,7 @@ import { PersonalInfoEffects } from '../../../../../../store/personal-info/perso
 import { personalInfoFeature } from '../../../../../../store/personal-info/personal-info.reducer';
 import { PersonalInfoActions } from '../../../../../../store/personal-info/pesronal-info.actions';
 import * as PersonalInfoSelectors from '../../../../../../store/personal-info/personal-info.selectors';
-import { firstValueFrom, take } from 'rxjs';
+import { firstValueFrom, take, filter } from 'rxjs';
 import { ofType } from '@ngrx/effects';
 
 describe('Personal Info Integration', () => {
@@ -47,6 +47,13 @@ describe('Personal Info Integration', () => {
     );
 
 
+    const statePromise = firstValueFrom(
+      store.select(PersonalInfoSelectors.selectPersonalInfo).pipe(
+        filter((s) => s.pId === newPId && s.loading === false),
+        take(1)
+      )
+    );
+
     const successActionPromise = firstValueFrom(
       actions$.pipe(
         ofType(PersonalInfoActions.updatePersonalInfoSuccess),
@@ -72,10 +79,7 @@ describe('Personal Info Integration', () => {
 
     await successActionPromise;
 
-
-    const state = await firstValueFrom(
-      store.select(PersonalInfoSelectors.selectPersonalInfo).pipe(take(1))
-    );
+    const state = await statePromise;
 
     expect(state.pId).toBe(newPId);
     expect(state.loading).toBe(false);
@@ -88,7 +92,22 @@ describe('Personal Info Integration', () => {
 
     store.dispatch(PersonalInfoActions.loadPersonalInfoPhoneNumber({ phoneNumber: initialPhoneNumber }));
 
+
+    await firstValueFrom(
+      store.select(PersonalInfoSelectors.selectPersonalInfo).pipe(
+        filter((s) => s.phoneNumber === initialPhoneNumber),
+        take(1)
+      )
+    );
+
  
+    const statePromise = firstValueFrom(
+      store.select(PersonalInfoSelectors.selectPersonalInfo).pipe(
+        filter((s) => s.phoneUpdateChallengeId === 'challenge-123' && s.phoneUpdateLoading === false),
+        take(1)
+      )
+    );
+
     const successActionPromise = firstValueFrom(
       actions$.pipe(
         ofType(PersonalInfoActions.initiatePhoneUpdateSuccess),
@@ -105,13 +124,10 @@ describe('Personal Info Integration', () => {
     const mockResponse = { challengeId: 'challenge-123', method: 'SMS' };
     req.flush(mockResponse);
 
-
     await successActionPromise;
 
-
-    const state = await firstValueFrom(
-      store.select(PersonalInfoSelectors.selectPersonalInfo).pipe(take(1))
-    );
+  
+    const state = await statePromise;
 
     expect(state.phoneUpdateChallengeId).toBe(mockResponse.challengeId);
     expect(state.phoneUpdateLoading).toBe(false);
