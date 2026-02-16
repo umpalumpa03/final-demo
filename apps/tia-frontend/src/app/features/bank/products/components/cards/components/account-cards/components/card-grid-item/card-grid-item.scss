@@ -4,8 +4,8 @@
 .card-grid-item {
   @include flex-center(column);
   cursor: pointer;
-
-
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out; 
+  
   &:hover {
     transform: translateY(-0.4rem);
   }
