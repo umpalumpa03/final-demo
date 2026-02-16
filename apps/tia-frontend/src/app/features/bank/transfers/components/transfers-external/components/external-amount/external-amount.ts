@@ -157,10 +157,16 @@ export class ExternalAmount implements OnInit {
   constructor() {
     effect(() => {
       const error = this.errorFromState();
-      if (error && !this.requiresOtp()) {
+      if (error) {
         untracked(() => {
+          const message =
+            typeof error === 'string' &&
+            (error.startsWith('transfers.') || error.startsWith('common.'))
+              ? this.translate.instant(error)
+              : (error as string);
+
           this.alertService.error(
-            this.translate.instant('transfers.external.amount.transferError'),
+            message || this.translate.instant('transfers.external.amount.transferError'),
           );
         });
       }

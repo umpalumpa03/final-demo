@@ -111,11 +111,11 @@ export class OtpVerification implements OnInit {
       return '';
     }
 
-    if (error && attempts !== null && attempts > 0) {
+    if (error && attempts !== null && attempts >= 0) {
       return `${error} (Remaining attempts: ${attempts})`;
     }
 
-    if (attempts === 0) {
+    if (attempts === 0 && !error) {
       const redirectRoute = this.noMoreAttempsRedirectRoute();
       this.router.navigate([redirectRoute || Routes.ERROR_PAGE]);
     }
