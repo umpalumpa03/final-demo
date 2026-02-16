@@ -177,4 +177,9 @@ it('should dispatch loadCardAccounts on init', () => {
     component.handleCloseModal();
     expect(dispatchSpy).toHaveBeenCalledWith(closeCreateCardModal());
   });
+  it('should dispatch loadCardAccounts with forceRefresh on retry', () => {
+  const dispatchSpy = vi.spyOn(store, 'dispatch');
+  component.handleRetry();
+  expect(dispatchSpy).toHaveBeenCalledWith(loadCardAccounts({ forceRefresh: true }));
+});
 });

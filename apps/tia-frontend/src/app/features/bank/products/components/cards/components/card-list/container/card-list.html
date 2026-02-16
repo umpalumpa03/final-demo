@@ -16,8 +16,10 @@
   <app-error-states
     variant="failed"
     [header]="'my-products.card.card-list.loadingFailed' | translate"
-    [message]="errorMsg"
+        [message]="'my-products.card.card-list.loadingFailedMessage' | translate"
+
     [buttonMessage]="'my-products.card.card-list.retry' | translate"
+    (buttonClick)="handleRetry()"
   />
   } @else {
   <div class="card-list__items">

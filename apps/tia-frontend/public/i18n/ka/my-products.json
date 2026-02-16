@@ -112,7 +112,9 @@
       "alertType": "წარმატებით შეიქმნა!",
       "alertMessage": "ახალი ბარათი დამატებულია!",
       "loadingFailed": "ჩატვირთვა ვერ მოხერხდა",
-      "retry": "თავიდან ცდა"
+      "retry": "თავიდან ცდა", 
+      "loadingFailedMessage": "თქვენი ბარათების ჩატვირთვა ვერ მოხერხდა. გთხოვთ სცადოთ თავიდან."
+
     },
     "account-cards": {
       "backToCards": "ბარათების გვერდზე დაბრუნება",
@@ -136,6 +138,8 @@
       "cardDetails": "ბარათის დეტალური ინფორმაცია",
       "failedToLoadCard": "ბარათის ჩატვირთვა ვერ მოხერხდა",
       "retry": "თავიდან ცდა",
+      "loadingFailedMessage": "თქვენი ბარათის დეტალების ჩატვირთვა ვერ მოხერხდა. გთხოვთ სცადოთ თავიდან.",
+
 
       "card-info-section": {
         "cardName": "ბარათის სახელი",
@@ -197,6 +201,7 @@
       "allTransactions": "ბარათის ყველა ტრანზაქცია",
       "failedToLoadTransactions": "ტრანზაქციების ჩატვირთვა ვერ მოხერხდა",
       "retry": "თავიდან ცდა",
+      "loadingFailedMessage":"ტრანზაქციების დეტალები ვერ ჩაიტვირთვა",
       "transaction-card-header": {
         "linkedTo": "ბარათი ეკუთვნის: ",
         "totalTransactions": "ტრანზაქციების რაოდენობა:"

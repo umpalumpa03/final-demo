@@ -8,6 +8,7 @@
   <app-error-states
     variant="failed"
     [header]="'my-products.card.card-transactions.failedToLoadTransactions' | translate"
+    [message]="'my-products.card.card-transactions.loadingFailedMessage' | translate"
     [buttonMessage]="'my-products.card.card-transactions.retry' | translate"
     (buttonClick)="handleRetry()"
   />

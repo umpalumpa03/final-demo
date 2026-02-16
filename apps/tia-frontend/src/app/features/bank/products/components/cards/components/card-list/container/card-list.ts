@@ -163,4 +163,7 @@ protected readonly alertService = inject(AlertService);
     isModalOpen: this.isModalOpen$,
     cardImagesLoading: this.cardImagesLoading$,
   });
+    public handleRetry(): void {
+  this.store.dispatch(loadCardAccounts({ forceRefresh: true }));
+}
 }
