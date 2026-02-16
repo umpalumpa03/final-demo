@@ -151,9 +151,12 @@ export class OtpVerification implements OnInit {
  
     let previousError: string | null = null;
     effect(() => {
-      const currentError = this.errorMessage();
-
     
+      const currentError =
+        this.timerType() === 'phone'
+          ? this.phoneErrorMessage()
+          : this.errorMessage();
+
       const hadNoErrorBefore = !previousError;
 
       if (currentError && hadNoErrorBefore) {
@@ -186,9 +189,7 @@ export class OtpVerification implements OnInit {
   }
 
   public onSubmit(): void {
-    // Prevent multiple submissions while a request is already in progress
-    // Use internal loading state instead of external input flag, so that
-    // parents can still pass [isButtonLoading] without blocking submits.
+  
     if (this.buttonLoading() || this.isButtonDisabled()) {
       return;
     }
