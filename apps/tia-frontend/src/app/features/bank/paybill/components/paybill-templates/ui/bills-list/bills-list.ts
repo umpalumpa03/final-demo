@@ -189,4 +189,11 @@ export class BillsList implements OnInit {
       }
     }
   }
+
+  public clearOnFocus(itemId: string) {
+    const control = this.payForm.get(itemId);
+    if (control) {
+      control.setValue('', { emitEvent: true });
+    }
+  }
 }

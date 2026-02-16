@@ -50,7 +50,7 @@
                         <label class="loan-modal__label">{{ 'loans.details.fields.amount' | translate }}</label>
                         <strong class="loan-modal__value loan-modal__value--amount">
                             <div class="amount-display">
-                                <span class="currency-symbol">{{ loanData.currency }}</span>
+                                <span class="currency-symbol">{{ loanData.currency | currencySymbol }}</span>
                                 <span class="amount-value">{{ loanData.loanAmount | number:'1.2-2' }}</span>
                             </div>
                         </strong>
@@ -79,7 +79,7 @@
                         <label class="loan-modal__label">{{ 'loans.details.fields.monthly' | translate }}</label>
                         <strong class="loan-modal__value loan-modal__value--highlight">
                             <div class="amount-display">
-                                <span class="currency-symbol">{{ loanData.currency }}</span>
+                                <span class="currency-symbol">{{ loanData.currency | currencySymbol }}</span>
                                 <span class="amount-value">{{ loanData.monthlyPayment | number:'1.2-2' }}</span>
                             </div>
                         </strong>
@@ -91,7 +91,7 @@
                         <label class="loan-modal__label">{{ 'loans.details.fields.balance' | translate }}</label>
                         <strong class="loan-modal__value">
                             <div class="amount-display">
-                                <span class="currency-symbol">{{ loanData.currency }}</span>
+                                <span class="currency-symbol">{{ loanData.currency | currencySymbol }}</span>
                                 <span class="amount-value">{{ loanData.remainingBalance | number:'1.2-2' }}</span>
                             </div>
                         </strong>

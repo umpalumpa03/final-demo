@@ -22,6 +22,8 @@ import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { toTitleCase } from '../../utils/titlecase.util';
 import { PurposeFormatPipe } from '../../pipes/purpose.pipe';
+import { CurrencySymbolPipe } from '../../pipes/currency.pipe';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'lib-loan-card',
@@ -31,6 +33,8 @@ import { PurposeFormatPipe } from '../../pipes/purpose.pipe';
     ReactiveFormsModule,
     TextInput,
     PurposeFormatPipe,
+    CurrencySymbolPipe,
+    TranslatePipe,
   ],
   templateUrl: './loan-card.html',
   styleUrl: './loan-card.scss',

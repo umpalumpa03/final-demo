@@ -52,25 +52,26 @@
 
             <div class="card__details">
                 <div>
-                    <span>Amount:</span>
-                    <strong>{{ loanData.loanAmount | currency:'USD':'symbol':'1.0-0' }}</strong>
+                    <span>{{'loans.card.amount' | translate}}:</span>
+                    <strong>{{ loanData.loanAmount | currency:('GEL' | currencySymbol):'symbol':'1.0-0'
+                        }}</strong>
                 </div>
                 <div>
-                    <span>Term:</span>
-                    <strong>{{ loanData.months }} months</strong>
+                    <span>{{'loans.card.term' | translate}}:</span>
+                    <strong>{{ loanData.months }} {{'loans.card.months' | translate}}</strong>
                 </div>
                 @if (showPaymentDetails()) {
                 <div>
-                    <span>Monthly:</span>
-                    <strong>{{ loanData.monthlyPayment | currency:'USD':'symbol':'1.0-0' }}</strong>
+                    <span>{{'loans.card.monthly' | translate}}:</span>
+                    <strong>{{ loanData.monthlyPayment | currency:('GEL' | currencySymbol):'symbol':'1.0-0' }}</strong>
                 </div>
                 <div>
-                    <span>Next Payment:</span>
+                    <span>{{'loans.card.next' | translate}}:</span>
                     <strong>{{ loanData.nextPaymentDate | date:'dd/MM/yyyy' }}</strong>
                 </div>
                 } @else {
                 <div>
-                    <span>Applied:</span>
+                    <span>{{'loans.card.applied' | translate}}:</span>
                     <strong>{{ loanData.createdAt | date:'dd/MM/yyyy' }}</strong>
                 </div>
                 }

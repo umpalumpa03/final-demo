@@ -26,6 +26,7 @@
             (keydown)="preventNegative($event)"
             type="text"
             inputmode="decimal"
+            (focus)="clearOnFocus(item.id)"
           />
         </div>
       </div>
