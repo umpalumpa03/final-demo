@@ -54,17 +54,20 @@ describe('CardDetails Integration', () => {
       imports: [CardDetails, TranslateModule.forRoot()],
       providers: [
         provideMockStore({
-          initialState: {
-            cards: {
-              cardDetails: mockCardDetails,
-              cardImages: { 'card-1': 'base64-image' },
-              accounts: [mockAccount],
-              currentCardIndex: 0,
-              currentAccountId: 'acc-1',
-              isCardDetailsModalOpen: false,
-            },
-          },
-        }),
+  initialState: {
+    cards: {
+      cardDetails: mockCardDetails,
+      cardImages: { 'card-1': 'base64-image' },
+      accounts: [mockAccount],
+      currentCardIndex: 0,
+      currentAccountId: 'acc-1',
+      isCardDetailsModalOpen: false,
+    },
+    accounts: { 
+      accounts: [mockAccount],
+    },
+  },
+}),
         { provide: Router, useValue: { navigate: vi.fn() } },
         {
           provide: ActivatedRoute,

@@ -69,23 +69,26 @@ describe('AccountCards Integration', () => {
     await TestBed.configureTestingModule({
       imports: [AccountCards, TranslateModule.forRoot()],
       providers: [
-        provideMockStore({
-          initialState: {
-            cards: {
-              accounts: [mockAccount],
-              cardDetails: {
-                'card-1': mockCards[0].details,
-                'card-2': mockCards[1].details,
-              },
-              cardImages: {
-                'card-1': 'base64-1',
-                'card-2': 'base64-2',
-              },
-              cardDetailsLoading: false,
-              cardDetailsError: null,
-            },
-          },
-        }),
+       provideMockStore({
+  initialState: {
+    cards: {
+      accounts: [mockAccount],
+      cardDetails: {
+        'card-1': mockCards[0].details,
+        'card-2': mockCards[1].details,
+      },
+      cardImages: {
+        'card-1': 'base64-1',
+        'card-2': 'base64-2',
+      },
+      cardDetailsLoading: false,
+      cardDetailsError: null,
+    },
+    accounts: {
+      accounts: [mockAccount],
+    },
+  },
+}),
         { provide: Router, useValue: { navigate: vi.fn() } },
         {
           provide: ActivatedRoute,
