@@ -5,7 +5,7 @@ import { provideStore } from '@ngrx/store';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { Store } from '@ngrx/store';
-import { firstValueFrom, take, timeout } from 'rxjs';
+import { firstValueFrom, take, timeout, filter } from 'rxjs';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 
 import { personalInfoFeature } from '../../../../../../store/personal-info/personal-info.reducer';
@@ -44,7 +44,7 @@ describe('PersonalInfo integration', () => {
     const loading = await firstValueFrom(
       store
         .select(PersonalInfoSelectors.selectPersonalInfoLoading)
-        .pipe(take(1), timeout(1000))
+        .pipe(filter(loading => loading === true), take(1), timeout(1000))
     );
 
     expect(loading).toBe(true);
@@ -68,7 +68,7 @@ describe('PersonalInfo integration', () => {
     const state = await firstValueFrom(
       store
         .select(PersonalInfoSelectors.selectPersonalInfo)
-        .pipe(take(1), timeout(1000))
+        .pipe(filter(state => state?.pId === '12345'), take(1), timeout(1000))
     );
 
     expect(state).toBeTruthy();
@@ -100,7 +100,7 @@ describe('PersonalInfo integration', () => {
     const phoneNumber = await firstValueFrom(
       store
         .select(PersonalInfoSelectors.selectPhoneNumber)
-        .pipe(take(1), timeout(1000))
+        .pipe(filter(phone => phone === '+995555999888'), take(1), timeout(1000))
     );
 
     expect(phoneNumber).toBe('+995555999888');
@@ -112,7 +112,7 @@ describe('PersonalInfo integration', () => {
     const pId = await firstValueFrom(
       store
         .select(PersonalInfoSelectors.selectPId)
-        .pipe(take(1), timeout(1000))
+        .pipe(filter(id => id === '67890'), take(1), timeout(1000))
     );
 
     expect(pId).toBe('67890');
@@ -129,7 +129,7 @@ describe('PersonalInfo integration', () => {
     const state = await firstValueFrom(
       store
         .select(PersonalInfoSelectors.selectPersonalInfo)
-        .pipe(take(1), timeout(1000))
+        .pipe(filter(state => state?.pId === null && state?.phoneNumber === ''), take(1), timeout(1000))
     );
 
     expect(state).toBeTruthy();
