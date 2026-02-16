@@ -17,8 +17,13 @@ import {
   tap,
 } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
+import { TranslateService } from '@ngx-translate/core';
 import { LoanManagementApiService } from '../shared/services/loan-management-api.service';
-import { loanManagementInitialState } from './loan-management.state';
+import {
+  loanManagementInitialState,
+  LoanSuccessKeys,
+  LoanErrorKeys,
+} from './loan-management.state';
 import {
   LOAN_APPROVAL_STATUS,
   LoanDetailsResponse,
@@ -60,6 +65,7 @@ export const LoanManagementStore = signalStore(
 
   withMethods((store) => {
     const api = inject(LoanManagementApiService);
+    const translate = inject(TranslateService);
 
     const fetchUserInfo = (userId: string | undefined) => {
       if (!userId) {
@@ -114,10 +120,10 @@ export const LoanManagementStore = signalStore(
               catchError((err: HttpErrorResponse) => {
                 const errorMsg =
                   err.status === 403
-                    ? 'Access denied. Support role required.'
+                    ? translate.instant(LoanErrorKeys.ACCESS_DENIED)
                     : err.error?.message ||
                       err.message ||
-                      'Failed to load pending approvals';
+                      translate.instant(LoanErrorKeys.LOAD_PENDING);
                 patchState(store, { loading: false, error: errorMsg });
                 return EMPTY;
               }),
@@ -186,16 +192,16 @@ export const LoanManagementStore = signalStore(
                     selectedLoanId: null,
                     userInfoCache: newUserInfoCache,
                     loanDetailsCache: newLoanDetailsCache,
-                    successMessage: 'The loan has been approved.',
+                    successMessage: translate.instant(LoanSuccessKeys.APPROVED),
                   });
                 }),
                 catchError((err: HttpErrorResponse) => {
                   const errorMsg =
                     err.status === 404
-                      ? 'Loan already processed by another user.'
+                      ? translate.instant(LoanErrorKeys.ALREADY_PROCESSED)
                       : err.status === 403
-                        ? 'Access denied. Support role required.'
-                        : err.error?.message || 'Failed to approve loan';
+                        ? translate.instant(LoanErrorKeys.ACCESS_DENIED)
+                        : err.error?.message || translate.instant(LoanErrorKeys.APPROVE_LOAN);
 
                   patchState(store, {
                     actionLoading: false,
@@ -246,16 +252,16 @@ export const LoanManagementStore = signalStore(
                     selectedLoanId: null,
                     userInfoCache: newUserInfoCache,
                     loanDetailsCache: newLoanDetailsCache,
-                    successMessage: 'The loan has been rejected.',
+                    successMessage: translate.instant(LoanSuccessKeys.REJECTED),
                   });
                 }),
                 catchError((err: HttpErrorResponse) => {
                   const errorMsg =
                     err.status === 404
-                      ? 'Loan already processed by another user.'
+                      ? translate.instant(LoanErrorKeys.ALREADY_PROCESSED)
                       : err.status === 403
-                        ? 'Access denied. Support role required.'
-                        : err.error?.message || 'Failed to reject loan';
+                        ? translate.instant(LoanErrorKeys.ACCESS_DENIED)
+                        : err.error?.message || translate.instant(LoanErrorKeys.REJECT_LOAN);
 
                   patchState(store, {
                     actionLoading: false,

@@ -11,7 +11,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { catchError, delay, EMPTY, finalize, merge, tap } from 'rxjs';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { AlertService } from '@tia/core/services/alert/alert.service';
@@ -39,6 +39,7 @@ export class ForgotPasswordEmail {
   private readonly alertService = inject(AlertService);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly translate = inject(TranslateService);
 
   public readonly title = 'auth.forgot-password.title';
   public readonly subtitle = 'auth.forgot-password.subtitle';
@@ -68,10 +69,10 @@ export class ForgotPasswordEmail {
     const hasError = control.hasError('required') || control.hasError('email');
 
     return {
-      label: 'Email',
+      label: this.translate.instant('auth.forgot-password.emailInputLabel'),
       required: true,
-      placeholder: 'your.email@example.com',
-      errorMessage: hasError ? 'Enter valid email' : undefined,
+      placeholder: this.translate.instant('auth.forgot-password.emailPlaceholder'),
+      errorMessage: hasError ? this.translate.instant('auth.forgot-password.emailError') : undefined,
     };
   });
 
@@ -88,9 +89,9 @@ export class ForgotPasswordEmail {
       .pipe(
         tap((response) => {
           this.authService.setChellangeId(response.challengeId);
-          this.alertService.success('Reset code sent to your email', {
+          this.alertService.success(this.translate.instant('auth.forgot-password.alerts.resetCodeSent'), {
             variant: 'dismissible',
-            title: 'Success!',
+            title: this.translate.instant('auth.forgot-password.alerts.successTitle'),
           });
         }),
         delay(1500),
@@ -99,19 +100,18 @@ export class ForgotPasswordEmail {
           const httpError = error as HttpErrorResponse;
           if (httpError?.status === 404) {
             this.alertService.error(
-              httpError.error?.message || 'User not found',
-              { variant: 'dismissible', title: 'Oops!' },
+              this.translate.instant('auth.forgot-password.alerts.userNotFound'),
+              { variant: 'dismissible', title: this.translate.instant('auth.forgot-password.alerts.errorTitle') },
             );
           } else if (httpError?.status === 400) {
-            const message = httpError.error?.message;
             this.alertService.error(
-              Array.isArray(message) ? message[0] : message || 'Invalid email',
-              { variant: 'dismissible', title: 'Oops!' },
+              this.translate.instant('auth.forgot-password.alerts.invalidEmail'),
+              { variant: 'dismissible', title: this.translate.instant('auth.forgot-password.alerts.errorTitle') },
             );
           } else {
             this.alertService.warning(
-              'Unable to send reset code. Please try again.',
-              { variant: 'dismissible', title: 'Warning' },
+              this.translate.instant('auth.forgot-password.alerts.unableToSendCode'),
+              { variant: 'dismissible', title: this.translate.instant('auth.forgot-password.alerts.warningTitle') },
             );
           }
           return EMPTY;

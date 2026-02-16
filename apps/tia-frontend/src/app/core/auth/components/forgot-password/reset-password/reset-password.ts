@@ -2,7 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { catchError, delay, EMPTY, finalize, tap } from 'rxjs';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { AlertService } from '@tia/core/services/alert/alert.service';
 import { AuthService } from '../../../services/auth.service';
 import { TokenService } from '../../../services/token.service';
@@ -23,6 +23,7 @@ export class ResetPassword implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly alertService = inject(AlertService);
   private readonly tokenService = inject(TokenService);
+  private readonly translate = inject(TranslateService);
 
   public readonly isSubmitting = signal(false);
   public readonly buttonText = 'auth.reset-password.submit';
@@ -44,9 +45,9 @@ export class ResetPassword implements OnInit {
       .pipe(
         finalize(() => this.isSubmitting.set(false)),
         tap(() => {
-          this.alertService.success('Password updated successfully', {
+          this.alertService.success(this.translate.instant('auth.reset-password.alerts.passwordUpdated'), {
             variant: 'dismissible',
-            title: 'Success!',
+            title: this.translate.instant('auth.reset-password.alerts.successTitle'),
           });
         }),
         delay(1500),
@@ -55,13 +56,13 @@ export class ResetPassword implements OnInit {
           const httpError = error as HttpErrorResponse;
           if (httpError?.status === 400) {
             this.alertService.error(
-              'Unable to reset password. Please try again.',
-              { variant: 'dismissible', title: 'Oops!' },
+              this.translate.instant('auth.reset-password.alerts.unableToReset'),
+              { variant: 'dismissible', title: this.translate.instant('auth.reset-password.alerts.errorTitle') },
             );
           } else {
             this.alertService.warning(
-              'Something went wrong. Please try again.',
-              { variant: 'dismissible', title: 'Warning' },
+              this.translate.instant('auth.reset-password.alerts.somethingWentWrong'),
+              { variant: 'dismissible', title: this.translate.instant('auth.reset-password.alerts.warningTitle') },
             );
           }
           return EMPTY;
