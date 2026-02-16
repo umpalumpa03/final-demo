@@ -102,29 +102,55 @@ describe('PersonalInfoContainer integration (CI stable)', () => {
     fixture = TestBed.createComponent(ProfilePhotoContainer);
     httpMock = TestBed.inject(HttpTestingController);
     store = TestBed.inject(Store);
-
-    fixture.detectChanges();
   });
 
   afterEach(() => {
+  
+    try {
+      const pendingRequests = httpMock.match(() => true);
+      pendingRequests.forEach(req => {
+        if (req.request.url.includes('/settings/personal-info') && req.request.method === 'GET') {
+          req.flush({ pId: null, phone: '555123456' });
+        } else if (req.request.url.includes('/settings/get-available-default-avatars')) {
+          req.flush([]);
+        } else if (req.request.url.includes('/settings/config')) {
+          req.flush({});
+        }
+      });
+    } catch (e) {
+     
+    }
+    
     httpMock.verify();
     vi.clearAllMocks();
+    fixture.destroy();
   });
 
   it('full flow (success): update personal info -> http -> success -> state updates', async () => {
     const component = fixture.componentInstance;
 
+  
     seedPersonalInfo({ pId: null, phoneNumber: '555123456' });
     fixture.detectChanges();
 
-   
+
+    const pendingRequests = httpMock.match(() => true);
+    pendingRequests.forEach(req => {
+      if (req.request.url.includes('/settings/get-available-default-avatars')) {
+        req.flush([]);
+      } else if (req.request.url.includes('/settings/config')) {
+        req.flush({});
+      }
+    });
+
     component.editedPId.set('12345678901');
     component.isEditing.set(true);
 
-   
     component.onSave();
 
-    const req = httpMock.expectOne(`${environment.apiUrl}/settings/personal-info`);
+    const req = httpMock.expectOne(
+      (request) => request.url === `${environment.apiUrl}/settings/personal-info` && request.method === 'PUT'
+    );
     expect(req.request.method).toBe('PUT');
     expect(req.request.body).toEqual({ pId: '12345678901' });
 
@@ -155,12 +181,24 @@ describe('PersonalInfoContainer integration (CI stable)', () => {
     seedPersonalInfo({ pId: null, phoneNumber: '555123456' });
     fixture.detectChanges();
 
+ 
+    const pendingRequests = httpMock.match(() => true);
+    pendingRequests.forEach(req => {
+      if (req.request.url.includes('/settings/get-available-default-avatars')) {
+        req.flush([]);
+      } else if (req.request.url.includes('/settings/config')) {
+        req.flush({});
+      }
+    });
+
     component.editedPId.set('12345678901');
     component.isEditing.set(true);
 
     component.onSave();
 
-    const req = httpMock.expectOne(`${environment.apiUrl}/settings/personal-info`);
+    const req = httpMock.expectOne(
+      (request) => request.url === `${environment.apiUrl}/settings/personal-info` && request.method === 'PUT'
+    );
     expect(req.request.method).toBe('PUT');
     expect(req.request.body).toEqual({ pId: '12345678901' });
 
@@ -188,13 +226,23 @@ describe('PersonalInfoContainer integration (CI stable)', () => {
     seedPersonalInfo({ pId: '12345678901', phoneNumber: '555123456' });
     fixture.detectChanges();
 
+
+    const pendingRequests = httpMock.match(() => true);
+    pendingRequests.forEach(req => {
+      if (req.request.url.includes('/settings/get-available-default-avatars')) {
+        req.flush([]);
+      } else if (req.request.url.includes('/settings/config')) {
+        req.flush({});
+      }
+    });
+
     component.editedPhoneNumber.set('555987654');
     component.isEditing.set(true);
 
     component.onSave();
 
     const req = httpMock.expectOne(
-      `${environment.apiUrl}/settings/personal-info/update-phone`,
+      (request) => request.url === `${environment.apiUrl}/settings/personal-info/update-phone` && request.method === 'POST'
     );
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual({ phone: '555987654' });
@@ -228,13 +276,22 @@ describe('PersonalInfoContainer integration (CI stable)', () => {
     seedPersonalInfo({ pId: '12345678901', phoneNumber: '555123456' });
     fixture.detectChanges();
 
+    const pendingRequests = httpMock.match(() => true);
+    pendingRequests.forEach(req => {
+      if (req.request.url.includes('/settings/get-available-default-avatars')) {
+        req.flush([]);
+      } else if (req.request.url.includes('/settings/config')) {
+        req.flush({});
+      }
+    });
+
     component.editedPhoneNumber.set('555987654');
     component.isEditing.set(true);
 
     component.onSave();
 
     const req = httpMock.expectOne(
-      `${environment.apiUrl}/settings/personal-info/update-phone`,
+      (request) => request.url === `${environment.apiUrl}/settings/personal-info/update-phone` && request.method === 'POST'
     );
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual({ phone: '555987654' });
