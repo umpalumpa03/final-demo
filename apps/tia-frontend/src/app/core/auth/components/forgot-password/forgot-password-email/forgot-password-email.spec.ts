@@ -60,7 +60,7 @@ describe('ForgotPasswordEmail', () => {
   it('emailConfig should return error message for invalid email and undefined for valid', () => {
     component.form.controls.email.setValue('');
     component.form.controls.email.markAsTouched();
-    expect(component.emailConfig().errorMessage).toBe('Enter valid email');
+    expect(component.emailConfig().errorMessage).toBe('auth.forgot-password.emailError');
 
     component.form.controls.email.setValue('valid@email.com');
     expect(component.emailConfig().errorMessage).toBeUndefined();
@@ -81,8 +81,8 @@ describe('ForgotPasswordEmail', () => {
     expect(authServiceMock.setChellangeId).toHaveBeenCalledWith('challenge-1');
     expect(router.navigate).toHaveBeenCalledWith([Routes.OTP_FORGOT_PASSWORD]);
     expect(alertServiceMock.success).toHaveBeenCalledWith(
-      'Reset code sent to your email',
-      { variant: 'dismissible', title: 'Success!' },
+      'auth.forgot-password.alerts.resetCodeSent',
+      { variant: 'dismissible', title: 'auth.forgot-password.alerts.successTitle' },
     );
 
     authServiceMock.forgotPasswordRequest.mockReturnValue(
@@ -91,8 +91,8 @@ describe('ForgotPasswordEmail', () => {
     component.form.controls.email.setValue('notfound@test.com');
     component.submit();
     expect(alertServiceMock.error).toHaveBeenCalledWith(
-      'User not found',
-      { variant: 'dismissible', title: 'Oops!' },
+      'auth.forgot-password.alerts.userNotFound',
+      { variant: 'dismissible', title: 'auth.forgot-password.alerts.errorTitle' },
     );
 
     authServiceMock.forgotPasswordRequest.mockReturnValue(
@@ -101,8 +101,8 @@ describe('ForgotPasswordEmail', () => {
     component.form.controls.email.setValue('bad@test.com');
     component.submit();
     expect(alertServiceMock.error).toHaveBeenCalledWith(
-      'email must be an email',
-      { variant: 'dismissible', title: 'Oops!' },
+      'auth.forgot-password.alerts.invalidEmail',
+      { variant: 'dismissible', title: 'auth.forgot-password.alerts.errorTitle' },
     );
 
     authServiceMock.forgotPasswordRequest.mockReturnValue(
@@ -111,8 +111,8 @@ describe('ForgotPasswordEmail', () => {
     component.form.controls.email.setValue('another@test.com');
     component.submit();
     expect(alertServiceMock.error).toHaveBeenCalledWith(
-      'Invalid email',
-      { variant: 'dismissible', title: 'Oops!' },
+      'auth.forgot-password.alerts.invalidEmail',
+      { variant: 'dismissible', title: 'auth.forgot-password.alerts.errorTitle' },
     );
 
     authServiceMock.forgotPasswordRequest.mockReturnValue(
@@ -121,8 +121,8 @@ describe('ForgotPasswordEmail', () => {
     component.form.controls.email.setValue('error@test.com');
     component.submit();
     expect(alertServiceMock.warning).toHaveBeenCalledWith(
-      'Unable to send reset code. Please try again.',
-      { variant: 'dismissible', title: 'Warning' },
+      'auth.forgot-password.alerts.unableToSendCode',
+      { variant: 'dismissible', title: 'auth.forgot-password.alerts.warningTitle' },
     );
 
     vi.useRealTimers();

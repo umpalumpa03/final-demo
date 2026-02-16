@@ -57,7 +57,7 @@ export class ForgotPasswordVerify implements OnInit {
           ),
           catchError((error) => {
             const httpError = error as HttpErrorResponse;
-            this.errorMessage.set(httpError.error?.message || this.translate.instant('auth.otp-forgot-password.alerts.invalidCode'));
+            this.errorMessage.set(this.translate.instant('auth.otp-forgot-password.alerts.invalidCode'));
             return EMPTY;
           }),
         )

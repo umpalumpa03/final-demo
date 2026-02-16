@@ -68,8 +68,8 @@ describe('ResetPassword', () => {
     expect(authServiceMock.createNewPassword).toHaveBeenCalledWith('Aa1!aaaa');
     expect(router.navigate).toHaveBeenCalledWith(['/auth', 'success']);
     expect(alertServiceMock.success).toHaveBeenCalledWith(
-      'Password updated successfully',
-      { variant: 'dismissible', title: 'Success!' },
+      'auth.reset-password.alerts.passwordUpdated',
+      { variant: 'dismissible', title: 'auth.reset-password.alerts.successTitle' },
     );
     expect(component.isSubmitting()).toBe(false);
 
@@ -78,8 +78,8 @@ describe('ResetPassword', () => {
     );
     component.submit(formValue);
     expect(alertServiceMock.error).toHaveBeenCalledWith(
-      'Unable to reset password. Please try again.',
-      { variant: 'dismissible', title: 'Oops!' },
+      'auth.reset-password.alerts.unableToReset',
+      { variant: 'dismissible', title: 'auth.reset-password.alerts.errorTitle' },
     );
 
     authServiceMock.createNewPassword.mockReturnValue(
@@ -87,8 +87,8 @@ describe('ResetPassword', () => {
     );
     component.submit(formValue);
     expect(alertServiceMock.warning).toHaveBeenCalledWith(
-      'Something went wrong. Please try again.',
-      { variant: 'dismissible', title: 'Warning' },
+      'auth.reset-password.alerts.somethingWentWrong',
+      { variant: 'dismissible', title: 'auth.reset-password.alerts.warningTitle' },
     );
 
     vi.useRealTimers();

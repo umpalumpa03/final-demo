@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { provideTranslateService } from '@ngx-translate/core';
 import { LoanManagementStore } from './loan-management.store';
 import { LoanManagementApiService } from '../shared/services/loan-management-api.service';
 import {
@@ -108,6 +109,7 @@ describe('LoanManagementStore', () => {
 
     TestBed.configureTestingModule({
       providers: [
+        provideTranslateService(),
         LoanManagementStore,
         { provide: LoanManagementApiService, useValue: apiServiceMock },
       ],
@@ -136,7 +138,7 @@ describe('LoanManagementStore', () => {
         ),
       );
       store.loadPendingApprovals();
-      expect(store.error()).toBe('Access denied. Support role required.');
+      expect(store.error()).toBe('settings.loan-management.alerts.error.access_denied');
       expect(store.loading()).toBe(false);
     });
   });
@@ -300,7 +302,7 @@ describe('LoanManagementStore', () => {
     it('should clear success message', () => {
       store.loadPendingApprovals();
       store.approveLoan('loan-1');
-      expect(store.successMessage()).toBe('The loan has been approved.');
+      expect(store.successMessage()).toBe('settings.loan-management.alerts.success.loan_approved');
       
       store.clearSuccessMessage();
       expect(store.successMessage()).toBeNull();
@@ -363,7 +365,7 @@ describe('LoanManagementStore', () => {
       );
       store.loadPendingApprovals();
       store.approveLoan('loan-1');
-      expect(store.actionError()).toBe('Loan already processed by another user.');
+      expect(store.actionError()).toBe('settings.loan-management.alerts.error.already_processed');
     });
 
     it('should handle 403 error when approving loan', () => {
@@ -378,7 +380,7 @@ describe('LoanManagementStore', () => {
       );
       store.loadPendingApprovals();
       store.approveLoan('loan-1');
-      expect(store.actionError()).toBe('Access denied. Support role required.');
+      expect(store.actionError()).toBe('settings.loan-management.alerts.error.access_denied');
     });
 
     it('should handle 404 error when rejecting loan', () => {
@@ -393,7 +395,7 @@ describe('LoanManagementStore', () => {
       );
       store.loadPendingApprovals();
       store.rejectLoan({ loanId: 'loan-1', reason: 'Test reason' });
-      expect(store.actionError()).toBe('Loan already processed by another user.');
+      expect(store.actionError()).toBe('settings.loan-management.alerts.error.already_processed');
     });
 
     it('should handle 403 error when rejecting loan', () => {
@@ -408,7 +410,7 @@ describe('LoanManagementStore', () => {
       );
       store.loadPendingApprovals();
       store.rejectLoan({ loanId: 'loan-1', reason: 'Test reason' });
-      expect(store.actionError()).toBe('Access denied. Support role required.');
+      expect(store.actionError()).toBe('settings.loan-management.alerts.error.access_denied');
     });
 
     it('should handle error reloading list after approve failure', () => {
@@ -500,13 +502,13 @@ describe('LoanManagementStore', () => {
     it('should set success message after approving loan', () => {
       store.loadPendingApprovals();
       store.approveLoan('loan-1');
-      expect(store.successMessage()).toBe('The loan has been approved.');
+      expect(store.successMessage()).toBe('settings.loan-management.alerts.success.loan_approved');
     });
 
     it('should set success message after rejecting loan', () => {
       store.loadPendingApprovals();
       store.rejectLoan({ loanId: 'loan-1', reason: 'Test' });
-      expect(store.successMessage()).toBe('The loan has been rejected.');
+      expect(store.successMessage()).toBe('settings.loan-management.alerts.success.loan_rejected');
     });
 
     it('should clear success message before new action', () => {

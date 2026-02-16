@@ -100,13 +100,12 @@ export class ForgotPasswordEmail {
           const httpError = error as HttpErrorResponse;
           if (httpError?.status === 404) {
             this.alertService.error(
-              httpError.error?.message || this.translate.instant('auth.forgot-password.alerts.userNotFound'),
+              this.translate.instant('auth.forgot-password.alerts.userNotFound'),
               { variant: 'dismissible', title: this.translate.instant('auth.forgot-password.alerts.errorTitle') },
             );
           } else if (httpError?.status === 400) {
-            const message = httpError.error?.message;
             this.alertService.error(
-              Array.isArray(message) ? message[0] : message || this.translate.instant('auth.forgot-password.alerts.invalidEmail'),
+              this.translate.instant('auth.forgot-password.alerts.invalidEmail'),
               { variant: 'dismissible', title: this.translate.instant('auth.forgot-password.alerts.errorTitle') },
             );
           } else {

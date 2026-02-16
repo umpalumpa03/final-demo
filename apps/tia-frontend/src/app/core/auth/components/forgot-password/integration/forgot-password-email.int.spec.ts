@@ -97,7 +97,7 @@ describe('ForgotPasswordEmail Component Integration', () => {
     req.flush(mockResponse);
 
     expect(successSpy).toHaveBeenCalledWith(
-      'Reset code sent to your email',
+      'auth.forgot-password.alerts.resetCodeSent',
       expect.objectContaining({ variant: 'dismissible' }),
     );
   });
@@ -114,7 +114,7 @@ describe('ForgotPasswordEmail Component Integration', () => {
     );
 
     expect(errorSpy).toHaveBeenCalledWith(
-      'User not found',
+      'auth.forgot-password.alerts.userNotFound',
       expect.objectContaining({ variant: 'dismissible' }),
     );
   });
@@ -131,7 +131,7 @@ describe('ForgotPasswordEmail Component Integration', () => {
     );
 
     expect(errorSpy).toHaveBeenCalledWith(
-      'Invalid email format',
+      'auth.forgot-password.alerts.invalidEmail',
       expect.objectContaining({ variant: 'dismissible' }),
     );
   });
@@ -145,7 +145,7 @@ describe('ForgotPasswordEmail Component Integration', () => {
     req.flush(null, { status: 500, statusText: 'Server Error' });
 
     expect(warningSpy).toHaveBeenCalledWith(
-      'Unable to send reset code. Please try again.',
+      'auth.forgot-password.alerts.unableToSendCode',
       expect.objectContaining({ variant: 'dismissible' }),
     );
   });

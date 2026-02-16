@@ -118,7 +118,7 @@ describe('ForgotPasswordVerify Component Integration', () => {
       { status: 400, statusText: 'Bad Request' },
     );
 
-    expect(component.errorMessage()).toBe('Invalid verification code');
+    expect(component.errorMessage()).toBe('auth.otp-forgot-password.alerts.invalidCode');
   });
 
   it('should verify OTP when called', () => {

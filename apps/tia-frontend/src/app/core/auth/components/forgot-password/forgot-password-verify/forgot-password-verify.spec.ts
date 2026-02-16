@@ -149,7 +149,7 @@ describe('ForgotPasswordVerify', () => {
     // Set errorMessage signal
     component.errorMessage.set('Invalid code');
     component.verifyResetOtp('wrong');
-    expect(component.errorMessage()).toBe('Invalid code');
+    expect(component.errorMessage()).toBe('auth.otp-forgot-password.alerts.invalidCode');
   });
 
   it('onOtpInputChanged should clear errorMessage when it exists', () => {
