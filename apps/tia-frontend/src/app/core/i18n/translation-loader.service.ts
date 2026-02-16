@@ -5,7 +5,6 @@ import { Observable, of, forkJoin } from 'rxjs';
 import { catchError, tap, map } from 'rxjs/operators';
 import { TranslationModule } from './model';
 
-
 @Injectable({
   providedIn: 'root',
 })
@@ -13,6 +12,7 @@ export class TranslationLoaderService {
   private readonly http = inject(HttpClient);
   private readonly translate = inject(TranslateService);
   private readonly loadedModules = new Set<string>();
+  private activeModules: TranslationModule[] = [];
 
   public loadTranslations(
     modules: TranslationModule | TranslationModule[],
@@ -49,6 +49,16 @@ export class TranslationLoaderService {
 
   public preloadModules(modules: TranslationModule[]): Observable<void> {
     return this.loadTranslations(modules);
+  }
+
+  public setActiveModules(
+    modules: TranslationModule | TranslationModule[],
+  ): void {
+    this.activeModules = Array.isArray(modules) ? modules : [modules];
+  }
+
+  public getActiveModules(): TranslationModule[] {
+    return [...this.activeModules];
   }
 
   public clearCache(): void {
