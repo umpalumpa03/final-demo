@@ -5,10 +5,10 @@ import { of, throwError, Subject } from 'rxjs';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { LoansStore } from './loans.store';
 import { LoansService } from '../shared/services/loans.service';
-import { HttpErrorResponse } from '@angular/common/http';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AlertService } from '@tia/core/services/alert/alert.service';
 import { SuccessKeys, ErrorKeys } from './loans.state';
+import { patchState } from '@ngrx/signals';
 
 describe('LoansStore', () => {
   let store: InstanceType<typeof LoansStore>;
@@ -211,6 +211,51 @@ describe('LoansStore', () => {
       store.loadLoanDetails('1');
       expect(loansService.getLoanById).not.toHaveBeenCalled();
     });
+
+    it('should NOT re-fetch loans when already present and forceChange not set', async () => {
+      patchState(store as any, { loans: mockLoans });
+      loansService.getAllLoans.mockClear();
+
+      store.loadLoans({ status: null, forceChange: false });
+
+      await vi.waitFor(() => {
+        expect(loansService.getAllLoans).not.toHaveBeenCalled();
+        expect(store.loading()).toBe(false);
+      });
+    });
+
+    it('should NOT call getLoanMonths when months already exist and forceRefresh is false', async () => {
+      patchState(store as any, { months: [12] });
+      loansService.getLoanMonths.mockClear();
+
+      store.loadMonths({ forceRefresh: false });
+
+      await vi.waitFor(() => {
+        expect(loansService.getLoanMonths).not.toHaveBeenCalled();
+      });
+    });
+
+    it('should NOT call getPurposes when purposes already exist and forceRefresh is false', async () => {
+      patchState(store as any, { purposes: [{ displayText: 'X', value: 'x' }] });
+      loansService.getPurposes.mockClear();
+
+      store.loadPurposes({ forceRefresh: false });
+
+      await vi.waitFor(() => {
+        expect(loansService.getPurposes).not.toHaveBeenCalled();
+      });
+    });
+
+    it('should NOT call getPrepaymentOptions when options already exist and forceRefresh is false', async () => {
+      (store as any).prepaymentOptions.set([{ prepaymentDisplayName: 'Full', prepaymentValue: 'full', isActive: true } as any]);
+      loansService.getPrepaymentOptions.mockClear();
+
+      store.loadPrepaymentOptions({ forceRefresh: false });
+
+      await vi.waitFor(() => {
+        expect(loansService.getPrepaymentOptions).not.toHaveBeenCalled();
+      });
+    });
   });
 
   describe('Loan Actions', () => {
@@ -364,6 +409,27 @@ describe('LoansStore', () => {
           ErrorKeys.REQUEST_LOAN,
         );
       });
+    });
+  });
+
+  describe('Helpers & small utilities', () => {
+    it('should set search query', () => {
+      store.setSearchQuery('hello');
+      expect(store.searchQuery()).toBe('hello');
+    });
+
+    it('should show alert and auto-hide after _triggerAutoHide delay', async () => {
+      vi.useFakeTimers();
+
+      store.showAlert('temporary', 'error');
+      expect(store.alert()?.message).toBe('temporary');
+
+      vi.advanceTimersByTime(3000);
+
+      await Promise.resolve();
+
+      expect(store.alertMessage()).toBeNull();
+      vi.useRealTimers();
     });
   });
 

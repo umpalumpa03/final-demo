@@ -62,6 +62,8 @@ describe('AllLoans', () => {
   });
 
   it('should call loadLoans on init', () => {
-    expect(loansStoreMock.loadLoans).toHaveBeenCalledWith({ status: null });
+    expect(loansStoreMock.loadLoans).toHaveBeenCalledWith(
+      expect.objectContaining({ status: null }),
+    );
   });
 });
