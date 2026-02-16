@@ -15,7 +15,7 @@ import {
   selectIsOtpModalOpen,
   selectIsUpdatingCardName,
   selectSelectedCardIdForOtp,
-  selectShowOtpSuccessAlert,
+  
 } from 'apps/tia-frontend/src/app/store/products/cards/cards.selectors';
 import {
   closeCardOtpModal,
@@ -23,10 +23,8 @@ import {
   updateCardName,
 } from 'apps/tia-frontend/src/app/store/products/cards/cards.actions';
 import { CardOtpModal } from '../../../otp-modal/container/card-otp-modal/card-otp-modal';
-import { SimpleAlerts } from '@tia/shared/lib/alerts/components/simple-alerts/simple-alerts';
 import { combineLatest, map } from 'rxjs';
 import { AlertService } from '@tia/core/services/alert/alert.service';
-import { AlertsWithActions } from '@tia/shared/lib/alerts/components/alerts-with-actions/alerts-with-actions';
 @Component({
   selector: 'app-card-details-modal',
   imports: [AsyncPipe, UiModal, CardDetailsModalContent, CardOtpModal],

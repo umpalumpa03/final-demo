@@ -111,7 +111,9 @@
       "alertType": "success",
       "alertMessage": "Card created successfully!",
       "loadingFailed": "error while loading",
-      "retry": "Retry"
+      "retry": "Retry", 
+      "loadingFailedMessage": "Unable to load your cards. Please try again."
+
     },
     "account-cards": {
       "card-grid": {
@@ -135,6 +137,7 @@
       "cardDetails": "Details about your Personal Card",
       "failedToLoadCard": "Failed to Load Card",
       "retry": "Retry",
+      "loadingFailedMessage":"Failed to load card details",
 
       "card-info-section": {
         "cardName": "Card Name",
@@ -196,6 +199,8 @@
       "transactionHistory": "Transaction History",
       "allTransactions": "All transactions made with this card",
       "failedToLoadTransactions": "Failed to Load Transactions",
+            "loadingFailedMessage":"Failed to load transactions details",
+
     "retry": "Retry",
       "transaction-card-header": {
         "linkedTo": "Linked to: ",

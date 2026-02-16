@@ -1,4 +1,3 @@
-
 import {
   ChangeDetectionStrategy,
   Component,
@@ -24,7 +23,6 @@ import {
   selectCardImagesLoading,
 } from '../../../../../../../../store/products/cards/cards.selectors';
 import { CreateCard } from '../../create-card-modal/container/createCard';
-import { SimpleAlerts } from '@tia/shared/lib/alerts/components/simple-alerts/simple-alerts';
 import { AsyncPipe } from '@angular/common';
 import { ErrorStates } from '@tia/shared/lib/feedback/error-states/error-states';
 import { toObservable } from '@angular/core/rxjs-interop';
@@ -36,7 +34,6 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
 import { CardGroup } from '../../../models/card-group.model';
 import { AlertService } from '@tia/core/services/alert/alert.service';
-import { AlertTypesWithIcons } from '@tia/shared/lib/alerts/components/alert-types-with-icons/alert-types-with-icons';
 
 @Component({
   selector: 'app-card-list',
@@ -163,4 +160,7 @@ protected readonly alertService = inject(AlertService);
     isModalOpen: this.isModalOpen$,
     cardImagesLoading: this.cardImagesLoading$,
   });
+    public handleRetry(): void {
+  this.store.dispatch(loadCardAccounts({ forceRefresh: true }));
+}
 }

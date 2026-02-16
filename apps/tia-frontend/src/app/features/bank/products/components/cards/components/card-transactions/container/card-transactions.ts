@@ -50,10 +50,9 @@ import { Pagination } from '@tia/shared/lib/navigation/pagination/pagination';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
-  ITransactionFilter,
+  
   ITransactions,
 } from '@tia/shared/models/transactions/transactions.models';
-import { CardAccount } from '@tia/shared/models/cards/card-account.model';
 
 @Component({
   selector: 'app-card-transactions',

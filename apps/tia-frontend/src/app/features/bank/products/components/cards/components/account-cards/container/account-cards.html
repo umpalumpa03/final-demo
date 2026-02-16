@@ -23,7 +23,7 @@
   <app-error-states
     variant="failed"
     [header]="'my-products.card.account-cards.loadingFailed' | translate"
-    [message]="cardDetailsError || ('my-products.card.account-cards.failedToLoadCards' | translate)"
+    [message]=" ('my-products.card.account-cards.failedToLoadCards' | translate) || cardDetailsError"
     [buttonMessage]="'my-products.card.account-cards.retry' | translate"
     (buttonClick)="handleRetry()"
   />
