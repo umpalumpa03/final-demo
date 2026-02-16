@@ -115,11 +115,12 @@ it('should not dispatch createCard on invalid form', () => {
   });
 
   it('should auto-select first design and map viewData$', async () => {
-    setup();
-    const view = await firstValueFrom(
-      (component as unknown as { viewData$: Observable<ViewData> }).viewData$
-    );
-    expect(component['selectedDesignId']).toBe('design-1');
+     setup();
+  await new Promise(resolve => setTimeout(resolve, 10)); // Add delay for setTimeout
+  const view = await firstValueFrom(
+    (component as unknown as { viewData$: Observable<ViewData> }).viewData$
+  );
+  expect(component['selectedDesignId']).toBe('design-1');;
     expect(view.selectedDesignUri).toBe('uri1');
     expect(view.categoryOptions).toEqual([{ label: 'Debit', value: 'DEBIT' }]);
     expect(view.typeOptions).toEqual([{ label: 'Visa', value: 'VISA' }]);

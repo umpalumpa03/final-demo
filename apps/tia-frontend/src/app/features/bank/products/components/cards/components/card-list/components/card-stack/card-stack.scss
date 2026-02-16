@@ -4,6 +4,8 @@
   position: relative;
   width: 36rem;
   min-height: 35rem;
+  
+  
 
   @media (max-width: 1280px) {
     max-width: 30rem;
@@ -31,13 +33,17 @@
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     border-radius: 1.6rem;
+     &--stacked[data-stack-position]:not([data-stack-position="1"]):not([data-stack-position="2"]):not([data-stack-position="3"]) {
+    display: none;
+  }
+
 
     &--active {
       z-index: 10;
       transform: translateY(0) translateX(0) rotate(0deg);
 
       &:hover {
-        // transform: translateY(-0.8rem) translateX(0) rotate(0deg);
+        transform: translateY(-0.8rem) translateX(0) rotate(0deg);
         box-shadow: 0 1.6rem 3.2rem rgba(0, 0, 0, 0.2);
       }
     }

@@ -91,14 +91,14 @@ describe('CreateCard Integration', () => {
     fixture.detectChanges();
   });
 
-  it('should auto-select first design on load', async () => {
-    const viewData = await firstValueFrom(component['viewData$']);
+ it('should auto-select first design on load', async () => {
+  await new Promise(resolve => setTimeout(resolve, 10));
+  const viewData = await firstValueFrom(component['viewData$']);
 
-    expect(component['selectedDesignId']).toBe('design-1');
-    expect(component['cardForm'].value.design).toBe('design-1');
-    expect(viewData.selectedDesignUri).toBe('/designs/blue.jpg');
-  });
-
+  expect(component['selectedDesignId']).toBe('design-1');
+  expect(component['cardForm'].value.design).toBe('design-1');
+  expect(viewData.selectedDesignUri).toBe('/designs/blue.jpg');
+});
   it('should map creation data to view options', async () => {
     const viewData = await firstValueFrom(component['viewData$']);
 
