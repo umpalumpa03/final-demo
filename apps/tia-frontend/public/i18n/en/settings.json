@@ -303,6 +303,23 @@
       "emptyHeader": "No Pending Approvals",
       "emptyMessage": "All loan applications have been processed.",
       "months": "months"
+    },
+    "alerts": {
+      "success": {
+        "loan_approved": "The loan has been approved.",
+        "loan_rejected": "The loan has been rejected."
+      },
+      "error": {
+        "access_denied": "Access denied. Support role required.",
+        "load_pending": "Failed to load pending approvals",
+        "approve_loan": "Failed to approve loan",
+        "reject_loan": "Failed to reject loan",
+        "already_processed": "Loan already processed by another user."
+      },
+      "titles": {
+        "success": "Success!",
+        "error": "Oops!"
+      }
     }
   },
   "accounts": {
