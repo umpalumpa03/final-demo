@@ -9,10 +9,11 @@ import { CommonModule } from '@angular/common';
 import { ButtonComponent } from '@tia/shared/lib/primitives/button/button';
 import { PREPAYMENT_CURRENCY_KEYWORDS } from '../../../config/loan-prepayment.config';
 import { TranslatePipe } from '@ngx-translate/core';
+import { CurrencySymbolPipe } from '../../../pipes/currency.pipe';
 
 @Component({
   selector: 'app-prepayment-review',
-  imports: [CommonModule, ButtonComponent, TranslatePipe],
+  imports: [CommonModule, ButtonComponent, TranslatePipe, CurrencySymbolPipe],
   templateUrl: './prepayment-review.html',
   styleUrl: './prepayment-review.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
