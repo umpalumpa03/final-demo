@@ -53,7 +53,8 @@
             <div class="card__details">
                 <div>
                     <span>Amount:</span>
-                    <strong>{{ loanData.loanAmount | currency:'USD':'symbol':'1.0-0' }}</strong>
+                    <strong>{{ loanData.loanAmount | currency:('GEL' | currencySymbol):'symbol':'1.0-0'
+                        }}</strong>
                 </div>
                 <div>
                     <span>Term:</span>
@@ -62,7 +63,7 @@
                 @if (showPaymentDetails()) {
                 <div>
                     <span>Monthly:</span>
-                    <strong>{{ loanData.monthlyPayment | currency:'USD':'symbol':'1.0-0' }}</strong>
+                    <strong>{{ loanData.monthlyPayment | currency:('GEL' | currencySymbol):'symbol':'1.0-0' }}</strong>
                 </div>
                 <div>
                     <span>Next Payment:</span>

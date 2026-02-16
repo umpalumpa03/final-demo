@@ -15,6 +15,7 @@ import { PurposeFormatPipe } from '../../../pipes/purpose.pipe';
 import { TranslatePipe } from '@ngx-translate/core';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
 import { LoansStore } from '../../../../store/loans.store';
+import { CurrencySymbolPipe } from '../../../pipes/currency.pipe';
 
 @Component({
   selector: 'app-loan-details',
@@ -25,6 +26,7 @@ import { LoansStore } from '../../../../store/loans.store';
     PurposeFormatPipe,
     TranslatePipe,
     RouteLoader,
+    CurrencySymbolPipe,
   ],
   templateUrl: './loan-details.html',
   styleUrl: './loan-details.scss',

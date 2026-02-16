@@ -20,7 +20,7 @@
 
                     <strong class="review-step__value">
                         @if (isCurrency(item.text)) {
-                        <span class="review-step__currency">{{ currencyCode() }}</span>
+                        <span class="review-step__currency">{{ currencyCode() | currencySymbol }}</span>
                         <span class="review-step__amount">{{ item.amount | number:'1.2-2' }}</span>
                         } @else {
                         {{ item.amount }}
