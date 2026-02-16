@@ -14,7 +14,10 @@
         <app-language-switcher></app-language-switcher>
       </header>
 
-      <main class="auth__auth-layout__body">
+      <main
+        [style.padding]="currentRoute() === '/auth/sign-up' ? '8rem 3.2rem 0rem': '16rem 3.2rem 0rem'"
+        class="auth__auth-layout__body"
+      >
         <div class="auth__auth-layout__form">
           <router-outlet></router-outlet>
         </div>

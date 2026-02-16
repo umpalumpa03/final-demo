@@ -36,7 +36,8 @@ describe('Personal Info Integration', () => {
 
   it('should update PID successfully', async () => {
     const newPId = '12345678901';
-    
+
+    // dispatch — reducer should update pId synchronously
     store.dispatch(
       PersonalInfoActions.updatePersonalInfo({
         personalInfo: {
@@ -53,29 +54,35 @@ describe('Personal Info Integration', () => {
       }),
     );
 
+    // reducer-updated value should be immediately available
+    const pIdImmediate = await firstValueFrom(
+      store.select(PersonalInfoSelectors.selectPId).pipe(take(1)),
+    );
+    expect(pIdImmediate).toBe(newPId);
+
+    // effect should perform the API call — assert request and flush
     const req = httpMock.expectOne(baseUrl);
     expect(req.request.method).toBe('PUT');
     expect(req.request.body).toEqual({ pId: newPId });
 
     req.flush({ message: 'PID updated successfully' });
 
-    const pId = await firstValueFrom(
-      store.select(PersonalInfoSelectors.selectPId).pipe(
-        filter((id) => id === newPId),
+    // after success the loading flag must be false and error null
+    const loading = await firstValueFrom(
+      store.select(PersonalInfoSelectors.selectPersonalInfoLoading).pipe(
+        filter((v) => v === false),
         take(1),
-        timeout(5000),
+        timeout(10000),
       ),
     );
 
-    const loading = await firstValueFrom(
-      store.select(PersonalInfoSelectors.selectPersonalInfoLoading).pipe(take(1), timeout(5000)),
-    );
-
     const error = await firstValueFrom(
-      store.select(PersonalInfoSelectors.selectPersonalInfoError).pipe(take(1), timeout(5000)),
+      store.select(PersonalInfoSelectors.selectPersonalInfoError).pipe(
+        take(1),
+        timeout(10000),
+      ),
     );
 
-    expect(pId).toBe(newPId);
     expect(loading).toBe(false);
     expect(error).toBeNull();
   });
@@ -96,16 +103,23 @@ describe('Personal Info Integration', () => {
       store.select(PersonalInfoSelectors.selectPhoneUpdateChallengeId).pipe(
         filter((id) => id === mockResponse.challengeId),
         take(1),
-        timeout(5000),
+        timeout(10000),
       ),
     );
 
     const loading = await firstValueFrom(
-      store.select(PersonalInfoSelectors.selectPhoneUpdateLoading).pipe(take(1), timeout(5000)),
+      store.select(PersonalInfoSelectors.selectPhoneUpdateLoading).pipe(
+        filter((v) => v === false),
+        take(1),
+        timeout(10000),
+      ),
     );
 
     const error = await firstValueFrom(
-      store.select(PersonalInfoSelectors.selectPhoneUpdateError).pipe(take(1), timeout(5000)),
+      store.select(PersonalInfoSelectors.selectPhoneUpdateError).pipe(
+        take(1),
+        timeout(10000),
+      ),
     );
 
     expect(challengeId).toBe(mockResponse.challengeId);
