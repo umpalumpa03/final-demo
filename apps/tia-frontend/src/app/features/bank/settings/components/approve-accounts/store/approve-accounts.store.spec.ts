@@ -72,14 +72,13 @@ describe('AccountPermissionsStore', () => {
     expect(store.error()).toBeNull();
   });
 
-  it('should load pending accounts and reverse them', () => {
+  it('should load pending accounts', () => {
     apiServiceMock.getPendingAccounts.mockReturnValue(of(mockAccounts));
 
     store.loadPendingAccounts();
 
-    const expectedReversed = [...mockAccounts].reverse();
-    expect(store.pendingAccounts()).toEqual(expectedReversed);
-    expect(store.pendingAccounts()[0].id).toBe('2');
+    expect(store.pendingAccounts()).toEqual(mockAccounts);
+    expect(store.pendingAccounts()[0].id).toBe('1');
     expect(store.isLoading()).toBe(false);
   });
 

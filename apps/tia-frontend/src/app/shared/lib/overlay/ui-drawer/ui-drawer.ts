@@ -31,14 +31,11 @@ export class UiDrawer {
   public startY = 0;
 
   constructor() {
-    effect(
-      () => {
-        if (!this.isOpen()) {
-          this.resetState();
-        }
-      },
-      { allowSignalWrites: true },
-    );
+    effect(() => {
+      if (!this.isOpen()) {
+        this.resetState();
+      }
+    });
   }
 
   private resetState(): void {
