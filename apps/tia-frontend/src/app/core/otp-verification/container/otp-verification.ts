@@ -95,6 +95,8 @@ export class OtpVerification implements OnInit {
 
   public readonly otpComponent = viewChild(Otp);
 
+  private lastResendTimestamp = 0;
+
   public isHeaderVisible = computed(
     () =>
       this.inputOtpConfig()?.iconUrl ||
@@ -138,7 +140,6 @@ export class OtpVerification implements OnInit {
   });
 
   constructor() {
-   
     effect(() => {
       if (this.maxAttempts() === 0) {
         this.customError.emit();
@@ -148,7 +149,6 @@ export class OtpVerification implements OnInit {
       }
     });
 
- 
     let previousError: string | null = null;
     effect(() => {
     
@@ -262,11 +262,17 @@ export class OtpVerification implements OnInit {
   }
 
   public handleResend(): void {
+    this.lastResendTimestamp = Date.now();
+
     this.isResendCalled.emit();
     this.isButtonDisabled.set(false);
   }
 
   public handleTimeout(): void {
+    if (Date.now() - this.lastResendTimestamp < 1000) {
+      return;
+    }
+
     this.isButtonDisabled.set(true);
     this.onTimeout.emit();
   }
