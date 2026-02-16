@@ -63,7 +63,7 @@ describe('CardOtpModal', () => {
     const dispatchSpy = vi.spyOn(store, 'dispatch');
     component.handleResendOtp();
     expect(dispatchSpy).toHaveBeenCalledWith(
-      requestCardOtp({ cardId: 'card-1' }),
+      requestCardOtp({ challengeId: 'ch-123' }),
     );
   });
 
