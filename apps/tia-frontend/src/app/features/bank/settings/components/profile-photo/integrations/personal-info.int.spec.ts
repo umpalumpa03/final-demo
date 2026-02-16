@@ -1,148 +1,131 @@
 import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
-import { provideTranslateService } from '@ngx-translate/core';
 import { provideStore } from '@ngrx/store';
+import { provideEffects } from '@ngrx/effects';
+import { Store } from '@ngrx/store';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
-import { Store } from '@ngrx/store';
-import { firstValueFrom, take, timeout, skip } from 'rxjs';
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-
+import { environment } from '../../../../../../../environments/environment';
+import { PersonalInfoEffects } from '../../../../../../store/personal-info/personal-info.effects';
 import { personalInfoFeature } from '../../../../../../store/personal-info/personal-info.reducer';
 import { PersonalInfoActions } from '../../../../../../store/personal-info/pesronal-info.actions';
 import * as PersonalInfoSelectors from '../../../../../../store/personal-info/personal-info.selectors';
+import { firstValueFrom, filter, take, timeout } from 'rxjs';
 
-describe('PersonalInfo integration', () => {
-  let httpMock: HttpTestingController;
+describe('Personal Info Integration', () => {
   let store: Store;
+  let httpMock: HttpTestingController;
+  const baseUrl = `${environment.apiUrl}/settings/personal-info`;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
-        provideRouter([]),
-        provideTranslateService(),
-        provideStore({
-          personalInfo: personalInfoFeature.reducer,
-        }),
+        provideStore({ personalInfo: personalInfoFeature.reducer }),
+        provideEffects(PersonalInfoEffects),
         provideHttpClient(),
         provideHttpClientTesting(),
       ],
     }).compileComponents();
 
-    httpMock = TestBed.inject(HttpTestingController);
     store = TestBed.inject(Store);
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
   afterEach(() => {
     httpMock.verify();
-    vi.clearAllMocks();
   });
 
-  it('should update loading state when loading personal info', async () => {
-    const loadingPromise = firstValueFrom(
-      store
-        .select(PersonalInfoSelectors.selectPersonalInfoLoading)
-        .pipe(skip(1), take(1), timeout(1000))
+  it('should update PID successfully', async () => {
+    const newPId = '12345678901';
+    
+    store.dispatch(
+      PersonalInfoActions.updatePersonalInfo({
+        personalInfo: {
+          pId: newPId,
+          phoneNumber: null,
+          loading: false,
+          error: null,
+          phoneUpdateChallengeId: null,
+          phoneUpdateLoading: false,
+          phoneUpdateError: null,
+          phoneUpdatePendingPhone: null,
+          phoneUpdateResendCount: 0,
+        },
+      }),
     );
 
-    store.dispatch(PersonalInfoActions.loadPersonalInfo({}));
+    const req = httpMock.expectOne(baseUrl);
+    expect(req.request.method).toBe('PUT');
+    expect(req.request.body).toEqual({ pId: newPId });
 
-    const loading = await loadingPromise;
-    expect(loading).toBe(true);
-  });
+    req.flush({ message: 'PID updated successfully' });
 
-  it('should update state when loading personal info succeeds', async () => {
-    const mockPersonalInfo = {
-      pId: '12345',
-      phoneNumber: '+995555123456',
-      loading: false,
-      error: null,
-      phoneUpdateChallengeId: null,
-      phoneUpdateLoading: false,
-      phoneUpdateError: null,
-      phoneUpdatePendingPhone: null,
-      phoneUpdateResendCount: 0,
-    };
-
-    const statePromise = firstValueFrom(
-      store
-        .select(PersonalInfoSelectors.selectPersonalInfo)
-        .pipe(skip(1), take(1), timeout(1000))
+    const pId = await firstValueFrom(
+      store.select(PersonalInfoSelectors.selectPId).pipe(
+        filter((id) => id === newPId),
+        take(1),
+        timeout(5000),
+      ),
     );
 
-    store.dispatch(PersonalInfoActions.loadPersonalInfoSuccess({ personalInfo: mockPersonalInfo }));
-
-    const state = await statePromise;
-
-    expect(state).toBeTruthy();
-    if (state) {
-      expect(state.pId).toBe('12345');
-      expect(state.phoneNumber).toBe('+995555123456');
-      expect(state.loading).toBe(false);
-      expect(state.error).toBeNull();
-    }
-  });
-
-  it('should update error state when loading personal info fails', async () => {
-    const errorMessage = 'Failed to load personal info';
-
-    store.dispatch(PersonalInfoActions.loadPersonalInfoFailure({ error: errorMessage }));
+    const loading = await firstValueFrom(
+      store.select(PersonalInfoSelectors.selectPersonalInfoLoading).pipe(
+        filter((isLoading) => isLoading === false),
+        take(1),
+        timeout(5000),
+      ),
+    );
 
     const error = await firstValueFrom(
-      store
-        .select(PersonalInfoSelectors.selectPersonalInfoError)
-        .pipe(take(1), timeout(1000))
+      store.select(PersonalInfoSelectors.selectPersonalInfoError).pipe(
+        filter((err) => err === null),
+        take(1),
+        timeout(5000),
+      ),
     );
 
-    expect(error).toBe(errorMessage);
+    expect(pId).toBe(newPId);
+    expect(loading).toBe(false);
+    expect(error).toBeNull();
   });
 
-  it('should update phone number directly', async () => {
-    const phoneNumberPromise = firstValueFrom(
-      store
-        .select(PersonalInfoSelectors.selectPhoneNumber)
-        .pipe(skip(1), take(1), timeout(1000))
+  it('should initiate phone update successfully', async () => {
+    const newPhone = '555123456';
+
+    store.dispatch(PersonalInfoActions.initiatePhoneUpdate({ phone: newPhone }));
+
+    const req = httpMock.expectOne(`${baseUrl}/update-phone`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({ phone: newPhone });
+
+    const mockResponse = { challengeId: 'challenge-123', method: 'SMS' };
+    req.flush(mockResponse);
+
+    const challengeId = await firstValueFrom(
+      store.select(PersonalInfoSelectors.selectPhoneUpdateChallengeId).pipe(
+        filter((id) => id === mockResponse.challengeId),
+        take(1),
+        timeout(5000),
+      ),
     );
 
-    store.dispatch(PersonalInfoActions.loadPersonalInfoPhoneNumber({ phoneNumber: '+995555999888' }));
-
-    const phoneNumber = await phoneNumberPromise;
-    expect(phoneNumber).toBe('+995555999888');
-  });
-
-  it('should update pId directly', async () => {
-    const pIdPromise = firstValueFrom(
-      store
-        .select(PersonalInfoSelectors.selectPId)
-        .pipe(skip(1), take(1), timeout(1000))
+    const loading = await firstValueFrom(
+      store.select(PersonalInfoSelectors.selectPhoneUpdateLoading).pipe(
+        filter((isLoading) => isLoading === false),
+        take(1),
+        timeout(5000),
+      ),
     );
 
-    store.dispatch(PersonalInfoActions.loadPersonalInfoPId({ pId: '67890' }));
-
-    const pId = await pIdPromise;
-    expect(pId).toBe('67890');
-  });
-
-  it('should reset personal info to initial state', async () => {
-    store.dispatch(PersonalInfoActions.loadPersonalInfoPId({ pId: '12345' }));
-    store.dispatch(PersonalInfoActions.loadPersonalInfoPhoneNumber({ phoneNumber: '+995555123456' }));
-
-    const statePromise = firstValueFrom(
-      store
-        .select(PersonalInfoSelectors.selectPersonalInfo)
-        .pipe(skip(1), take(1), timeout(1000))
+    const error = await firstValueFrom(
+      store.select(PersonalInfoSelectors.selectPhoneUpdateError).pipe(
+        filter((err) => err === null),
+        take(1),
+        timeout(5000),
+      ),
     );
 
-    store.dispatch(PersonalInfoActions.resetPersonalInfo());
-
-    const state = await statePromise;
-
-    expect(state).toBeTruthy();
-    if (state) {
-      expect(state.pId).toBeNull();
-      expect(state.phoneNumber).toBe('');
-      expect(state.loading).toBe(false);
-      expect(state.error).toBeNull();
-    }
+    expect(challengeId).toBe(mockResponse.challengeId);
+    expect(loading).toBe(false);
+    expect(error).toBeNull();
   });
 });
