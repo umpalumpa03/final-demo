@@ -23,6 +23,7 @@ export const getTransactionFiltersConfig = (
       uiConfig: {
         label: 'transactions.filters.category',
         placeholder: 'transactions.filters.all_categories',
+        disabled: categoryOptions.length === 0,
       },
     },
     {
@@ -68,6 +69,7 @@ export const getTransactionFiltersConfig = (
       uiConfig: {
         label: 'transactions.filters.account',
         placeholder: 'transactions.filters.select_account',
+        disabled: accountOptions.length === 0,
       },
     },
     {
@@ -77,6 +79,7 @@ export const getTransactionFiltersConfig = (
       uiConfig: {
         label: 'transactions.filters.currency',
         placeholder: 'transactions.filters.all',
+        disabled: currencyOptions.length === 0,
       },
     },
   ] as const;

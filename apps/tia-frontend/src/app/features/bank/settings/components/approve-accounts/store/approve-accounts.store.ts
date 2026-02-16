@@ -21,7 +21,6 @@ export const AccountPermissionsStore = signalStore(
 
   withComputed((store) => ({
     pendingAccountsCount: computed(() => store.pendingAccounts().length),
-
     selectedAccount: computed(() =>
       store
         .pendingAccounts()
@@ -38,94 +37,75 @@ export const AccountPermissionsStore = signalStore(
     ) => ({
       loadPermissions: rxMethod<void>(
         pipe(
-          tap(() => patchState(store, { isLoading: true, error: null })),
-          switchMap(() =>
-            apiService.getAccountPermissions().pipe(
-              tap({
-                next: (permissions) => {
-                  patchState(store, {
-                    permissions,
-                    isLoading: false,
-                  });
-                },
-                error: (err: HttpErrorResponse) => {
-                  const errorMsg = err.message || 'Unknown Error';
-                  patchState(store, {
-                    isLoading: false,
-                    error: errorMsg,
-                  });
-                },
+          switchMap(() => {
+            if (store.permissions().length > 0) return EMPTY;
+
+            patchState(store, { isLoading: true, error: null });
+            return apiService.getAccountPermissions().pipe(
+              tap((permissions) =>
+                patchState(store, { permissions, isLoading: false }),
+              ),
+              catchError((err: HttpErrorResponse) => {
+                patchState(store, { isLoading: false, error: err.message });
+                return EMPTY;
               }),
-              catchError(() => EMPTY),
-            ),
-          ),
+            );
+          }),
         ),
       ),
 
       loadPendingAccounts: rxMethod<void>(
         pipe(
-          tap(() => patchState(store, { isLoading: true, error: null })),
-          switchMap(() =>
-            apiService.getPendingAccounts().pipe(
-              tap({
-                next: (accounts) =>
-                  patchState(store, {
-                    isLoading: false,
-                    pendingAccounts: accounts,
-                  }),
-                error: (err: HttpErrorResponse) => {
-                  const errMsg = err.message || 'Unknown Error';
-                  patchState(store, {
-                    isLoading: false,
-                    error: errMsg,
-                  });
-                },
+          switchMap(() => {
+            if (store.pendingAccounts().length > 0) return EMPTY;
+
+            patchState(store, { isLoading: true, error: null });
+            return apiService.getPendingAccounts().pipe(
+              tap((accounts) =>
+                patchState(store, {
+                  pendingAccounts: [...accounts].reverse(),
+                  isLoading: false,
+                }),
+              ),
+              catchError((err: HttpErrorResponse) => {
+                patchState(store, { isLoading: false, error: err.message });
+                return EMPTY;
               }),
-              catchError(() => EMPTY),
-            ),
-          ),
+            );
+          }),
         ),
       ),
 
       updateStatus: rxMethod<IUpdateAccountStatus>(
         pipe(
-          tap(() => patchState(store, { isLoading: true, error: null })),
+          tap(() => patchState(store, { isLoading: true })),
           switchMap((payload) =>
             apiService.updateAccountStatus(payload).pipe(
-              tap({
-                next: () => {
-                  const updatedList = store
-                    .pendingAccounts()
-                    .filter((a) => a.id !== payload.accountId);
+              tap(() => {
+                const updatedList = store
+                  .pendingAccounts()
+                  .filter((a) => a.id !== payload.accountId);
+                patchState(store, {
+                  pendingAccounts: updatedList,
+                  isLoading: false,
+                });
 
-                  patchState(store, {
-                    pendingAccounts: updatedList,
-                    isLoading: false,
-                  });
+                const messageKey =
+                  payload.updatedStatus === 'active'
+                    ? 'settings.approve-accounts.alerts.approved_success'
+                    : 'settings.approve-accounts.alerts.declined_success';
 
-                  const messageKey =
-                    payload.updatedStatus === 'active'
-                      ? 'settings.approve-accounts.alerts.approved_success'
-                      : 'settings.approve-accounts.alerts.declined_success';
-
-                  const titleKey =
-                    payload.updatedStatus === 'active' ? 'Success' : 'Info';
-
-                  alertService.success(translate.instant(messageKey), {
-                    variant: 'dismissible',
-                    title: translate.instant(titleKey),
-                  });
-                },
-                error: (err: HttpErrorResponse) => {
-                  const errMsg = err.message || 'Unknown error';
-
-                  patchState(store, {
-                    isLoading: false,
-                    error: errMsg,
-                  });
-                },
+                alertService.success(translate.instant(messageKey), {
+                  variant: 'dismissible',
+                  title: translate.instant(
+                    payload.updatedStatus === 'active' ? 'Success' : 'Info',
+                  ),
+                });
               }),
-              catchError(() => EMPTY),
+              catchError((err: HttpErrorResponse) => {
+                patchState(store, { isLoading: false, error: err.message });
+                return EMPTY;
+              }),
             ),
           ),
         ),
@@ -133,29 +113,26 @@ export const AccountPermissionsStore = signalStore(
 
       savePermissions: rxMethod<IUpdateAccountPermission>(
         pipe(
-          tap(() => patchState(store, { isLoading: true, error: null })),
+          tap(() => patchState(store, { isLoading: true })),
           switchMap((payload) =>
             apiService.modifyAccountPermissions(payload).pipe(
-              tap({
-                next: () => {
-                  patchState(store, { isLoading: false });
+              tap(() => {
+                patchState(store, { isLoading: false });
 
-                  alertService.success(
-                    translate.instant(
-                      'settings.approve-accounts.alerts.permissions_saved',
-                    ),
-                    {
-                      variant: 'dismissible',
-                      title: translate.instant('Success'),
-                    },
-                  );
-                },
-                error: (err: HttpErrorResponse) => {
-                  const errMsg = err.message || 'Unknown error';
-                  patchState(store, { isLoading: false, error: errMsg });
-                },
+                alertService.success(
+                  translate.instant(
+                    'settings.approve-accounts.alerts.permissions_saved',
+                  ),
+                  {
+                    variant: 'dismissible',
+                    title: translate.instant('Success'),
+                  },
+                );
               }),
-              catchError(() => EMPTY),
+              catchError((err: HttpErrorResponse) => {
+                patchState(store, { isLoading: false, error: err.message });
+                return EMPTY;
+              }),
             ),
           ),
         ),
@@ -163,6 +140,10 @@ export const AccountPermissionsStore = signalStore(
 
       selectAccount(accountId: string | null): void {
         patchState(store, { selectedAccountId: accountId });
+      },
+
+      resetState(): void {
+        patchState(store, initialStateAccountPermissions);
       },
     }),
   ),

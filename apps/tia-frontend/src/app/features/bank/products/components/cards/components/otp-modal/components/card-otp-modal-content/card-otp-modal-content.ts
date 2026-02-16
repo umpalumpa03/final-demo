@@ -12,7 +12,6 @@ import { OtpVerification } from '@tia/core/otp-verification/container/otp-verifi
 @Component({
   selector: 'app-card-otp-modal-content',
   templateUrl: './card-otp-modal-content.html',
-  styleUrls: ['./card-otp-modal-content.scss'],
   imports: [OtpVerification],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

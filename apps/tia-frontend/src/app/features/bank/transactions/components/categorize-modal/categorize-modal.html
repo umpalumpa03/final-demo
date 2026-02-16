@@ -13,18 +13,20 @@
     </div>
   </div>
   }
+
   <form [formGroup]="form" class="categorize-form">
-    <div class="categorize-form__group">
-      <lib-select
-        [config]="{
-             label: (selectConfig.label | translate),
-             placeholder: (selectConfig.placeholder | translate),
-             height: selectConfig.height
-          }"
-        [options]="selectCategoryOptions()"
-        formControlName="categoryId"
-      ></lib-select>
-    </div>
+    <app-tooltip
+      [content]="'transactions.categorize_modal.labels.disabled-select-tooltip' | translate"
+      [disabled]="!!selectCategoryOptions().length"
+    >
+      <div class="categorize-form__group">
+        <lib-select
+          [config]="selectDropdownConfig()"
+          [options]="selectCategoryOptions()"
+          formControlName="categoryId"
+        ></lib-select>
+      </div>
+    </app-tooltip>
 
     <div class="categorize-form__custom-category">
       <div class="categorize-form__row">

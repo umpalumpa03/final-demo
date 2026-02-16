@@ -172,4 +172,42 @@ describe('Transaction Reducer', () => {
 
     expect(state.items[0].category).toEqual(newCategory);
   });
+  it('should add new category on createCategorySuccess', () => {
+    const response = { id: 'cat-99', categoryName: 'Travel' } as any;
+    const action = TransactionActions.createCategorySuccess({ response });
+    const state = transactionReducer(transactionInitialState, action);
+
+    expect(state.categories.length).toBe(1);
+    expect(state.categories[0]).toEqual({
+      id: 'cat-99',
+      categoryName: 'Travel',
+    });
+  });
+
+  it('should update transactionToRepeat state on setTransactionToRepeat', () => {
+    const transaction = { id: 'trx-unique-123' } as any;
+    const action = TransactionActions.setTransactionToRepeat({ transaction });
+    const state = transactionReducer(transactionInitialState, action);
+
+    expect(state.transactionToRepeat).toEqual(transaction);
+  });
+
+  it('should nullify transactionToRepeat on clearTransactionToRepeat', () => {
+    const initialStateWithData = {
+      ...transactionInitialState,
+      transactionToRepeat: { id: 'existing' } as any,
+    };
+    const action = TransactionActions.clearTransactionToRepeat();
+    const state = transactionReducer(initialStateWithData, action);
+
+    expect(state.transactionToRepeat).toBeNull();
+  });
+
+  it('should set isLoading to false on loadTransactionsCached', () => {
+    const loadingState = { ...transactionInitialState, isLoading: true };
+    const action = TransactionActions.loadTransactionsCached();
+    const state = transactionReducer(loadingState, action);
+
+    expect(state.isLoading).toBe(false);
+  });
 });

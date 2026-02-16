@@ -32,10 +32,13 @@ describe('CreateCardForm', () => {
     fixture.componentRef.setInput('accountOptions', []);
     fixture.componentRef.setInput('isCreating', false);
   });
-
   it('should emit formSubmit when form is valid', () => {
     const emitSpy = vi.fn();
     component.formSubmit.subscribe(emitSpy);
+    fixture.componentRef.setInput('formConfigs', {
+      cardName: { placeholder: 'Enter text' },
+      accountId: { placeholder: 'Choose option' },
+    });
 
     component['onSubmit']();
 
@@ -50,4 +53,15 @@ describe('CreateCardForm', () => {
 
     expect(emitSpy).toHaveBeenCalled();
   });
+//   it('should not emit formSubmit when form is invalid', () => {
+//   formGroup.patchValue({ cardName: '', accountId: '' });
+//   formGroup.markAsTouched();
+  
+//   const emitSpy = vi.fn();
+//   component.formSubmit.subscribe(emitSpy);
+
+//   component['onSubmit']();
+
+//   expect(emitSpy).not.toHaveBeenCalled();
+// });
 });

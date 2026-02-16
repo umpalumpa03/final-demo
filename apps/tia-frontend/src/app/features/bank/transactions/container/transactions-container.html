@@ -30,7 +30,7 @@
           iconHeight="16px"
           iconWidth="16px"
         >
-          Export Table
+          {{ 'transactions.table.export_btn' | translate }}
         </app-button>
       </div>
       }
@@ -50,25 +50,23 @@
         <div class="transactions-table-wrapper__widget-error">
           <app-error-states
             variant="failed"
-            header="Failed to load"
-            message="Could not load transactions"
-            buttonMessage="Retry"
+            [header]="'transactions.error_states.failed.header' | translate"
+            [message]="'transactions.error_states.failed.message' | translate"
+            [buttonMessage]="'transactions.error_states.failed.retry' | translate"
             (buttonClick)="retryLoad()"
             [border]="false"
-          >
-          </app-error-states>
+          ></app-error-states>
         </div>
 
         } @else if (vm.isEmpty()) {
         <div class="transactions-table-wrapper__widget-error">
           <app-error-states
             variant="not-found"
-            header="No transactions"
-            message="There are no transactions available"
+            [header]="'transactions.error_states.not_found.header' | translate"
+            [message]="'transactions.error_states.not_found.message' | translate"
             [showButton]="false"
             [border]="false"
-          >
-          </app-error-states>
+          ></app-error-states>
         </div>
 
         } @else {
