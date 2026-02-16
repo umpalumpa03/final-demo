@@ -183,7 +183,6 @@ describe('PaybillEffect (Refactored)', () => {
     });
 
     it('loadProviders$: should dispatch Failure on API throw', () => {
-      // FIX: Pass a string to satisfy getErrorMessage
       paybillService.getProviders.mockReturnValue(
         throwError(() => 'Provider Error'),
       );
