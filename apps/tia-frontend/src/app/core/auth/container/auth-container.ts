@@ -16,10 +16,11 @@ import { SidePanel } from '../shared/side-panel/side-panel';
 import { tap } from 'rxjs';
 import { LanguageSwitcher } from '../../../features/bank/settings/components/language/components/language-switcher/language-switcher';
 import { RouteLoader } from '@tia/shared/lib/feedback/route-loader/route-loader';
+import { ɵɵRouterLink } from "@angular/router/testing";
 
 @Component({
   selector: 'app-auth-container',
-  imports: [RouterOutlet, SidePanel, LanguageSwitcher, RouteLoader],
+  imports: [RouterOutlet, SidePanel, LanguageSwitcher, RouteLoader, ɵɵRouterLink],
   templateUrl: './auth-container.html',
   styleUrl: './auth-container.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

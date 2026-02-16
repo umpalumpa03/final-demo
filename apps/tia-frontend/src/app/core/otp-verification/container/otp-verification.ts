@@ -120,7 +120,7 @@ export class OtpVerification implements OnInit {
       return `${error} (Remaining attempts: ${attempts})`;
     }
 
-    if (attempts === 0) {
+  if (attempts === 0 && !this.pendingVerification()) {
       const redirectRoute = this.noMoreAttempsRedirectRoute();
       this.router.navigate([redirectRoute || Routes.ERROR_PAGE]);
     }
@@ -144,7 +144,7 @@ export class OtpVerification implements OnInit {
 
   constructor() {
     effect(() => {
-      if (this.maxAttempts() === 0) {
+      if (this.maxAttempts() === 0 && !this.pendingVerification()) {
         this.customError.emit();
         if (this.onErrorRedirect()) {
           this.isErrorPageVisible.set(true);
