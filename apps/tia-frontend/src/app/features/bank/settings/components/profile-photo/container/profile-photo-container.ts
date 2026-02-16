@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, computed, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnDestroy, OnInit, computed, effect, inject, signal } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
+import { Actions, ofType } from '@ngrx/effects';
 import { ProfilePhotoComponent } from '../components/profile-photo/profile-photo.component';
 import { UserInfoComponent } from '../components/user-info/user-info.component';
 import { ProfilePhotoActions } from '../store/profile-photo/profile-photo.actions';
@@ -35,6 +36,7 @@ import {
   selectPhoneUpdateResendCount,
 } from '../../../../../../store/personal-info/personal-info.selectors';
 import { OtpVerification } from '@tia/core/otp-verification/container/otp-verification';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
  
 @Component({
@@ -49,6 +51,8 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
   private readonly translate = inject(TranslateService);
   private readonly router = inject(Router);
   private readonly alertService = inject(AlertService);
+  private readonly actions$ = inject(Actions);
+  private readonly destroyRef = inject(DestroyRef);
  
   public readonly defaultAvatars = this.store.selectSignal(selectDefaultAvatars);
   public readonly defaultAvatarsLoading = this.store.selectSignal(selectDefaultAvatarsLoading);
@@ -233,8 +237,7 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
      
       previousChallengeId = challengeId;
       previousPhoneUpdateLoading = loading;
- 
- 
+
       if (challengeIdCleared && !error && loadingFinished && !this.otpAttemptsExpired()) {
         this.alertService.success(
           this.translate.instant('settings.profile-photo.phoneNumberUpdated'),
@@ -245,7 +248,7 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
         this.store.dispatch(PersonalInfoActions.loadPersonalInfo({ forceRefresh: true }));
       }
      
- 
+
       if (loadingFinished && error && challengeId) {
         const errorMessage = this.getPhoneUpdateErrorMessage(error);
         this.alertService.error(errorMessage, { variant: 'dismissible', title: 'Oops!' });
@@ -292,6 +295,44 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
     if (!hasCachedData) {
       this.store.dispatch(PersonalInfoActions.loadPersonalInfo({}));
     }
+
+    this.actions$
+      .pipe(
+        ofType(PersonalInfoActions.initiatePhoneUpdateSuccess),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(() => {
+        this.alertService.success(
+          this.translate.instant('settings.profile-photo.otpSentSuccess'),
+          { variant: 'dismissible', title: 'Success!' },
+        );
+      });
+
+  
+    this.actions$
+      .pipe(
+        ofType(PersonalInfoActions.resendPhoneOTPSuccess),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(() => {
+        this.alertService.success(
+          this.translate.instant('settings.profile-photo.otpResendSuccess'),
+          { variant: 'dismissible', title: 'Success!' },
+        );
+      });
+
+
+    this.actions$
+      .pipe(
+        ofType(PersonalInfoActions.resendPhoneOTPFailure),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(() => {
+        this.alertService.error(
+          this.translate.instant('settings.profile-photo.otpResendFailure'),
+          { variant: 'dismissible', title: 'Oops!' },
+        );
+      });
   }
  
   public ngOnDestroy(): void {
@@ -677,12 +718,31 @@ export class ProfilePhotoContainer implements OnInit, OnDestroy {
       'phone is already',
     ];
     
+    const invalidCodePatterns = [
+      'invalid code',
+      'invalid otp',
+      'incorrect code',
+      'incorrect otp',
+      'wrong code',
+      'wrong otp',
+      'არასწორი კოდი',
+      'არასწორი otp',
+    ];
+    
     const isPhoneAlreadyInUse = phoneAlreadyInUsePatterns.some(pattern => 
+      errorLower.includes(pattern)
+    );
+    
+    const isInvalidCode = invalidCodePatterns.some(pattern => 
       errorLower.includes(pattern)
     );
     
     if (isPhoneAlreadyInUse) {
       return this.translate.instant('settings.profile-photo.phoneNumberAlreadyInUse');
+    }
+    
+    if (isInvalidCode) {
+      return this.translate.instant('settings.profile-photo.invalidCode');
     }
     
     return error;

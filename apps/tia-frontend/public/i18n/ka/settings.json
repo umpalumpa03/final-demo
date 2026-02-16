@@ -81,6 +81,11 @@
     "phoneNumberUpdated": "ტელეფონის ნომერი წარმატებით განახლდა",
     "phoneNumberAlreadyInUse": "ეს ტელეფონის ნომერი უკვე გამოყენებულია",
     "maxResendReached": "მაქსიმალური რაოდენობის გაგზავნა მიღწეულია",
+    "otpResendSuccess": "OTP კოდი წარმატებით გამოიგზავნა",
+    "otpResendFailure": "OTP კოდის გაგზავნა ვერ მოხერხდა",
+    "otpSentSuccess": "OTP კოდი წარმატებით გამოიგზავნა",
+    "otpSentFailure": "OTP კოდის გაგზავნა ვერ მოხერხდა",
+    "invalidCode": "კოდი არასწორია",
     "startTour": "ტურის დაწყება",
     "redirectText": "პროფილის ფეიჯზე"
   },

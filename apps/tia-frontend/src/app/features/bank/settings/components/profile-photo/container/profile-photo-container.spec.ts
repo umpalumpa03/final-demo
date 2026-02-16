@@ -2,6 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Store } from '@ngrx/store';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
+import { provideMockActions } from '@ngrx/effects/testing';
+import { Observable, of } from 'rxjs';
 import { vi } from 'vitest';
 import { ProfilePhotoActions } from '../../../../../../features/bank/settings/components/profile-photo/store/profile-photo/profile-photo.actions';
 import { ProfilePhotoContainer } from './profile-photo-container';
@@ -30,6 +32,7 @@ describe('ProfilePhotoContainer', () => {
   let fixture: ComponentFixture<ProfilePhotoContainer>;
   let store: MockStore;
   let mockAlertService: any;
+  let actions$: Observable<any>;
 
   beforeEach(async () => {
     mockAlertService = {
@@ -37,6 +40,8 @@ describe('ProfilePhotoContainer', () => {
       error: vi.fn(),
       warning: vi.fn(),
     };
+
+    actions$ = of();
 
     await TestBed.configureTestingModule({
       imports: [ProfilePhotoContainer, TranslateModule.forRoot()],
@@ -62,6 +67,7 @@ describe('ProfilePhotoContainer', () => {
           },
         }),
         { provide: AlertService, useValue: mockAlertService },
+        provideMockActions(() => actions$),
       ],
     }).compileComponents();
 

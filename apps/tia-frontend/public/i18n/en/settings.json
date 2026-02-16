@@ -94,6 +94,11 @@
     "phoneNumberUpdated": "Phone number updated successfully",
     "phoneNumberAlreadyInUse": "This phone number is already in use",
     "maxResendReached": "Maximum resend limit reached",
+    "otpResendSuccess": "OTP code sent successfully",
+    "otpResendFailure": "Failed to send OTP code",
+    "otpSentSuccess": "OTP code sent successfully",
+    "otpSentFailure": "Failed to send OTP code",
+    "invalidCode": "Invalid code",
     "startTour": "Start Tour",
     "redirectText": "Profile page"
   },
