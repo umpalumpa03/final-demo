@@ -113,7 +113,8 @@
       "invalid_account": "Account is not correct",
       "default_error": "There is a problem, please try again",
       "invalid_category_path": "There was an error processing your request!",
-      "exact_payment_required": "This bill requires an exact payment of {{amount}} GEL"
+      "exact_payment_required": "This bill requires an exact payment of {{amount}} GEL",
+      "invalid_code": "OTP code is invalid"
     },
     "navigate": "Go Back",
     "search-placeholder": "Search..."
