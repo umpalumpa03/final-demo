@@ -52,7 +52,6 @@ import { TransferSummaryComponent } from '../../../../ui/transfer-summary/transf
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ExternalAmount implements OnInit {
-  private readonly otpService = inject(OtpVerificationService);
   private readonly transferStore = inject(TransferStore);
   private readonly amountService = inject(TransferAmountService);
   private readonly executionService = inject(TransferExecutionService);
@@ -230,7 +229,11 @@ export class ExternalAmount implements OnInit {
   public resendOtp(): void {
     const challengeId = this.transferStore.challengeId();
     if (!challengeId) return;
-    this.otpService.resendVerificationCode(challengeId).subscribe();
+    this.transferStore.resendOtp({ challengeId });
+    
+    this.alertService.error(
+      this.translate.instant('common.alertMessages.otpResend'),
+    );
   }
 
   public handleNoMoreAttempts(): void {

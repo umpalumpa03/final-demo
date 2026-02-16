@@ -26,7 +26,8 @@
     "success": "წარმატება",
     "error": "შეცდომა",
     "warning": "გაფრთხილება",
-    "information": "ინფორმაცია"
+    "information": "ინფორმაცია",
+    "otpResend": "კოდის გამოგზავნა ვერ მოხერხდა"
   },
   "validation": {
     "required": "ეს ველი სავალდებულოა",

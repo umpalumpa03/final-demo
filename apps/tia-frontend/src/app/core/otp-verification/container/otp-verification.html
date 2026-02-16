@@ -50,7 +50,7 @@
       alertType="error"
       [alertMessage]="phoneErrorMessage() ?? 'An error occurred'"
     ></app-simple-alerts>
-    } @if (activeConfig().otp.enabledOtpResends.includes(otpResendType())) {
+    } 
     <app-otp-resend
       (noMoreAttempts)="expirationTimerHandle()"
       [maxTimeoutMs]="maxTimeoutMs()"
@@ -59,7 +59,6 @@
       (resendClicked)="handleResend()"
       (timeoutReached)="handleTimeout()"
     />
-    }
 
     <div
       class="auth-form__wrapper"

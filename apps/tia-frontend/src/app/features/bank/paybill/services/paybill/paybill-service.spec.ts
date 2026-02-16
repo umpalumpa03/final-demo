@@ -172,4 +172,50 @@ describe('PaybillService', () => {
       statusText: 'Internal Server Error',
     });
   });
+  it('should resend OTP (POST)', () => {
+    const challengeId = 'challenge-123';
+    const mockResponse = { success: true };
+
+    service.resendOtp(challengeId).subscribe((res) => {
+      expect(res).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${baseUrl}/resend-otp`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toBe(challengeId);
+    req.flush(mockResponse);
+  });
+
+  it('should get payment details (GET)', () => {
+    const serviceId = 'service-123';
+    const mockDetails = {
+      amount: 100,
+      currency: 'GEL',
+      dueDate: '2024-01-01',
+    } as any;
+
+    service.getPaymentDetails(serviceId).subscribe((res) => {
+      expect(res).toEqual(mockDetails);
+    });
+
+    const req = httpMock.expectOne(`${baseUrl}/payment-details/${serviceId}`);
+    expect(req.request.method).toBe('GET');
+    req.flush(mockDetails);
+  });
+
+  it('should create a template (POST)', () => {
+    const serviceId = 'service-123';
+    const identification = { phoneNumber: '599123456' };
+    const nickname = 'My Template';
+    const mockTemplate = { id: 'template-1', nickname } as any;
+
+    service.createTemplate(serviceId, identification, nickname).subscribe((res) => {
+      expect(res).toEqual(mockTemplate);
+    });
+
+    const req = httpMock.expectOne(`${baseUrl}/templates`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({ serviceId, identification, nickname });
+    req.flush(mockTemplate);
+  });
 });

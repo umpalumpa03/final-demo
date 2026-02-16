@@ -1,11 +1,9 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
   HostListener,
   inject,
   signal,
-  AfterViewInit,
 } from '@angular/core';
 import { AuthService } from '../../../services/auth.service';
 import { CredentialsService } from '../../../services/credentials.service';

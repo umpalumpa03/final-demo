@@ -7,6 +7,7 @@
   [iconBgColor]="facade.activeCategoryUI()?.iconBgColor || '#F0F9FF'"
   [iconBgPath]="facade.activeCategoryUI()?.iconBgPath"
   [isLoading]="facade.isLoading()"
+  (resendCode)="resendOtp()"
 />
 } @else {
 <app-basic-card

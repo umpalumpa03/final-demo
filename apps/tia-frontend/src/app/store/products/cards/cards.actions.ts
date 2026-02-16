@@ -124,9 +124,15 @@ export const updateCardNameFailure = createAction(
   '[Cards] Update Card Name Failure',
   props<{ cardId: string; error: string }>(),
 );
+
 export const requestCardOtp = createAction(
   '[Cards] Request Card OTP',
   props<{ cardId: string }>(),
+);
+
+export const resendOTPCode = createAction(
+  '[Cards] Request Card OTP',
+  props<{ challengeId: string }>(),
 );
 
 export const requestCardOtpSuccess = createAction(

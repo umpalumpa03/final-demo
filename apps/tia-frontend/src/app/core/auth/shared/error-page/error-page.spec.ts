@@ -1,6 +1,7 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { ErrorPage } from './error-page';
 import { Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { vi } from 'vitest';
 
 describe('ErrorPage', () => {
@@ -29,7 +30,7 @@ describe('ErrorPage', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ErrorPage],
+      imports: [ErrorPage, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ErrorPage);

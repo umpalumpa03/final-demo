@@ -25,7 +25,7 @@ import { BreakpointService } from '@tia/core/services/breakpoints/breakpoint.ser
 export class AccountCard {
   private readonly accountUtils = new AccountUtils();
   private readonly breakpointService = inject(BreakpointService);
-  public readonly isXsMobile = this.breakpointService.isXsMobile;
+  public readonly isXlMobile = this.breakpointService.isXlMobile;
   
   public readonly actions = ACCOUNT_ACTIONS;
   public isFavorite = input.required<boolean | null>();
