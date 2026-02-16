@@ -96,6 +96,7 @@
     [isBtnRowDirection]="true"
     redirectText="Paybills Template"
     [inputOtpConfig]="otpConfig"
+    [errorMessage]="errorMessage()"
     (onBackOut)="onOtpClose()"
     (isVerifyCalled)="onOtpVerify($event)"
     [isButtonLoading]="true"

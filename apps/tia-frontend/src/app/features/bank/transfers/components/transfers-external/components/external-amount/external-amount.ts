@@ -79,6 +79,7 @@ export class ExternalAmount implements OnInit {
   public readonly successfullTransfer = this.transferStore.transferSuccess;
   public readonly requiresOtp = this.transferStore.requiresOtp;
   public readonly errorFromState = this.transferStore.error;
+  public readonly otpErrorMessage = this.errorFromState;
   public readonly otpConfig = transferOtpConfig['extrenal'];
 
   public readonly isExternalIban = computed(

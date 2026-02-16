@@ -52,6 +52,7 @@
     type="otp"
     timerType="otp"
     [inputOtpConfig]="otpConfig"
+    [errorMessage]="phoneUpdateError()"
     [isButtonLoading]="phoneUpdateLoading()"
     [onErrorRedirect]="true"
     [redirectUrl]="redirectUrl"

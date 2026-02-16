@@ -28,6 +28,9 @@ export class VerifySignup {
   public inputOtpConfig = otpVerificationConfig['sign-up'];
 
   public verifyRegisterOtp(otp: string): void {
+
+    this.authService.otpError.set(null);
+    
     this.authService
       .verifyPhoneOtpCode(otp)
       .pipe(takeUntilDestroyed(this.destroyRef))

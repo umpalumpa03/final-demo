@@ -13,6 +13,7 @@ import { Store } from '@ngrx/store';
 import {
   selectCategories,
   selectChallengeId,
+  selectError,
   selectFilteredProviders,
   selectFormPayload,
   selectLoading,
@@ -209,20 +210,17 @@ export class PaybillTemplatesContainer implements OnInit {
   // This is needed to set filtered item and then below logic apply to show the output
   public readonly filteredTemplates = signal<TreeItem[]>([]);
   public readonly filteredGroups = signal<TemplateGroups[]>([]);
+  public readonly hasSearch = signal<boolean>(false);
 
   // Computed values that return filtered or original data
   public readonly displayTemplates = computed(() => {
     const filtered = this.filteredTemplates();
-    return filtered.length > 0 || this.searchControl.value
-      ? filtered
-      : this.templates();
+    return this.hasSearch() ? filtered : this.templates();
   });
 
   public readonly displayGroups = computed(() => {
     const filtered = this.filteredGroups();
-    return filtered.length > 0 || this.searchControl.value
-      ? filtered
-      : this.templateGroups();
+    return this.hasSearch() ? filtered : this.templateGroups();
   });
 
   // On Init Load Data
@@ -238,20 +236,23 @@ export class PaybillTemplatesContainer implements OnInit {
         debounceTime(300),
         distinctUntilChanged(),
         takeUntilDestroyed(this.destroyRef),
-        switchMap((searchValue) =>
-          combineLatest([
+        switchMap((searchValue) => {
+          const normalizedSearch = searchValue ?? '';
+          this.hasSearch.set(!!normalizedSearch.trim());
+
+          return combineLatest([
             this.store.select(selectTemplatesAsTreeItems),
             this.store.select(selectTemplatesGroupWithConfigs),
           ]).pipe(
             map(([templates, groups]) => {
               return this.paybillTemplateService.filterTemplatesAndGroups(
-                searchValue ?? '',
+                normalizedSearch,
                 templates,
                 groups,
               );
             }),
-          ),
-        ),
+          );
+        }),
         tap((filtered) => {
           this.filteredTemplates.set(filtered.templates);
           this.filteredGroups.set(filtered.groups);
@@ -512,6 +513,7 @@ export class PaybillTemplatesContainer implements OnInit {
   public isSuccessModalVisible = signal(false);
   public selectPaymentsForm = this.store.selectSignal(selectFormPayload);
   public selectTotalAmount = this.store.selectSignal(selectTotalAmount);
+  public readonly errorMessage = this.store.selectSignal(selectError);
 
   // Payment Logic
   public onPayAction(): void {

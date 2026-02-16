@@ -95,6 +95,8 @@ export class OtpVerification implements OnInit {
 
   public readonly otpComponent = viewChild(Otp);
 
+  private lastResendTimestamp = 0;
+
   public isHeaderVisible = computed(
     () =>
       this.inputOtpConfig()?.iconUrl ||
@@ -146,6 +148,23 @@ export class OtpVerification implements OnInit {
         }
       }
     });
+
+    let previousError: string | null = null;
+    effect(() => {
+    
+      const currentError =
+        this.timerType() === 'phone'
+          ? this.phoneErrorMessage()
+          : this.errorMessage();
+
+      const hadNoErrorBefore = !previousError;
+
+      if (currentError && hadNoErrorBefore) {
+        this.decreaseAttempts();
+      }
+
+      previousError = currentError;
+    });
   }
 
   public ngOnInit(): void {
@@ -170,6 +189,11 @@ export class OtpVerification implements OnInit {
   }
 
   public onSubmit(): void {
+  
+    if (this.buttonLoading() || this.isButtonDisabled()) {
+      return;
+    }
+
     const form = this.activeForm();
 
     if (form.invalid) {
@@ -182,7 +206,6 @@ export class OtpVerification implements OnInit {
 
     const otp = this.extractOtp();
 
-    this.decreaseAttempts();
     this.isVerifyCalled.emit(otp);
 
     this.handlePostSubmitReset();
@@ -239,11 +262,17 @@ export class OtpVerification implements OnInit {
   }
 
   public handleResend(): void {
+    this.lastResendTimestamp = Date.now();
+
     this.isResendCalled.emit();
     this.isButtonDisabled.set(false);
   }
 
   public handleTimeout(): void {
+    if (Date.now() - this.lastResendTimestamp < 1000) {
+      return;
+    }
+
     this.isButtonDisabled.set(true);
     this.onTimeout.emit();
   }
