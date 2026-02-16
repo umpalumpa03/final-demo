@@ -10,7 +10,10 @@ import {
   getActiveFilters,
   mapFormIntoTransactionFilter,
 } from '../utils/transactions-filters.utils';
-import { getTransactionFiltersConfig } from '../config/transactions-filters-data';
+import {
+  getTransactionFiltersConfig,
+  TODAY,
+} from '../config/transactions-filters-data';
 
 @Injectable()
 export class TransactionsPresenterService {
@@ -23,7 +26,7 @@ export class TransactionsPresenterService {
     null,
   );
 
-  public readonly today = new Date().toISOString().split('T')[0];
+  public readonly today = TODAY;
 
   public readonly filterForm = this.fb.group({
     searchCriteria: ['', Validators.maxLength(25)],
@@ -32,8 +35,8 @@ export class TransactionsPresenterService {
     amountTo: [null as number | null],
     accountIban: [null as string | null],
     currency: [null as Currency | null],
-    dateFrom: [null as string | null, [maxDateValidator(this.today)]],
-    dateTo: [null as string | null, [maxDateValidator(this.today)]],
+    dateFrom: [null as string | null, [maxDateValidator(TODAY)]],
+    dateTo: [null as string | null, [maxDateValidator(TODAY)]],
   });
 
   private readonly formValues = signal(this.filterForm.value);
@@ -64,9 +67,9 @@ export class TransactionsPresenterService {
   private setupFormListeners(): void {
     this.filterForm.valueChanges
       .pipe(
-        tap((val) => this.formValues.set(val)),
         debounceTime(400),
         filter(() => this.filterForm.valid),
+        tap((val) => this.formValues.set(val)),
         map((val) => mapFormIntoTransactionFilter(val)),
         distinctUntilChanged(
           (prev, curr) => JSON.stringify(prev) === JSON.stringify(curr),
