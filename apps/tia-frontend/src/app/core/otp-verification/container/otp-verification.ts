@@ -19,7 +19,7 @@ import { Otp } from '@tia/shared/lib/forms/otp/otp';
 import { catchError, EMPTY, tap } from 'rxjs';
 import { TextInput } from '@tia/shared/lib/forms/input-field/text-input';
 import { SimpleAlerts } from '@tia/shared/lib/alerts/components/simple-alerts/simple-alerts';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ErrorPage } from '../../auth/shared/error-page/error-page';
 import { Routes } from '../../auth/models/tokens.model';
@@ -35,8 +35,6 @@ import { DEFAULT_SETTING_CONFIG } from '../config/otp.config';
 import { ExpirationTimer } from '../directive/expiration-timer';
 import { OtpResend } from '../components/otp-resend';
 import { OtpVerifyService } from '../config/otp-verify.state';
-import showAlert from '@tia/shared/utils/alerts/alert.helper';
-import { AlertService } from '@tia/core/services/alert/alert.service';
 
 @Component({
   selector: 'app-otp-verification',
@@ -57,8 +55,6 @@ import { AlertService } from '@tia/core/services/alert/alert.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OtpVerification implements OnInit {
-  private translate = inject(TranslateService);
-  private alertService = inject(AlertService);
   private fb = inject(FormBuilder);
   private otpService = inject(OtpVerificationService);
   private router = inject(Router);
@@ -96,7 +92,6 @@ export class OtpVerification implements OnInit {
   public isInputDisabled = signal(false);
   public submitError = signal<string | null>(null);
   public isErrorPageVisible = signal<boolean>(false);
-  public pendingVerification = signal<boolean>(false);
 
   public readonly otpComponent = viewChild(Otp);
 
@@ -120,7 +115,7 @@ export class OtpVerification implements OnInit {
       return `${error} (Remaining attempts: ${attempts})`;
     }
 
-  if (attempts === 0 && !this.pendingVerification()) {
+    if (attempts === 0) {
       const redirectRoute = this.noMoreAttempsRedirectRoute();
       this.router.navigate([redirectRoute || Routes.ERROR_PAGE]);
     }
@@ -144,17 +139,11 @@ export class OtpVerification implements OnInit {
 
   constructor() {
     effect(() => {
-      if (this.maxAttempts() === 0 && !this.pendingVerification()) {
+      if (this.maxAttempts() === 0) {
         this.customError.emit();
         if (this.onErrorRedirect()) {
           this.isErrorPageVisible.set(true);
         }
-      }
-    });
-
-    effect(() => {
-      if (this.pendingVerification() && !!this.errorMessage()) {
-        this.pendingVerification.set(false);
       }
     });
   }
@@ -185,7 +174,7 @@ export class OtpVerification implements OnInit {
 
     if (form.invalid) {
       form.markAllAsTouched();
-      showAlert(this.alertService, this.translate, 'error', 'auth.alert-errors.otpPhoneError');
+      this.showTemporaryError('Please check the required fields.');
       return;
     }
 
@@ -193,7 +182,6 @@ export class OtpVerification implements OnInit {
 
     const otp = this.extractOtp();
 
-    this.pendingVerification.set(true);
     this.decreaseAttempts();
     this.isVerifyCalled.emit(otp);
 
@@ -253,12 +241,6 @@ export class OtpVerification implements OnInit {
   public handleResend(): void {
     this.isResendCalled.emit();
     this.isButtonDisabled.set(false);
-    this.isInputDisabled.set(false);
-    this.otpForm.reset();
-    this.submitError.set(null);
-    setTimeout(() => {
-      this.otpComponent()?.focusFirst();
-    }, 0);
   }
 
   public handleTimeout(): void {
