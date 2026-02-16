@@ -168,6 +168,9 @@ export class InternalToAccount {
   }
 
   public onSwapAccounts() {
+    if (this.isSwapDisabled()){
+      return;
+    }
     const currentSender = this.selectedFromAccount();
     const currentRecipient = this.selectedToAccount();
 
