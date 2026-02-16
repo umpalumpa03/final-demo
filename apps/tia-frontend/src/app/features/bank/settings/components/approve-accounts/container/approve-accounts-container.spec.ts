@@ -6,7 +6,9 @@ import { IAccountsPermissions } from '../../../shared/models/approve-models/acco
 import { BankAccount } from '../../../shared/models/approve-models/accounts-models/pending-accounts.models';
 import { AccountPermissionsStore } from '../store/approve-accounts.store';
 import { ApproveAccountsConfig } from '../config/approve-accounts.config';
-import { FormControl } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
+
 describe('ApproveAccountsContainer', () => {
   let component: ApproveAccountsContainer;
   let fixture: ComponentFixture<ApproveAccountsContainer>;
@@ -20,6 +22,10 @@ describe('ApproveAccountsContainer', () => {
         modalTitle: 'Title',
         modalSubtitle: 'Sub',
         title: 'T',
+        saveAction: 'Save',
+        cancelAction: 'Cancel',
+        ofLabel: 'of',
+        enabledSuffix: 'enabled',
       },
       confirmDialog: {
         title: 'C',
@@ -44,12 +50,15 @@ describe('ApproveAccountsContainer', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [ApproveAccountsContainer],
+      imports: [
+        ApproveAccountsContainer,
+        ReactiveFormsModule,
+        TranslateModule.forRoot(),
+      ],
       schemas: [NO_ERRORS_SCHEMA],
     })
       .overrideComponent(ApproveAccountsContainer, {
         set: {
-          imports: [],
           providers: [
             { provide: AccountPermissionsStore, useValue: mockStore },
             { provide: ApproveAccountsConfig, useValue: mockConfig },

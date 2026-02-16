@@ -1,6 +1,7 @@
 @use '../../../../../shared/styles/mixins' as *;
 @use '../../../../../shared/styles/palette' as *;
 @use '../../../../../shared/styles/themes' as *;
+
 .transactions-filters {
   @include display-flex(column);
   background-color: $white;
@@ -8,17 +9,21 @@
   border-radius: 1.4rem;
   gap: 2.6rem;
   padding: 2.3rem;
+
   &__heading {
     @include flex-center(row, space-between, center);
+
     @media (max-width: 480px) {
       @include flex-center(column, center, flex-start);
       gap: 0.8rem;
     }
+
     div {
       @include display-flex(column);
       gap: 0.6rem;
     }
   }
+
   &__title {
     @include font-inter(400, 1.6rem, 1.6rem);
     color: var(--color-fg);
@@ -42,34 +47,48 @@
       width: 100%;
     }
   }
+
   &__form {
     @include display-flex(row, wrap);
     gap: 1.6rem;
+
     @media (max-width: 550px) {
-      display: none;
       flex-direction: column;
-    }
-    &.is-open {
-      @media (max-width: 550px) {
-        display: flex;
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition:
+        max-height 0.4s ease-in-out,
+        opacity 0.3s ease,
+        margin 0.3s ease;
+      margin-top: -2.6rem;
+
+      &.is-open {
+        @include display-flex(column);
+        max-height: 100rem;
+        opacity: 1;
+        margin-top: 0.2rem;
         gap: 1.2rem;
+        overflow: visible;
       }
     }
 
     &__input-wrapper {
       width: calc((100% - (1.6rem * 3)) / 4);
+
       @media (max-width: 800px) {
         width: calc((100% - (1.6rem * 1)) / 2);
       }
+
       @media (max-width: 550px) {
         width: 100%;
       }
     }
   }
+
   .filter-text {
     display: block;
     max-width: 30rem;
-
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

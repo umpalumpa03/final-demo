@@ -194,23 +194,27 @@
     },
     "errorState": {
       "header": "No Accounts Found",
-      "message": "We couldn't find any pending accounts."
+      "message": "No pending account requests were found."
     },
     "permissionsModal": {
-      "modalTitle": "Modify Account Permissions",
-      "modalSubtitle": "Configure permissions for this Account request",
-      "title": "Account permissions"
+      "modalTitle": "Change Account Permissions",
+      "modalSubtitle": "Set permissions for this account request",
+      "title": "Account Permissions",
+      "saveAction": "Save Permissions",
+      "cancelAction": "Cancel",
+      "of": "of",
+      "enabledSuffix": "permissions enabled"
     },
     "confirmDialog": {
-      "title": "Reset Changes?",
-      "subtitle": "Switching accounts will clear the permissions you selected.",
-      "cancelBtn": "Go back",
-      "confirmBtn": "Discard and switch"
+      "title": "Discard Changes?",
+      "subtitle": "Switching accounts will clear the selected permissions.",
+      "cancelBtn": "Go Back",
+      "confirmBtn": "Discard and Switch"
     },
     "alerts": {
       "approved_success": "Account approved successfully",
-      "declined_success": "Account declined successfully",
-      "permissions_saved": "Permissions saved successfully"
+      "declined_success": "Account deleted successfully",
+      "permissions_saved": "Permissions saved"
     }
   },
   "approve-cards": {
