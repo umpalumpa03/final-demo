@@ -1,34 +1,48 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
+import { Router, ActivatedRoute } from '@angular/router';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TranslateModule } from '@ngx-translate/core';
 import { firstValueFrom } from 'rxjs';
+
+import { TransactionActions } from 'apps/tia-frontend/src/app/store/transactions/transactions.actions';
 import {
-  updateCardName,
-  openCardOtpModal,
-  closeCardOtpModal,
-} from 'apps/tia-frontend/src/app/store/products/cards/cards.actions';
-import {
-  selectCardDetailsModalData,
-  selectCardSensitiveData,
-  selectIsOtpModalOpen,
-  selectSelectedCardIdForOtp,
-  selectIsUpdatingCardName,
-} from 'apps/tia-frontend/src/app/store/products/cards/cards.selectors';
+  selectItems,
+  selectIsLoading,
+  selectError,
+  selectNextCursor,
+  selectFilters,
+  selectTransactionsLoaded,
+} from 'apps/tia-frontend/src/app/store/transactions/transactions.selector';
+
+import { ITransactions } from '@tia/shared/models/transactions/transactions.models';
 import { AlertService } from '@tia/core/services/alert/alert.service';
-import { CardDetailsModal } from '../../components/cards/components/card-details-modal/container/card-details-modal/card-details-modal';
+import { CardTransactions } from '../../components/cards/components/card-transactions/container/card-transactions';
+import {
+  selectAccountById,
+  selectAccountsLoaded,
+  selectCardDetailById,
+  selectLoadedCardDetailsIds,
+} from 'apps/tia-frontend/src/app/store/products/cards/cards.selectors';
+import {
+  loadCardAccounts,
+  loadCardDetails,
+} from 'apps/tia-frontend/src/app/store/products/cards/cards.actions';
 
-describe('CardDetailsModal Integration', () => {
-  let component: CardDetailsModal;
-  let fixture: ComponentFixture<CardDetailsModal>;
+describe('CardTransactions Integration', () => {
+  let component: CardTransactions;
+  let fixture: ComponentFixture<CardTransactions>;
   let store: MockStore;
+  let router: Router;
 
-  const mockModalData = {
+  const mockCardId = 'card-1';
+
+  const mockCardData = {
     cardId: 'card-1',
     details: {
       id: 'card-1',
       accountId: 'acc-1',
-      type: 'CREDIT' as const,
+      type: 'DEBIT' as const,
       network: 'VISA' as const,
       design: 'blue',
       cardName: 'My Card',
@@ -36,60 +50,88 @@ describe('CardDetailsModal Integration', () => {
       allowOnlinePayments: true,
       allowInternational: true,
       allowAtm: true,
-      creditLimit: 5000,
       createdAt: '2024-01-01',
       updatedAt: '2024-01-01',
     },
     imageBase64: 'base64-image',
-    account: {
-      id: 'acc-1',
-      iban: 'GE123',
-      name: 'Main Account',
-      balance: 1000,
-      currency: 'GEL',
-      status: 'ACTIVE',
-      cardIds: ['card-1'],
-      openedAt: '2024-01-01',
-    },
+  };
+
+  const mockAccount = {
+    id: 'acc-1',
+    iban: 'GE00TB0000000000000000',
+    name: 'Main Account',
+    balance: 1000,
     currency: 'GEL',
-    formattedBalance: 'GEL 1,000',
-    shouldShowCreditLimit: true,
-    formattedCreditLimit: 'GEL 5,000',
-    isActiveStatus: true,
+    status: 'ACTIVE',
+    cardIds: ['card-1'],
+    openedAt: '2024-01-01',
   };
 
-  const mockSensitiveData = {
-    'card-1': {
-      cardNumber: '1234 5678 9012 3456',
-      cvv: '123',
-      expiryDate: '12/28',
-      cardholderName: 'JOHN DOE',
+  const mockTransactions: ITransactions[] = [
+    {
+      id: 'tx-1',
+      userId: 'user-1',
+      amount: 100.5,
+      transactionType: 'debit',
+      transferType: 'BillPayment',
+      currency: 'GEL',
+      description: 'Grocery Store',
+      debitAccountNumber: 'GE00TB0000000000000000',
+      creditAccountNumber: '',
+      category: 'Shopping',
+      convertionInfo: undefined,
+      createdAt: '2024-01-14T10:00:00Z',
+      updatedAt: '2024-01-14T10:00:00Z',
     },
-  };
-
+    {
+      id: 'tx-2',
+      userId: 'user-1',
+      amount: 50,
+      transactionType: 'credit',
+      transferType: 'Transfer',
+      currency: 'GEL',
+      description: 'Salary',
+      debitAccountNumber: '',
+      creditAccountNumber: 'GE00TB0000000000000000',
+      category: 'Income',
+      convertionInfo: undefined,
+      createdAt: '2024-01-13T09:00:00Z',
+      updatedAt: '2024-01-13T09:00:00Z',
+    },
+  ];
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CardDetailsModal, TranslateModule.forRoot()],
+      imports: [CardTransactions, TranslateModule.forRoot()],
       providers: [
-        provideMockStore({
-          initialState: {
-            cards: {
-              cardDetails: { 'card-1': mockModalData.details },
-              cardImages: { 'card-1': 'base64-image' },
-              accounts: [mockModalData.account],
-              cardSensitiveData: {},
-              isOtpModalOpen: false,
-              selectedCardIdForOtp: null,
-              isUpdatingCardName: false,
-            },
-          },
-        }),
+     provideMockStore({
+  initialState: {
+    cards: {
+      cardDetails: { 'card-1': mockCardData.details },
+      cardImages: { 'card-1': 'base64-image' },
+      accounts: [mockAccount],
+    },
+    accounts: {
+      accounts: [mockAccount],
+    },
+    transactions: {
+      items: mockTransactions,
+      isLoading: false,
+      error: null,
+      nextCursor: null,
+      filters: { accountIban: '', pageLimit: 100 },
+      loaded: false,
+    },
+  },
+}),
+        { provide: Router, useValue: { navigate: vi.fn() } },
+        {
+          provide: ActivatedRoute,
+          useValue: { snapshot: { paramMap: { get: () => mockCardId } } },
+        },
         {
           provide: AlertService,
           useValue: {
             isVisible: vi.fn().mockReturnValue(false),
-            alertType: vi.fn().mockReturnValue(null),
-            alertMessage: vi.fn().mockReturnValue(''),
             success: vi.fn(),
             error: vi.fn(),
             clearAlert: vi.fn(),
@@ -99,100 +141,121 @@ describe('CardDetailsModal Integration', () => {
     }).compileComponents();
 
     store = TestBed.inject(MockStore);
+    router = TestBed.inject(Router);
 
-    store.overrideSelector(selectCardDetailsModalData, mockModalData);
-    store.overrideSelector(selectCardSensitiveData, {});
-    store.overrideSelector(selectIsOtpModalOpen, false);
-    store.overrideSelector(selectSelectedCardIdForOtp, null);
-    store.overrideSelector(selectIsUpdatingCardName, false);
-
-    fixture = TestBed.createComponent(CardDetailsModal);
+    store.overrideSelector(selectItems, mockTransactions);
+    store.overrideSelector(selectIsLoading, false);
+    store.overrideSelector(selectError, null);
+    store.overrideSelector(selectNextCursor, null);
+    store.overrideSelector(selectFilters, { accountIban: '', pageLimit: 100 });
+    store.overrideSelector(selectTransactionsLoaded, false);
+    store.overrideSelector(selectCardDetailById(mockCardId), mockCardData);
+    store.overrideSelector(selectAccountById('acc-1'), mockAccount);
+    store.overrideSelector(selectAccountsLoaded, true);
+    store.overrideSelector(selectLoadedCardDetailsIds, ['card-1']);
+    store.overrideSelector(selectTransactionsLoaded, true);
+    fixture = TestBed.createComponent(CardTransactions);
     component = fixture.componentInstance;
-    fixture.componentRef.setInput('isOpen', true);
     fixture.detectChanges();
   });
+it('should load card and transaction data on init', () => {
+  const dispatchSpy = vi.spyOn(store, 'dispatch');
+  
+  store.overrideSelector(selectTransactionsLoaded, false);
+  store.refreshState();
+  
+  component.ngOnInit();
+  
+  expect(dispatchSpy).toHaveBeenCalledWith(
+    loadCardDetails({ cardId: mockCardId }),
+  );
+  expect(dispatchSpy).toHaveBeenCalledWith(TransactionActions.enter());
+});
 
-  it('should display modal data', async () => {
-    const modalData = await firstValueFrom(component['modalData$']);
+  it('should display account name', async () => {
+    const accountName = await firstValueFrom(component['accountName$']);
 
-    expect(modalData).not.toBeNull();
-    expect(modalData?.cardId).toBe('card-1');
-    expect(modalData?.details.cardName).toBe('My Card');
-    expect(modalData?.formattedBalance).toBe('GEL 1,000');
-    expect(modalData?.shouldShowCreditLimit).toBe(true);
+    expect(accountName).toBe('Main Account');
   });
 
-  it('should not show sensitive data initially', async () => {
-    const sensitiveData = await firstValueFrom(component['cardSensitiveData$']);
+  it('should paginate transactions correctly', () => {
+    const paginatedTransactions = component['getPaginatedTransactions'](mockTransactions, 1);
 
-    expect(sensitiveData).toBeNull();
+    expect(paginatedTransactions.length).toBe(2);
+    expect(paginatedTransactions[0].id).toBe('tx-1');
   });
 
-  it('should request OTP when button clicked', () => {
-    const dispatchSpy = vi.spyOn(store, 'dispatch');
+  it('should calculate total pages', () => {
+    const totalPages = component['getTotalPages'](mockTransactions);
 
-    component.handleRequestOtp();
-
-    expect(dispatchSpy).toHaveBeenCalledWith(openCardOtpModal({ cardId: 'card-1' }));
+    expect(totalPages).toBe(1);
   });
 
-  it('should show sensitive data after OTP verification', async () => {
-    store.overrideSelector(selectCardSensitiveData, mockSensitiveData);
+  it('should handle page change', () => {
+    component['handlePageChange'](2);
+
+    expect(component['currentPageSubject'].value).toBe(2);
+  });
+
+  it('should navigate back to card details', () => {
+    const navigateSpy = vi.spyOn(router, 'navigate');
+
+    component['handleBack']();
+
+    expect(navigateSpy).toHaveBeenCalledWith([
+      '/bank/products/cards/details',
+      mockCardId,
+    ]);
+  });
+
+  it('should update filters when account iban changes', () => {
+  const dispatchSpy = vi.spyOn(store, 'dispatch');
+  
+  store.overrideSelector(selectTransactionsLoaded, false);
+  store.refreshState();
+  
+  component.ngOnInit();
+  
+  expect(dispatchSpy).toHaveBeenCalledWith(TransactionActions.enter());
+  expect(dispatchSpy).toHaveBeenCalledWith(
+    TransactionActions.updateFilters({
+      filters: { accountIban: mockAccount.iban, pageLimit: 100 },
+    })
+  );
+});
+
+  it('should show loading state initially', async () => {
+    store.overrideSelector(selectIsLoading, true);
+    store.overrideSelector(selectCardDetailById(mockCardId), null);
+    store.overrideSelector(selectItems, []);
     store.refreshState();
 
-    const sensitiveData = await firstValueFrom(component['cardSensitiveData$']);
+    const isLoading = await firstValueFrom(component['isLoading$']);
 
-    expect(sensitiveData).not.toBeNull();
-    expect(sensitiveData?.cardNumber).toBe('1234 5678 9012 3456');
-    expect(sensitiveData?.cvv).toBe('123');
-    expect(sensitiveData?.expiryDate).toBe('12/28');
+    expect(isLoading).toBe(true);
   });
 
-  it('should update card name', () => {
+  it('should dispatch loadMore when cursor exists', () => {
     const dispatchSpy = vi.spyOn(store, 'dispatch');
 
-    component.handleCardNameUpdate('card-1', 'Updated Card Name');
+    store.overrideSelector(selectNextCursor, 'cursor-123');
+    store.refreshState();
 
+    component['autoLoadAllTransactions']();
+
+    setTimeout(() => {
+      expect(dispatchSpy).toHaveBeenCalledWith(TransactionActions.loadMore());
+    }, 100);
+  });
+
+  it('should retry loading data', () => {
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+
+    component['handleRetry']();
+
+    expect(dispatchSpy).toHaveBeenCalledWith(loadCardAccounts({}));
     expect(dispatchSpy).toHaveBeenCalledWith(
-      updateCardName({ cardId: 'card-1', cardName: 'Updated Card Name' })
+      loadCardDetails({ cardId: mockCardId }),
     );
-  });
-
-  it('should close OTP modal', () => {
-    const dispatchSpy = vi.spyOn(store, 'dispatch');
-
-    component.handleCloseOtpModal();
-
-    expect(dispatchSpy).toHaveBeenCalledWith(closeCardOtpModal());
-  });
-
-  it('should emit closed event on close', () => {
-    const closedSpy = vi.fn();
-    component.closed.subscribe(closedSpy);
-
-    component.handleClose();
-
-    expect(closedSpy).toHaveBeenCalled();
-  });
-
-  it('should show OTP modal when opened', async () => {
-    store.overrideSelector(selectIsOtpModalOpen, true);
-    store.overrideSelector(selectSelectedCardIdForOtp, 'card-1');
-    store.refreshState();
-
-    const isOtpModalOpen = await firstValueFrom(component['isOtpModalOpen$']);
-    const selectedCardId = await firstValueFrom(component['selectedCardIdForOtp$']);
-
-    expect(isOtpModalOpen).toBe(true);
-    expect(selectedCardId).toBe('card-1');
-  });
-
-  it('should show updating state when updating card name', async () => {
-    store.overrideSelector(selectIsUpdatingCardName, true);
-    store.refreshState();
-
-    const isUpdating = await firstValueFrom(component['isUpdating$']);
-
-    expect(isUpdating).toBe(true);
   });
 });
