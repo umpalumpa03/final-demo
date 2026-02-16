@@ -50,7 +50,7 @@ describe('PaybillOtpVerification', () => {
       const items = component['summaryItems']();
 
       expect(items.length).toBe(3);
-      expect(items[0].value).toBe('Mock Provider');
+      expect(items[0].value).toBe('Service');
       expect(items[1].value).toBe('123456');
       expect(items[2].value).toBe('100');
     });

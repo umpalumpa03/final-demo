@@ -1,8 +1,6 @@
 import { inject } from '@angular/core';
 import { ResolveFn } from '@angular/router';
-import {
-  TranslationLoaderService,
-} from './translation-loader.service';
+import { TranslationLoaderService } from './translation-loader.service';
 import { Observable } from 'rxjs';
 import { TranslationModule } from './model';
 
@@ -11,6 +9,7 @@ export function translationResolver(
 ): ResolveFn<void> {
   return (): Observable<void> => {
     const translationLoader = inject(TranslationLoaderService);
+    translationLoader.setActiveModules(modules);
     return translationLoader.loadTranslations(modules);
   };
 }

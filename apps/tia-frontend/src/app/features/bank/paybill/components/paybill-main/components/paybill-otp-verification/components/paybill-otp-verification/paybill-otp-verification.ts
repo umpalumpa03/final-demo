@@ -17,7 +17,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { otpConfiguration } from '../../config/otp.config';
 import { OtpVerification } from '@tia/core/otp-verification/container/otp-verification';
 
-import { Skeleton } from "@tia/shared/lib/feedback/skeleton/skeleton";
+import { Skeleton } from '@tia/shared/lib/feedback/skeleton/skeleton';
 
 @Component({
   selector: 'app-paybill-otp-verification',
@@ -27,8 +27,8 @@ import { Skeleton } from "@tia/shared/lib/feedback/skeleton/skeleton";
     PaymentSummary,
     TranslatePipe,
     OtpVerification,
-    Skeleton
-],
+    Skeleton,
+  ],
   templateUrl: './paybill-otp-verification.html',
   styleUrl: './paybill-otp-verification.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -49,27 +49,43 @@ export class PaybillOtpVerification {
 
   public currentCode = model('');
 
-  protected readonly summaryItems = computed(() => [
-    {
-      label: 'paybill.main.otp.summary_fields.service',
-      value:
-        this.provider()?.name ??
-        this.provider()?.serviceName ??
-        'paybill.main.otp.summary_fields.unknown_service',
-      canTranslate: !this.provider()?.name && !this.provider()?.serviceName,
-    },
-    {
-      label: 'paybill.main.otp.summary_fields.account',
-      value: this.summary()?.identification.accountNumber ?? '',
-      canTranslate: false,
-    },
-    {
-      label: 'paybill.main.otp.summary_fields.amount',
-      value: `${this.summary()?.amount}`,
-      isTotal: true,
-      canTranslate: false,
-    },
-  ]);
+  protected readonly summaryItems = computed(() => {
+    const payload = this.summary();
+    const ident = payload?.identification;
+
+    const userIdentifier =
+      ident?.accountNumber ||
+      ident?.phoneNumber ||
+      ident?.policyNumber ||
+      ident?.propertyCode ||
+      ident?.tenantId ||
+      Object.entries(ident || {}).find(
+        ([key]) => key.toLowerCase() !== 'amount',
+      )?.[1] ||
+      '';
+
+    return [
+      {
+        label: 'paybill.main.otp.summary_fields.service',
+        value:
+          this.provider()?.serviceName ||
+          this.provider()?.name ||
+          'paybill.main.otp.summary_fields.unknown_service',
+        canTranslate: !this.provider()?.name && !this.provider()?.serviceName,
+      },
+      {
+        label: 'paybill.main.otp.summary_fields.account',
+        value: userIdentifier,
+        canTranslate: false,
+      },
+      {
+        label: 'paybill.main.otp.summary_fields.amount',
+        value: `${payload?.amount ?? 0}`,
+        isTotal: true,
+        canTranslate: false,
+      },
+    ];
+  });
 
   public onOtpComplete(code: string): void {
     this.currentCode.set(code);
@@ -84,6 +100,6 @@ export class PaybillOtpVerification {
   }
 
   public onVerify(otp: string): void {
-      this.verify.emit(otp);
+    this.verify.emit(otp);
   }
 }
