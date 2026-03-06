@@ -217,8 +217,9 @@ export const mockBackendInterceptor: HttpInterceptorFn = (
   // Settings: appearance & language
   if (path === '/settings/get-available-themes' && method === 'GET') {
     return ok([
-      { value: 'light', displayName: 'Light' },
-      { value: 'dark', displayName: 'Dark' },
+      { value: 'oceanBlue', displayName: 'Ocean Blue' },
+      { value: 'royalBlue', displayName: 'Royal Blue' },
+      { value: 'deepBlue', displayName: 'Deep Blue' },
     ] as any);
   }
 
@@ -264,7 +265,7 @@ export const mockBackendInterceptor: HttpInterceptorFn = (
       return ok({
         fullName: 'Support Operator',
         email: 'support@tia.bank',
-        theme: 'light',
+        theme: 'deepBlue',
         language: 'english',
         hasCompletedOnboarding: true,
         avatar: null,
@@ -275,7 +276,7 @@ export const mockBackendInterceptor: HttpInterceptorFn = (
     return ok({
       fullName: 'Demo User',
       email: 'demo@tia.bank',
-      theme: 'light',
+      theme: 'deepBlue',
       language: 'english',
       hasCompletedOnboarding: true,
       avatar: null,

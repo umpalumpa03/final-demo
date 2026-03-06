@@ -28,6 +28,23 @@ npx nx serve tia-frontend
 - **Password:** `support`
 - **OTP Code:** Any 6-digit code (e.g., `123456`)
 
+### 🌙 Dark Theme Setup
+
+The app uses **Deep Blue** (dark theme) by default. If you see the light theme:
+
+1. Open browser DevTools (F12)
+2. Go to Console tab
+3. Run: `localStorage.clear()`
+4. Refresh the page and login again
+
+Or manually set the theme:
+```javascript
+localStorage.setItem('theme', 'deepBlue')
+```
+Then refresh the page.
+
+Available themes: `oceanBlue` (light), `royalBlue` (medium), `deepBlue` (dark)
+
 ---
 
 ## 🌟 Features to Showcase
