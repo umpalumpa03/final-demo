@@ -767,27 +767,79 @@ export const mockBackendInterceptor: HttpInterceptorFn = (
   if (path.startsWith('/paybill')) {
     if (path === '/paybill/categories' && method === 'GET') {
       return ok([
-        { id: 'utilities', name: 'Utilities', icon: 'utility' },
-        { id: 'mobile', name: 'Mobile', icon: 'phone' },
-        { id: 'internet', name: 'Internet', icon: 'wifi' },
-        { id: 'tv', name: 'TV & Streaming', icon: 'tv' },
+        {
+          id: 'utilities',
+          name: 'Utilities',
+          icon: 'utilities',
+          description: 'Pay your electricity, water, and gas bills',
+          servicesQuantity: 15,
+          iconBgColor: '#F0B100',
+          iconBgPath: '/images/svg/paybill/utilities.svg',
+        },
+        {
+          id: 'phone',
+          name: 'Mobile',
+          icon: 'phone',
+          description: 'Top up your mobile phone balance',
+          servicesQuantity: 8,
+          iconBgColor: '#00C950',
+          iconBgPath: '/images/svg/paybill/phone.svg',
+        },
+        {
+          id: 'internet',
+          name: 'Internet',
+          icon: 'internet',
+          description: 'Pay for internet and broadband services',
+          servicesQuantity: 12,
+          iconBgColor: '#2B7FFF',
+          iconBgPath: '/images/svg/paybill/internet.svg',
+        },
+        {
+          id: 'insurance',
+          name: 'Insurance',
+          icon: 'insurance',
+          description: 'Pay insurance premiums and policies',
+          servicesQuantity: 6,
+          iconBgColor: '#FB2C36',
+          iconBgPath: '/images/svg/paybill/insurance.svg',
+        },
+        {
+          id: 'rent',
+          name: 'Rent',
+          icon: 'rent',
+          description: 'Pay your monthly rent',
+          servicesQuantity: 4,
+          iconBgColor: '#615FFF',
+          iconBgPath: '/images/svg/paybill/rent.svg',
+        },
       ] as any);
     }
 
-    if (path.match(/\/paybill\/(utilities|mobile|internet|tv)$/) && method === 'GET') {
-      const category = path.split('/').pop();
+    if (path.match(/\/paybill\/(utilities|phone|internet|insurance|rent)$/) && method === 'GET') {
+      const category = path.split('/').pop() || 'utilities';
+      const categoryName = category.charAt(0).toUpperCase() + category.slice(1);
+      
       return ok([
         {
           id: `${category}-provider-1`,
-          name: `${category?.charAt(0).toUpperCase()}${category?.slice(1)} Provider 1`,
-          category,
-          logo: '',
+          serviceName: `${categoryName} Provider 1`,
+          categoryId: category,
+          name: `${categoryName} Provider 1`,
+          isFinal: true,
         },
         {
           id: `${category}-provider-2`,
-          name: `${category?.charAt(0).toUpperCase()}${category?.slice(1)} Provider 2`,
-          category,
-          logo: '',
+          serviceName: `${categoryName} Provider 2`,
+          categoryId: category,
+          name: `${categoryName} Provider 2`,
+          isFinal: true,
+        },
+        {
+          id: `${category}-provider-3`,
+          serviceName: `${categoryName} Provider 3`,
+          categoryId: category,
+          name: `${categoryName} Provider 3`,
+          isFinal: true,
         },
       ] as any);
     }
