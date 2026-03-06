@@ -17,6 +17,7 @@ import { SecurityEffects } from './features/bank/settings/components/security/st
 import { userInfoFeature } from './store/user-info/user-info.reducer';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './core/auth/interceptors/auth-interceptor';
+import { mockBackendInterceptor } from './core/mock/mock-backend.interceptor';
  
 import { HttpBackend } from '@angular/common/http';
 import { TranslateLoader, provideTranslateService } from '@ngx-translate/core';
@@ -38,7 +39,12 @@ export const appConfig: ApplicationConfig = {
     provideState(userInfoFeature),
     provideState('user-info', userInfoReducer),
     provideState('personalInfo', personalInfoReducer),
-    provideHttpClient(withInterceptors([authInterceptor])),
+    provideHttpClient(
+      withInterceptors([
+        mockBackendInterceptor,
+        authInterceptor,
+      ]),
+    ),
     provideEffects([
       ThemeEffects,
       ProfilePhotoEffects,

@@ -70,7 +70,7 @@ export class LoansService {
   ): Observable<IPrepaymentCalcResponse> {
     const params = new HttpParams()
       .set('loanId', loanId)
-      .set('amount', amount.toString())
+      .set('amount', amount)
       .set('option', option);
 
     return this.http.get<IPrepaymentCalcResponse>(

@@ -1,4 +1,5 @@
 export const environment = {
   production: false,
-  apiUrl: "https://tia.up.railway.app"
+  apiUrl: "https://tia.up.railway.app",
+  useMockBackend: true,
 }
