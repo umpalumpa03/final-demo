@@ -1,3 +1,16 @@
+<div class="sign-in__demo-hint">
+  <span class="sign-in__demo-hint-label">Demo credentials</span>
+  <div class="sign-in__demo-hint-row">
+    <span>Consumer:</span>
+    <button type="button" class="sign-in__demo-fill" (click)="fillDemo('demo')">demo / demo</button>
+  </div>
+  <div class="sign-in__demo-hint-row">
+    <span>Admin:</span>
+    <button type="button" class="sign-in__demo-fill" (click)="fillDemo('support')">support / support</button>
+  </div>
+  <span class="sign-in__demo-hint-otp">OTP: any 6 digits</span>
+</div>
+
 <form class="sign-in" [formGroup]="loginForm" (ngSubmit)="submit()">
   <app-auth-header
     title="auth.sign-in.title"
@@ -23,7 +36,7 @@
     <span class="sign-in__link" [routerLink]="[forgotPasswordRoute]"
       >{{'auth.sign-in.forgotPassword' | translate}}</span
     >
-    <app-button [fullWidth]="true" type="submit"
+    <app-button [fullWidth]="true" (click)="submit()" type="submit"
       >{{'auth.sign-in.submit' | translate}}</app-button
     >
     <p class="sign-in__switch">

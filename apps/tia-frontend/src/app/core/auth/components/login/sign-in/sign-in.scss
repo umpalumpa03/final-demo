@@ -24,6 +24,50 @@
     cursor: pointer;
   }
 
+  &__demo-hint {
+    @include display-flex(column);
+    gap: 0.6rem;
+    padding: 1.2rem 1.6rem;
+    border-radius: 0.8rem;
+    border: 1px dashed $gray-700;
+    font-size: 1.3rem;
+    color: $gray-700;
+    margin-bottom: -1rem;
+  }
+
+  &__demo-hint-label {
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.7;
+  }
+
+  &__demo-hint-row {
+    @include display-flex(row);
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  &__demo-fill {
+    background: none;
+    border: none;
+    color: $blue-800;
+    font-size: 1.3rem;
+    cursor: pointer;
+    padding: 0.2rem 0.6rem;
+    border-radius: 0.4rem;
+    font-family: monospace;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &__demo-hint-otp {
+    font-size: 1.1rem;
+    opacity: 0.6;
+  }
+
   &__switch,
   &__loader {
     @include flex-center();

@@ -114,6 +114,10 @@ export class SignIn {
       .subscribe();
   }
 
+  public fillDemo(user: 'demo' | 'support'): void {
+    this.loginForm.patchValue({ username: user, password: user });
+  }
+
   public navigateToSignUp(event: Event): void {
     event.preventDefault();
 

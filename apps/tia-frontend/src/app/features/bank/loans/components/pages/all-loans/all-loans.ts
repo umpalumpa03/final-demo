@@ -33,9 +33,6 @@ export class AllLoans implements OnInit {
   }
 
   public loadData(): void {
-    // Always force refresh when loading from this page so that
-    // previous errors (e.g. invalid OTP) are cleared and the
-    // grid is shown again without needing a hard reload.
     this.store.loadLoans({ status: null, forceChange: true });
   }
 }
